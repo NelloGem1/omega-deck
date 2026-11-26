@@ -1,0 +1,752 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Defender Playbook: Secure Coding for Flask Web Apps</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="defender-playbook-secure-coding-for-flask-web-apps">Defender Playbook: Secure Coding for Flask Web Apps</h1>
+<p>A practical guide to <em>building and fixing</em> secure applications — written for
+defensive learning on your own Flask subscription app. Sibling docs cover the
+attack side (<code>learning_path.md</code>, <code>payment_bypass.md</code>, <code>attacker_methodology.md</code>);
+this doc is the "do it right" layer: principles, patterns, code, and checklists.</p>
+<hr />
+<h2 id="1-secure-coding-principles">1. Secure Coding Principles</h2>
+<p>These six principles apply everywhere — treat them as defaults, not exceptions.</p>
+<h3 id="11-never-trust-client-input">1.1 Never trust client input</h3>
+<p>Everything the client sends — form fields, JSON bodies, headers, cookies, URL
+paths, file uploads — is attacker-controlled. "The browser sends it" is not a
+security control. Validate and sanitize <strong>on the server</strong>, every time.</p>
+<pre><code class="language-python"># BAD: trust the hidden form field / URL param
+@app.route(&quot;/upgrade&quot;, methods=[&quot;POST&quot;])
+def upgrade():
+    plan = request.form[&quot;plan&quot;]           # attacker can send anything
+    grant_plan(user_id, plan)             # done — subscription given away
+
+# GOOD: server decides what the request *means*
+@app.route(&quot;/upgrade&quot;, methods=[&quot;POST&quot;])
+def upgrade():
+    checkout = stripe.checkout.Session.create(  # server-side Stripe call
+        price=PRICE_IDS[request.args.get(&quot;plan&quot;)],  # allowlist lookup
+        ...
+    )
+</code></pre>
+<h3 id="12-validate-server-side-allowlist-style">1.2 Validate server-side, allowlist style</h3>
+<p>Validate <em>type, length, format, range, and business rules</em> on the server.
+Prefer <strong>allowlists</strong> ("plan must be one of {basic, pro}") over denylists
+("plan must not be admin"). Denylists forget things; allowlists fail closed.</p>
+<h3 id="13-least-privilege">1.3 Least privilege</h3>
+<ul>
+<li>DB user should have only the permissions the app needs (no <code>GRANT ALL</code>).</li>
+<li>Secrets should only be readable where needed.</li>
+<li>Features should check authorization before doing work — don't "check later."</li>
+</ul>
+<h3 id="14-defense-in-depth">1.4 Defense in depth</h3>
+<p>Assume any single control will fail. Layer them:</p>
+<pre><code>CSRF token + auth check + role check + input validation + parameterized query + output escaping
+</code></pre>
+<p>If one layer breaks, others still hold. Example: even if an attacker bypasses
+your "premium" UI, the server-side <code>@premium_required</code> decorator still blocks
+the API call.</p>
+<h3 id="15-fail-securely">1.5 Fail securely</h3>
+<p>On error, deny. Don't write code like <code>except Exception: grant_access()</code>. Errors
+should return a generic 500/403, log details server-side, and never leak stack
+traces, SQL, or internal paths to the client.</p>
+<pre><code class="language-python"># BAD
+except Exception as e:
+    return str(e)  # leaks internals
+
+# GOOD
+app.logger.exception(&quot;payment failed&quot;)
+return &quot;Something went wrong&quot;, 500  # generic message, details in logs
+</code></pre>
+<h3 id="16-keep-dependencies-updated-audited">1.6 Keep dependencies updated &amp; audited</h3>
+<p>Vulnerable dependencies are the most common real-world breach vector. Add
+<code>pip-audit</code> / <code>safety</code> to CI and upgrade deliberately. Pin versions.</p>
+<hr />
+<h2 id="2-flask-security-specifics">2. Flask Security Specifics</h2>
+<h3 id="21-parameterized-queries-the-1-rule">2.1 Parameterized queries — the #1 rule</h3>
+<p><strong>Never build SQL with f-strings, <code>%</code>, <code>.format()</code>, or concatenation.</strong>
+String interpolation into SQL is <em>the</em> SQL injection bug.</p>
+<pre><code class="language-python"># CATASTROPHIC — SQL injection
+user = db.session.execute(
+    f&quot;SELECT * FROM users WHERE email = '{email}'&quot;
+)
+# attacker sends: ' OR '1'='1
+
+# CORRECT — SQLAlchemy ORM / bound parameters
+user = User.query.filter_by(email=email).first()
+# or raw SQL with placeholders:
+db.session.execute(text(&quot;SELECT * FROM users WHERE email = :email&quot;),
+                   {&quot;email&quot;: email})
+# or DB-API cursor:
+cursor.execute(&quot;SELECT * FROM users WHERE email = %s&quot;, (email,))
+</code></pre>
+<p>Placeholders (<code>?</code>, <code>%s</code>, <code>:name</code>) send data and code on separate channels — the
+database cannot confuse them. This single habit eliminates the entire SQLi
+class.</p>
+<h3 id="22-session-secret-key-security">2.2 Session &amp; secret key security</h3>
+<p>Flask sessions are <strong>client-side cookies</strong> signed with <code>SECRET_KEY</code>.</p>
+<ul>
+<li>Generate with <code>secrets.token_hex(32)</code> or <code>openssl rand -hex 32</code>. <strong>Never</strong>
+  hardcode, commit, or reuse across environments.</li>
+<li>Load from env var: <code>app.secret_key = os.environ["SECRET_KEY"]</code>.</li>
+<li>If the key leaks, attackers can forge any session — treat it like a password.</li>
+<li>Rotate periodically; rotation logs everyone out (acceptable, even desirable).</li>
+<li>Set session cookie flags (Flask defaults are mostly safe, but be explicit):</li>
+</ul>
+<pre><code class="language-python">app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,   # no JS access to cookie
+    SESSION_COOKIE_SECURE=True,     # HTTPS only
+    SESSION_COOKIE_SAMESITE=&quot;Lax&quot;,  # CSRF mitigation
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=1),
+)
+</code></pre>
+<p>Also enable Flask's protection:</p>
+<pre><code class="language-python">app.config[&quot;SESSION_COOKIE_NAME&quot;] = &quot;__Host-session&quot;  # modern cookie prefix
+</code></pre>
+<h3 id="23-csrf-protection-flask-wtf">2.3 CSRF protection — Flask-WTF</h3>
+<p>State-changing routes (POST/PUT/DELETE) need CSRF tokens. With Flask-WTF:</p>
+<pre><code class="language-python">from flask_wtf.csrf import CSRFProtect
+csrf = CSRFProtect(app)          # protects all POST forms by default
+
+# For AJAX/API routes, include the token:
+# &lt;meta name=&quot;csrf-token&quot; content=&quot;{{ csrf_token() }}&quot;&gt;
+# fetch('/api/upgrade', {headers: {'X-CSRFToken': token}, ...})
+</code></pre>
+<p>Notes:
+- CSRF tokens protect cookie-authenticated forms. Token-authenticated APIs
+  (e.g., mobile apps sending <code>Authorization: Bearer</code>) are exempt — but your
+  web app almost certainly uses cookies, so enable it.
+- <code>SameSite=Lax</code> is a second layer, not a replacement for tokens.</p>
+<h3 id="24-security-headers-flask-talisman">2.4 Security headers — Flask-Talisman</h3>
+<pre><code class="language-python">from flask_talisman import Talisman
+Talisman(app, force_https=True, strict_transport_security=True,
+         content_security_policy={
+             &quot;default-src&quot;: &quot;'self'&quot;,
+             &quot;script-src&quot;: &quot;'self'&quot;,
+             &quot;style-src&quot;: &quot;'self' 'unsafe-inline'&quot;,   # tighten later
+             &quot;img-src&quot;: &quot;'self' data:&quot;,
+         })
+</code></pre>
+<p>See section 11 for the full header checklist. Talisman sets HSTS, CSP,
+<code>X-Frame-Options</code>, <code>X-Content-Type-Options</code>, etc. in one line.</p>
+<h3 id="25-rate-limiting-flask-limiter">2.5 Rate limiting — Flask-Limiter</h3>
+<p>Rate limiting blunts brute force, credential stuffing, and enumeration.</p>
+<pre><code class="language-python">from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+limiter = Limiter(get_remote_address, app=app, default_limits=[&quot;200 per day&quot;, &quot;50 per hour&quot;])
+
+@app.route(&quot;/login&quot;, methods=[&quot;POST&quot;])
+@limiter.limit(&quot;5 per minute&quot;)     # strict on auth endpoints
+@login_required
+def login(): ...
+</code></pre>
+<p>Rate-limit auth endpoints <em>especially</em> tightly. Use a real storage backend
+(Redis) in production — the in-memory default resets per worker.</p>
+<hr />
+<h2 id="3-authentication-done-right">3. Authentication Done Right</h2>
+<h3 id="31-password-hashing-never-plain-sha-never-md5">3.1 Password hashing — never plain SHA, never MD5</h3>
+<p>Plain SHA-256/MD5 are <strong>fast</strong> hashes designed for integrity, not passwords —
+an attacker with a GPU can try billions per second against a leaked hash.
+Use a deliberately slow, salted KDF:</p>
+<pre><code class="language-python">from werkzeug.security import generate_password_hash, check_password_hash
+
+# Werkzeug picks scrypt/pbkdf2 depending on version — good defaults:
+hash_ = generate_password_hash(password, method=&quot;scrypt&quot;)
+
+# Even better for new apps: Argon2id (memory-hard)
+# pip install argon2-cffi
+from argon2 import PasswordHasher
+ph = PasswordHasher()                    # argon2id defaults are sane
+hash_ = ph.hash(password)
+ok = ph.verify(hash_, password)          # raises on mismatch — catch it
+</code></pre>
+<p>Rules:
+- <strong>Salt automatically</strong> — werkzeug/argon2 handle this; never roll your own.
+- Hash on the server only; never send passwords over anything but HTTPS.
+- Compare with the library's verify function — never <code>==</code> on hashes.
+- On login, run a dummy hash check even when the user doesn't exist, to prevent
+  user-enumeration via timing.</p>
+<h3 id="32-session-fixation-lifecycle">3.2 Session fixation &amp; lifecycle</h3>
+<ul>
+<li>Flask regenerates the session cookie on login via <code>session.clear()</code> +
+  <code>session.permanent = True</code> pattern; explicitly pop old auth state first:</li>
+</ul>
+<pre><code class="language-python">@app.route(&quot;/login&quot;, methods=[&quot;POST&quot;])
+def login():
+    user = authenticate(request.form[&quot;email&quot;], request.form[&quot;password&quot;])
+    if user:
+        session.clear()              # drop any pre-auth session data
+        session[&quot;user_id&quot;] = user.id
+        session.permanent = True
+        return redirect(url_for(&quot;dashboard&quot;))
+    return &quot;Invalid credentials&quot;, 401
+</code></pre>
+<ul>
+<li>Regenerate/invalidate on <strong>privilege change</strong> (login, logout, role change,
+  password change). <code>session.clear()</code> does this for cookie sessions.</li>
+<li>Always provide and enforce logout: <code>session.clear()</code>.</li>
+</ul>
+<h3 id="33-mfa-basics">3.3 MFA basics</h3>
+<p>For anything sensitive (payments, account settings), add TOTP:</p>
+<pre><code class="language-python"># pip install pyotp
+import pyotp
+secret = pyotp.random_base32()
+totp = pyotp.TOTP(secret)
+if not totp.verify(request.form[&quot;code&quot;], valid_window=1):
+    abort(403)
+</code></pre>
+<p>Store the TOTP secret encrypted at rest; show backup codes once; allow
+recovery codes but log their use.</p>
+<h3 id="34-password-reset-tokens-signed-expiring-single-use">3.4 Password reset tokens — signed, expiring, single-use</h3>
+<p>Don't email a "reset link" that just says <code>?user_id=5</code> — that's account takeover.
+Use itsdangerous (already a Flask dependency) or store a random token hash:</p>
+<pre><code class="language-python">from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+
+s = URLSafeTimedSerializer(app.secret_key, salt=&quot;password-reset&quot;)
+token = s.dumps({&quot;user_id&quot;: user.id, &quot;pw_version&quot;: user.pw_version})
+
+# verify:
+try:
+    data = s.loads(token, max_age=3600)   # expires after 1 hour
+except (SignatureExpired, BadSignature):
+    abort(400)
+# ALSO check data[&quot;pw_version&quot;] == user.pw_version  → makes it single-use:
+# bump pw_version on every successful reset so old links die.
+</code></pre>
+<p>Checklist for reset tokens:
+- Cryptographically random / signed — unforgeable.
+- Short expiry (15–60 min typical).
+- Single-use (invalidate after use; versioning trick above).
+- Don't leak whether the email exists — always say "if that account exists…"
+- Rate-limit the reset endpoint.</p>
+<hr />
+<h2 id="4-authorization-patterns">4. Authorization Patterns</h2>
+<h3 id="41-decorators-for-repeated-checks">4.1 Decorators for repeated checks</h3>
+<pre><code class="language-python">from functools import wraps
+from flask import session, abort, redirect, url_for
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if &quot;user_id&quot; not in session:
+            return redirect(url_for(&quot;login&quot;))
+        return f(*args, **kwargs)
+    return decorated
+
+def premium_required(f):
+    @wraps(f)
+    @login_required          # stack: auth first, then role
+    def decorated(*args, **kwargs):
+        user = get_current_user()          # fresh DB lookup, not cached session role
+        if not user or not user.is_premium:
+            abort(403)
+        return f(*args, **kwargs)
+    return decorated
+</code></pre>
+<p>Apply to <strong>every</strong> route that needs it — including API endpoints, not just
+pages:</p>
+<pre><code class="language-python">@app.route(&quot;/api/invoices&quot;)
+@premium_required
+def api_invoices(): ...
+</code></pre>
+<h3 id="42-server-side-role-checks-on-every-request">4.2 Server-side role checks on EVERY request</h3>
+<ul>
+<li>The session may say <code>role=admin</code> — re-check against the DB (or a trusted
+  source) for sensitive actions. Roles change; stale sessions shouldn't grant
+  old privileges.</li>
+<li>Check authorization <strong>per object</strong>, not just per route — "user 42 can view
+  their own invoice" ≠ "user 42 can view invoice #7":</li>
+</ul>
+<pre><code class="language-python">invoice = Invoice.query.get(invoice_id)
+if not invoice or invoice.user_id != session[&quot;user_id&quot;]:
+    abort(404)   # 404 not 403: don't confirm the object exists
+</code></pre>
+<p>This is <strong>IDOR/BOLA</strong> prevention — the most common API vuln class.</p>
+<h3 id="43-hiding-ui-is-not-security">4.3 Hiding UI is not security</h3>
+<p><code>{% if user.is_premium %}&lt;a href="/premium"&gt;…{% endif %}</code> only hides a link.
+The route <code>/premium</code> still exists and will happily serve anyone who types the
+URL or calls the API directly. Enforcement must live server-side, in the
+decorator/handler — always.</p>
+<hr />
+<h2 id="5-payment-subscription-secure-design">5. Payment / Subscription Secure Design</h2>
+<p>This is where your app is most exposed. Golden rule: <strong>the server is the only
+authority on subscription state.</strong> The client is a notification channel, nothing
+more.</p>
+<h3 id="51-server-authoritative-state-machine">5.1 Server-authoritative state machine</h3>
+<pre><code class="language-text">           checkout.session.completed
+  (none) ───────────────────────────► pending
+                                        │
+              invoice.paid / charge    │ subscription.updated
+                                        ▼
+                                     active ──► past_due ──► canceled
+                                        │
+              payment_failed x N        ▼
+                                     canceled
+</code></pre>
+<p>Rules:
+- Store state in your DB; transitions happen <strong>only</strong> via verified webhook
+  events or server-side reconciliation — never from a client POST.
+- Make transitions explicit and guarded: you can't go <code>canceled → active</code>
+  without a new checkout; <code>past_due → active</code> only on successful payment.
+- Every state change writes an audit record (§5.5).</p>
+<h3 id="52-webhook-signature-verification-stripe">5.2 Webhook signature verification (Stripe)</h3>
+<p>Stripe signs every webhook. <strong>Verify before trusting anything in the body:</strong></p>
+<pre><code class="language-python">import stripe
+
+@app.route(&quot;/webhooks/stripe&quot;, methods=[&quot;POST&quot;])
+def stripe_webhook():
+    payload = request.get_data()          # raw bytes — don't parse first!
+    sig = request.headers.get(&quot;Stripe-Signature&quot;)
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig, app.config[&quot;STRIPE_WEBHOOK_SECRET&quot;]
+        )
+    except (ValueError, stripe.SignatureVerificationError):
+        abort(400)
+
+    # Idempotency: Stripe may deliver the same event twice
+    if already_processed(event[&quot;id&quot;]):
+        return &quot;&quot;, 200
+
+    if event[&quot;type&quot;] == &quot;checkout.session.completed&quot;:
+        session_obj = event[&quot;data&quot;][&quot;object&quot;]
+        grant_subscription(session_obj[&quot;client_reference_id&quot;],
+                           session_obj[&quot;subscription&quot;])
+    elif event[&quot;type&quot;] == &quot;customer.subscription.deleted&quot;:
+        revoke_subscription(event[&quot;data&quot;][&quot;object&quot;][&quot;id&quot;])
+    mark_processed(event[&quot;id&quot;])
+    return &quot;&quot;, 200
+</code></pre>
+<p>Key points:
+- Use <code>request.get_data()</code> (raw body) — signature covers exact bytes.
+- Keep <code>STRIPE_WEBHOOK_SECRET</code> in env vars; it's per-endpoint in Stripe.
+- Return 200 fast; do heavy work async if needed. Stripe retries on non-2xx.
+- Never process a webhook that fails signature verification. Ever.</p>
+<h3 id="53-idempotency-keys">5.3 Idempotency keys</h3>
+<p>Payment operations can be retried (network blips, user double-clicks, webhook
+redelivery). Design so repeats are harmless:</p>
+<ul>
+<li>Stripe Checkout/PaymentIntents accept <code>Idempotency-Key</code> headers — use them.</li>
+<li>For your own state changes: check current state before transitioning
+  (<code>if user.status == "active": return</code> — a second "paid" event is a no-op).</li>
+<li>Make grant/revoke functions idempotent: <code>grant(user, plan)</code> should produce
+  the same result whether called once or five times.</li>
+</ul>
+<h3 id="54-never-trust-client-payment_status">5.4 Never trust client <code>payment_status</code></h3>
+<pre><code class="language-python"># CATASTROPHIC
+@app.route(&quot;/payment/success&quot;)
+def success():
+    if request.args.get(&quot;payment_status&quot;) == &quot;paid&quot;:   # attacker just types this
+        user.plan = &quot;pro&quot;
+</code></pre>
+<p>The success redirect URL is <em>cosmetic</em>. Confirmation comes only from:
+1. Verified webhook events, and/or
+2. <strong>Server-side reconciliation</strong>: after redirect, call
+   <code>stripe.checkout.Session.retrieve(session_id)</code> / <code>Subscription.retrieve()</code>
+   and check <code>status == "active"</code> / <code>payment_status == "paid"</code> <strong>from Stripe's
+   API</strong>, keyed by IDs your server issued.</p>
+<h3 id="55-audit-log-every-state-change">5.5 Audit log every state change</h3>
+<pre><code class="language-python">class AuditLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(&quot;users.id&quot;))
+    event = db.Column(db.String(64))       # &quot;subscription.activated&quot;
+    old_state = db.Column(db.String(32))
+    new_state = db.Column(db.String(32))
+    source = db.Column(db.String(64))      # &quot;webhook:evt_123&quot; / &quot;reconcile&quot;
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+def transition_subscription(sub, new_state, source):
+    if new_state == sub.state:
+        return                      # idempotent
+    AuditLog(user_id=sub.user_id, event=&quot;subscription.transition&quot;,
+             old_state=sub.state, new_state=new_state, source=source)
+    sub.state = new_state
+    db.session.commit()
+</code></pre>
+<p>Audit logs are how you answer "who got premium for free and when?" — and how
+you detect the attack patterns from <code>attacker_methodology.md</code> against yourself.</p>
+<hr />
+<h2 id="6-input-validation-output-encoding">6. Input Validation &amp; Output Encoding</h2>
+<h3 id="61-allowlists-vs-denylists">6.1 Allowlists vs denylists</h3>
+<ul>
+<li><strong>Allowlist</strong>: <code>plan in {"basic", "pro", "enterprise"}</code> — reject everything
+  else. Use for enums, IDs, filenames, redirect targets, plans.</li>
+<li><strong>Denylist</strong>: <code>if "&lt;script&gt;" not in input</code> — will always miss something
+  (<code>&lt;img onerror=…&gt;</code>, <code>&lt;svg/onload=…&gt;</code>). Avoid for security decisions.</li>
+</ul>
+<pre><code class="language-python">ALLOWED_PLANS = {&quot;basic&quot;: PRICE_BASIC, &quot;pro&quot;: PRICE_PRO}
+plan_key = request.form.get(&quot;plan&quot;, &quot;&quot;)
+if plan_key not in ALLOWED_PLANS:
+    abort(400)
+price_id = ALLOWED_PLANS[plan_key]     # never trust the raw value downstream
+</code></pre>
+<p>Also validate: type (int vs str), length caps, format (email regex is weak —
+prefer confirmation email), numeric ranges (negative quantities!), and
+business rules (can't downgrade below current tier, etc.).</p>
+<h3 id="62-output-encoding-jinja2-autoescape">6.2 Output encoding — Jinja2 autoescape</h3>
+<p>Jinja2 <strong>autoescapes by default</strong> for <code>.html</code> templates — keep it that way:</p>
+<pre><code class="language-html">&lt;!-- SAFE: autoescaped → &amp;lt;script&amp;gt; renders as text --&gt;
+&lt;p&gt;{{ user.comment }}&lt;/p&gt;
+
+&lt;!-- DANGEROUS: |safe / Markup() disables escaping --&gt;
+&lt;p&gt;{{ user.comment | safe }}&lt;/p&gt;
+</code></pre>
+<p>Rules:
+- Never mark user input <code>|safe</code> or wrap in <code>Markup()</code>.
+- For JSON APIs, <code>jsonify</code> escapes properly — don't <code>json.dumps</code> into HTML.
+- URLs in <code>href</code>/<code>src</code>: validate scheme — <code>javascript:</code> URLs are an XSS vector.
+  Jinja's <code>url_for</code> + allowlisted redirect targets prevents <strong>open redirects</strong>.</p>
+<h3 id="63-template-injection-ssti">6.3 Template injection (SSTI)</h3>
+<p>Never do <code>render_template_string(user_input)</code> or <code>Template(user_input)</code> —
+Jinja2 template syntax (<code>{{ ... }}</code>, <code>{% ... %}</code>) can execute Python. If you
+must render user-provided templates, sandbox heavily or don't. Build templates
+as files; treat all <em>data</em> as data.</p>
+<hr />
+<h2 id="7-secrets-management">7. Secrets Management</h2>
+<ul>
+<li><strong>Env vars, not code.</strong> <code>os.environ["STRIPE_SECRET_KEY"]</code>. Never hardcode.</li>
+<li><strong><code>.env</code> for local dev + <code>.gitignore</code> it.</strong> Commit <code>.env.example</code> with
+  placeholder values so teammates know what to set.</li>
+<li><strong>Never commit secrets</strong> — not even "temporarily," not in comments, not in
+  tests with real values. Git history is forever; rotate anything that ever
+  touched it (<code>git filter-repo</code> / BFG if needed).</li>
+<li>Production: use your platform's secret store (Render/Railway env vars,
+  AWS Secrets Manager, Docker secrets) — not files on disk.</li>
+<li><strong>Rotate keys</strong>: on suspected leak, on team-member departure, periodically.
+  Rotation should be a runbook step, not a panic.</li>
+<li>Separate secrets per environment (dev/staging/prod). A leaked dev Stripe
+  <em>test</em> key is annoying; a leaked prod key is an incident.</li>
+<li><code>.gitignore</code> checklist:</li>
+</ul>
+<pre><code class="language-gitignore">.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+</code></pre>
+<hr />
+<h2 id="8-security-testing-regression">8. Security Testing &amp; Regression</h2>
+<p>Security that isn't tested regresses. Add these to your workflow:</p>
+<h3 id="81-pytest-security-tests">8.1 pytest security tests</h3>
+<p>Write tests that assert the <em>attacks fail</em>:</p>
+<pre><code class="language-python">def test_free_user_gets_403_on_premium(client, free_user):
+    login(client, free_user)
+    assert client.get(&quot;/premium&quot;).status_code == 403
+    assert client.get(&quot;/api/invoices&quot;).status_code == 403
+
+def test_idor_other_users_invoice(client, user_a, user_b):
+    login(client, user_a)
+    # invoice belongs to user_b
+    assert client.get(&quot;/invoice/999&quot;).status_code in (403, 404)
+
+def test_sql_injection_email_rejected(client):
+    resp = client.post(&quot;/login&quot;, data={
+        &quot;email&quot;: &quot;' OR '1'='1' --&quot;, &quot;password&quot;: &quot;x&quot;})
+    assert resp.status_code in (400, 401, 403)
+
+def test_tampered_plan_param_rejected(client, user):
+    login(client, user)
+    resp = client.post(&quot;/upgrade&quot;, data={&quot;plan&quot;: &quot;enterprise-free&quot;})
+    assert resp.status_code == 400
+    assert user.plan == &quot;free&quot;          # DB unchanged!
+
+def test_webhook_bad_signature_rejected(client):
+    resp = client.post(&quot;/webhooks/stripe&quot;,
+                       data=b'{&quot;type&quot;:&quot;checkout.session.completed&quot;}',
+                       headers={&quot;Stripe-Signature&quot;: &quot;bad&quot;})
+    assert resp.status_code == 400
+
+def test_csrf_missing_token_rejected(client, user):
+    login(client, user)
+    resp = client.post(&quot;/account/delete&quot;, data={})  # no CSRF token
+    assert resp.status_code == 400
+</code></pre>
+<p>Rule: every vulnerability you fix gets a regression test that would have
+caught it.</p>
+<h3 id="82-owasp-zap-baseline-scan">8.2 OWASP ZAP baseline scan</h3>
+<p>OWASP ZAP is a free DAST scanner. Baseline scan against your running app:</p>
+<pre><code class="language-bash"># against local dev server
+docker run -t owasp/zap2docker-stable zap-baseline.py \
+  -t http://localhost:5000 -r zap-report.html
+</code></pre>
+<p>Run it in CI (GitHub Actions has official ZAP actions) on every PR or nightly.
+It catches missing headers, exposed files, basic injection, cookie flags.</p>
+<h3 id="83-bandit-python-sast">8.3 Bandit — Python SAST</h3>
+<pre><code class="language-bash">pip install bandit
+bandit -r app/          # static analysis: finds eval, shell=True, weak crypto, hardcoded secrets
+</code></pre>
+<p>Wire into CI; fail the build on high-severity findings.</p>
+<h3 id="84-dependency-scanning">8.4 Dependency scanning</h3>
+<pre><code class="language-bash">pip install pip-audit safety
+pip-audit                 # checks installed deps against known CVEs
+safety check              # alternative
+</code></pre>
+<p>Dependabot/Renovate bots auto-open upgrade PRs — accept them promptly.</p>
+<hr />
+<h2 id="9-threat-modeling-lite">9. Threat Modeling Lite</h2>
+<p>You don't need a formal methodology — a whiteboard session per feature works.</p>
+<h3 id="91-stride-overview">9.1 STRIDE overview</h3>
+<table>
+<thead>
+<tr>
+<th>Threat</th>
+<th>Question to ask</th>
+<th>Example in subscription app</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>S</strong>poofing</td>
+<td>Can someone impersonate a user/service?</td>
+<td>Forged session cookie, fake webhook sender</td>
+</tr>
+<tr>
+<td><strong>T</strong>ampering</td>
+<td>Can data be modified in transit/storage?</td>
+<td>Editing <code>plan</code> param, MITM on HTTP</td>
+</tr>
+<tr>
+<td><strong>R</strong>epudiation</td>
+<td>Can actions be denied?</td>
+<td>No audit log → "I never upgraded/downgraded"</td>
+</tr>
+<tr>
+<td><strong>I</strong>nformation disclosure</td>
+<td>Can data leak?</td>
+<td>Error messages, IDOR, debug mode on</td>
+</tr>
+<tr>
+<td><strong>D</strong>enial of service</td>
+<td>Can it be knocked over?</td>
+<td>No rate limits → login brute force</td>
+</tr>
+<tr>
+<td><strong>E</strong>levation of privilege</td>
+<td>Can a user gain rights?</td>
+<td>Free user hitting premium routes, role escalation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-trust-boundaries-for-your-app">9.2 Trust boundaries for your app</h3>
+<pre><code>┌─────────────┐   HTTPS    ┌──────────────────┐   TLS+sig   ┌─────────┐
+│   Browser   │ ────────► │  Flask app       │ ─────────► │ Stripe  │
+│ (untrusted) │           │  (your trust     │            │ (trusted│
+│             │           │   boundary)      │            │  peer)  │
+└─────────────┘           └────────┬─────────┘            └─────────┘
+                                   │
+                            ┌──────▼───────┐
+                            │  Database    │
+                            │ (trusted,    │
+                            │  but still   │
+                            │  validate)   │
+                            └──────────────┘
+</code></pre>
+<p>Everything crossing a boundary is hostile input. The browser→Flask hop needs
+CSRF, auth, validation. The Flask→Stripe hop needs signature verification +
+server-issued IDs. The app→DB hop needs parameterized queries.</p>
+<h3 id="93-what-can-go-wrong-checklist-per-feature">9.3 "What can go wrong" checklist per feature</h3>
+<p>For each feature (signup, upgrade, webhook, password reset), ask:
+- What if the user sends garbage / nothing / huge payloads?
+- What if they send it twice, or out of order?
+- What if they're not logged in? Logged in as someone else? Free tier?
+- What if the payment gateway lies or is replayed?
+- What does the error path reveal?
+- What happens when two requests race?</p>
+<hr />
+<h2 id="10-responsible-disclosure-secure-sdlc">10. Responsible Disclosure &amp; Secure SDLC</h2>
+<h3 id="101-found-a-vuln-in-someone-elses-app">10.1 Found a vuln in someone else's app?</h3>
+<p>Even accidentally (e.g., you poked at a site while learning):</p>
+<ol>
+<li><strong>Stop.</strong> Don't exploit further, don't access others' data, don't publicize.</li>
+<li><strong>Document</strong> minimal proof (screenshot of the vuln class, no real data).</li>
+<li><strong>Report privately</strong>: look for <code>/.well-known/security.txt</code> on the domain —
+   it lists the security contact. Otherwise find security@ / a bug bounty
+   program (HackerOne, Bugcrowd, Intigriti).</li>
+<li>Give reasonable time to fix (typically 90 days standard, shorter if
+   actively exploited — coordinate).</li>
+<li>Keep it confidential; request a CVE/credit if offered.</li>
+</ol>
+<p>Accessing data you shouldn't have — even "just to confirm" — can be illegal
+(CFAA etc.). Proof-of-concept on your <em>own</em> account only.</p>
+<h3 id="102-bug-bounty-ethics">10.2 Bug bounty ethics</h3>
+<ul>
+<li>Only test in-scope assets, only with authorization.</li>
+<li>No DoS, no social engineering, no accessing real user data.</li>
+<li>Report what you find; don't sit on it, don't sell it.</li>
+<li>Many programs pay for valid reports — legitimate side income if you're good.</li>
+</ul>
+<h3 id="103-securitytxt">10.3 security.txt</h3>
+<p>If you ship an app others might test, publish one at
+<code>/.well-known/security.txt</code>:</p>
+<pre><code class="language-text">Contact: mailto:security@yourdomain.com
+Expires: 2026-12-31T23:59:59Z
+Preferred-Languages: en
+</code></pre>
+<p>There's a canonical format (RFC 9116) — it's how researchers find you instead
+of going public with a vuln.</p>
+<h3 id="104-secure-sdlc-habits">10.4 Secure SDLC habits</h3>
+<ul>
+<li>Threat-model before building each feature (§9).</li>
+<li>Security tests alongside feature tests (§8.1).</li>
+<li>SAST + dependency scanning in CI (§8.3–8.4).</li>
+<li>DAST baseline periodically (§8.2).</li>
+<li>Secrets never in code (§7).</li>
+<li>Keep a "security changelog" — what was fixed, when, why.</li>
+</ul>
+<hr />
+<h2 id="11-secure-headers-checklist-https-enforcement">11. Secure Headers Checklist &amp; HTTPS Enforcement</h2>
+<h3 id="111-header-checklist">11.1 Header checklist</h3>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict-Transport-Security</code></td>
+<td><code>max-age=31536000; includeSubDomains</code></td>
+<td>Force HTTPS forever after first visit</td>
+</tr>
+<tr>
+<td><code>Content-Security-Policy</code></td>
+<td><code>default-src 'self'</code> (+ tighten)</td>
+<td>Mitigates XSS by whitelisting sources</td>
+</tr>
+<tr>
+<td><code>X-Content-Type-Options</code></td>
+<td><code>nosniff</code></td>
+<td>Stops MIME sniffing attacks</td>
+</tr>
+<tr>
+<td><code>X-Frame-Options</code></td>
+<td><code>DENY</code> (or CSP <code>frame-ancestors 'none'</code>)</td>
+<td>Clickjacking protection</td>
+</tr>
+<tr>
+<td><code>Referrer-Policy</code></td>
+<td><code>strict-origin-when-cross-origin</code></td>
+<td>Limits URL/token leakage</td>
+</tr>
+<tr>
+<td><code>Permissions-Policy</code></td>
+<td><code>camera=(), microphone=(), geolocation=()</code></td>
+<td>Disable unused browser features</td>
+</tr>
+<tr>
+<td><code>Cache-Control</code></td>
+<td><code>no-store</code> on auth/payment pages</td>
+<td>Don't cache sensitive pages</td>
+</tr>
+</tbody>
+</table>
+<p>Flask-Talisman sets most of these (§2.4). Verify with
+<code>securityheaders.com</code> or <code>curl -I</code>.</p>
+<h3 id="112-https-enforcement">11.2 HTTPS enforcement</h3>
+<ul>
+<li><code>Talisman(app, force_https=True)</code> redirects HTTP→HTTPS and sets HSTS.</li>
+<li>In production behind a proxy (Render, Railway, nginx), ensure Flask sees
+  <code>X-Forwarded-Proto</code> — set <code>ProxyFix</code>:</li>
+</ul>
+<pre><code class="language-python">from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+</code></pre>
+<ul>
+<li>Get a real cert (Let's Encrypt via your host) — never self-signed in prod.</li>
+<li>HSTS <code>includeSubDomains</code> + <code>preload</code> only after you're sure <em>all</em> subdomains
+  are HTTPS — it's hard to undo.</li>
+<li>Secure cookies require HTTPS or browsers drop them (§2.2).</li>
+</ul>
+<hr />
+<h2 id="12-before-you-ship-security-review-checklist">12. Before-You-Ship Security Review Checklist</h2>
+<p>Run through this for every Flask app / feature release:</p>
+<p><strong>AuthN</strong>
+- [ ] Passwords hashed with scrypt/Argon2/bcrypt — never SHA/MD5/plain
+- [ ] Login rate-limited; generic error messages (no user enumeration)
+- [ ] Session regenerated on login; <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite</code> cookies
+- [ ] Logout clears session; timeout configured
+- [ ] MFA on sensitive actions (if applicable)
+- [ ] Password reset tokens signed + expiring + single-use</p>
+<p><strong>AuthZ</strong>
+- [ ] <code>@login_required</code> / role decorators on every protected route incl. APIs
+- [ ] Object-level checks (user can only touch own resources) — no IDOR
+- [ ] Role re-checked server-side per request for sensitive ops
+- [ ] No "hidden UI" relied upon for security</p>
+<p><strong>Input/Output</strong>
+- [ ] All input validated server-side with allowlists
+- [ ] All SQL parameterized (ORM or bound params) — zero string-built SQL
+- [ ] Jinja2 autoescape intact; no <code>|safe</code>/<code>Markup</code> on user data
+- [ ] Redirects use <code>url_for</code> + allowlists (no open redirect)
+- [ ] File uploads: type/size validated, stored outside webroot, random names</p>
+<p><strong>Payments</strong>
+- [ ] Subscription state transitions only via verified webhooks / server reconcile
+- [ ] Webhook signature verified with raw body before parsing
+- [ ] Idempotency on all payment/state operations
+- [ ] Client <code>payment_status</code>/plan params never trusted
+- [ ] Audit log on every billing state change</p>
+<p><strong>Transport/Headers</strong>
+- [ ] HTTPS enforced (force_https + ProxyFix behind proxy)
+- [ ] HSTS, CSP, X-Frame-Options, nosniff, Referrer-Policy set (Talisman)
+- [ ] <code>DEBUG=False</code> in production; no stack traces to clients</p>
+<p><strong>Secrets/Deps</strong>
+- [ ] No secrets in code or git history; <code>.env</code> gitignored
+- [ ] <code>pip-audit</code>/<code>safety</code> clean; deps pinned and updated
+- [ ] Bandit scan clean (or findings reviewed)</p>
+<p><strong>Testing/Process</strong>
+- [ ] pytest security tests for each fixed vuln + authz boundaries
+- [ ] ZAP baseline run at least once before launch
+- [ ] <code>/.well-known/security.txt</code> published
+- [ ] Incident/rollback plan: how to revoke access, rotate keys fast</p>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>OWASP Cheat Sheet Series — https://cheatsheetseries.owasp.org/
+  (SQL Injection Prevention, Authentication, Session Management, CSRF,
+  Input Validation, Secrets Management, Threat Modeling, Secure Headers)</li>
+<li>Flask documentation — Security Considerations:
+  https://flask.palletsprojects.com/en/latest/web/security/</li>
+<li>Flask-WTF CSRF protection — https://flask-wtf.readthedocs.io/</li>
+<li>Flask-Limiter — https://flask-limiter.readthedocs.io/</li>
+<li>Flask-Talisman — https://pypi.org/project/Flask-Talisman/</li>
+<li>Werkzeug password hashing — https://werkzeug.palletsprojects.com/security/</li>
+<li>itsdangerous (signed tokens) — https://itsdangerous.palletsprojects.com/</li>
+<li>Stripe webhook signature verification —
+  https://docs.stripe.com/webhooks/signature</li>
+<li>Stripe idempotency — https://docs.stripe.com/api/idempotent_requests</li>
+<li>OWASP API Security Top 10 (BOLA/IDOR) —
+  https://owasp.org/API-Security/</li>
+<li>OWASP ZAP — https://www.zaproxy.org/</li>
+<li>Bandit (Python SAST) — https://bandit.readthedocs.io/</li>
+<li>pip-audit — https://pypi.org/project/pip-audit/</li>
+<li>RFC 9116 security.txt — https://www.rfc-editor.org/rfc/rfc9116</li>
+<li>STRIDE threat model — Microsoft SDL documentation</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from defender_playbook.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 06 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

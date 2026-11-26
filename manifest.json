@@ -1,0 +1,17 @@
+{
+  "items": [
+    {"type": "pip", "pkg": "edge-tts"},
+    {"type": "pip", "pkg": "manim"},
+    {"type": "pip", "pkg": "google-api-python-client"},
+    {"type": "pip", "pkg": "av"},
+    {"type": "pip", "pkg": "beautifulsoup4"},
+    {"type": "pip", "pkg": "cryptography"},
+    {"type": "wsl", "name": "gh_backup repo", "cmd": "cd /home/neilh/gh_backup && git fetch --quiet origin && git rev-list --count HEAD..@{u} | grep -q '^0$' && echo ok || echo DRIFT"},
+    {"type": "wsl", "name": "pillow (WSL)", "cmd": "pip3 show pillow >/dev/null 2>&1 && echo ok || echo DRIFT"},
+    {"type": "file", "name": "THE_LIGHT_KEEPER.mp4", "path": "C:\\Users\\neilh\\Downloads\\THE_LIGHT_KEEPER.mp4"},
+    {"type": "file", "name": "WHITEBOARD_PRIMITIVES.mp4", "path": "C:\\Users\\neilh\\Downloads\\WHITEBOARD_PRIMITIVES.mp4"},
+    {"type": "file", "name": "CYBER_KNOWLEDGE.html", "path": "C:\\Users\\neilh\\Downloads\\CYBER_KNOWLEDGE.html"},
+    {"type": "file", "name": "OS_WORLD_ENCYCLOPEDIA.html", "path": "C:\\Users\\neilh\\Downloads\\OS_WORLD_ENCYCLOPEDIA.html"},
+    {"type": "file", "name": "DVWA_WALKTHROUGH.md", "path": "C:\\Users\\neilh\\Downloads\\DVWA_WALKTHROUGH.md"}
+  ]
+}

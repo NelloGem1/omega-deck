@@ -1,0 +1,158 @@
+<!doctype html><html><head><meta charset="utf-8"><title>cli-toolkit</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="web-security-cli-toolkit-wsl-ubuntu">Web Security CLI Toolkit — WSL Ubuntu</h1>
+<p>Toolkit for learning ethical web hacking, installed &amp; verified on WSL2 (Ubuntu).</p>
+<h2 id="installed-tools">Installed Tools</h2>
+<h3 id="1-sqlmap-sql-injection-tester">1. sqlmap — SQL Injection tester</h3>
+<ul>
+<li><strong>Path:</strong> <code>/usr/bin/sqlmap</code> (apt package, v1.10.4)</li>
+<li><strong>Verify:</strong> <code>sqlmap --version</code> → <code>1.10.4#stable</code></li>
+<li><strong>What it does:</strong> Automated detection &amp; exploitation of SQL injection flaws.</li>
+<li><strong>Beginner example (against a local DVWA/own lab):</strong>
+  <code>bash
+  sqlmap -u 'http://localhost:8080/vulnerabilities/sqli/?id=1&amp;Submit=Submit'</code></li>
+</ul>
+<h3 id="2-ffuf-fast-web-fuzzer">2. ffuf — Fast web fuzzer</h3>
+<ul>
+<li><strong>Path:</strong> <code>/usr/local/bin/ffuf</code> (release binary v2.3.0)</li>
+<li><strong>Verify:</strong> <code>ffuf -V</code> → <code>ffuf version: 2.3.0</code></li>
+<li><strong>What it does:</strong> Discovers hidden directories/files/parameters via wordlists.</li>
+<li><strong>Beginner example:</strong>
+  <code>bash
+  ffuf -w ~/SecLists/Discovery/Web-Content/common.txt -u http://localhost:8080/FUZZ</code></li>
+</ul>
+<h3 id="3-nuclei-vulnerability-scanner">3. nuclei — Vulnerability scanner</h3>
+<ul>
+<li><strong>Path:</strong> <code>/usr/local/bin/nuclei</code> (release binary v3.11.1)</li>
+<li><strong>Verify:</strong> <code>nuclei -version</code> → <code>Nuclei Engine Version: v3.11.1</code></li>
+<li><strong>Templates:</strong> <code>~/nuclei-templates</code> (14,225 YAML templates, updated)</li>
+<li><strong>What it does:</strong> Template-based scanner for known CVEs/misconfigs/tech detection.</li>
+<li><strong>Beginner example:</strong>
+  <code>bash
+  nuclei -u http://localhost:8080</code></li>
+</ul>
+<h3 id="4-seclists-wordlist-collection">4. SecLists — Wordlist collection</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/SecLists</code> (git clone --depth 1, ~2.5 GB)</li>
+<li><strong>Verified dirs:</strong> <code>Passwords/</code>, <code>Discovery/</code>, <code>Fuzzing/</code>, <code>Usernames/</code>, <code>Payloads/</code>, <code>Web-Shells/</code></li>
+<li><strong>What it is:</strong> The standard collection of wordlists for fuzzing/brute-forcing.</li>
+<li><strong>Key files:</strong></li>
+<li><code>Passwords/Common-Credentials/10-million-password-list-top-1000000.txt</code></li>
+<li><code>Discovery/Web-Content/common.txt</code>, <code>raft-medium-directories.txt</code></li>
+<li><code>Fuzzing/</code> (numbers, LFI, SSTI payloads, etc.)</li>
+</ul>
+<h3 id="5-jwt_tool-jwt-attack-toolkit">5. jwt_tool — JWT attack toolkit</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/jwt_tool/jwt_tool.py</code> (git clone)</li>
+<li><strong>Run with:</strong> <code>/home/neilh/venv/bin/python ~/jwt_tool/jwt_tool.py</code></li>
+<li><strong>Verify:</strong> <code>-h</code> prints full usage (mode -M, exploit -X, target -t, etc.)</li>
+<li><strong>Deps:</strong> installed into <code>~/venv</code> (<code>pip install -r requirements.txt</code>)</li>
+<li><strong>What it does:</strong> Tests JWTs for alg=none, weak secrets, kid/jku/x5u injection, claim tampering.</li>
+<li><strong>Beginner example:</strong>
+  <code>bash
+  /home/neilh/venv/bin/python ~/jwt_tool/jwt_tool.py &lt;JWT_TOKEN&gt; -t http://localhost:8080/</code></li>
+</ul>
+<h3 id="6-httpx-projectdiscovery-curl">6. httpx (ProjectDiscovery) + curl</h3>
+<ul>
+<li><strong>httpx Path:</strong> <code>/usr/local/bin/httpx</code> (v1.12.0) — fast HTTP probing/fingerprinting</li>
+<li><strong>Verify:</strong> <code>httpx -version</code> → <code>Current Version: v1.12.0</code></li>
+<li><strong>curl:</strong> <code>/usr/bin/curl</code> v8.18.0 (preinstalled)</li>
+<li><strong>Examples:</strong>
+  <code>bash
+  httpx -u http://localhost:8080 -title -tech-detect
+  curl -i http://localhost:8080/</code></li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><code>sudo</code> requires a password for the <code>neilh</code> user; root commands were run via <code>wsl -d Ubuntu -u root</code>.</li>
+<li>nuclei templates live at <code>~/nuclei-templates</code> (installed under user neilh).</li>
+<li>gf patterns (github.com/michenriksen/gf): skipped — install is <code>go install</code>, not essential; SecLists covers the core need.</li>
+<li>Legal reminder: only test targets you own or have written permission for (DVWA, Juice Shop, PortSwigger labs, HackTheBox, etc.).</li>
+</ul>
+<h2 id="extended-toolkit">Extended toolkit</h2>
+<blockquote>
+<p>Installed by setup agent. <strong>Note:</strong> <code>sudo</code> needs a password for <code>neilh</code>, but a passwordless root shell is available via <code>wsl -d Ubuntu -u root -- bash -c "..."</code>. Since apt was unavailable to user <code>neilh</code>, nikto/whatweb/exploitdb were installed <strong>user-space</strong> (deb extraction into <code>~/localroot</code>, git clones) rather than system-wide.</p>
+</blockquote>
+<h3 id="7-nikto-215-web-server-scanner">7. nikto 2.1.5 — web server scanner</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/bin/nikto</code> (wrapper) → real binary <code>~/localroot/usr/bin/nikto</code>; config/db/plugins at <code>~/nikto_exec</code></li>
+<li><strong>Verify:</strong> <code>nikto -Version</code> → <code>Nikto main 2.1.5, LibWhisker 2.5</code>; <code>-list-plugins</code> lists all plugins</li>
+<li><strong>Usage:</strong> <code>nikto -h http://target</code> (note: <code>-h</code> is <em>host</em>, <code>-Help</code> for help)</li>
+<li><strong>Deps:</strong> perl + LibWhisker/JSON::PP/Net::SSLeay extracted to <code>~/localroot</code> (PERL5LIB set by wrapper)</li>
+</ul>
+<h3 id="8-gobuster-382-dirdns-brute-forcer">8. gobuster 3.8.2 — dir/DNS brute-forcer</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/bin/gobuster</code> (GitHub release binary, OJ/gobuster v3.8.2)</li>
+<li><strong>Verify:</strong> <code>gobuster -h</code> → <code>VERSION: 3.8.2</code> (no <code>version</code> subcommand in v3)</li>
+<li><strong>Usage:</strong> <code>gobuster dir -u http://target -w ~/SecLists/Discovery/Web-Content/common.txt</code></li>
+</ul>
+<h3 id="9-dirsearch-python-web-path-scanner">9. dirsearch — python web path scanner</h3>
+<ul>
+<li><strong>Path:</strong> repo <code>~/dirsearch</code>, wrapper <code>~/bin/dirsearch</code> (uses <code>~/venv/bin/python</code>)</li>
+<li><strong>Verify:</strong> <code>dirsearch -h</code> → usage/options printed</li>
+<li><strong>Deps added to venv:</strong> defusedxml, colorama, PySocks, Jinja2, requests-ntlm, defusedcsv, requests-toolbelt, socksio, httpx-ntlm</li>
+<li><strong>Usage:</strong> <code>dirsearch -u http://target -w ~/SecLists/Discovery/Web-Content/common.txt</code></li>
+</ul>
+<h3 id="10-whatweb-063-tech-fingerprinting">10. whatweb 0.6.3 — tech fingerprinting</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/bin/whatweb</code> (wrapper) → ruby script in <code>~/localroot</code> (ruby 3.3.8 + gems extracted user-space)</li>
+<li><strong>Verify:</strong> <code>whatweb --version</code> → <code>WhatWeb version 0.6.3</code></li>
+<li><strong>Usage:</strong> <code>whatweb http://target</code></li>
+</ul>
+<h3 id="11-searchsploit-exploitdb-offline-exploit-archive">11. searchsploit / exploitdb — offline exploit archive</h3>
+<ul>
+<li><strong>Path:</strong> repo <code>~/exploitdb</code> (cloned from <strong>gitlab.com</strong>/exploit-database/exploitdb — the GitHub repo is now just a redirect stub!), wrapper <code>~/bin/searchsploit</code></li>
+<li><strong>Verify:</strong> <code>searchsploit -h</code> → usage; <code>searchsploit vsftpd</code> → finds EDB-ID 49757.py backdoor etc.</li>
+<li><strong>Update:</strong> <code>cd ~/exploitdb &amp;&amp; git pull</code></li>
+</ul>
+<h3 id="12-feroxbuster-2140-fast-content-discovery-rust">12. feroxbuster 2.14.0 — fast content discovery (rust)</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/bin/feroxbuster</code> (GitHub release binary, epi052/feroxbuster)</li>
+<li><strong>Verify:</strong> <code>feroxbuster --version</code> → <code>feroxbuster 2.14.0</code></li>
+<li><strong>Usage:</strong> <code>feroxbuster -u http://target -w ~/SecLists/Discovery/Web-Content/common.txt</code></li>
+</ul>
+<h3 id="13-python-security-libs-in-venv">13. Python security libs in ~/venv</h3>
+<ul>
+<li><strong>Verify:</strong> <code>~/venv/bin/python -c 'import requests, httpx, bs4'</code> → requests 2.34.2, httpx 0.28.1, bs4 4.15.0</li>
+<li>Also installed: PySocks, socksio, Jinja2, requests-ntlm, httpx-ntlm, defusedcsv, requests-toolbelt, setuptools</li>
+</ul>
+<h3 id="14-subfinder-2170-subdomain-enumeration-projectdiscovery">14. subfinder 2.17.0 — subdomain enumeration (ProjectDiscovery)</h3>
+<ul>
+<li><strong>Path:</strong> <code>~/bin/subfinder</code> (GitHub release binary)</li>
+<li><strong>Verify:</strong> <code>subfinder -version</code> → <code>Current Version: v2.17.0</code></li>
+<li><strong>Config dir:</strong> <code>~/.config/subfinder</code> (add API keys for more sources)</li>
+<li><strong>Usage:</strong> <code>subfinder -d example.com</code></li>
+</ul>
+<h3 id="gotchas-for-future-installs">Gotchas for future installs</h3>
+<ul>
+<li>Git Bash mangles <code>-c</code> args starting with <code>/home/...</code> → set <code>MSYS_NO_PATHCONV=1</code> or don't start the command string with a bare path.</li>
+<li>Files written via UNC path (<code>\\wsl.localhost\...</code>) may get CRLF endings → run <code>sed -i 's/\r$//'</code> on shell scripts.</li>
+<li><code>~/bin</code> is on PATH via <code>~/.profile</code> (login shells); wrappers live there.</li>
+</ul>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 19 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

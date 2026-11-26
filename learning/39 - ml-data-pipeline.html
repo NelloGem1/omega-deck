@@ -1,0 +1,150 @@
+<!doctype html><html><head><meta charset="utf-8"><title>ml-pipeline-guide</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="ml-data-pipeline-the-5-things-everyone-forgets">🧠 ML Data Pipeline — The 5 Things Everyone Forgets</h1>
+<p><em>A field guide for the gaps between "I trained a model" and "I deployed a reliable one."</em></p>
+<blockquote>
+<p>Companion lab: <code>science_lab/ml/lab_ml_pipeline.py</code> — every concept below has a runnable exercise.</p>
+</blockquote>
+<hr />
+<h2 id="1-validation-split-three-splits-not-two">1. Validation Split — THREE splits, not two</h2>
+<p><strong>The mistake:</strong> train/test only → you tune on test → test stops being honest → deployed model surprises you.</p>
+<pre><code>raw data ──► TRAIN (fit the model)
+          ──► VALIDATION (tune hyperparams, early stop, pick model)
+          ──► TEST (final exam — touch ONCE at the end)
+</code></pre>
+<p>Typical ratios: 60/20/20 or 70/15/15. With little data use <strong>k-fold cross-validation</strong> on the train set instead of a fixed val split.</p>
+<pre><code class="language-python">from sklearn.model_selection import train_test_split
+X_tr, X_tmp = train_test_split(X, test_size=0.4, stratify=y, random_state=42)
+X_val, X_te = train_test_split(X_tmp, test_size=0.5, stratify=y, random_state=42)
+</code></pre>
+<p><strong>Golden rule:</strong> the test set answers "how good is my FINAL model?" — never use it to make decisions.</p>
+<hr />
+<h2 id="2-feature-engineering-raw-data-useful-inputs">2. Feature Engineering — raw data → useful inputs</h2>
+<p>Models can't see patterns you don't expose. Techniques:</p>
+<ul>
+<li><strong>Scaling</strong> — StandardScaler/MinMax (essential for distance/SVM/neural nets)</li>
+<li><strong>Encoding</strong> — one-hot for categories, target-encoding for high-cardinality</li>
+<li><strong>Polynomial/interaction</strong> — <code>PolynomialFeatures</code> for nonlinear boundaries</li>
+<li><strong>Domain features</strong> — ratios, logs, bins, text→TF-IDF, image→embeddings</li>
+<li><strong>Feature selection</strong> — drop noise (mutual info, permutation importance)</li>
+</ul>
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+model = make_pipeline(StandardScaler(), PolynomialFeatures(2), LogisticRegression())
+</code></pre>
+<p><strong>Lab exercise:</strong> digits accuracy before vs after scaling + poly features.</p>
+<hr />
+<h2 id="3-regularization-stop-the-model-memorizing">3. Regularization — stop the model memorizing</h2>
+<p>Overfitting = great train score, terrible real-world score. Fixes:</p>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>What it does</th>
+<th>sklearn knob</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L2 Ridge</td>
+<td>shrinks weights toward 0</td>
+<td><code>Ridge(alpha=…)</code></td>
+</tr>
+<tr>
+<td>L1 Lasso</td>
+<td>shrinks + zeroes useless features</td>
+<td><code>Lasso(alpha=…)</code></td>
+</tr>
+<tr>
+<td>ElasticNet</td>
+<td>both</td>
+<td><code>ElasticNet</code></td>
+</tr>
+<tr>
+<td>Dropout</td>
+<td>randomly kills neurons (NNs)</td>
+<td><code>Dropout(p)</code> in torch</td>
+</tr>
+<tr>
+<td>Early stopping</td>
+<td>halt when val loss rises</td>
+<td><code>EarlyStopping</code> callback</td>
+</tr>
+<tr>
+<td>More data / augmentation</td>
+<td>the real cure</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>alpha</code>/<code>C</code> is the dial: <strong>higher alpha = simpler model</strong>. Tune it on VALIDATION, never test.</p>
+<p><strong>Lab exercise:</strong> polynomial degree sweep — watch train↑ / val↓ = overfit signature.</p>
+<hr />
+<h2 id="4-deployment-monitoring-inference-is-not-the-end">4. Deployment &amp; Monitoring — inference is not the end</h2>
+<p>A model in production is a living system:</p>
+<pre><code>train → validate → TEST → deploy → MONITOR → retrain
+</code></pre>
+<ul>
+<li><strong>Save/load</strong>: <code>joblib.dump(model, "model.joblib")</code> — version it like code</li>
+<li><strong>Drift</strong>: input data changes (new user behavior, sensor aging, new categories) → performance silently decays</li>
+<li><strong>Monitor</strong>: prediction distribution, latency, error rates, data-schema checks, alert thresholds</li>
+<li><strong>Retrain triggers</strong>: scheduled (weekly) or drift-detected</li>
+<li><strong>Rollback plan</strong>: keep previous model artifact</li>
+</ul>
+<pre><code class="language-python">import joblib
+joblib.dump(model, &quot;digits_model.joblib&quot;)
+model2 = joblib.load(&quot;digits_model.joblib&quot;)   # inference = predict only
+</code></pre>
+<p><strong>Lab exercise:</strong> train → save → load → predict; then feed corrupted inputs → watch confidence collapse.</p>
+<hr />
+<h2 id="5-ethics-bias-audit-before-and-after">5. Ethics &amp; Bias Audit — BEFORE and AFTER</h2>
+<p>Check bias <strong>before training</strong> (data problems) and <strong>after</strong> (model problems):</p>
+<ul>
+<li><strong>Representation</strong> — does the data cover all groups? Missing groups → blind spots</li>
+<li><strong>Label bias</strong> — were labels assigned fairly? Historical bias gets learned</li>
+<li><strong>Proxy variables</strong> — zip code "predicts" race; model learns discrimination legally</li>
+<li><strong>Fairness metrics</strong> — demographic parity, equalized odds, calibration per group</li>
+<li><strong>Explainability</strong> — can you explain WHY it decided? (SHAP/LIME/coefficients)</li>
+<li><strong>Impact</strong> — who is harmed if it's wrong? High-stakes ≠ same tolerance</li>
+</ul>
+<pre><code class="language-python">from sklearn.metrics import accuracy_score
+# per-group accuracy — a big gap = bias alarm
+for g in groups.unique():
+    m = groups == g
+    print(g, accuracy_score(y[m], model.predict(X[m])))
+</code></pre>
+<p><strong>Lab exercise:</strong> synthetic biased dataset — model achieves 95% overall but fails one group; per-group audit exposes it.</p>
+<hr />
+<h2 id="the-full-pipeline-memorize-this">The Full Pipeline (memorize this)</h2>
+<pre><code>collect → clean → engineer → SPLIT(60/20/20) → train →
+tune on VAL → regularize → TEST once → audit bias →
+deploy → monitor drift → retrain → repeat
+</code></pre>
+<p><strong>The meta-lesson:</strong> every stage has a failure mode. The engineers who ship reliable AI are the ones who test each stage, not just the final accuracy number.</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 39 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

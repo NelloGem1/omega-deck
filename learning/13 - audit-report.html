@@ -1,0 +1,208 @@
+<!doctype html><html><head><meta charset="utf-8"><title>audit-report</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="security-audit-report-nellogem-sublab-flask-subscription-app">Security Audit Report — NelloGem SubLab (Flask subscription app)</h1>
+<p><strong>Target:</strong> <code>/home/neilh/websec_lab/app/app.py</code> (+ <code>schema.sql</code>)
+<strong>Date:</strong> 2026-11-25
+<strong>Method:</strong> manual code review → live exploit PoCs (curl/python-requests against <code>http://127.0.0.1:5000</code>) → remediation → pytest regression suite.</p>
+<blockquote>
+<p>Note: the setup agent's scaffold was initially missing; it appeared mid-audit.
+The vulnerable original is preserved at <code>app/app_vulnerable.py</code>; the fixed
+version is <code>app/app.py</code> (each fix is annotated <code># FIX (was VULN: ...)</code>).</p>
+</blockquote>
+<hr />
+<h2 id="summary">Summary</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Vulnerability</th>
+<th>Severity</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>SQL injection — login auth bypass</td>
+<td>Critical</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SQL injection — register privilege escalation</td>
+<td>Critical</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Client-trusted payment flag (<code>payment_success=1</code>)</td>
+<td>Critical</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Session-cookie forgery (hardcoded secret) + trusted session flags</td>
+<td>High</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Plaintext password storage</td>
+<td>High</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Verbose error messages leak SQL internals</td>
+<td>Medium</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Unsigned/absent webhook verification (new endpoint added with HMAC)</td>
+<td>High</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Missing CSRF protection + <code>debug=True</code></td>
+<td>Medium</td>
+<td>Fixed + tested</td>
+</tr>
+<tr>
+<td>9</td>
+<td>DB connection leaks on error paths (found during fix verification)</td>
+<td>Low</td>
+<td>Fixed</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vuln-1-sql-injection-in-login-auth-bypass">VULN 1 — SQL injection in <code>/login</code> (auth bypass)</h2>
+<p><strong>Location:</strong> <code>app.py</code> login route — <code>"SELECT * FROM users WHERE username = '%s' AND password = '%s'" % (username, password)</code></p>
+<p><strong>PoC:</strong></p>
+<pre><code class="language-bash">curl -c jar -X POST http://127.0.0.1:5000/login \
+  --data-urlencode &quot;username=' OR 1=1--&quot; --data-urlencode &quot;password=x&quot;
+# -&gt; 302 redirect; session authenticated as 'demo' WITHOUT a password
+curl -b jar http://127.0.0.1:5000/status
+# -&gt; Logged in as demo (role: free)
+</code></pre>
+<p><strong>Fix:</strong> parameterized query <code>WHERE username = ?</code>, then <code>check_password_hash()</code> against the stored hash. Session now stores only <code>username</code>.</p>
+<p><strong>Regression test:</strong> <code>test_sqli_login_bypass_blocked</code>, <code>test_sqli_union_data_exfil_not_possible</code></p>
+<hr />
+<h2 id="vuln-2-sql-injection-in-register-privilege-escalation">VULN 2 — SQL injection in <code>/register</code> (privilege escalation)</h2>
+<p><strong>Location:</strong> register route — <code>INSERT INTO users ... VALUES ('%s','%s','free')</code> built with <code>%</code> formatting.</p>
+<p><strong>PoC:</strong></p>
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:5000/register \
+  --data-urlencode &quot;username=evil', 'pw', 'premium')--&quot; --data-urlencode &quot;password=x&quot;
+# -&gt; Registered!  then login as evil/pw -&gt; /premium returns SECRET_RECIPE_42
+</code></pre>
+<p><strong>Fix:</strong> parameterized INSERT; <code>role</code> is hard-coded server-side to <code>'free'</code> — client input can never reach the role column.</p>
+<p><strong>Regression test:</strong> <code>test_sqli_register_cannot_create_premium</code> (asserts injected username stored literally and DB role stays <code>free</code>)</p>
+<hr />
+<h2 id="vuln-3-payment-bypass-via-client-side-flag">VULN 3 — Payment bypass via client-side flag</h2>
+<p><strong>Location:</strong> <code>/upgrade</code> POST — <code>paid = request.form.get("payment_success") == "1"</code> then granted premium + wrote a fake payment row.</p>
+<p><strong>PoC:</strong></p>
+<pre><code class="language-bash"># as a normal free user:
+curl -b jar -c jar -X POST http://127.0.0.1:5000/upgrade --data-urlencode &quot;payment_success=1&quot;
+# -&gt; &quot;Payment successful! You are now PREMIUM.&quot;  (no money moved)
+curl -b jar http://127.0.0.1:5000/premium   # -&gt; SECRET_RECIPE_42
+</code></pre>
+<p><strong>Fix (server-authoritative payment):</strong>
+- <code>/upgrade</code> accepts only a plan <strong>name</strong>; price comes from server-side <code>PLAN_PRICES</code> allowlist. It creates a <code>payments</code> row with <code>status='pending'</code> — nothing is granted.
+- <code>/gateway/charge</code> (mock gateway) verifies an HMAC signature <code>HMAC(PAYMENT_SECRET, "{payment_id}:{amount}")</code> and the amount <strong>from the DB row</strong>, marks the payment <code>succeeded</code>, then activates the subscription.
+- <code>/api/payments/webhook</code> accepts gateway-style confirmations only with a valid <code>X-Signature</code> HMAC over the raw body (<code>PAYMENT_WEBHOOK_SECRET</code>), idempotent on <code>pending</code> payments.
+- Both secrets come from env vars (<code>PAYMENT_SECRET</code>, <code>PAYMENT_WEBHOOK_SECRET</code>), random per boot otherwise.</p>
+<p><strong>Regression tests:</strong> <code>test_client_payment_success_flag_ignored</code>, <code>test_premium_plan_name_alone_grants_nothing</code>, <code>test_gateway_rejects_forged_signature</code>, <code>test_gateway_rejects_replayed_payment</code>, <code>test_legitimate_payment_flow_still_works</code>, <code>test_webhook_rejects_missing_signature</code>, <code>test_webhook_rejects_wrong_signature</code>, <code>test_webhook_accepts_valid_signature</code></p>
+<hr />
+<h2 id="vuln-4-session-forgery-client-controllable-session-flags">VULN 4 — Session forgery + client-controllable session flags</h2>
+<p><strong>Two layers:</strong>
+1. <code>app.secret_key = "dev-secret-change-me"</code> (hardcoded, public in source) → anyone can mint valid session cookies.
+2. <code>/premium</code> authorized solely on <code>session["is_premium"]</code>, which the client could also influence.</p>
+<p><strong>PoC:</strong></p>
+<pre><code class="language-python">from flask.sessions import SecureCookieSessionInterface
+from flask import Flask
+app = Flask(__name__); app.secret_key = &quot;dev-secret-change-me&quot;
+s = SecureCookieSessionInterface().get_signing_serializer(app)
+print(s.dumps({&quot;username&quot;: &quot;demo&quot;, &quot;is_premium&quot;: True, &quot;role&quot;: &quot;admin&quot;}))
+</code></pre>
+<pre><code class="language-bash">curl -H &quot;Cookie: session=&lt;forged&gt;&quot; http://127.0.0.1:5000/premium
+# -&gt; SECRET_RECIPE_42 for FREE user 'demo'; /status showed role: admin
+</code></pre>
+<p><strong>Fix:</strong>
+- <code>secret_key</code> from <code>APP_SECRET_KEY</code> env var, else <code>secrets.token_hex(32)</code> per boot.
+- Session stores <strong>only</strong> <code>username</code> (+ CSRF token). <code>role</code>/<code>is_premium</code> session keys removed entirely.
+- <code>/premium</code> calls <code>is_premium(user)</code> which re-reads <code>users.role</code> <strong>and</strong> the latest <code>subscriptions.status</code> from SQLite on every request.</p>
+<p><strong>Regression tests:</strong> <code>test_session_cookie_cannot_be_forged_with_old_secret</code>, <code>test_session_flags_are_not_authoritative</code></p>
+<hr />
+<h2 id="vuln-5-plaintext-password-storage">VULN 5 — Plaintext password storage</h2>
+<p><strong>PoC:</strong> <code>sqlite3 lab.db "SELECT username,password,role FROM users"</code> → <code>('demo','demo123','free')</code>, etc.</p>
+<p><strong>Fix:</strong> <code>werkzeug.security.generate_password_hash</code> / <code>check_password_hash</code> (scrypt/PBKDF2) at register and login; demo seed also hashed.</p>
+<p><strong>Regression tests:</strong> <code>test_passwords_are_hashed</code>, <code>test_wrong_password_rejected</code></p>
+<hr />
+<h2 id="vuln-6-verbose-error-messages">VULN 6 — Verbose error messages</h2>
+<p><strong>PoC:</strong> <code>POST /register username=bad'user</code> → <code>Error: near "user": syntax error</code> (raw SQLite error + confirms injectable query).</p>
+<p><strong>Fix:</strong> generic <code>"Registration failed. Please try again."</code> to the client; <code>app.logger.exception(...)</code> server-side only.</p>
+<p><strong>Regression test:</strong> <code>test_verbose_errors_not_leaked</code></p>
+<hr />
+<h2 id="vuln-7-payment-webhook-had-no-authentication-hardened">VULN 7 — Payment webhook had no authentication (hardened)</h2>
+<p>The original app had no webhook at all — payment state was purely client-driven. The fix introduces <code>/api/payments/webhook</code>, which <strong>requires</strong> <code>X-Signature: HMAC_SHA256(PAYMENT_WEBHOOK_SECRET, raw_body)</code>; unsigned/tampered bodies get 403 and cannot move a payment out of <code>pending</code>.</p>
+<p><strong>Regression tests:</strong> <code>test_webhook_rejects_missing_signature</code>, <code>test_webhook_rejects_wrong_signature</code>, <code>test_webhook_accepts_valid_signature</code></p>
+<hr />
+<h2 id="vuln-8-debugtrue-no-csrf-protection">VULN 8 — <code>debug=True</code> + no CSRF protection</h2>
+<p><strong>Fix:</strong>
+- <code>app.run(..., debug=False)</code>.
+- Per-session CSRF token (<code>secrets.token_urlsafe(32)</code>) rendered as a hidden field in every POST form; <code>csrf_ok()</code> enforced on <code>/register</code>, <code>/login</code>, <code>/upgrade</code>, <code>/gateway/charge</code>. Tokens are rotated on login (<code>session.clear()</code>).</p>
+<p><strong>Regression test:</strong> <code>test_csrf_required_on_login</code></p>
+<hr />
+<h2 id="additional-fix-found-during-remediation">Additional fix found during remediation</h2>
+<ul>
+<li><strong>SQLite connection leaks:</strong> the original <code>register()</code> never closed the connection on <code>IntegrityError</code>/generic exceptions; repeated failed registrations left RESERVED locks → <code>database is locked</code> for all subsequent writes. All DB access now uses try/finally <code>conn.close()</code> (+ <code>rollback()</code> on error).</li>
+</ul>
+<hr />
+<h2 id="verification">Verification</h2>
+<pre><code>$ cd /home/neilh/websec_lab/app &amp;&amp; /home/neilh/venv/bin/python -m pytest tests/ -q
+..................                                                       [100%]
+18 passed in 3.28s
+</code></pre>
+<p>A live re-run of every original exploit (SQLi login, SQLi register→premium,
+<code>payment_success=1</code> bypass, forged session cookie, error leakage, unsigned
+webhook, missing CSRF) against the fixed app confirmed <strong>all are blocked</strong>,
+while the legitimate register → login → upgrade → mock-gateway → premium flow
+still works end-to-end.</p>
+<h2 id="remaining-recommendations-out-of-scope-for-this-lab">Remaining recommendations (out of scope for this lab)</h2>
+<ul>
+<li>Move secrets to a real secrets manager; never fall back to random-per-boot in production (sessions invalidate on restart).</li>
+<li>Add rate limiting on <code>/login</code> and <code>/register</code>.</li>
+<li>Replace the mock gateway with a real provider (Stripe) and verify webhook signatures per their docs.</li>
+<li>Use Flask-WTF / a maintained CSRF library instead of the hand-rolled token.</li>
+<li>Serve over HTTPS; set <code>SESSION_COOKIE_SECURE/HTTPONLY/SAMESITE</code> explicitly.</li>
+<li><code>{{ body|safe }}</code> remains — safe today because all interpolated values are server-controlled, but prefer escaping user data explicitly.</li>
+</ul>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 13 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

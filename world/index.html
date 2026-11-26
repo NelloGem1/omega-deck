@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>OMEGA WORLD</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#030510;color:#e8ecf4;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;height:100vh}
+#cv{position:fixed;inset:0}
+#hud{position:fixed;top:24px;left:28px;z-index:5;pointer-events:none}
+h1{font-size:30px;font-weight:800;letter-spacing:5px;
+ background:linear-gradient(90deg,#34d399,#7dd3fc,#a78bfa,#f472b6,#34d399);background-size:400% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent;animation:fl 10s linear infinite}
+@keyframes fl{to{background-position:400% 0}}
+.sub{color:#7c8aa5;font-size:12px;letter-spacing:2px;margin-top:6px}
+#stats{position:fixed;top:24px;right:28px;z-index:5;text-align:right;font-family:monospace;font-size:12px;color:#7dd3fc}
+#stats div{margin-bottom:4px;text-shadow:0 0 12px rgba(125,211,252,.5)}
+#feed{position:fixed;bottom:24px;left:28px;z-index:5;width:340px;max-height:200px;overflow:hidden;
+ font-family:monospace;font-size:11px;color:#8b98ad}
+#feed div{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#feed b{color:#34d399}
+#legend{position:fixed;bottom:24px;right:28px;z-index:5;font-size:10px;color:#4a5568;text-align:right;line-height:1.7}
+a.back{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:6;color:#7dd3fc;
+ text-decoration:none;font-size:12px;letter-spacing:2px;padding:8px 20px;border:1px solid rgba(125,211,252,.3);
+ border-radius:20px;background:rgba(5,7,15,.7);backdrop-filter:blur(8px)}
+a.back:hover{background:rgba(125,211,252,.15)}
+</style></head><body>
+<canvas id="cv"></canvas>
+<div id="hud"><h1>🌌 OMEGA WORLD</h1><div class="sub">EVERY KNOWLEDGE · EVERY PROGRESS · STIMULATED</div></div>
+<div id="stats"></div>
+<div id="feed"></div>
+<div id="legend">◉ CORE &nbsp; ◆ AGENT &nbsp; ■ KNOWLEDGE &nbsp; ● LAB &nbsp; ★ CREATION<br>lines = data flow · pulses = live signals</div>
+<a class="back" href="/">← OMEGA COMMAND</a>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+function size(){cv.width=innerWidth;cv.height=innerHeight}size();addEventListener('resize',size);
+const CX=innerWidth/2,CY=innerHeight/2;
+
+/* ---------- WORLDS ---------- */
+const WORLDS=[
+ {id:'fleet',  label:'OMEGA',              icon:'Ω',orbit:0,  angle:0,    size:26,color:'#f472b6',glow:'rgba(244,114,182,.5)',desc:'command gateway'},
+ {id:'corps',  label:'AGENT CORPS',       icon:'👥',orbit:1,  angle:.8,   size:16,color:'#fbbf24',glow:'rgba(251,191,36,.4)',desc:'7 ranked officers'},
+ {id:'os',     label:'OS ENCYCLOPEDIA',   icon:'🖥️',orbit:2,  angle:2.2,  size:15,color:'#7dd3fc',glow:'rgba(125,211,252,.4)',desc:'632 operating systems'},
+ {id:'cyber',  label:'CYBER KNOWLEDGE',   icon:'🛡️',orbit:2,  angle:2.9,  size:15,color:'#34d399',glow:'rgba(52,211,153,.4)',desc:'177 security topics'},
+ {id:'academy',label:'MARSHAL ACADEMY',   icon:'🎓',orbit:2,  angle:3.6,  size:14,color:'#a78bfa',glow:'rgba(167,139,250,.4)',desc:'59 learning modules'},
+ {id:'ainet',  label:'AINET',             icon:'🤖',orbit:2,  angle:4.3,  size:14,color:'#38bdf8',glow:'rgba(56,189,248,.4)',desc:'AI collaboration network'},
+ {id:'proof',  label:'PROOFLEDGER',       icon:'📜',orbit:2,  angle:5.0,  size:14,color:'#fbbf24',glow:'rgba(251,191,36,.4)',desc:'verification-weighted truth'},
+ {id:'labs',   label:'EXPLOIT LABS',      icon:'💣',orbit:3,  angle:1.2,  size:13,color:'#f87171',glow:'rgba(248,113,113,.4)',desc:'DVWA · Juice · WebGoat'},
+ {id:'white',  label:'LIVE WHITEBOARD',   icon:'🎨',orbit:3,  angle:3.9,  size:12,color:'#e879f9',glow:'rgba(232,121,249,.4)',desc:'shape animation engine'},
+ {id:'compress',label:'COMPRESSION LAB',  icon:'🗜️',orbit:3,  angle:5.5,  size:12,color:'#94a3b8',glow:'rgba(148,163,184,.4)',desc:'6 algorithms benchmarked'},
+ {id:'film',   label:'THE LIGHT KEEPER',  icon:'🎬',orbit:4,  angle:2.6,  size:13,color:'#fb923c',glow:'rgba(251,146,60,.4)',desc:'75s cinematic film'},
+ {id:'videos', label:'DRAW FILMS ×7',      icon:'✏️',orbit:4,  angle:4.4,  size:11,color:'#fde047',glow:'rgba(253,224,71,.3)',desc:'step-by-step mp4s'},
+ {id:'updater',label:'OMEGA UPDATER',      icon:'⚙️',orbit:3,  angle:0.3,  size:11,color:'#4ade80',glow:'rgba(74,222,128,.4)',desc:'auto-sweep every 6h'},
+];
+const EDGES=[['fleet','corps'],['fleet','os'],['fleet','cyber'],['fleet','academy'],['fleet','ainet'],['fleet','proof'],
+ ['corps','os'],['corps','cyber'],['os','academy'],['cyber','labs'],['academy','white'],['proof','ainet'],
+ ['labs','compress'],['white','videos'],['fleet','updater'],['corps','proof'],['ainet','corps']];
+
+const HREFS={
+ fleet:'/',corps:'/',os:'file:///C:/Users/neilh/Downloads/OS_WORLD_ENCYCLOPEDIA.html',
+ cyber:'file:///C:/Users/neilh/Downloads/CYBER_KNOWLEDGE.html',academy:'/learning/',
+ ainet:'/ainet',proof:'file:///C:/Users/neilh/Downloads/PROOFLEDGER_DASHBOARD.html',
+ labs:'/go/dvwa',white:'http://localhost:8901/',compress:'file:///C:/Users/neilh/Downloads/COMPRESSION_LAB.html',
+ film:'file:///C:/Users/neilh/Downloads/THE_LIGHT_KEEPER.mp4',videos:'file:///C:/Users/neilh/Downloads/',
+ updater:'/'};
+
+const nodes=WORLDS.map(w=>{
+ const R=[0,180,300,420,540][w.orbit];
+ return {...w,x:CX+R*Math.cos(w.angle),y:CY+R*Math.sin(w.angle),R,ph:Math.random()*7,href:HREFS[w.id]};
+});
+const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
+
+/* ---------- PARTICLES (knowledge flow) ---------- */
+const parts=[];
+function spawn(){const e=EDGES[Math.floor(Math.random()*EDGES.length)];
+ const a=byId[e[0]],b=byId[e[1]];if(!a||!b)return;
+ parts.push({a,b,t:0,sp:.002+Math.random()*.004,col:a.color||'#7dd3fc'})}
+setInterval(spawn,400);
+
+/* ---------- STATS ---------- */
+const TOTAL_KB=632+177+59+41+6+7+13+3; // knowledge units across worlds
+let stim=0;
+setInterval(async()=>{
+ try{
+  const [st,ag]=await Promise.all([fetch('/status.json').then(r=>r.json()),fetch('/agents.json').then(r=>r.json())]);
+  const up=Object.values(st).filter(Boolean).length;
+  const agents=ag.agents?ag.agents.length:0;
+  stim+=Math.floor(Math.random()*3)+1;
+  document.getElementById('stats').innerHTML=
+   `<div>Ω OMEGA :8088</div><div>● ${up} systems online</div><div>👥 ${agents} agents active</div>
+    <div>📚 ${TOTAL_KB.toLocaleString()} knowledge units</div><div>⚡ ${stim.toLocaleString()} signals fired</div>`;
+ }catch(e){}
+},2000);
+
+/* ---------- FEED ---------- */
+const feedEvents=[
+ 'knowledge unit verified → PROOFLEDGER','new module indexed → ACADEMY','agent promoted → CORPS',
+ 'packet routed → OMEGA','exploit logged → LABS','frame rendered → FILM','shape drawn → WHITEBOARD',
+ 'algorithm benchmarked → COMPRESSION','OS catalog expanded','signal synced → GATEWAY'];
+function feed(){const d=document.createElement('div');
+ const t=new Date().toLocaleTimeString();
+ d.innerHTML=`<b>${t}</b> ${feedEvents[Math.floor(Math.random()*feedEvents.length)]}`;
+ const f=document.getElementById('feed');f.prepend(d);
+ while(f.children.length>8)f.lastChild.remove()}
+setInterval(feed,1800);feed();
+
+/* ---------- RENDER ---------- */
+const stars=Array.from({length:160},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.6+.3,tw:Math.random()*7}));
+let t=0;
+function draw(){
+ t+=.008;ctx.fillStyle='#030510';ctx.fillRect(0,0,cv.width,cv.height);
+ // stars
+ for(const s of stars){ctx.fillStyle=`rgba(200,220,255,${.25+.35*Math.abs(Math.sin(t+s.tw))})`;
+  ctx.fillRect(s.x,s.y,s.s,s.s)}
+ // orbit rings
+ nodes.forEach(n=>{if(n.R===0)return;
+  ctx.strokeStyle='rgba(125,211,252,.07)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(CX,CY,n.R,0,7);ctx.stroke()});
+ // edges
+ for(const [a,b] of EDGES){const A=byId[a],B=byId[b];if(!A||!B)continue;
+  ctx.strokeStyle='rgba(125,211,252,.09)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke()}
+ // particles
+ for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.t+=p.sp;
+  if(p.t>=1){parts.splice(i,1);continue}
+  const x=p.a.x+(p.b.x-p.a.x)*p.t,y=p.a.y+(p.b.y-p.a.y)*p.t;
+  ctx.fillStyle=p.col;ctx.globalAlpha=.8;ctx.beginPath();ctx.arc(x,y,2,0,7);ctx.fill();ctx.globalAlpha=1}
+ // nodes
+ for(const n of nodes){
+  const pulse=1+.15*Math.sin(t*2+n.ph);
+  // glow
+  const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.size*3*pulse);
+  g.addColorStop(0,n.glow);g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(n.x,n.y,n.size*3*pulse,0,7);ctx.fill();
+  // core
+  ctx.fillStyle=n.color;ctx.beginPath();ctx.arc(n.x,n.y,n.size/2*pulse,0,7);ctx.fill();
+  // ring
+  ctx.strokeStyle=n.color;ctx.globalAlpha=.5;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(n.x,n.y,n.size/2+5+2*Math.sin(t*3+n.ph),0,7);ctx.stroke();ctx.globalAlpha=1;
+  // label
+  ctx.font='600 11px monospace';ctx.textAlign='center';
+  ctx.fillStyle='rgba(232,236,244,.85)';
+  ctx.fillText(n.icon+' '+n.label,n.x,n.y+n.size/2+22);
+  ctx.fillStyle='rgba(124,138,165,.7)';ctx.font='10px monospace';
+  ctx.fillText(n.desc,n.x,n.y+n.size/2+36);
+ }
+ requestAnimationFrame(draw)}
+draw();
+
+/* ---------- NODE PORTALS — click a world to enter its system ---------- */
+cv.addEventListener('click',e=>{
+ for(const n of nodes){
+  const dx=e.clientX-n.x,dy=e.clientY-n.y;
+  if(dx*dx+dy*dy < (n.size+14)*(n.size+14) && n.href){location.href=n.href;return}
+ }
+});
+cv.addEventListener('mousemove',e=>{
+ cv.style.cursor=nodes.some(n=>{const dx=e.clientX-n.x,dy=e.clientY-n.y;return n.href&&dx*dx+dy*dy<(n.size+14)*(n.size+14)})?'pointer':'default';
+});
+</script></body></html>

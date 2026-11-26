@@ -1,0 +1,92 @@
+<!doctype html><html><head><meta charset="utf-8"><title>The Project Individual — Learning Library</title>
+<style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1>📚 The Project Individual — Learning Library</h1>
+<p style="color:#8b949e">Everything we researched, converted for reading. <b>41 numbered documents</b> — read in order, files sort themselves.</p>
+
+<h2>🗺️ Start Here</h2>
+<a class="doc" href="02 - 00-start-here.html">🛡️ Security Lab — Reading Index</a><br><small>00_START_HERE.md — where to begin</small>
+
+<h2>🌐 Web Security — The Mission (read in order)</h2>
+<a class="doc" href="03 - learning-path.html">03 — Web Security Learning Path</a><br><small>roadmap + 12-week plan</small>
+<a class="doc" href="04 - payment-bypass.html">04 — Payment &amp; Subscription Bypass</a><br><small>all 8 vuln classes + fixes — YOUR MAIN TARGET</small>
+<a class="doc" href="05 - attacker-methodology.html">05 — Attacker Methodology</a><br><small>how real hackers hunt</small>
+<a class="doc" href="06 - defender-playbook.html">06 — Defender Playbook</a><br><small>secure Flask code + regression tests</small>
+<a class="doc" href="07 - advanced-web-vulns.html">07 — Advanced Web Vulnerabilities</a><br><small>smuggling, SSTI, OAuth, LLM security</small>
+<a class="doc" href="08 - flask-security-deep.html">08 — Flask/Python Security Deep Dive</a><br><small>your app's exact stack — debugger, sessions, SQLite</small>
+<a class="doc" href="09 - race-and-logic.html">09 — Race Conditions &amp; Business Logic</a><br><small>Turbo Intruder scripts, single-packet attacks, subscription exploits</small>
+<a class="doc" href="10 - cheatsheets-index.html">10 — Cheat Sheets Index</a><br><small>which reference file for which vuln</small>
+<a class="doc" href="11 - challenges.html">11 — Hands-On Curriculum</a><br><small>5 stages of lab challenges (hints, no spoilers)</small>
+
+<h2>⚔️ Battle Reports — Red vs Blue</h2>
+<a class="doc" href="12 - exploits-attack-log.html">12 — Exploit Log: Attackers vs Your Flask App</a><br><small>7 working exploits found by our red team</small>
+<a class="doc" href="13 - audit-report.html">13 — 🛡️ DEFENDER AUDIT REPORT</a><br><small>9 vulns found → fixed → 18 regression tests passing</small>
+<a class="doc" href="14 - juice-shop-solves.html">14 — 🍹 Juice Shop: 22 Challenges Solved</a><br><small>SQLi, null-byte bypass, NoSQL injection, mass assignment, business logic</small>
+<a class="doc" href="15 - exploits-round2.html">15 — ⚔️ ROUND 2: Break-the-Fixes Report</a><br><small>0 bypasses survived — defense holds; 9 residual findings</small>
+<a class="doc" href="16 - defense-round2.html">16 — 🏆 DEFENSE ROUND 2 — FINAL HARDENING</a><br><small>14 hardening items · 39/39 tests green · rate limits, HMAC+nonce webhooks, atomic payments, security headers</small>
+<a class="doc" href="17 - docker-setup.html">17 — Docker Setup in WSL</a><br><small>how the labs run</small>
+<a class="doc" href="18 - lab-setup.html">18 — Lab Setup &amp; Run</a><br><small>Juice Shop + DVWA + WebGoat commands + creds</small>
+<a class="doc" href="19 - cli-toolkit.html">19 — CLI Toolkit Guide</a><br><small>sqlmap, ffuf, nuclei, nikto, gobuster, searchsploit + more</small>
+
+<h2>🔬 Science Division — Knowledge Harvest</h2>
+<a class="doc" href="39 - ml-data-pipeline.html">39 — 🧠 ML Data Pipeline: The 5 Forgotten Stages</a><br><small>validation splits · feature engineering · regularization · deployment · bias audit — with runnable lab</small>
+<a class="doc" href="40 - map-engineering-medicine.html">40 — 📐 Map: Engineering · Medicine · Agriculture</a><br><small>12 eng disciplines + energy + 11 medical fields + agri + advanced tech</small>
+<a class="doc" href="41 - map-cs-it.html">41 — 💻 Map: Computer Science &amp; IT</a><br><small>languages, algorithms, architecture, data systems, networking, roadmap</small>
+<a class="doc" href="42 - map-math-logic.html">42 — 🧮 Map: Math · Logic · Formal</a><br><small>1325 lines · proof hierarchies · logic systems · open problems — Grade S</small>
+<a class="doc" href="43 - map-natural-sciences.html">43 — 🌍 Map: Natural Sciences</a><br><small>physics→astro→emerging · epistemic tags · 2024-25 verified — Grade A</small>
+<a class="doc" href="44 - map-ai-ml.html">44 — 🤖 Map: AI &amp; Machine Learning</a><br><small>foundations→AGI research · capability tagging — Grade A+</small>
+<a class="doc" href="45 - map-cybersecurity.html">45 — 🛡️ Map: Cybersecurity</a><br><small>full domain + PQC/ZK/HE · synthesized 17 reports — Grade A+</small>
+<a class="doc" href="46 - map-knowledge-archive.html">46 — 🏛️ Map: Knowledge Archive</a><br><small>1343 lines · DDL, graph schema, 9 epistemic tiers, threat model — Grade S</small>
+<a class="doc" href="47 - map-humanities-society.html">47 — 🧠 Map: Humanities &amp; Society</a><br><small>1282 lines · 13 sections · social sci→law→arts→civilization</small>
+
+<h2>🔐 Cryptography — Research + Practice</h2>
+<a class="doc" href="20 - crypto-challenges.html">20 — ⚔️ Crypto Challenges Log</a><br><small>RSA factoring, hashcat cracks, ECB penguin, GCM nonce reuse — 4/4 done</small>
+<a class="doc" href="21 - crypto-theory-primitives.html">21 — Crypto Theory &amp; Primitives</a>
+<a class="doc" href="22 - crypto-applied.html">22 — Applied Real-World Cryptography</a>
+<a class="doc" href="23 - crypto-advanced.html">23 — Advanced Cryptography</a>
+<a class="doc" href="24 - certificates-free.html">24 — Free TLS Certificates (Let's Encrypt/ACME)</a>
+<a class="doc" href="25 - certificates-other.html">25 — Other Certificate Options</a>
+
+<h2>🛠️ Tool Guides</h2>
+<a class="doc" href="26 - guide-age.html">26 — age (file encryption)</a>
+<a class="doc" href="27 - guide-gpg.html">27 — Gpg4win / Kleopatra</a>
+<a class="doc" href="28 - guide-veracrypt.html">28 — VeraCrypt</a>
+<a class="doc" href="29 - guide-cryptomator.html">29 — Cryptomator</a>
+<a class="doc" href="30 - guide-keepassxc.html">30 — KeePassXC</a>
+<a class="doc" href="31 - guide-bitwarden.html">31 — Bitwarden</a>
+<a class="doc" href="32 - guide-hashcat.html">32 — Hashcat</a>
+<a class="doc" href="33 - guide-network-tools.html">33 — Wireshark + Nmap</a>
+<a class="doc" href="34 - guide-tor.html">34 — Tor Browser</a>
+<a class="doc" href="35 - guide-pki-tools.html">35 — OpenSSL + mkcert</a>
+
+<h2>🏰 Vault Docs</h2>
+<a class="doc" href="36 - vault-manifest.html">36 — Experiment Manifest</a><br><small>everything we built, logged</small>
+<a class="doc" href="37 - vault-readme.html">37 — Vault README</a>
+<a class="doc" href="38 - vault-restore.html">38 — Restore Guide</a><br><small>rebuild everything from GitHub</small>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 01 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

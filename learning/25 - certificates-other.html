@@ -1,0 +1,327 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Obtaining TLS/SSL Certificates — All Options Besides Let's Encrypt</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="obtaining-tlsssl-certificates-all-options-besides-lets-encrypt">Obtaining TLS/SSL Certificates — All Options Besides Let's Encrypt</h1>
+<p>Companion to the Let's Encrypt notes. Covers paid commercial CAs, budget providers, cloud-platform certificates, self-signed certs, private/internal CAs, wildcard/multi-domain certs, and code-signing/S-MIME certificates.</p>
+<hr />
+<h2 id="1-paid-commercial-cas">1. Paid Commercial CAs</h2>
+<p>The "real" certificate authorities trusted by all browsers. Certificates are issued for a fee, typically billed as a subscription (1/2/3-year terms) with annual reissuance.</p>
+<h3 id="the-big-four">The big four</h3>
+<table>
+<thead>
+<tr>
+<th>CA</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DigiCert</strong></td>
+<td>Market leader for enterprise certs. ~$1.25M–$1.75M warranties; Smart Seal customer-trust badge; TLS Inspector / CertCentral management platforms. Basic DV from ~$150–290/yr, Basic OV ~$250–290/yr, EV from ~$356–484/yr.</td>
+</tr>
+<tr>
+<td><strong>Sectigo</strong> (formerly Comodo)</td>
+<td>Best value mainstream CA. Huge reseller market; often cheapest path to OV/EV. PositiveSSL DV can be under $10/yr on sale; InstantSSL OV ~$40–60/yr; EV ~$150–210/yr.</td>
+</tr>
+<tr>
+<td><strong>GlobalSign</strong></td>
+<td>Enterprise PKI specialist; managed PKI, code signing, IoT/device certs. Higher prices, more managed-service focus.</td>
+</tr>
+<tr>
+<td><strong>Entrust</strong></td>
+<td>Legacy CA (Datacard lineage), strong in government/regulated industries; also sells SSL via Sectigo-branded resellers.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="validation-levels">Validation levels</h3>
+<ul>
+<li><strong>DV (Domain Validated)</strong> — prove control of the domain (DNS record, HTTP file, or email). Issued in minutes. Cheapest: <strong>~$10–60/yr</strong>. No company identity in the cert.</li>
+<li><strong>OV (Organization Validated)</strong> — business must supply legal registration docs, address, phone verification. Company name is embedded in the cert. <strong>~$40–300/yr</strong>.</li>
+<li><strong>EV (Extended Validation)</strong> — deepest vetting: legal entity docs, verified physical address, telephone, vetting of domain control and authorization. <strong>~$150–900/yr</strong> (DigiCert Secure Site EV ~$910/yr; budget resellers ~$150/yr).</li>
+</ul>
+<h3 id="why-the-green-padlock-is-gone">Why the "green padlock" is gone</h3>
+<p>Historically EV certs triggered a green address bar / "padlock + company name" UI in browsers. <strong>All major browsers (Chrome 77, Firefox 70, Safari) removed EV UI in 2019</strong> after phishing studies showed users didn't notice the difference. Today <strong>an EV cert looks identical to DV in the browser</strong> — same padlock, same HTTPS indicator. EV still matters for: procurement requirements (banks/enterprise vendors mandate it), higher warranties ($1.5M+ vs $10k–100k), and some phishing-resistance heuristics, but it is no longer a visible trust signal.</p>
+<h3 id="warranties">Warranties</h3>
+<p>Commercial CAs include a <strong>certificate warranty</strong>: if the CA's vetting is found negligent and a fraudulent cert causes damage, they pay up to a cap (DV ~$10k–50k, OV ~$250k–1M, EV ~$1.5M+). This is liability insurance on the CA's diligence — essentially irrelevant for personal sites.</p>
+<hr />
+<h2 id="2-budget-resold-paid-options">2. Budget / Resold Paid Options</h2>
+<p>Certificates from the same major CAs resold at lower prices by discounters:</p>
+<ul>
+<li><strong>ZeroSSL</strong> — freemium; 90-day free certs (like Let's Encrypt), plus 1-year paid DV (~$10–30/yr), OV/EV, wildcard. API-driven, popular for automation.</li>
+<li><strong>SSL.com</strong> — full CA itself; competitive pricing on OV/EV (often cheaper than DigiCert), strong code-signing line.</li>
+<li><strong>Namecheap / GoDaddy / SSLs.com / Sectigo resellers</strong> — resell Sectigo/DigiCert/GlobalSign certs 30–60% below CA-direct pricing. Same certificate, same trust — the brand on the reseller invoice differs from the issuer name in the cert.</li>
+<li><strong>ssl.sh, ssls.com, datassl.com</strong> — price-aggregators; 1-year DV from ~$8–10, OV ~$40–80, EV ~$150–210.</li>
+</ul>
+<p><strong>Key fact:</strong> certificates are signed by the root CA (e.g. "Sectigo RSA"), not the reseller — buying "cheap" doesn't reduce browser trust.</p>
+<hr />
+<h2 id="3-cloud-platform-certificates">3. Cloud-Platform Certificates</h2>
+<h3 id="aws-certificate-manager-acm">AWS Certificate Manager (ACM)</h3>
+<ul>
+<li><strong>Free</strong> public TLS certs issued by <strong>Amazon Trust Services</strong> (trusted by all browsers).</li>
+<li><strong>Only usable inside AWS</strong> — the private key never leaves AWS; certs bind to ALB/NLB, CloudFront, API Gateway, App Runner, Cognito, Amplify, etc. Cannot download (non-exportable) except via the newer exportable-certificates feature (limits apply).</li>
+<li><strong>Automatic DNS-01 validation + renewal</strong> as long as the validation CNAME exists (works great with Route 53).</li>
+<li><strong>Region quirk:</strong> ALB/NLB certs must be in the resource's region; <strong>CloudFront certs must be requested in us-east-1</strong>.</li>
+<li>Since Nov 2025, ACM also supports the <strong>ACME protocol</strong> for automated issuance on EC2 (still AWS-bound).</li>
+</ul>
+<h3 id="google-trust-services-google-certificate-manager">Google Trust Services / Google Certificate Manager</h3>
+<ul>
+<li>Free GTS certs provisioned automatically for <strong>GCP HTTPS Load Balancers, Cloud Run, App Engine</strong> domains.</li>
+<li><strong>Google Certificate Manager</strong> — paid (~$0.03–0.10/cert/month-ish scaling) map-based cert management for GCP LB; wildcard + multi-domain support.</li>
+<li>Same model as ACM: free inside the platform, not portable.</li>
+</ul>
+<h3 id="azure-app-service-managed-certificates">Azure App Service managed certificates</h3>
+<ul>
+<li><strong>Free</strong> TLS cert for custom domains on App Service — auto-issued and auto-renewed by App Service.</li>
+<li>Limitations: <strong>no wildcard</strong>, no custom root CAs, can't export, basic validation only (must map the custom domain first). Requires Basic+ App Service plan.</li>
+<li>"App Service certificates" (paid, GoDaddy-issued) and BYOC PFX upload also supported.</li>
+</ul>
+<h3 id="cloudflare-origin-ca-universal-ssl">Cloudflare Origin CA + Universal SSL</h3>
+<ul>
+<li><strong>Universal SSL:</strong> every proxied domain gets a <strong>free auto-renewing edge cert</strong> covering apex + <code>*.domain</code> (one level). Universal SSL renews automatically; no config needed.</li>
+<li><strong>Origin CA certificates:</strong> free certs Cloudflare signs for the origin-to-edge hop. Trusted <strong>only by Cloudflare</strong> — browsers warn if served directly; valid as long as traffic is proxied through Cloudflare (orange-cloud). Long-lived (up to 15 years), no revocation needed.</li>
+<li>Caveat: Origin CA + Universal SSL make you dependent on Cloudflare's proxy for trust.</li>
+</ul>
+<hr />
+<h2 id="4-self-signed-certificates">4. Self-Signed Certificates</h2>
+<h3 id="creating-one">Creating one</h3>
+<pre><code class="language-bash"># Single self-signed cert + key (1 year)
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
+  -days 365 -nodes -subj &quot;/CN=example.internal/O=My Org&quot;
+
+# With SANs (needed for modern browsers / IPs)
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
+  -days 825 -nodes \
+  -addext &quot;subjectAltName=DNS:app.internal,DNS:localhost,IP:192.168.1.10&quot; \
+  -subj &quot;/CN=app.internal&quot;
+</code></pre>
+<h3 id="when-they-are-ok">When they are OK</h3>
+<ul>
+<li>Internal tools never exposed to the public internet (admin panels, dashboards).</li>
+<li>Dev/test environments, home labs.</li>
+<li>IoT/device fleets where you control the trust store.</li>
+<li>Service-to-service mTLS inside a closed network.</li>
+</ul>
+<h3 id="when-theyre-not-ok">When they're NOT OK</h3>
+<ul>
+<li>Any public-facing site — browsers will warn "Not Secure" / NET::ERR_CERT_AUTHORITY_INVALID.</li>
+<li>You cannot push a self-signed cert into browsers/OS trust stores of your users at scale.</li>
+</ul>
+<h3 id="making-clients-trust-it">Making clients trust it</h3>
+<ul>
+<li><strong>Browser:</strong> click through the warning (Chrome -&gt; Advanced -&gt; Proceed) — only viable for yourself.</li>
+<li><strong>OS trust store:</strong> copy <code>cert.pem</code> into <code>/usr/local/share/ca-certificates/</code> + <code>update-ca-certificates</code> (Debian/Ubuntu); Keychain Access on macOS; <code>certlm.msc</code> on Windows. Distributes trust to everything using the system store.</li>
+<li><strong>Java apps:</strong> import into the JDK cacerts (<code>keytool -importcert</code>).</li>
+<li><strong>curl:</strong> <code>curl --cacert cert.pem https://...</code></li>
+</ul>
+<h3 id="mkcert-the-right-tool-for-local-dev">mkcert — the right tool for local dev</h3>
+<p><code>mkcert</code> creates a <strong>local CA once</strong>, installs it into your OS + browser trust stores, then issues per-project certs that browsers trust with <strong>no warnings</strong>. The standard solution for <code>https://localhost</code> dev servers.</p>
+<pre><code class="language-bash">mkcert -install                    # one-time: local CA into trust stores
+mkcert localhost 127.0.0.1 ::1     # issues cert.pem + key.pem
+</code></pre>
+<hr />
+<h2 id="5-private-internal-cas">5. Private / Internal CAs</h2>
+<p>When an organization needs certificates for internal services (k8s, service mesh, VPNs, internal web apps) it often runs its <strong>own CA</strong>.</p>
+<h3 id="openssl-root-ca-walkthrough">OpenSSL root CA walkthrough</h3>
+<pre><code class="language-bash"># 1. Root CA key + self-signed cert (10 years)
+openssl genrsa -out rootCA.key 4096
+openssl req -x509 -new -key rootCA.key -sha256 -days 3650 \
+  -out rootCA.crt -subj &quot;/CN=MyCorp Root CA&quot;
+
+# 2. Server key + CSR
+openssl genrsa -out server.key 2048
+openssl req -new -key server.key -out server.csr \
+  -subj &quot;/CN=internal.example.com&quot;
+
+# 3. Sign with root CA (extfile adds SANs + serverAuth EKU)
+openssl x509 -req -in server.csr -CA rootCA.crt -CAkey rootCA.key \
+  -CAcreateserial -out server.crt -days 825 -sha256 \
+  -extfile &lt;(printf &quot;subjectAltName=DNS:internal.example.com\nextendedKeyUsage=serverAuth&quot;)
+</code></pre>
+<p>Distribute <code>rootCA.crt</code> to every client/device trust store. Renew/rotate each leaf cert on your own schedule.</p>
+<h3 id="tools">Tools</h3>
+<ul>
+<li><strong>step-ca</strong> (<code>smallstep</code>) — modern ACME-compatible CA server; issues short-lived certs via ACME, integrates with device identity (TPM, cloud metadata). De-facto standard for zero-trust internal PKI.</li>
+<li><strong>TinyCA</strong> — simple GUI for managing a small internal CA (Windows/Linux).</li>
+<li><strong>HashiCorp Vault PKI</strong> — CA-as-a-service with ACME endpoint, dynamic secrets.</li>
+<li><strong>EJBCA / Microsoft AD CS</strong> — enterprise-grade CA for large orgs / Windows shops.</li>
+</ul>
+<h3 id="security-responsibilities-you-are-the-ca">Security responsibilities (you ARE the CA)</h3>
+<ul>
+<li>Protect the <strong>root key</strong> offline/HSM — its compromise = forge any cert.</li>
+<li>Enforce SAN/EKU correctness, CRL/OCSP if you want revocation, short lifetimes.</li>
+<li>Audit issuance; rotate root keys on a multi-year plan with cross-signing.</li>
+<li>Manage expiry yourself — no external reminders.</li>
+</ul>
+<hr />
+<h2 id="6-wildcard-multi-domain-certificates">6. Wildcard &amp; Multi-Domain Certificates</h2>
+<ul>
+<li><strong>Wildcard:</strong> <code>*.example.com</code> covers ONE level of subdomains (<code>www</code>, <code>api</code>) but NOT apex or <code>a.b.example.com</code>. Must be DV or OV — <strong>EV certs cannot be wildcards</strong> (CA/B rules).</li>
+<li><strong>Multi-SAN / UCC:</strong> one cert listing multiple FQDNs (e.g. <code>example.com, example.net, www.example.com</code>). Legacy "UCC" certs allowed up to 100 SANs.</li>
+<li><strong>Pricing:</strong> wildcard roughly 3–10x a single-domain cert (DV wildcard ~$60–130/yr, OV wildcard ~$150–360/yr, DigiCert ~$500+/yr). Each extra SAN on multi-domain certs adds ~$30–80/yr.</li>
+<li><strong>Validation requirement:</strong> wildcards <strong>require DNS-01 validation</strong> (a TXT record) because HTTP/email can't prove control of all possible subdomains. Same for multi-domain certs covering multiple registered domains.</li>
+<li>vs. Let's Encrypt: LE already gives free wildcard + 100 SANs — paid wildcard mainly buys <strong>1-year validity</strong> (fewer renewals), support, and OV/EV identity.</li>
+</ul>
+<hr />
+<h2 id="7-code-signing-certificates-bonus-different-pki-purpose">7. Code Signing Certificates (Bonus — Different PKI Purpose)</h2>
+<p>TLS certs prove server identity; <strong>code-signing certs sign software binaries</strong> so OSes can verify publisher identity + integrity. Completely different Extended Key Usage (<code>codeSigning</code>), different issuance process.</p>
+<ul>
+<li><strong>OV code signing:</strong> verifies the organization. Windows SmartScreen still shows "unknown publisher" reputation warnings until the cert builds reputation (unless EV).</li>
+<li><strong>EV code signing:</strong> deeper vetting; <strong>instantly earns SmartScreen reputation</strong> on Windows; required by some app stores/enterprise policies. Must be stored on FIPS hardware token or cloud HSM (CA/B Forum rule since 2023 — no more downloadable EV keys).</li>
+<li><strong>Signing:</strong> Windows <code>signtool sign /fd sha256 /tr &lt;timestamp-URL&gt; /td sha256 file.exe</code>; macOS <code>codesign</code> + <strong>notarization</strong> (<code>xcrun notarytool</code>) is mandatory for Gatekeeper since Catalina — Apple notarization is a separate Apple service, not a CA cert.</li>
+<li>Price: OV ~$80–400/yr, EV ~$250–700/yr. Sectigo/SSL.com/DigiCert all sell them; cheap "$10 code signing certs" on the gray market are often stolen/revoked keys — avoid.</li>
+</ul>
+<hr />
+<h2 id="8-email-certificates-smime-brief">8. Email Certificates — S/MIME (Brief)</h2>
+<p>Same X.509 PKI, different Extended Key Usage (<code>emailProtection</code>). S/MIME certs let users <strong>sign and encrypt email</strong>; the sender's cert is embedded in messages so recipients verify identity without a separate CA trust step for the recipient. DV email certs are cheap (~$10–30/yr); OV/EV versions verify the person/org. Not widely deployed because webmail + PGP/GPG cover most needs, and Outlook/Thunderbird support is patchy.</p>
+<hr />
+<h2 id="9-choosing-guide">9. Choosing Guide</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Best option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Personal site / blog</td>
+<td>Let's Encrypt (free) or ZeroSSL free — or cheap Sectigo DV (~$10) if you want 1-yr validity</td>
+</tr>
+<tr>
+<td>Small business public site</td>
+<td>Sectigo/SSL.com <strong>OV</strong> (~$40–80/yr) — shows company name in cert</td>
+</tr>
+<tr>
+<td>E-commerce / finance / enterprise vendor requirement</td>
+<td><strong>EV</strong> (~$150–500/yr) — procurement-mandated, highest warranty</td>
+</tr>
+<tr>
+<td>High-traffic enterprise needing SLAs, inspection, managed PKI</td>
+<td>DigiCert Secure Site / GlobalSign managed PKI</td>
+</tr>
+<tr>
+<td>All-in on AWS / GCP / Azure</td>
+<td><strong>ACM / GTS / App Service managed certs</strong> — free, auto-renewing</td>
+</tr>
+<tr>
+<td>Site behind Cloudflare proxy</td>
+<td><strong>Cloudflare Universal SSL</strong> (edge) + Origin CA (origin) — free</td>
+</tr>
+<tr>
+<td>Internal tools, admin panels, home lab</td>
+<td><strong>Self-signed</strong> or <strong>mkcert</strong> (dev)</td>
+</tr>
+<tr>
+<td>Organization-wide internal PKI, k8s, service mesh</td>
+<td><strong>step-ca / Vault PKI / AD CS</strong> private CA</td>
+</tr>
+<tr>
+<td>Many subdomains under one domain</td>
+<td><strong>Wildcard</strong> (DNS-01 required)</td>
+</tr>
+<tr>
+<td>Several unrelated domains on one server</td>
+<td><strong>Multi-SAN/UCC</strong> cert</td>
+</tr>
+<tr>
+<td>Signing Windows/macOS software</td>
+<td><strong>Code-signing cert</strong> (OV or EV), NOT a TLS cert</td>
+</tr>
+<tr>
+<td>Encrypting/signing email</td>
+<td><strong>S/MIME cert</strong></td>
+</tr>
+<tr>
+<td>IoT / embedded fleet</td>
+<td>Private CA (step-ca) or managed device PKI (GlobalSign IoT, AWS IoT certs)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-installation-overview">10. Installation Overview</h2>
+<p>A TLS deployment needs <strong>three files</strong>:</p>
+<ul>
+<li><code>cert.pem</code> / <code>fullchain.pem</code> — your leaf cert (+ intermediates; "fullchain" includes them)</li>
+<li><code>privkey.pem</code> / <code>key.pem</code> — private key (keep secret, 0600 perms)</li>
+</ul>
+<h3 id="nginx">Nginx</h3>
+<pre><code class="language-nginx">server {
+    listen 443 ssl;
+    server_name example.com;
+    ssl_certificate     /etc/ssl/certs/fullchain.pem;
+    ssl_certificate_key /etc/ssl/private/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+}
+</code></pre>
+<h3 id="apache">Apache</h3>
+<pre><code class="language-apache">&lt;VirtualHost *:443&gt;
+    ServerName example.com
+    SSLEngine on
+    SSLCertificateFile      /etc/ssl/certs/cert.pem
+    SSLCertificateKeyFile   /etc/ssl/private/privkey.pem
+    SSLCertificateChainFile /etc/ssl/certs/chain.pem
+&lt;/VirtualHost&gt;
+</code></pre>
+<h3 id="iis-windows">IIS (Windows)</h3>
+<p>Import the <strong>PFX</strong> (cert + key + chain bundled) via IIS Manager -&gt; Server Certificates -&gt; Complete Certificate Request, then bind it to the site on 443. PFX password-protected; export via <code>certlm.msc</code> or openssl: <code>openssl pkcs12 -export -out site.pfx -inkey key.pem -in cert.pem -certfile chain.pem</code>.</p>
+<h3 id="renewal-differences">Renewal differences</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Renewal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paid commercial</td>
+<td>Manual CSR -&gt; CA validates again -&gt; reissue -&gt; reinstall. 1-yr certs on "multi-year" plans are reissued annually by the reseller (subscription model). Watch expiry — no auto-renewal unless you automate.</td>
+</tr>
+<tr>
+<td>Cloud-managed (ACM/GTS/App Service/Cloudflare)</td>
+<td>Fully automatic — invisible to you.</td>
+</tr>
+<tr>
+<td>Self-signed / private CA</td>
+<td>You are the CA: set your own expiry, reissue with your own tooling (cron + step-ca/openssl).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>DigiCert pricing &amp; warranty tiers — https://www.techradar.com/news/best-ssl-certificate-provider</li>
+<li>Sectigo/DigiCert reseller price lists — https://www.datassl.com/en/pricing , https://karizanta.com/ssl-certificates , https://ssl.sh/certificates/</li>
+<li>CA price increases (Nov 2024) — https://www.eurovps.com/faq/price-increase-for-ssl-certificate-based-products/</li>
+<li>AWS ACM docs — https://docs.aws.amazon.com/acm/latest/userguide/acm-services.html , https://jhooq.com/aws-certificate-manager-acm-step-by-step/</li>
+<li>Azure App Service TLS certs — https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate , https://learn.microsoft.com/en-us/azure/app-service/overview-tls</li>
+<li>Cloud cert management comparison — https://certpulse.dev/blog/cloud-provider-certificate-management-compared-aws-acm-vs-azure-key-vault-vs-goo</li>
+<li>CA/B Forum EV hardware-token rule — CA/Browser Forum Baseline Requirements (public summaries)</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from certificates_other.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 25 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

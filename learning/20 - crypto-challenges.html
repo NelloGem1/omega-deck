@@ -1,0 +1,154 @@
+<!doctype html><html><head><meta charset="utf-8"><title>crypto-challenges</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="crypto-challenges-attacking-weak-implementations">Crypto Challenges — Attacking Weak Implementations</h1>
+<p>Goal: learn <em>why</em> strong crypto matters by breaking weak crypto on our own test data.
+Tools: Python 3 (<code>sympy</code>, <code>cryptography</code>), Hashcat v8.0.0 (Windows, Intel UHD 750 GPU), WSL Ubuntu.</p>
+<hr />
+<h2 id="challenge-1-factor-a-toy-rsa-key">Challenge 1: Factor a toy RSA key</h2>
+<p><strong>Setup</strong> — <code>challenge1_rsa.py</code> generates toy RSA keys: two random primes of <code>bits</code> bits each (primality via <code>sympy.isprime</code>), <code>n = p*q</code>, <code>e=65537</code>, <code>d = e⁻¹ mod φ(n)</code>. Attacker only knows <code>n</code>.</p>
+<p><strong>Attack</strong> — <code>sympy.factorint(n)</code> (trial division → Pollard rho → p−1 → ECM) recovers the factors.</p>
+<p><strong>Results</strong> (measured on this machine):</p>
+<table>
+<thead>
+<tr>
+<th>RSA modulus size</th>
+<th>Primes</th>
+<th>Factor time</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64-bit n</td>
+<td>2×32-bit</td>
+<td><strong>0.146 s</strong></td>
+<td>factored</td>
+</tr>
+<tr>
+<td>128-bit n</td>
+<td>2×64-bit</td>
+<td><strong>2.16 s</strong></td>
+<td>factored</td>
+</tr>
+<tr>
+<td>192-bit n</td>
+<td>2×96-bit</td>
+<td><strong>&gt; 600 s (timeout)</strong></td>
+<td>did not finish</td>
+</tr>
+<tr>
+<td>2048-bit n</td>
+<td>2×1024-bit</td>
+<td>infeasible</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Keygen of a real 2048-bit RSA key (<code>cryptography</code> lib, same class as <code>folder_lock.py</code> uses): &lt; 1 s — generation is cheap, factoring is not.</p>
+<p><strong>Lesson</strong> — factoring cost grows roughly exponentially with key size (<code>~exp(√(ln n · ln ln n))</code> for NFS-class algorithms). Doubling the modulus from 64→128 bits cost ~15× more time; 192 bits blew past 10 minutes. A 2048-bit modulus is ~10²⁹ times larger than 192-bit — completely out of reach. Real-world anchors: RSA-768 (232 digits) took ~2000 CPU-years (2009); RSA-829 (250 digits, RSA-250) took ~2700 core-years (2020). Never roll your own RSA with small keys; always use ≥2048-bit (3072/4096 preferred) from a vetted library.</p>
+<hr />
+<h2 id="challenge-2-hashcat-cracks-weak-password-hashes">Challenge 2: Hashcat cracks weak password hashes</h2>
+<p><strong>Setup</strong> — <code>weak_hashes.txt</code>: MD5 hashes of 16 top-password-list entries (<code>password123</code>, <code>qwerty</code>, <code>letmein</code>, <code>dragon</code>, …). <code>strong_hash.txt</code>: MD5 of <code>Xk9#mQv2!zLp7$wR4nT</code> (16 chars, mixed case + symbols). <code>wordlist.txt</code>: the 16 weak passwords (+ strong pw as a candidate for run 1); <code>wordlist_common.txt</code>: the 16 weak passwords only.</p>
+<p><strong>Attack</strong> — <code>hashcat.exe -m 0</code> (MD5, raw) against a 16–17 word dictionary, Intel UHD 750 GPU.</p>
+<p><strong>Results</strong>:
+- Weak set: <strong>16/16 recovered in &lt; 1 second</strong> (~2972 H/s on dictionary mode). Full plaintexts in <code>C:\Users\neilh\websec_lab\cracked.txt</code>.
+- Strong hash vs. same wordlist: <strong>0/1 recovered</strong> — not in dictionary, survived.</p>
+<p><strong>Lesson</strong> — MD5 is broken <em>as a password hash</em> regardless of dictionary luck: it's fast (billions of guesses/sec on real GPUs), unsalted, and rainbow-tableable. Even a strong password only survived because it wasn't in a 16-word list — a real attacker uses rockyou.txt (~14M words), rules/mangling, and mask attacks (<code>?a?a?a?a?a?a</code> = 6-char anything in seconds). Always use a slow, salted KDF: <strong>bcrypt, scrypt, or Argon2id</strong> (what <code>folder_lock.py</code>-style tools should use for passphrase→key derivation). MD5/SHA-1 are fine for checksums, never for passwords.</p>
+<hr />
+<h2 id="challenge-3-aes-ecb-pattern-leakage-the-penguin">Challenge 3: AES-ECB pattern leakage (the "penguin")</h2>
+<p><strong>Setup</strong> — <code>challenge3_ecb_image.py</code>: encrypt with <code>cryptography</code>'s AES in <strong>ECB mode</strong> (each 16-byte block encrypted independently, same key → same ciphertext for same plaintext).</p>
+<p><strong>Attack</strong> — no key needed; just <em>look</em> at the ciphertext.</p>
+<p><strong>Results</strong>:
+- Plaintext of 4 identical 16-byte blocks (<code>ff0000ff</code> × 16) → <strong>all 4 ciphertext blocks byte-identical</strong> (<code>ccc75edf…7ba2</code> repeated).
+- A 64×64 "image" made of 4 identical horizontal stripes → <strong>all 4 ciphertext stripes identical</strong>: the stripe pattern (i.e., the picture's outline) survives encryption intact.</p>
+<p><strong>Lesson</strong> — ECB is a <em>codebook</em>: identical plaintext blocks always produce identical ciphertext blocks, so structure leaks. This is the famous <a href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)">ECB penguin</a> demo — encrypting a Tux bitmap under ECB leaves the penguin visibly intact. Real ECB ciphertexts (e.g., old TLS misconfigurations, some database field encryption) leak which records are equal, enable block-reordering/splicing, and cut-and-paste attacks. <strong>Always use an authenticated mode with random IV: AES-GCM, AES-CBC with random IV + HMAC, or ChaCha20-Poly1305.</strong> Never ECB, never reuse IVs.</p>
+<hr />
+<h2 id="challenge-4-aes-gcm-nonce-reuse-catastrophic-failure">Challenge 4: AES-GCM nonce reuse = catastrophic failure</h2>
+<p><strong>Setup</strong> — <code>challenge34_ecb_gcm.py</code>: AES-GCM with a random 256-bit key, and the <strong>same 12-byte nonce used for two different messages</strong> (a classic implementation bug — e.g., counter reset, hardcoded nonce, RNG failure).</p>
+<p><strong>Attack</strong> — attacker sees only <code>ct1</code>, <code>ct2</code> (no key).</p>
+<p><strong>Results</strong>:</p>
+<pre><code>msg1 = &quot;Attack at dawn!&quot;   ct1 = 0b3993b4…32d
+msg2 = &quot;Attack at noon!&quot;   ct2 = 0b3993b4…21d
+ct1 XOR ct2  = 000000000000000000000a0e180000
+msg1 XOR msg2 = 000000000000000000000a0e180000   ← identical!
+</code></pre>
+<p>GCM is a stream cipher: <code>ct = pt XOR keystream(nonce, key)</code>. Same nonce → same keystream → <code>ct1 ⊕ ct2 = m1 ⊕ m2</code>. If the attacker knows/guesses <em>either</em> plaintext, the other is recovered byte-for-byte; two unknown plaintexts still leak their XOR (often enough to recover both via crib-dragging). Auth tags can also be forged in some reuse scenarios.</p>
+<p><strong>Lesson</strong> — nonce reuse in GCM/CTR/ChaCha is a <em>total</em> break, worse than weak keys in some ways because it's silent. Nonces must be <strong>unique per key</strong> — use random 96-bit nonces (birthday-safe for ~2³² messages), or better, let the library manage it (AESGCM's <code>encrypt</code> API in <code>cryptography</code> does this correctly). Many real breaches (e.g., nonce reuse in WPA/IoT firmware, the "nonce-misuse" attacks on JWT/AEAD libraries) trace to this one bug.</p>
+<hr />
+<h2 id="summary-table">Summary table</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Weakness attacked</th>
+<th>Tool</th>
+<th>Result</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Small RSA modulus (64–192-bit)</td>
+<td>sympy.factorint</td>
+<td>64/128-bit fall in &lt;3s; 192-bit &gt;10min; 2048-bit impossible</td>
+<td>≥2048-bit RSA or Ed25519</td>
+</tr>
+<tr>
+<td>2</td>
+<td>MD5 password hashes + weak passwords</td>
+<td>hashcat -m 0</td>
+<td>16/16 in &lt;1s</td>
+<td>Argon2id/bcrypt/scrypt + salt</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AES-ECB mode</td>
+<td>cryptography ECB</td>
+<td>structure/pattern leaks fully</td>
+<td>AES-GCM / CBC+HMAC / ChaCha20-Poly1305</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AES-GCM nonce reuse</td>
+<td>cryptography AESGCM</td>
+<td>ct⊕ct = pt⊕pt → plaintext recovery</td>
+<td>unique nonce per key, always</td>
+</tr>
+</tbody>
+</table>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>challenge1_rsa.py</code> — toy RSA gen + factoring timings</li>
+<li><code>challenge34_ecb_gcm.py</code> — ECB block-identical + GCM nonce-reuse demos</li>
+<li><code>challenge3_ecb_image.py</code> — ECB stripe/image leakage demo</li>
+<li><code>weak_hashes.txt</code>, <code>strong_hash.txt</code>, <code>wordlist*.txt</code>, <code>weak_hashes_only.txt</code> — hashcat inputs</li>
+<li><code>C:\Users\neilh\websec_lab\cracked.txt</code> — hashcat recovered plaintexts</li>
+</ul>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 20 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

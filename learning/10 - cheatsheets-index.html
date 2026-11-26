@@ -1,0 +1,176 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Web Security Research Index</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="web-security-research-index">Web Security Research Index</h1>
+<p>Local clones of the key payload/cheat-sheet repositories. All cloned with <code>--depth 1</code>.</p>
+<h2 id="1-payloadsallthethings-offensive-payload-bible">1. PayloadsAllTheThings — OFFENSIVE PAYLOAD BIBLE</h2>
+<ul>
+<li>Path: <code>~/PayloadsAllTheThings</code> (22M)</li>
+<li>Source: https://github.com/swisskyrepo/PayloadsAllTheThings</li>
+<li>One folder per vuln class, each with a <code>README.md</code> containing payloads, intruder wordlists, and detection/notes.</li>
+</ul>
+<h3 id="read-first-by-vuln-class">Read first by vuln class</h3>
+<table>
+<thead>
+<tr>
+<th>Vuln class</th>
+<th>File/folder to open first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQL Injection</td>
+<td><code>SQL Injection/README.md</code>, then per-DB: <code>MySQL Injection.md</code>, <code>PostgreSQL Injection.md</code>, <code>MSSQL Injection.md</code>, <code>OracleSQL Injection.md</code></td>
+</tr>
+<tr>
+<td>XSS</td>
+<td><code>XSS Injection/README.md</code> (incl. <code>XSS_Filter_Evasion_Cheat_Sheet.md</code>)</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td><code>Cross-Site Request Forgery/README.md</code></td>
+</tr>
+<tr>
+<td>SSRF</td>
+<td><code>Server Side Request Forgery/README.md</code> (cloud metadata bypasses)</td>
+</tr>
+<tr>
+<td>JWT</td>
+<td><code>JWT/README.md</code> (alg confusion, weak secrets, kid injection)</td>
+</tr>
+<tr>
+<td>IDOR</td>
+<td><code>Insecure Direct Object References/README.md</code></td>
+</tr>
+<tr>
+<td>XXE</td>
+<td><code>XXE Injection/README.md</code></td>
+</tr>
+<tr>
+<td>SSTI</td>
+<td><code>Server Side Template Injection/README.md</code> (Jinja2, Twig, Freemarker…)</td>
+</tr>
+<tr>
+<td>LFI/RFI</td>
+<td><code>File Inclusion/README.md</code></td>
+</tr>
+<tr>
+<td>Command Injection</td>
+<td><code>Command Injection/README.md</code></td>
+</tr>
+<tr>
+<td>Path Traversal</td>
+<td><code>Directory Traversal/README.md</code></td>
+</tr>
+<tr>
+<td>Open Redirect</td>
+<td><code>Open Redirect/README.md</code></td>
+</tr>
+<tr>
+<td>CORS</td>
+<td><code>CORS Misconfiguration/README.md</code></td>
+</tr>
+<tr>
+<td>GraphQL</td>
+<td><code>GraphQL Injection/README.md</code></td>
+</tr>
+<tr>
+<td>API key leaks</td>
+<td><code>API Key Leaks/README.md</code></td>
+</tr>
+<tr>
+<td>File upload</td>
+<td><code>Upload Insecure Files/README.md</code></td>
+</tr>
+<tr>
+<td>Deserialization</td>
+<td><code>Insecure Deserialization/README.md</code></td>
+</tr>
+<tr>
+<td>Request smuggling</td>
+<td><code>Request Smuggling/README.md</code></td>
+</tr>
+<tr>
+<td>Race conditions</td>
+<td><code>Race Condition/README.md</code></td>
+</tr>
+<tr>
+<td>Full folder list</td>
+<td><code>ls ~/PayloadsAllTheThings</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-hacktricks-most-complete-techniques-wiki">2. HackTricks — MOST COMPLETE TECHNIQUES WIKI</h2>
+<ul>
+<li>Path: <code>~/HackTricks</code> (316M — gitbook source; content lives under <code>src/</code>)</li>
+<li>Source: https://github.com/HackTricks-wiki/hacktricks</li>
+<li>Layout: <code>~/HackTricks/src/&lt;category&gt;/.../README.md</code> — an offline copy of hacktricks.wiki.</li>
+<li>Example paths (verify with <code>find ~/HackTricks/src -iname "*idor*"</code> etc.):</li>
+<li><code>src/network-services-pentesting/</code> — service-by-service pentest notes</li>
+<li><code>src/pentesting-web/</code> — web vuln techniques (SSRF, XSS, SQLi, JWT, access control…)</li>
+<li><code>src/pentesting-web/ssrf-server-side-request-forgery/</code></li>
+<li><code>src/pentesting-web/xss-cross-site-scripting/</code></li>
+<li><code>src/pentesting-web/sql-injection/</code></li>
+<li><code>src/pentesting-web/jwt/</code></li>
+<li><code>src/pentesting-web/idor-access-control/</code> (check actual folder name with find)</li>
+<li>Quick search: <code>grep -ril "keyword" ~/HackTricks/src | less</code></li>
+</ul>
+<h2 id="3-owasp-cheat-sheet-series-defensive-side">3. OWASP Cheat Sheet Series — DEFENSIVE SIDE</h2>
+<ul>
+<li>Path: <code>~/CheatSheetSeries</code> (42M) → sheets in <code>~/CheatSheetSeries/cheatsheets/</code></li>
+<li>Source: https://github.com/OWASP/CheatSheetSeries</li>
+<li>Key sheets:</li>
+<li><code>Authentication_Cheat_Sheet.md</code></li>
+<li><code>Authorization_Cheat_Sheet.md</code></li>
+<li><code>Session_Management_Cheat_Sheet.md</code></li>
+<li><code>Cross_Site_Scripting_Prevention_Cheat_Sheet.md</code></li>
+<li><code>Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md</code></li>
+<li><code>Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md</code> (verify name: <code>ls ~/CheatSheetSeries/cheatsheets | grep -i forgery</code>)</li>
+<li><code>Input_Validation_Cheat_Sheet.md</code></li>
+<li><code>Cryptographic_Storage_Cheat_Sheet.md</code></li>
+<li><code>Content_Security_Policy_Cheat_Sheet.md</code></li>
+<li><code>CORS_Security_Cheat_Sheet.md</code></li>
+<li><code>Logging_Cheat_Sheet.md</code>, <code>REST_Security_Cheat_Sheet.md</code></li>
+<li>Full list: <code>ls ~/CheatSheetSeries/cheatsheets</code></li>
+</ul>
+<h2 id="how-to-use-during-practice">How to use during practice</h2>
+<ol>
+<li>Before fuzzing a lab bug, open the matching <code>PayloadsAllTheThings/&lt;class&gt;/README.md</code> for a payload list and context notes.</li>
+<li>When stuck on a bypass/technique, <code>grep -ri "keyword" ~/HackTricks/src</code> or find the vuln folder and read its README.</li>
+<li>After solving, skim the OWASP Cheat Sheet for that class — useful for "how would you prevent this" interview answers.</li>
+<li>Repos update frequently: refresh with <code>git -C ~/PayloadsAllTheThings pull</code>, etc.</li>
+</ol>
+<h2 id="online-references">Online references</h2>
+<ul>
+<li>PortSwigger Web Security Academy: https://portswigger.net/web-security — free labs, mirror these vuln classes</li>
+<li>HackTricks online: https://book.hacktricks.wiki</li>
+<li>PayloadsAllTheThings web view: https://swisskyrepo.github.io/PayloadsAllTheThings/</li>
+<li>OWASP Cheat Sheet Series web: https://cheatsheetseries.owasp.org/</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from cheatsheets_index.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 10 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

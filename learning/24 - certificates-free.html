@@ -1,0 +1,447 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Obtaining Free TLS/SSL Certificates — Comprehensive Guide</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="obtaining-free-tlsssl-certificates-comprehensive-guide">Obtaining Free TLS/SSL Certificates — Comprehensive Guide</h1>
+<p><em>Research compiled 2026. All facts verified against official documentation; see Sources.</em></p>
+<hr />
+<h2 id="1-lets-encrypt-the-free-certificate-authority">1. Let's Encrypt: The Free Certificate Authority</h2>
+<h3 id="what-it-is">What it is</h3>
+<p>Let's Encrypt is a free, automated, open certificate authority (CA) operated by <strong>ISRG (Internet Security Research Group)</strong>, a 501(c)(3) non-profit. It was founded in 2014 by Josh Aas and Eric Rescorla with support from EFF, Mozilla, Cisco, Akamai, and others. Its founding goal: <strong>encrypt the entire web</strong>. Since its launch in December 2015 it has issued over <strong>3 billion certificates</strong> and is the CA used by roughly 60%+ of all certificate deployments on the internet. It is trusted by all major browsers automatically.</p>
+<h3 id="key-characteristics">Key characteristics</h3>
+<ul>
+<li><strong>Completely free.</strong> No cost for any number of certificates, no account fees, no credit card.</li>
+<li><strong>DV only</strong> — Domain Validated certificates. No Organization (OV) or Extended Validation (EV) certs; your domain name cannot appear in a paid organizational sense.</li>
+<li><strong>Automated only</strong> — issuance happens exclusively through the ACME protocol; there is no manual "click and download" web portal flow.</li>
+<li><strong>Automated revocation</strong> — certificates are auto-revoked if a domain expires or its DNS stops pointing at the server.</li>
+</ul>
+<h3 id="certificate-lifetimes-changing">Certificate lifetimes (changing!)</h3>
+<ul>
+<li><strong>Current default: 90 days</strong> from issuance.</li>
+<li><strong>2026:</strong> Let's Encrypt is rolling out shorter lifetimes via ACME "profiles":</li>
+<li><code>tlsserver</code> profile → <strong>45-day</strong> certs (opt-in, available for testing/early adopters).</li>
+<li><code>classic</code> profile → <strong>64-day</strong> certs starting ~Feb 10, 2027.</li>
+<li>From <strong>Feb 16, 2028</strong>, the classic profile issues <strong>45-day</strong> certificates with a <strong>7-hour authorization reuse</strong> period.</li>
+<li><strong>Industry-wide rule:</strong> The CA/Browser Forum voted (Ballot SC-081, April 2025, driven by Apple) to cap public TLS cert lifetimes at <strong>47 days</strong> by <strong>March 15, 2029</strong>, stepping down through 200 days (2026) and 100 days (2027). This applies to ALL publicly-trusted CAs — paid ones included.</li>
+<li><strong>Short-lived profile:</strong> All subscribers can opt into certificates valid for just <strong>~6 days</strong> for maximum security/automation.</li>
+<li><strong>Why shorter?</strong> Limits damage from mis-issuance and key compromise; forces automation (which is the whole point — automation makes short lifetimes painless).</li>
+</ul>
+<h3 id="rate-limits-production-api">Rate limits (production API)</h3>
+<p>Enforced per Let's Encrypt account using token buckets:</p>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Allowance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New orders per account</td>
+<td>300 per 3 hours (refills 1 order / 36 s)</td>
+</tr>
+<tr>
+<td>Certificates per registered domain (eTLD+1)</td>
+<td><strong>50 per week</strong></td>
+</tr>
+<tr>
+<td>New certificates per exact set of hostnames</td>
+<td>5 per week</td>
+</tr>
+<tr>
+<td>Identifiers (SANs) per certificate</td>
+<td>up to 100 (profile-dependent)</td>
+</tr>
+<tr>
+<td>Authorization failures per account/hostname</td>
+<td>5 per hour</td>
+</tr>
+<tr>
+<td>Failed authorizations per hostname (all accounts)</td>
+<td>300 per day</td>
+</tr>
+<tr>
+<td>Duplicate certificate</td>
+<td>5 identical certs per week</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:
+- <strong>Renewals are exempt</strong> from issuance rate limits — a cert that renews counts as a renewal, not a new cert, as long as it's within the renewal window.
+- The 50/week limit counts every cert containing names under your domain — a cert for <code>a.example.com</code> and another for <code>b.example.com</code> each consume one hit.
+- Hitting a limit is not fatal: buckets refill gradually; there's no manual reset. For development, <strong>always test against staging</strong> (<code>--staging</code>), which has much higher limits but deliberately untrusted certs.
+- <strong>Staging server:</strong> <code>https://acme-staging-v02.api.letsencrypt.org/directory</code> — use it to debug; you'll see browser warnings, which is expected.</p>
+<hr />
+<h2 id="2-the-acme-protocol">2. The ACME Protocol</h2>
+<p>ACME (Automatic Certificate Management Environment, RFC 8555) is the protocol that automates certificate issuance and renewal. An <strong>ACME client</strong> (Certbot, acme.sh, Caddy, cert-manager...) talks to a <strong>CA's ACME server</strong> over HTTPS.</p>
+<h3 id="the-flow">The flow</h3>
+<ol>
+<li>Client generates a key pair and registers an <strong>account</strong> with the CA (email optional for Let's Encrypt).</li>
+<li>Client creates an <strong>order</strong> requesting a certificate for domain name(s).</li>
+<li>CA creates <strong>authorizations</strong> — one per domain — and returns <strong>challenges</strong> the client must solve to prove domain control.</li>
+<li>Client solves the challenge (usually by publishing a token at a predictable location), notifies the CA to validate.</li>
+<li>CA connects to your server/DNS and checks the token. On success → certificate is signed and returned.</li>
+<li>Renewal repeats automatically before expiry.</li>
+</ol>
+<h3 id="the-three-challenge-types">The three challenge types</h3>
+<table>
+<thead>
+<tr>
+<th>Challenge</th>
+<th>How it works</th>
+<th>Proves</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HTTP-01</strong></td>
+<td>CA fetches <code>http://&lt;domain&gt;/.well-known/acme-challenge/&lt;token&gt;</code> on port 80</td>
+<td>You control the HTTP service for that exact hostname</td>
+<td>Default choice for web servers. Simplest. Needs inbound port 80 open. <strong>Does NOT work for wildcards.</strong></td>
+</tr>
+<tr>
+<td><strong>DNS-01</strong></td>
+<td>Client publishes a TXT record <code>_acme-challenge.&lt;domain&gt;</code> via your DNS provider's API (or manually); CA queries DNS</td>
+<td>You control the zone's DNS — for the apex AND any subdomain/wildcard</td>
+<td><strong>Required for wildcard certificates</strong> (<code>*.example.com</code>). Also works for internal-only hosts with no public web server. Needs DNS API credentials or manual TXT updates.</td>
+</tr>
+<tr>
+<td><strong>TLS-ALPN-01</strong></td>
+<td>Client runs a TLS server on port 443 presenting a special self-signed cert containing the token; CA validates during TLS handshake</td>
+<td>You control the TLS endpoint</td>
+<td>Alternative to HTTP-01 when port 80 is blocked but 443 is open. Not supported by all clients; also cannot do wildcards.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Wildcard rule:</strong> HTTP-01 and TLS-ALPN-01 only prove control of one exact hostname. To issue <code>*.example.com</code>, <strong>DNS-01 is mandatory</strong> — it proves zone control, which logically extends to any name in the zone. Common practice: request <code>example.com</code> + <code>*.example.com</code> in one SAN cert.</p>
+<p><strong>Multi-domain SAN certs:</strong> One certificate can cover up to ~100 identifiers (e.g., <code>example.com</code>, <code>www.example.com</code>, <code>api.example.com</code>). Every identifier counts toward rate limits separately per registration but shares one cert download.</p>
+<hr />
+<h2 id="3-certbot-the-standard-client">3. Certbot — The Standard Client</h2>
+<p>Certbot is the EFF/ISRG-backed reference ACME client, written in Python. Install it via your distro's package manager, pipx, or the OS-specific instructions on certbot.eff.org.</p>
+<h3 id="install-debianubuntu">Install (Debian/Ubuntu)</h3>
+<pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt install certbot
+# or the snap, which is EFF's recommended method:
+sudo snap install --classic certbot
+sudo ln -sf /snap/bin/certbot /usr/bin/certbot
+</code></pre>
+<h3 id="getting-a-certificate-the-four-main-modes">Getting a certificate — the four main modes</h3>
+<p><strong>A. With a web server plugin (easiest — handles config + reload automatically)</strong></p>
+<pre><code class="language-bash">sudo certbot --nginx -d example.com -d www.example.com
+sudo certbot --apache -d example.com
+</code></pre>
+<p>The plugin temporarily modifies your server config, performs HTTP-01 validation, installs the cert, and sets up HTTPS redirects. Renewal re-uses the plugin.</p>
+<p><strong>B. Standalone (no existing web server on 80/443)</strong></p>
+<pre><code class="language-bash">sudo systemctl stop nginx apache2   # free up port 80
+sudo certbot certonly --standalone -d example.com
+sudo systemctl start nginx apache2
+</code></pre>
+<p>Certbot spins up its own temporary web server to answer the challenge. For renewals you need port 80 free at renewal time — use a pre/post hook or <code>--webroot</code> instead.</p>
+<p><strong>C. Webroot (works alongside a running server, no downtime)</strong></p>
+<pre><code class="language-bash">sudo certbot certonly --webroot -w /var/www/html -d example.com
+</code></pre>
+<p>Pre-configure your web server to serve <code>/.well-known/acme-challenge/</code> from a directory; certbot drops the token file there. Ideal for renewals.</p>
+<p><strong>D. Manual / DNS (wildcards, split-horizon)</strong></p>
+<pre><code class="language-bash">sudo certbot certonly --manual --preferred-challenges dns -d example.com -d '*.example.com'
+</code></pre>
+<p>Certbot prints the TXT record; you create it in your DNS panel. Fine for one-offs; painful for automation — prefer acme.sh for DNS API automation.</p>
+<h3 id="where-everything-lives">Where everything lives</h3>
+<pre><code>/etc/letsencrypt/
+├── live/example.com/
+│   ├── fullchain.pem      # cert + chain (what servers serve)
+│   ├── privkey.pem        # private key (keep secret)
+│   ├── cert.pem           # cert only
+│   ├── chain.pem          # intermediates only
+│   └── README             # symlink warnings
+├── archive/example.com/   # all historical certs/keys
+├── renewal/example.com.conf  # renewal config (authenticator, hooks)
+└── accounts/              # ACME account keys
+</code></pre>
+<p><code>live/</code> entries are symlinks into <code>archive/</code> — safe to reference in nginx/apache/caddy configs.</p>
+<h3 id="auto-renewal">Auto-renewal</h3>
+<ul>
+<li>Certbot installs a <strong>systemd timer</strong> (<code>certbot.timer</code>, runs twice daily by default) or a cron job (<code>/etc/cron.d/certbot</code>).</li>
+<li>Renewals happen only when &lt;30 days remain (or per <code>renew_before_expiry</code> in renewal conf).</li>
+<li>Dry-run test: <code>sudo certbot renew --dry-run</code> (hits staging, safe).</li>
+<li>Force early renewal: <code>sudo certbot renew --force-renewal</code> or <code>sudo certbot certonly ... --force-renewal</code>.</li>
+<li>Pre/post hooks: <code>--pre-hook "systemctl stop nginx"</code>, <code>--post-hook "systemctl start nginx"</code>, or renewal hooks in <code>/etc/letsencrypt/renewal-hooks/{pre,deploy,post}/</code>.</li>
+<li>Deploy hook example — reload nginx after every successful renewal:
+  <code>bash
+  sudo tee /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh &lt;&lt;'EOF'
+  #!/bin/sh
+  systemctl reload nginx
+  EOF
+  sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh</code></li>
+</ul>
+<hr />
+<h2 id="4-acmesh-the-lightweight-alternative">4. acme.sh — The Lightweight Alternative</h2>
+<p>acme.sh is a pure-shell ACME client (github.com/acmesh-official/acme.sh), actively maintained. It's the default CA client in many tools and is owned/sponsored by ZeroSSL (though it supports Let's Encrypt and other CAs equally well).</p>
+<h3 id="install">Install</h3>
+<pre><code class="language-bash">curl https://get.acme.sh | sh -s email=admin@example.com
+# installs to ~/.acme.sh/, adds a cron job automatically, sets the CA (ZeroSSL default → switch to LE)
+acme.sh --set-default-ca --server letsencrypt
+</code></pre>
+<h3 id="key-advantages-over-certbot">Key advantages over Certbot</h3>
+<ul>
+<li><strong>100+ DNS provider plugins</strong> (<code>dns_cf</code> Cloudflare, <code>dns_aws</code>, <code>dns_google</code>, <code>dns_ali</code>, <code>dns_pdns</code>, etc.) — enables fully automated <strong>wildcard</strong> and internal certs with zero manual DNS steps.</li>
+<li>No dependencies beyond <code>curl</code>/<code>openssl</code>/<code>cron</code>; tiny footprint; runs on routers, NAS, macOS, FreeBSD.</li>
+<li><strong>Cron-based renewal</strong> — installs a daily cron entry; v3.1.x runs every 6 hours and enables <strong>ARI (ACME Renewal Information, RFC 9773)</strong> by default, so renewals happen when the CA recommends rather than on a fixed schedule.</li>
+<li><code>--install-cert</code> copies certs to stable paths (e.g., <code>/etc/ssl/</code>) and stores a <code>--reloadcmd</code> to reload your web server after each renewal.</li>
+</ul>
+<h3 id="example-wildcard-via-cloudflare">Example: wildcard via Cloudflare</h3>
+<pre><code class="language-bash">export CF_Token=&quot;&lt;zone-dns-edit-token&gt;&quot;   # scoped API token, not global key
+acme.sh --issue --dns dns_cf -d example.com -d '*.example.com' \
+  --install-cert -d example.com \
+  --key-file       /etc/ssl/private/example.key \
+  --fullchain-file /etc/ssl/certs/example.crt \
+  --reloadcmd      &quot;systemctl reload nginx&quot;
+</code></pre>
+<p>The DNS plugin creates <code>_acme-challenge</code> TXT records via the Cloudflare API, waits for validation, then deletes them automatically. Renewal reuses the saved credentials.</p>
+<h3 id="when-to-pick-acmesh-over-certbot">When to pick acme.sh over Certbot</h3>
+<ul>
+<li>Wildcards or DNS-01 automation (biggest win)</li>
+<li>Non-Linux/embedded environments</li>
+<li>You want minimal footprint and cron control</li>
+</ul>
+<hr />
+<h2 id="5-other-acme-clients-automated-https">5. Other ACME Clients &amp; Automated HTTPS</h2>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Platform</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>win-acme (wacs.exe)</strong></td>
+<td>Windows</td>
+<td>THE client for Windows/IIS/Apache/nginx/SimpleHTTP. Scheduled-task auto-renewal, pluggable validators incl. DNS-01 via many providers, built-in store for IIS. Also on GitHub as win-acme/win-acme. Free.</td>
+</tr>
+<tr>
+<td><strong>getssl</strong></td>
+<td>Shell</td>
+<td>Older shell client similar to acme.sh; lighter DNS plugin set; still works but less actively developed.</td>
+</tr>
+<tr>
+<td><strong>Caddy</strong></td>
+<td>Any (Go binary)</td>
+<td><strong>Zero-config HTTPS</strong>: <code>example.com { ... }</code> in a <code>Caddyfile</code> → Caddy does ACME, certs, renewal, and OCSP automatically. Best-in-class for simple deployments.</td>
+</tr>
+<tr>
+<td><strong>Traefik</strong></td>
+<td>Any (Go binary)</td>
+<td>Reverse proxy with built-in ACME (Let's Encrypt/ZeroSSL) via labels/<code>certificatesResolvers</code> + Docker provider. Ideal for Docker stacks.</td>
+</tr>
+<tr>
+<td><strong>Kubernetes cert-manager</strong></td>
+<td>K8s</td>
+<td>Issues/renews certs via ACME (and other issuers) into <code>Certificate</code> CRDs → stored as <code>tls</code> secrets consumed by Ingress/Gateway. Supports HTTP-01, DNS-01 (many providers), and ZeroSSL via EAB.</td>
+</tr>
+<tr>
+<td><strong>Plesk/cPanel/DirectAdmin</strong></td>
+<td>Hosting panels</td>
+<td>Built-in Let's Encrypt integration — one click, handles everything.</td>
+</tr>
+<tr>
+<td><strong>lego</strong></td>
+<td>Go</td>
+<td>Popular Go ACME library + CLI used by many tools; certbot-compatible flags.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule of thumb:</strong> if a tool is a reverse proxy or orchestrator (Caddy, Traefik, cert-manager), let IT handle ACME — don't run a separate client.</p>
+<hr />
+<h2 id="6-zerossl-free-tier">6. ZeroSSL Free Tier</h2>
+<p>ZeroSSL is a commercial CA that offers a genuinely free ACME tier:</p>
+<ul>
+<li><strong>Free ACME certificates:</strong> unlimited 90-day certs via ACME, including <strong>multi-domain and wildcards</strong> — ZeroSSL advertises "no rate limits" on the ACME path (reasonable-usage policy applies; max ~6 DNS labels excluding public suffix).</li>
+<li><strong>ACME endpoint:</strong> <code>https://acme.zerossl.com/v2/DV90</code></li>
+<li><strong>EAB required:</strong> unlike Let's Encrypt, ZeroSSL requires <strong>External Account Binding</strong> — you create an account at zerossl.com, generate EAB credentials (HMAC key + KID) in the developer section, and pass them to your client (<code>certbot register --eab-kid ... --eab-hmac-key ...</code>, cert-manager <code>externalAccountBinding</code>, acme.sh handles it).</li>
+<li><strong>Paid tiers:</strong> the free <em>dashboard</em> plan allows 3 manually-created 90-day certs; ACME path is unlimited regardless of plan. Paid plans add longer-lived "annual" certs, SSL monitoring, etc.</li>
+<li><strong>Positioning:</strong> marketing push around "90-day certs for everyone," REST API, and owning acme.sh. Quality/trust is comparable (browser-trusted root), but Let's Encrypt remains the default community choice.</li>
+</ul>
+<p>vs Let's Encrypt: same ACME protocol, same free DV certs; ZeroSSL keeps 90-day lifetimes for now (though industry ballot SC-081 will eventually force it down too — its "annual" certs are capped at 199 days), requires EAB signup, and has softer guarantees.</p>
+<hr />
+<h2 id="7-common-failures-fixes">7. Common Failures &amp; Fixes</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Connection refused</code> / timeout on HTTP-01</td>
+<td>Port 80 blocked inbound (firewall, ISP, cloud security group)</td>
+<td>Open TCP 80 inbound, or use <code>--webroot</code>, or switch to DNS-01/TLS-ALPN-01</td>
+</tr>
+<tr>
+<td><code>unauthorized</code> / "invalid response"</td>
+<td>DNS points to wrong IP, or server serves wrong vhost, or redirect loop</td>
+<td>Verify <code>dig A example.com</code> = your IP; check nginx <code>server_name</code>; avoid HTTPS redirects during validation</td>
+</tr>
+<tr>
+<td><code>too many failed authorizations</code></td>
+<td>5 failures/account/hostname/hour</td>
+<td><strong>Wait ~1 hour</strong>; fix the underlying issue first — retrying immediately won't help</td>
+</tr>
+<tr>
+<td><code>too many certificates already issued</code> (50/week/domain)</td>
+<td>Rate limit on registered domain</td>
+<td>Wait for refill (1 cert/202 min); consolidate certs; renewals unaffected</td>
+</tr>
+<tr>
+<td>Wildcard fails with HTTP-01</td>
+<td>Wildcards require DNS-01</td>
+<td>Use acme.sh/Certbot <code>--preferred-challenges dns</code> + DNS API</td>
+</tr>
+<tr>
+<td><code>no such host</code> / NXDOMAIN</td>
+<td>DNS propagation not complete</td>
+<td>Wait, or validate against the authoritative NS; check TTLs</td>
+</tr>
+<tr>
+<td>Cert issued but browser warns</td>
+<td>Serving <code>cert.pem</code> only instead of <code>fullchain.pem</code>, or missing intermediate</td>
+<td>Always serve the full chain (<code>fullchain.pem</code>)</td>
+</tr>
+<tr>
+<td>Renewal fails silently</td>
+<td>Port 80/443 blocked at renewal time; standalone mode needs port 80 free</td>
+<td>Use webroot/nginx plugin; add deploy hooks</td>
+</tr>
+<tr>
+<td><code>key type not supported</code> / weak key errors</td>
+<td>Old client or RSA-1024</td>
+<td>Modern clients use ECDSA P-256 by default; <code>--key-type ecdsa</code> or <code>rsa</code></td>
+</tr>
+<tr>
+<td>Multi-SAN cert rejected</td>
+<td>One bad domain in list fails whole order</td>
+<td>Validate each name separately; check every SAN resolves publicly</td>
+</tr>
+<tr>
+<td>Email not received / expiry notices</td>
+<td>Notifications opt-in and best-effort</td>
+<td>Don't rely on them — automation (certbot.timer/acme.sh cron) is the real safety net</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-cost-reality-check-free-vs-paid">8. Cost Reality Check: Free vs Paid</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Free (Let's Encrypt / ZeroSSL ACME)</th>
+<th>Paid CA (Sectigo, DigiCert, GlobalSign…)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Price</td>
+<td>$0</td>
+<td>$10–$500+/yr</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>DV only</td>
+<td>DV / OV / <strong>EV</strong> (company identity shown)</td>
+</tr>
+<tr>
+<td>Issuance</td>
+<td>Fully automated via ACME</td>
+<td>Often manual portal, some offer ACME</td>
+</tr>
+<tr>
+<td>Lifetime</td>
+<td>90 days → shrinking to 45 days (2028–29)</td>
+<td>Up to 398 days historically, also shrinking to ≤47 days by 2029 (industry-wide)</td>
+</tr>
+<tr>
+<td>Warranty/liability</td>
+<td>No meaningful warranty</td>
+<td>$10k–$1M+ insurance, contract support</td>
+</tr>
+<tr>
+<td>Support</td>
+<td>Community forums only</td>
+<td>24/7 phone/chat/SLA</td>
+</tr>
+<tr>
+<td>Organization name in cert</td>
+<td>No (just domain)</td>
+<td>OV/EV include legal entity</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Websites, APIs, IoT, internal services</td>
+<td>E-commerce needing EV trust signals, enterprises needing audits/contracts, code where contractual CA required</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bottom line:</strong> For ~95% of use cases (encrypt a domain you control), free CAs are strictly better — automated, trusted, and the paid advantages (EV green bar is dead anyway; browsers dropped visual EV distinction in 2019) rarely matter. Paid certs buy you <strong>support contracts, warranties, OV/EV identity, and sometimes longer lifetimes</strong> — not stronger encryption. Note the 47-day industry cap means "longer lifetime" is disappearing for everyone.</p>
+<hr />
+<h2 id="quick-start-cheatsheet">Quick-Start Cheatsheet</h2>
+<pre><code class="language-bash"># Ubuntu + nginx, fastest path:
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d example.com -d www.example.com --redirect
+sudo certbot renew --dry-run
+
+# Wildcard via Cloudflare:
+curl https://get.acme.sh | sh
+~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+CF_Token=xxx ~/.acme.sh/acme.sh --issue --dns dns_cf \
+  -d example.com -d '*.example.com' --install-cert \
+  --key-file /etc/ssl/priv.key --fullchain-file /etc/ssl/fullchain.pem
+</code></pre>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Let's Encrypt — Certificate Lifetime Rationale and Plans: https://letsencrypt.org/docs/cert-lifetimes/</li>
+<li>Let's Encrypt — Decreasing Certificate Lifetimes to 45 Days (Dec 2025): https://letsencrypt.org/2025/12/02/from-90-to-45</li>
+<li>Let's Encrypt — ACME Profiles: https://letsencrypt.org/docs/profiles/</li>
+<li>Let's Encrypt — Rate Limits: https://letsencrypt.org/docs/rate-limits/</li>
+<li>Let's Encrypt — Scaling Rate Limits (Jan 2025): https://letsencrypt.org/2025/01/30/scaling-rate-limits</li>
+<li>Let's Encrypt — Rate Limits &amp; 45-Day Certs (Feb 2026): https://letsencrypt.org/2026/02/24/rate-limits-45-day-certs</li>
+<li>heise — 47 days: CA/B Forum decision on shorter certs: https://www.heise.de/en/news/47-days-CAs-browser-manufacturers-decide-on-shorter-duration-for-certificates-10353244.html</li>
+<li>acmeprotocol.dev — Certificate lifetime timeline (Ballot SC-081): https://acmeprotocol.dev/webpki/cert-lifetime/</li>
+<li>ZeroSSL — ACME documentation: https://zerossl.com/documentation/acme</li>
+<li>ZeroSSL — ACME feature/pricing: https://zerossl.com/features/acme , https://zerossl.com/pricing</li>
+<li>cert-manager — ZeroSSL tutorial (EAB setup): https://cert-manager.io/docs/tutorials/zerossl/zerossl/</li>
+<li>acme.sh — GitHub: https://github.com/acme-sh/acme.sh</li>
+<li>ssl.sh — acme.sh DNS API/wildcard guide: https://ssl.sh/guides/acme-sh-dns-api-wildcard/</li>
+<li>win-acme: https://github.com/win-acme/win-acme</li>
+<li>Certbot docs: https://eff-certbot.readthedocs.io/</li>
+<li>Let's Encrypt community — failed validation limit: https://community.letsencrypt.org/t/failed-validation-limit-validation-ip-addresses-and-authorization-lifetime/31520</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from certificates_free.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 24 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

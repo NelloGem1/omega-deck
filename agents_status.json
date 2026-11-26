@@ -1,0 +1,151 @@
+{
+ "ts": 1795688776.4388943,
+ "agents": [
+  {
+   "callsign": "CUTMASTER",
+   "name": "NEIL",
+   "domain": "video_editing",
+   "rank": "FIELD MARSHAL",
+   "level": 17,
+   "xp": 1600,
+   "skills": {
+    "video_editing": 95,
+    "storytelling": 90,
+    "ffmpeg": 85
+   },
+   "tools": [
+    "ffmpeg",
+    "manim",
+    "blender",
+    "after-effects",
+    "premiere"
+   ],
+   "permissions": "FULL \u2014 marshal authority",
+   "last": "rendered THE_LIGHT_KEEPER.mp4"
+  },
+  {
+   "callsign": "FORGE",
+   "name": "DEVIN",
+   "domain": "python_systems",
+   "rank": "COMMANDER",
+   "level": 5,
+   "xp": 410,
+   "skills": {
+    "python": 90,
+    "automation": 88,
+    "debugging": 85
+   },
+   "tools": [
+    "python",
+    "fleet_gateway",
+    "updater",
+    "fix_encoding"
+   ],
+   "permissions": "fleet internals",
+   "last": "installed marshal-utf8 system codec"
+  },
+  {
+   "callsign": "NULLBYTE",
+   "name": "RAVEN",
+   "domain": "cybersecurity",
+   "rank": "SPECIALIST",
+   "level": 3,
+   "xp": 200,
+   "skills": {
+    "recon": 80,
+    "exploit_dev": 75,
+    "osint": 85
+   },
+   "tools": [
+    "dvwa",
+    "juice_shop",
+    "webgoat",
+    "nmap",
+    "burp"
+   ],
+   "permissions": "lab ranges only",
+   "last": "exploited DVWA SQLi admin bypass"
+  },
+  {
+   "callsign": "PRISM",
+   "name": "PIXEL",
+   "domain": "visual_design",
+   "rank": "SPECIALIST",
+   "level": 2,
+   "xp": 155,
+   "skills": {
+    "ui_design": 85,
+    "svg": 80,
+    "color_theory": 75
+   },
+   "tools": [
+    "svg",
+    "css",
+    "canvas",
+    "whiteboard"
+   ],
+   "permissions": "fleet dashboards",
+   "last": "designed FIELD MARSHAL FLEET glass UI"
+  },
+  {
+   "callsign": "METRIC",
+   "name": "ORACLE",
+   "domain": "data_math",
+   "rank": "COMMANDER",
+   "level": 4,
+   "xp": 355,
+   "skills": {
+    "statistics": 88,
+    "proofledger": 82,
+    "modeling": 80
+   },
+   "tools": [
+    "proofledger",
+    "compress_lab",
+    "sqlite"
+   ],
+   "permissions": "verification systems",
+   "last": "verification-weighted proof scoring"
+  },
+  {
+   "callsign": "SIGNAL",
+   "name": "ECHO",
+   "domain": "networking",
+   "rank": "RECRUIT",
+   "level": 1,
+   "xp": 95,
+   "skills": {
+    "tcp_ip": 80,
+    "dns": 75,
+    "vpn": 70
+   },
+   "tools": [
+    "wireshark",
+    "nmap",
+    "gateway"
+   ],
+   "permissions": "fleet infra",
+   "last": "mapped all fleet port routes"
+  },
+  {
+   "callsign": "ALPHA",
+   "name": "ALPHA",
+   "domain": "ai_ml",
+   "rank": "RECRUIT",
+   "level": 1,
+   "xp": 0,
+   "skills": {
+    "ml_basics": 50,
+    "llm_ops": 50,
+    "evals": 50
+   },
+   "tools": [
+    "python",
+    "fleet_learning",
+    "manim"
+   ],
+   "permissions": "academy modules",
+   "last": "awaiting first deployment"
+  }
+ ]
+}

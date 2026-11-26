@@ -1,0 +1,1292 @@
+<!doctype html><html><head><meta charset="utf-8"><title>cybersecurity-map</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="cybersecurity-cryptography-privacy-digital-trust-master-knowledge-map">Cybersecurity, Cryptography, Privacy &amp; Digital Trust — Master Knowledge Map</h1>
+<p><em>A comprehensive synthesis of principles, algorithms, mathematics, tools, applications, and open problems. Written as a map: each section names what exists, where the deep-dives live, and what to learn next.</em></p>
+<p><strong>Companion documents (read these for depth — this map cites rather than duplicates them):</strong></p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/websec_research/learning_path.md</code></td>
+<td>12-week beginner web-security curriculum</td>
+</tr>
+<tr>
+<td><code>~/websec_research/payment_bypass.md</code></td>
+<td>Business-logic / authorization flaws deep-dive</td>
+</tr>
+<tr>
+<td><code>~/websec_research/advanced_web_vulns.md</code></td>
+<td>API security, request smuggling, cache deception, advanced SSRF, uploads</td>
+</tr>
+<tr>
+<td><code>~/websec_research/attacker_methodology.md</code></td>
+<td>Recon → exploitation workflow</td>
+</tr>
+<tr>
+<td><code>~/websec_research/defender_playbook.md</code></td>
+<td>Secure-coding defenses for Flask apps</td>
+</tr>
+<tr>
+<td><code>~/websec_research/race_and_logic.md</code>, <code>exploits.md</code>, <code>flask_security_deep.md</code>, <code>cli_toolkit.md</code>, <code>cheatsheets_index.md</code>, <code>docker_setup.md</code>, <code>CHALLENGES.md</code>, <code>SETUP.md</code></td>
+<td>Lab mechanics and tooling</td>
+</tr>
+<tr>
+<td><code>~/gh_backup/crypto_research/theory_primitives.md</code></td>
+<td>Symmetric/asymmetric/hash/signature primitives, security levels</td>
+</tr>
+<tr>
+<td><code>~/gh_backup/crypto_research/advanced_crypto.md</code></td>
+<td>Cryptanalysis, ZK, HE, MPC, PQC, blockchain crypto</td>
+</tr>
+<tr>
+<td><code>~/gh_backup/crypto_research/applied_crypto.md</code></td>
+<td>TLS/HTTPS in practice, PKI, password storage, real-world crypto fails</td>
+</tr>
+<tr>
+<td><code>~/gh_backup/crypto_research/certificates_free.md</code></td>
+<td>Let's Encrypt / ACME / Certbot / acme.sh</td>
+</tr>
+<tr>
+<td><code>~/gh_backup/crypto_research/certificates_other.md</code></td>
+<td>Paid CAs, cloud certs, self-signed, mkcert</td>
+</tr>
+<tr>
+<td><code>~/TOOLS.md</code></td>
+<td>Installed tool manifest (Burp, ZAP, sqlmap, nuclei, hashcat, age, gpg, Lean 4, …)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-0-how-to-read-this-map">Part 0 — How to read this map</h2>
+<p>Security is one field with four layers:</p>
+<ol>
+<li><strong>Cryptography</strong> — the math that provides confidentiality, integrity, authenticity, non-repudiation.</li>
+<li><strong>Cybersecurity</strong> — applying that math (and much non-crypto engineering) to protect systems, networks, apps, data, and people.</li>
+<li><strong>Privacy &amp; digital trust</strong> — the socio-technical layer: who controls data, how identity is proven, how systems earn trust.</li>
+<li><strong>Security research</strong> — the methods (ethical hacking, formal methods, protocol design) that keep the field honest.</li>
+</ol>
+<p>A recurring theme: <strong>crypto provides tools; security is the engineering of using them correctly.</strong> Most real-world breaches are not broken math — they are misconfiguration, logic flaws, stolen credentials, and unpatched software. The attacker-methodology report makes the same point empirically.</p>
+<hr />
+<h1 id="part-i-cryptography">PART I — CRYPTOGRAPHY</h1>
+<h2 id="1-foundations-what-cryptography-must-achieve">1. Foundations: what cryptography must achieve</h2>
+<p>Security goals (CIA + extensions):</p>
+<ul>
+<li><strong>Confidentiality</strong> — only authorized parties read the data (encryption).</li>
+<li><strong>Integrity</strong> — data cannot be altered undetected (MACs, signatures, AEAD).</li>
+<li><strong>Authentication</strong> — verify who sent something / who you are talking to.</li>
+<li><strong>Non-repudiation</strong> — sender cannot later deny (digital signatures; weaker in practice than theory).</li>
+<li><strong>Availability</strong> — systems stay up (mostly <em>not</em> crypto's job; it's an ops problem).</li>
+<li><strong>Anonymity / unlinkability</strong> — privacy goals (mix networks, ZK, Tor).</li>
+</ul>
+<p>Two families:</p>
+<ul>
+<li><strong>Symmetric</strong> — one shared secret key; fast; used for bulk data.</li>
+<li><strong>Asymmetric (public-key)</strong> — key pair; slow; used for key exchange, signatures, identity.</li>
+</ul>
+<p><strong>The hybrid pattern</strong> (see <code>theory_primitives.md</code> §5): asymmetric crypto bootstraps a random symmetric session key; symmetric crypto does all the bulk encryption. This is how TLS, SSH, PGP, and Signal actually work.</p>
+<h2 id="2-symmetric-cryptography">2. Symmetric cryptography</h2>
+<h3 id="21-block-ciphers">2.1 Block ciphers</h3>
+<ul>
+<li><strong>AES</strong> (Rijndael, standardized 2001): 128-bit block, key sizes 128/192/256. Substitution–permutation network: SubBytes, ShiftRows, MixColumns, AddRoundKey over 10/12/14 rounds. Hardware-accelerated (AES-NI), the default everywhere.</li>
+<li><strong>Other block ciphers</strong>: Camellia, SM4 (Chinese national standard), Twofish/Serpent (AES finalists, rarely deployed).</li>
+<li><strong>Modes of operation</strong> — how a block cipher encrypts multi-block messages:</li>
+<li><strong>ECB</strong> — each block independent; leaks patterns (the famous ECB penguin). Never use for structured data.</li>
+<li><strong>CBC</strong> — chained, needs random IV, malleable without MAC → padding-oracle attacks.</li>
+<li><strong>CTR / GCM / CCM / OCB / XChaCha20-Poly1305</strong> — authenticated modes (AEAD); the only acceptable choice today.</li>
+<li><strong>Stream ciphers</strong>: <strong>ChaCha20</strong> (and XChaCha20 with 192-bit nonce) — fast in software, constant-time by design, used in TLS 1.3, WireGuard, age. Salsa20 predecessor.</li>
+<li><strong>RC4</strong> — broken (biased keystream, WEP/Klein attacks); banned in TLS since 2015.</li>
+</ul>
+<h3 id="22-aead-the-correct-primitive">2.2 AEAD — the correct primitive</h3>
+<p>Authenticated encryption with associated data: confidentiality + integrity in one API (AES-GCM, ChaCha20-Poly1305). Associated data is authenticated but not encrypted (e.g., HTTP headers). Rule: <strong>never encrypt-then-MAC by hand; use AEAD.</strong></p>
+<h3 id="23-tools-applications">2.3 Tools &amp; applications</h3>
+<ul>
+<li><code>openssl enc</code>/<code>openssl</code> CLI, <code>age</code> (modern file encryption, X25519+ChaCha20-Poly1305), VeraCrypt (AES cascades, plausible deniability), Cryptomator, LUKS/dm-crypt (Linux full-disk), BitLocker/FileVault (OS FDE).</li>
+<li>Passwords: do <strong>not</strong> use raw AES/SHA — use memory-hard KDFs (see §7.3).</li>
+</ul>
+<h2 id="3-asymmetric-cryptography">3. Asymmetric cryptography</h2>
+<h3 id="31-rsa-1977">3.1 RSA (1977)</h3>
+<ul>
+<li><strong>Math</strong>: choose primes p, q; n = pq; φ(n) = (p−1)(q−1); pick e coprime to φ; d = e⁻¹ mod φ. Public (n, e), private (n, d). Security rests on <strong>integer factorization</strong> hardness.</li>
+<li><strong>Key sizes</strong>: 2048-bit minimum today (≈112-bit security); 3072 for ~128-bit; 4096 for longevity. <code>theory_primitives.md</code> §7 has the full comparable-security table.</li>
+<li><strong>Uses</strong>: signatures (RSA-PSS preferred over PKCS#1 v1.5 — Bleichenbacher padding oracle attacks), encryption (RSA-OAEP only; textbook RSA is malleable), key transport.</li>
+<li><strong>Weaknesses</strong>: large keys/signatures (~256–512 B), slow, side-channel sensitive (timing → constant-time implementations required), quantum-vulnerable (Shor).</li>
+</ul>
+<h3 id="32-diffiehellman-key-exchange-1976">3.2 Diffie–Hellman key exchange (1976)</h3>
+<ul>
+<li><strong>Math</strong>: in group G of prime order q with generator g: Alice sends g^a, Bob sends g^b, shared secret g^(ab). Security = <strong>computational Diffie–Hellman (CDH)</strong> assumption in finite fields or elliptic curves.</li>
+<li><strong>Ephemeral DH</strong> (DHE/ECDHE) gives <strong>forward secrecy</strong>: compromise of long-term keys does not expose past sessions. Static DH does not — a major reason TLS 1.3 mandates (EC)DHE.</li>
+</ul>
+<h3 id="33-elliptic-curve-cryptography-ecc">3.3 Elliptic-curve cryptography (ECC)</h3>
+<ul>
+<li><strong>Math</strong>: points on curve y² = x³ + ax + b over finite field F_p (or F_2^m). Group law = chord-and-tangent addition; scalar multiplication is one-way (ECDLP). ~10× smaller keys than RSA for equal security: 256-bit ECC ≈ 3072-bit RSA.</li>
+<li><strong>Curves in use</strong>:</li>
+<li><strong>Curve25519 / X25519</strong> — ECDH; fast, complete addition formulas (no invalid-curve edge cases), the TLS/WireGuard/SSH default.</li>
+<li><strong>Ed25519</strong> — EdDSA signatures over Curve25519; deterministic nonces (no RNG needed), small fast signatures, used by OpenSSH, age, minisign, Tor.</li>
+<li><strong>P-256/P-384 (NIST curves)</strong> — widely deployed, some controversy over possible backdoors (nothing proven); require careful validation.</li>
+<li><strong>secp256k1</strong> — Bitcoin/Ethereum.</li>
+<li><strong>Invalid-curve attacks</strong>: implementations must validate public keys lie on the curve; twist/security of small-order points matters.</li>
+</ul>
+<h3 id="34-other-asymmetric-schemes">3.4 Other asymmetric schemes</h3>
+<ul>
+<li><strong>ElGamal</strong> — DH-based encryption; malleable (needs hashed ElGamal or KEM usage); basis of Cramer–Shoup (CCA-secure).</li>
+<li><strong>Goldwasser–Micali, Rabin, Paillier</strong> — textbook/less common; Paillier gives additive homomorphism (used in some e-voting/crypto-currency schemes).</li>
+<li><strong>Isogeny crypto (SIDH/SIKE)</strong> — was a PQC candidate; <strong>broken in 2022</strong> (Castryck–Decru attack) — a lesson in cryptanalysis humility.</li>
+</ul>
+<h3 id="35-pairing-based-cryptography-aggregate-signatures">3.5 Pairing-based cryptography &amp; aggregate signatures</h3>
+<ul>
+<li><strong>Pairings</strong> (Weil/Tate/optimal ate on BN/BLS curves like BLS12-381): map two groups into a third, enabling unique properties — identity-based encryption (Boneh–Franklin), short group signatures, and <strong>aggregate signatures</strong> (BLS): n signatures verify as one — used in Ethereum consensus (attestations), TLS certificate compression research, blockchain scaling.</li>
+<li><strong>Cost</strong>: pairing computations are expensive; used where aggregation pays off.</li>
+</ul>
+<h3 id="36-kems-the-modern-view-of-encryption">3.6 KEMs — the modern view of encryption</h3>
+<ul>
+<li>Public-key <em>encryption</em> is being replaced by <strong>Key Encapsulation Mechanisms</strong>: asymmetric crypto only wraps a symmetric key; symmetric AEAD does the data. This separation simplifies proofs and avoids CCA pitfalls.</li>
+<li>Standards: RSA-KEM / ECIES-style KEMs historically; <strong>ML-KEM</strong> is the PQC KEM (§6). HPKE (RFC 9180) standardizes KEM+KDF+AEAD composition for application developers — prefer HPKE over hand-rolled hybrids.</li>
+</ul>
+<h2 id="4-hash-functions">4. Hash functions</h2>
+<ul>
+<li><strong>Purpose</strong>: fixed-size digest with preimage/second-preimage/collision resistance; also KDFs, MACs, commitments, PoW.</li>
+<li><strong>SHA-2 family</strong>: SHA-224/256/384/512 (Merkle–Damgård, length-extension vulnerable when used naively as MAC — use HMAC). SHA-256 still fine for integrity; NIST moving on.</li>
+<li><strong>SHA-3 / Keccak</strong>: sponge construction, different design lineage, no length extension; used in Ethereum, many protocols.</li>
+<li><strong>BLAKE2/BLAKE3</strong>: faster than SHA-2/3, tree hashing built in; default in many modern systems (age uses BLAKE2b).</li>
+<li><strong>MD5, SHA-1</strong>: collision-broken (SHAttered 2017 for SHA-1) — usable only for non-security checksums.</li>
+<li><strong>Password hashing</strong> is a different discipline: slow, salted, memory-hard KDFs — <strong>Argon2id</strong> (winner of Password Hashing Competition, 2015), scrypt, bcrypt, PBKDF2 (legacy fallback). See <code>applied_crypto.md</code> §5.</li>
+</ul>
+<h2 id="5-digital-signatures-non-repudiation">5. Digital signatures &amp; non-repudiation</h2>
+<ul>
+<li><strong>What they prove</strong>: "holder of private key k signed message m" — assuming secure key storage. They do <strong>not</strong> prove the human intended it (key theft, coercion, endpoint compromise all break this).</li>
+<li><strong>Schemes</strong>: RSA-PSS, ECDSA (nonce-reuse catastrophic — Sony PS3, blockchain thefts; deterministic k via RFC 6979), <strong>EdDSA/Ed25519</strong> (preferred: deterministic by design), Schnorr signatures (Bitcoin Taproot, simpler proofs).</li>
+<li><strong>Applications</strong>: code signing (GPG, Sigstore/cosign for supply chain), software update verification, document signing, TLS client certs, eIDAS qualified signatures (EU legal non-repudiation).</li>
+</ul>
+<h2 id="6-post-quantum-cryptography-pqc">6. Post-quantum cryptography (PQC)</h2>
+<ul>
+<li><strong>Threat</strong>: Shor's algorithm solves factoring &amp; ECDLP in polynomial time on a large quantum computer → RSA, DH, ECDH, ECDSA, EdDSA all fall. Grover halves symmetric security (AES-256 → ~128-bit; ChaCha20-256 fine).</li>
+<li><strong>Harvest-now-decrypt-later</strong>: adversaries store ciphertext today, decrypt when quantum arrives → long-lived secrets need PQC <strong>now</strong>.</li>
+<li><strong>NIST PQC standardization (finalized Aug 2024)</strong>:</li>
+<li><strong>ML-KEM (Kyber)</strong> — lattice-based KEM (module-LWE), key encapsulation, TLS replacement for ECDH.</li>
+<li><strong>ML-DSA (Dilithium)</strong> — lattice signatures, TLS/firmware/code signing.</li>
+<li><strong>SLH-DSA (SPHINCS+)</strong> — stateless hash-based signatures (conservative, large/slow — backup).</li>
+<li><strong>FN-DSA (Falcon)</strong> — compact fast signatures (standardized later, 2024/25).</li>
+<li><strong>HQC</strong> — code-based KEM selected as backup.</li>
+<li><strong>Migration</strong>: hybrid key exchange (X25519+ML-KEM) deployed in TLS 1.3/Chrome, Cloudflare, Signal; CNSA 2.0 timelines (US gov: PQC by ~2030-2033); "crypto agility" — design systems so algorithms are pluggable.</li>
+<li><strong>Status</strong>: lattice assumptions are newer and less battle-tested than factoring/ECC; expect continued cryptanalysis (see SIKE cautionary tale).</li>
+</ul>
+<h2 id="7-advanced-cryptographic-primitives">7. Advanced cryptographic primitives</h2>
+<h3 id="71-zero-knowledge-proofs-zkps">7.1 Zero-knowledge proofs (ZKPs)</h3>
+<ul>
+<li><strong>Idea</strong>: prove knowledge of a witness w satisfying relation R(x,w) without revealing w. Properties: completeness, soundness, zero-knowledge.</li>
+<li><strong>Interactive proofs</strong> → <strong>Fiat–Shamir heuristic</strong> → non-interactive (in ROM).</li>
+<li><strong>zk-SNARKs</strong> (Groth16 etc.): tiny proofs, need trusted setup (toxic waste); used in Zcash, rollups.</li>
+<li><strong>zk-STARKs</strong>: no trusted setup, post-quantum-ish (hash-based), larger proofs; StarkNet, Tornado-style systems.</li>
+<li><strong>Bulletproofs</strong>: no setup, larger; confidential transactions (Monero).</li>
+<li><strong>Sigma protocols</strong> (Schnorr, Chaum–Pedersen): building blocks for anonymous credentials, threshold sigs.</li>
+<li><strong>Applications</strong>: blockchain scalability (zk-rollups), private identity/credentials, verifiable computation, password proofs.</li>
+</ul>
+<h3 id="72-homomorphic-encryption-he">7.2 Homomorphic encryption (HE)</h3>
+<ul>
+<li><strong>Somewhat HE</strong>: Paillier (additive), BFV/BGV/CKKS (leveled, approximate arithmetic for ML).</li>
+<li><strong>Fully HE (FHE)</strong>: Gentry's 2009 blueprint — bootstrapping refreshes ciphertext; schemes: <strong>TFHE</strong> (fast boolean gates), <strong>CKKS</strong> (approximate reals, ML inference), <strong>BGV/ BFV</strong>.</li>
+<li><strong>Status</strong>: real but slow (seconds–minutes per op); Microsoft SEAL, OpenFHE, Zama toolchain. Use case: compute on encrypted data in untrusted clouds (confidential analytics, private genomics, encrypted search).</li>
+</ul>
+<h3 id="73-multi-party-computation-secret-sharing">7.3 Multi-party computation &amp; secret sharing</h3>
+<ul>
+<li><strong>MPC</strong>: k parties compute f(x₁…xₙ) revealing only the output (Yao garbled circuits, GMW, BGW). Applications: private auctions, joint fraud detection, threshold key management.</li>
+<li><strong>Secret sharing</strong>: Shamir (t-of-n via polynomial over GF(p)); proactive/verified variants. Used in key ceremonies, HSM clusters, DNSSEC root key ceremonies, crypto custody.</li>
+<li><strong>Threshold signatures</strong>: (t-of-n) Schnorr/FROST — no single private key exists (Fireblocks, smart-contract wallets, Tor directory authorities use threshold crypto).</li>
+</ul>
+<h3 id="74-other-notable-primitives">7.4 Other notable primitives</h3>
+<ul>
+<li><strong>Oblivious transfer, private information retrieval (PIR)</strong>, <strong>searchable encryption</strong> (leaky — see §privacy critiques), <strong>functional encryption</strong>, <strong>attribute-based encryption</strong>, <strong>verifiable delay functions (VDFs)</strong>, <strong>proof-of-work/proof-of-stake</strong> as cryptographic-economic primitives.</li>
+</ul>
+<h2 id="8-real-world-cryptographic-protocols">8. Real-world cryptographic protocols</h2>
+<p>Deep-dives: <code>applied_crypto.md</code>, <code>certificates_*.md</code>. Summary:</p>
+<ul>
+<li><strong>TLS 1.3</strong>: handshake = ephemeral ECDHE (+ML-KEM hybrid increasingly) → AEAD session keys (HKDF key schedule); mutual auth via X.509 certificates; 0-RTT for resumption (replay risk); certificate revocation via OCSP stapling / CRLite. Guarantees: confidentiality + integrity of the channel — <strong>not</strong> of endpoints.</li>
+<li><strong>SSH</strong>: host-key verification, user auth (keys &gt; passwords), agent forwarding risks.</li>
+<li><strong>Signal protocol</strong> (X3DH + Double Ratchet): E2E encrypted messaging with forward secrecy + post-compromise security; metadata still visible to server (sealed sender mitigates).</li>
+<li><strong>PGP/GPG</strong>: web-of-trust alternative to PKI; painful UX; used for email/signing/git commits.</li>
+<li><strong>age / libsodium / Tink</strong>: modern "just use this" libraries — NaCl/libsodium (Daniel J. Bernstein) is the reference for "don't roll your own."</li>
+<li><strong>WireGuard</strong>: Noise protocol framework — minimal crypto, modern (Curve25519, ChaCha20-Poly1305, BLAKE2); kernel-space, radically simpler than IPsec/OpenVPN.</li>
+</ul>
+<h2 id="9-pki-certificates">9. PKI &amp; certificates</h2>
+<ul>
+<li><strong>X.509 chain</strong>: leaf ← intermediates ← root; root in trust store (OS/browser). Chain validation = signatures + validity + name constraints + revocation (CRL/OCSP) + CT logs.</li>
+<li><strong>Web PKI</strong>: Let's Encrypt (free, ACME protocol, 90-day certs, automation-first) vs. paid CAs (EV/OV/DV — the "green bar" is dead; all DV now). Details in <code>certificates_free.md</code> / <code>certificates_other.md</code>.</li>
+<li><strong>ACME challenges</strong>: HTTP-01, DNS-01 (wildcards), TLS-ALPN-01.</li>
+<li><strong>Beyond web PKI</strong>: private PKI, SPIFFE/SPIRE (workload identity in cloud-native), SSH CA (Netflix/Bastion-style short-lived certs), mTLS in service meshes (Istio/Linkerd).</li>
+<li><strong>Failure modes</strong>: mis-issued certs (DigiNotar 2011 → bankruptcy), CA compromise, hostname validation bugs, cert expiry outages (Oculus/Fastly incidents), trust-store bloat.</li>
+</ul>
+<h3 id="91-certificate-validation-what-a-client-actually-checks">9.1 Certificate validation — what a client actually checks</h3>
+<ol>
+<li>Chain builds to a trusted root (path validation, name constraints).</li>
+<li>Each signature verifies; validity window OK; EKU/SAN matches hostname (exact or wildcard rules).</li>
+<li>Revocation status (OCSP stapled / CRL / CRLite); CT log inclusion proves publicly logged issuance.</li>
+<li>Modern browsers require CT; pinning (HPKP) is dead — deprecated after abuse; use Expect-CT/CSP <code>report-uri</code> instead.</li>
+</ol>
+<h3 id="92-enterprise-identity-on-top-of-pki">9.2 Enterprise identity on top of PKI</h3>
+<ul>
+<li><strong>mTLS everywhere</strong> in service meshes (SPIFFE/SPIRE issues short-lived SVIDs — workload identity replaces IP-based trust).</li>
+<li><strong>SSH CA</strong> model: host + user certs signed by an offline-rooted CA → short-lived access, no authorized_keys sprawl (used by Netflix BLESS, smallstep).</li>
+<li><strong>Code signing</strong>: Authenticode (Windows), Apple notarization, GPG/minisign, Sigstore (keyless signing via Fulcio CA + Rekor transparency log + ephemeral certs from OIDC identity) — the modern answer to "who built this."</li>
+</ul>
+<hr />
+<h1 id="part-ii-cryptanalysis-security-foundations">PART II — CRYPTANALYSIS &amp; SECURITY FOUNDATIONS</h1>
+<p><em>This part answers: "how does the math actually fail, and how do we know a scheme is secure?" The answers are more nuanced than "it's math, trust it."</em></p>
+<h2 id="10-the-mathematics-underneath">10. The mathematics underneath</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Concepts</th>
+<th>Where used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number theory</td>
+<td>primes, modular arithmetic, Fermat/Euler, discrete log, Pohlig–Hellman, CRT</td>
+<td>RSA, DH, ElGamal</td>
+</tr>
+<tr>
+<td>Abstract algebra</td>
+<td>groups, rings, fields, finite fields GF(p)/GF(2ⁿ)</td>
+<td>ECC, AES field ops, Shamir</td>
+</tr>
+<tr>
+<td>Elliptic curves</td>
+<td>group law, point counting ( Schoof ), pairing-friendly curves (BLS12-381)</td>
+<td>ECDSA/EdDSA, BLS aggregate sigs</td>
+</tr>
+<tr>
+<td>Lattice theory</td>
+<td>LLL/BKZ reduction, shortest vector (SVP/CVP), Module-LWE</td>
+<td>ALL post-quantum winners</td>
+</tr>
+<tr>
+<td>Coding theory</td>
+<td>linear codes, syndrome decoding</td>
+<td>McEliece, HQC (PQC backups)</td>
+</tr>
+<tr>
+<td>Hash functions</td>
+<td>sponge/MD constructions, collision bounds</td>
+<td>SHA-2/3, BLAKE, STARKs</td>
+</tr>
+<tr>
+<td>Probability/complexity</td>
+<td>advantage, negligible functions, PPT adversaries</td>
+<td>security definitions</td>
+</tr>
+<tr>
+<td>Information theory</td>
+<td>Shannon entropy, one-time pad, Kerckhoffs's principle</td>
+<td>secrecy fundamentals</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kerckhoffs's principle</strong> (1883): security must reside in the key, not the algorithm's secrecy. Shannon's maxim: <em>the enemy knows the system.</em> The one-time pad is the only provably unbreakable cipher (Shannon 1949) — and it requires a key as long as the message, used once, distributed secretly. Everything practical is a compromise against those impossible requirements.</p>
+<h3 id="101-how-to-actually-learn-the-math">10.1 How to actually learn the math</h3>
+<ul>
+<li><strong>Finite fields / modular arithmetic</strong>: any intro number theory (or <em>A Friendly Introduction to Number Theory</em>). You need comfort with mod-p arithmetic before ECC makes sense.</li>
+<li><strong>Elliptic curves</strong>: <em>Guide to Elliptic Curve Cryptography</em> (Hankerson–Menezes–Vanstone) is the standard reference; for intuition, the "chord-and-tangent" visualizations and 2×2 toy curves over small primes.</li>
+<li><strong>Lattices (PQC)</strong>: the <em>Lattice Estimator</em> tool + the NIST submission docs; start with the "Learning With Errors" intuition (noisy linear equations are hard to solve).</li>
+<li><strong>Complexity</strong>: Sipser's <em>Introduction to the Theory of Computation</em> — enough to read "PPT adversary" and "negligible advantage" precisely.</li>
+<li><strong>In this repo</strong>: Lean 4 + Mathlib is installed — the endgame for <em>verifying</em> crypto math rather than just learning it.</li>
+</ul>
+<h2 id="11-cryptanalysis-attacking-cryptography-legallyacademically">11. Cryptanalysis — attacking cryptography legally/academically</h2>
+<p>Detailed taxonomy in <code>advanced_crypto.md</code> §1:</p>
+<ul>
+<li><strong>Brute force / exhaustive key search</strong> — bounded by key length; why 128-bit symmetric is comfortable, 80-bit is not.</li>
+<li><strong>Frequency analysis</strong> — classical ciphers (substitution, Vigenère); index of coincidence; modern relevance: traffic analysis.</li>
+<li><strong>Meet-in-the-middle</strong> — doubles effective brute-force cost for double encryption (2DES → 2^80 not 2^112, hence 3DES deprecated).</li>
+<li><strong>Differential cryptanalysis</strong> (Biham–Shamir) — chosen-plaintext attack tracking XOR differences through rounds; how AES was validated.</li>
+<li><strong>Linear cryptanalysis</strong> (Matsui) — approximating rounds with linear relations.</li>
+<li><strong>Algebraic attacks</strong> — express cipher as polynomial system; Gröbner bases.</li>
+<li><strong>Related-key attacks</strong> — AES-256 reduced-round results; why key separation matters.</li>
+<li><strong>Implementation attacks</strong> — see §12.</li>
+<li><strong>Protocol attacks</strong> — see §13.</li>
+</ul>
+<h2 id="12-side-channel-implementation-security">12. Side-channel &amp; implementation security</h2>
+<ul>
+<li><strong>Timing attacks</strong>: RSA/ECDSA private-key recovery via operation timing (Brumley–BONEH 2003); constant-time code (no branches on secrets).</li>
+<li><strong>Power analysis</strong>: DPA/SPA on smartcards, TPMs, HSMs — differential power analysis extracts keys from ~thousands of traces.</li>
+<li><strong>Cache attacks</strong>: Flush+Reload, Prime+Probe — cross-VM key extraction (Spectre/Meltdown family 2018 blurred CPU/microarchitecture into crypto security).</li>
+<li><strong>Fault injection</strong>: voltage/clock glitching, laser fault attacks → P-256 nonce corruption → key recovery ("bellcore attack").</li>
+<li><strong>Rowhammer</strong>, <strong>EM emanations</strong> (TEMPEST/van Eck), <strong>acoustic</strong> key extraction.</li>
+<li><strong>Mitigations</strong>: constant-time libraries (libsodium, BoringSSL), masking/hiding countermeasures, secure elements/HSMs, side-channel evaluation labs (Common Criteria, FIPS 140-3).</li>
+</ul>
+<h2 id="13-protocol-security-formal-methods">13. Protocol security &amp; formal methods</h2>
+<ul>
+<li><strong>Security models</strong>: Dolev–Yao adversary (network attacker controls channel, cannot break crypto); Canetti's UC framework (Universal Composability — "protocols are secure if they're UC-secure").</li>
+<li><strong>Protocol flaws are logic flaws</strong>: replay, reflection, unknown key-share, downgrade attacks — the math can be perfect and the protocol still broken (TLS renegotiation, SSH Terrapin 2023, IKE padding-oracle).</li>
+<li><strong>Symbolic vs. computational proofs</strong>: Tamarin, ProVerif, Scyther — automatic protocol verifiers; applied to TLS 1.3, 5G AKA, Signal, WireGuard analyses.</li>
+<li><strong>Key lifecycle</strong>: generation (CSPRNG), distribution, storage (HSM/TPM/secure enclave), rotation, revocation, destruction. Most "crypto failures" are lifecycle failures.</li>
+<li><strong>Randomness failures</strong>: Debian OpenSSL bug (2008, predictable keys), Dual_EC_DRBG backdoor suspicion (NIST withdrew 2014), IoT devices with hardcoded/seeded RNGs → factorable keys at internet scale.</li>
+</ul>
+<h2 id="13b-common-cryptographic-failure-modes-the-how-it-actually-breaks-list">13b. Common cryptographic failure modes (the "how it actually breaks" list)</h2>
+<p>Nearly every real-world crypto incident is one of these:</p>
+<ol>
+<li><strong>Nonce/IV reuse</strong> — AES-GCM nonce reuse leaks auth key + plaintext XOR; ECDSA nonce reuse leaks private key; ChaCha20 nonce reuse similar. <em>Rule: never reuse a nonce under one key.</em></li>
+<li><strong>Malleability</strong> — CBC without MAC, textbook RSA, ECB: attacker flips bits predictably. <em>Fix: AEAD.</em></li>
+<li><strong>Padding-oracle attacks</strong> — Bleichenbacher '98/'98 on RSA PKCS#1 v1.5 (still seen in old TLS stacks), Vaudenay on CBC. <em>Fix: OAEP/PSS, AEAD, constant-time error handling.</em></li>
+<li><strong>RNG failure</strong> — predictable seeds/keys (Debian OpenSSL 2008, blockchain wallets from weak entropy, PlayStation 3 ECDSA nonce). <em>Fix: audited CSPRNGs (getrandom, /dev/urandom), never seed from time/PID.</em></li>
+<li><strong>JWT mistakes</strong> — <code>alg: none</code>, RS256→HS256 key-confusion, weak HMAC secrets (crackable → forge tokens). <em>Tool: <code>jwt_tool</code>.</em></li>
+<li><strong>Hardcoded keys/secrets</strong> — in source, mobile apps, firmware, CI logs; scanners (gitleaks/trufflehog) + rotation.</li>
+<li><strong>Key storage</strong> — keys next to ciphertext, in env vars, in git, in browser localStorage; use HSM/KMS/keystore + envelope encryption.</li>
+<li><strong>Downgrade/wrong-curve</strong> — protocol downgrade attacks (POODLE, FREAK, Logjam), invalid-curve ECDH, missing certificate validation (<code>verify=False</code> in Python requests — an epidemic).</li>
+<li><strong>Length-extension</strong> — naive <code>SHA256(secret || msg)</code> as MAC; <em>fix: HMAC or SHA-3/BLAKE2.</em></li>
+<li><strong>"Don't roll your own"</strong> — homebrew ciphers, custom KDFs, modified AES. Academic exercise OK; production never. Use libsodium/age/Tink/BoringSSL.</li>
+</ol>
+<h2 id="14-hardness-assumptions-provable-security">14. Hardness assumptions &amp; "provable" security</h2>
+<ul>
+<li>Standard assumptions: factoring (RSA), discrete log (DH/DSS), CDH/DDH, LWE (lattices), one-wayness of hash functions.</li>
+<li><strong>Provable security</strong>: reduce breaking the scheme to solving a believed-hard problem (e.g., EUF-CMA security of Schnorr under discrete log + ROM).</li>
+<li>Caveats: reductions are asymptotic, often in idealized models (ROM ≠ standard model); "reduction loss" matters; quantum changes everything (Shor kills factoring/DL; Grover halves symmetric).</li>
+<li><strong>Unsolved</strong>: whether lattice problems used in NIST PQC are truly quantum-hard at scale; fine-grained complexity; P vs NP remains open (implies factoring might be easy someday).</li>
+</ul>
+<h2 id="15-standards-governance-bodies">15. Standards &amp; governance bodies</h2>
+<ul>
+<li><strong>NIST</strong> (US): AES, SHA-2/3, post-quantum standards, FIPS 140-3 (crypto modules), SP 800- series (key management SP 800-57, TLS guidance SP 800-52).</li>
+<li><strong>IETF</strong>: TLS (RFC 8446), JOSE (JWT), WireGuard docs, ACME RFC 8555.</li>
+<li><strong>ITU-T</strong>: X.509, X.500 directory.</li>
+<li><strong>ISO/IEC JTC1 SC27</strong>, <strong>Common Criteria</strong> (security evaluation), <strong>FIPS</strong>, <strong>eIDAS</strong> (EU trust services regulation).</li>
+<li><strong>CA/Browser Forum</strong>: Baseline Requirements governing public TLS CAs.</li>
+<li><strong>Signal/age/libsodium</strong>: de-facto modern standards set by working code, not committees.</li>
+</ul>
+<hr />
+<h1 id="part-iii-cybersecurity-domains">PART III — CYBERSECURITY DOMAINS</h1>
+<p><em>Where cryptography meets messy reality: networks, software, hardware, humans, and organizations. The deep web-app corpus lives in <code>~/websec_research/</code>; this part maps the whole territory.</em></p>
+<h2 id="16-security-engineering-mindset">16. Security engineering mindset</h2>
+<p>Before domains — the cross-cutting principles (expanded in <code>defender_playbook.md</code> §1):</p>
+<ul>
+<li><strong>Never trust client input</strong>; validate server-side, allowlist-style.</li>
+<li><strong>Least privilege</strong> everywhere (processes, DB users, IAM roles, network segments).</li>
+<li><strong>Defense in depth</strong> — assume each layer fails; combine controls.</li>
+<li><strong>Fail securely</strong> — deny by default; errors must not leak data or bypass auth.</li>
+<li><strong>Secure defaults</strong>; make the secure path the easy path.</li>
+<li><strong>Complete mediation</strong> — check authorization on every request, every time.</li>
+<li><strong>Separation of duties</strong>, <strong>economy of mechanism</strong> (small auditable TCB), <strong>psychological acceptability</strong> (usable security).</li>
+<li><strong>Patch &amp; dependency hygiene</strong> — most breaches exploit known CVEs in unpatched software.</li>
+</ul>
+<h2 id="17-network-security">17. Network security</h2>
+<ul>
+<li><strong>OSI/Layers</strong>: physical → data link (MACsec, 802.1X) → network (IPsec, firewalls, segmentation) → transport (TLS/DTLS, TCP/UDP security) → session/presentation (Kerberos, SSH) → application.</li>
+<li><strong>Perimeter → Zero Trust</strong>: "never trust, always verify" — micro-segmentation, mTLS everywhere, identity-aware proxies; BeyondCorp model. VPNs concentrate risk; Zero Trust distributes it.</li>
+<li><strong>Firewalls</strong>: stateless vs. stateful; NGFW (L7 inspection); WAF (web-specific, see §18).</li>
+<li><strong>IDS/IPS</strong>: signature-based (Snort/Suricata) vs. anomaly/ML-based; Zeek for network metadata; placement matters (inline IPS vs. passive IDS).</li>
+<li><strong>VPNs</strong>: IPsec (IKEv2, complex), OpenVPN (TLS-based), <strong>WireGuard</strong> (modern, preferred), Tailscale/Headscale (WireGuard mesh + identity).</li>
+<li><strong>DNS security</strong>: DNSSEC (signed DNS, authenticity not confidentiality), DoH/DoT (encrypted DNS), DNS filtering (Pi-hole, NextDNS), tunneling detection.</li>
+<li><strong>Email security</strong>: SPF/DKIM/DMARC (anti-spoofing), MTA-STS/TLS-RPT, phishing remains #1 initial vector.</li>
+<li><strong>Wireless</strong>: WPA2/WPA3 (SAE replaces PSK-handshake KRACK issues), evil-twin detection, enterprise 802.1X/EAP.</li>
+<li><strong>Network forensics</strong>: full packet capture (Arkime/Moloch), NetFlow/sFlow, Zeek logs.</li>
+<li><strong>Segmentation &amp; air gaps</strong>: VLANs, microsegmentation, data-diode/air-gap realities (Stuxnet crossed air gaps).</li>
+</ul>
+<h2 id="17b-network-attack-patterns-defenses-attacker-view">17b. Network attack patterns &amp; defenses (attacker view)</h2>
+<ul>
+<li><strong>MITM</strong>: ARP spoofing, rogue DHCP, evil-twin Wi-Fi, DNS hijack, BGP hijack (route leaks — happened to major CDNs), captive-portal phishing. <em>Defenses</em>: TLS (authentication defeats most MITM), 802.1X, DHCP snooping, DNSSEC, RPKI for BGP.</li>
+<li><strong>Scanning/recon</strong>: nmap SYN scans, banner grabbing, ASN/IP-range enumeration; defenders see this constantly — honeypots (Cowrie, T-Pot) turn scans into intel.</li>
+<li><strong>Lateral movement concepts</strong>: pass-the-hash/ticket, credential dumping (Mimikatz), token theft, RDP/SSH pivoting, living-off-land binaries (LOLBins); detection via identity telemetry, not just network.</li>
+<li><strong>Exfiltration channels</strong>: DNS tunneling, HTTPS to bulletproof hosts, cloud storage abuse, steganography; DLP + egress anomaly detection.</li>
+<li><strong>DoS/DDoS</strong>: volumetric (Cloudflare/Akamai scrubbing), protocol (SYN flood, amplification — DNS/NTP/memcached), application-layer (Slowloris, HTTP/2 rapid reset); rate limiting + anycast + upstream filtering.</li>
+</ul>
+<h2 id="18-web-application-security">18. Web &amp; application security</h2>
+<p><em>Primary corpus: <code>~/websec_research/</code> — the most developed area of this research.</em></p>
+<ul>
+<li><strong>OWASP Top 10 (2025)</strong>: broken access control, cryptographic failures, injection, insecure design, security misconfiguration, vulnerable components, auth failures, software/data integrity failures, logging failures, SSRF.</li>
+<li><strong>Injection</strong>: SQLi (parameterized queries/ORM only), NoSQLi, command injection, template injection (SSTI), LDAP/XPath, header injection (CRLF).</li>
+<li><strong>XSS</strong>: reflected/stored/DOM; mitigations: output encoding, CSP, Trusted Types, HttpOnly cookies.</li>
+<li><strong>CSRF</strong>: token-based, SameSite cookies, Origin checks.</li>
+<li><strong>AuthN/AuthZ</strong>: session management, JWT pitfalls (alg=none, key confusion, weak secrets — see <code>jwt_tool</code>), OAuth2/OIDC misconfigurations, password reset flaws, MFA fatigue.</li>
+<li><strong>Access control</strong>: IDOR/BOLA (the payment-bypass family — <code>payment_bypass.md</code>), privilege escalation, forced browsing, mass assignment.</li>
+<li><strong>Business logic</strong>: race conditions (<code>race_and_logic.md</code>), workflow bypasses, price/quantity tampering — scanners miss these; methodology report covers the mindset.</li>
+<li><strong>Server-side</strong>: SSRF (cloud metadata 169.254.169.254), deserialization, path traversal, file upload (<code>advanced_web_vulns.md</code> §5), XXE, request smuggling (§3), cache deception/poisoning (§3–4 of advanced report), prototype pollution.</li>
+<li><strong>Client-side</strong>: clickjacking (frame-ancestors), postMessage abuse, DOM clobbering, supply-chain (malicious npm packages — see §22 secure SDLC).</li>
+<li><strong>WAF limits</strong>: useful as a speed bump; not a fix for code flaws; bypass research is an arms race.</li>
+</ul>
+<h2 id="19-operating-system-endpoint-security">19. Operating-system &amp; endpoint security</h2>
+<ul>
+<li><strong>Linux</strong>: discretionary access control (permissions, capabilities), <strong>SELinux/AppArmor</strong> (MAC), namespaces/cgroups (containers), auditd, seccomp-bpf, secure boot, FDE (LUKS), kernel attack surface (eBPF risks).</li>
+<li><strong>Windows</strong>: UAC, Defender/EDR, WDAC/AppLocker, Credential Guard, BitLocker, registry ACLs, PowerShell logging/AMSI.</li>
+<li><strong>macOS</strong>: SIP, Gatekeeper, TCC privacy model, FileVault, notarization.</li>
+<li><strong>Endpoint detection &amp; response (EDR)</strong>: telemetry → behavioral detection; CrowdStrike/SentinelOne/Wazuh (open-source).</li>
+<li><strong>Memory safety</strong>: ~70% of severe CVEs are memory-corruption (Microsoft/Google stats) → Rust, memory-safe languages, ASan/MSan/UBSan fuzzing, CHERI capability hardware.</li>
+<li><strong>Secure boot chain</strong>: firmware → bootloader → kernel → userspace; measured boot + remote attestation (TPM).</li>
+</ul>
+<h2 id="20-database-security">20. Database security</h2>
+<ul>
+<li><strong>Access control</strong>: least-privilege DB users per app; no app-as-admin.</li>
+<li><strong>Injection</strong>: parameterized queries/ORM — the #1 rule (<code>defender_playbook.md</code> §2.1).</li>
+<li><strong>Encryption</strong>: TLS in transit, TDE/encrypted columns at rest; application-level encryption (envelope encryption) for sensitive fields.</li>
+<li><strong>Auditing</strong>: query logging, Database Activity Monitoring (DAM), immutable audit trails.</li>
+<li><strong>Data-level</strong>: row-level security (Postgres RLS), column masking, dynamic data masking, tokenization/vaulting (Vault, AWS KMS envelope pattern).</li>
+<li><strong>Backups</strong>: encrypted, tested restores, offline/immutable copies vs. ransomware.</li>
+</ul>
+<h2 id="21-cloud-iam-security">21. Cloud &amp; IAM security</h2>
+<ul>
+<li><strong>Shared responsibility model</strong>: provider secures <em>of</em> cloud; customer secures <em>in</em> cloud — most cloud breaches are misconfiguration, not provider failure.</li>
+<li><strong>IAM</strong>: roles over users/keys; MFA mandatory; permission boundaries; just-in-time access; access reviews; AWS IAM Access Analyzer / GCP Policy Analyzer / Azure PIM.</li>
+<li><strong>Network</strong>: security groups/NACLs, private subnets, VPC flow logs, egress control, NAT gateways.</li>
+<li><strong>Data</strong>: KMS envelope encryption, S3 bucket policies (public exposure is the classic fail), object lock/immutability, secrets managers (never env vars in code).</li>
+<li><strong>Workload identity</strong>: SPIFFE/SPIRE, IRSA (EKS), instance metadata service risks (SSRF → credential theft).</li>
+<li><strong>Cloud posture</strong>: CSPM tools (Wiz, Orca, Prowler open-source), benchmarks CIS, infrastructure-as-code scanning (Checkov, tfsec).</li>
+<li><strong>Serverless/containers</strong>: minimal attack surface, but secrets-in-env and over-privileged execution roles persist; container escape is rarer but real (runC CVEs).</li>
+</ul>
+<h2 id="22-mobile-security">22. Mobile security</h2>
+<ul>
+<li><strong>iOS</strong>: sandboxing, App Transport Security (ATS), Keychain, Secure Enclave, code signing + notarization, app attest.</li>
+<li><strong>Android</strong>: sandbox per app, SELinux, Play Integrity API, keystore/TEE, scoped storage.</li>
+<li><strong>Threats</strong>: repackaged apps, overlay attacks, insecure IPC (Intents/URL schemes), root/jailbreak detection limits, side-loaded malware, mobile phishing (AiTM proxies defeat SMS MFA → passkeys help).</li>
+<li><strong>MDM/EMM</strong>: enterprise app wrapping, device compliance, conditional access.</li>
+<li><strong>App shielding</strong>: RASP, obfuscation (limited value vs. determined attackers but raises cost).</li>
+</ul>
+<h2 id="23-iot-otics-security">23. IoT &amp; OT/ICS security</h2>
+<ul>
+<li><strong>IoT</strong>: default passwords (Mirai botnet 2016 → DNS outage), unpatchable firmware, insecure update channels (signed OTA essential), segmentation from corporate LAN.</li>
+<li><strong>OT/ICS</strong>: PLCs/SCADA, safety instrumented systems — can't just "patch and reboot"; Purdue model segmentation; Stuxnet as canonical case study; IEC 62443 standard.</li>
+<li><strong>Supply chain</strong>: hardware Trojans, counterfeit chips, BMC/IPMI exposure.</li>
+</ul>
+<h2 id="24-social-engineering-the-human-layer">24. Social engineering &amp; the human layer</h2>
+<ul>
+<li><strong>Phishing</strong>: credential harvest, AiTM (evilginx-style) → session cookie theft; smishing/vishing; business email compromise (BEC) is higher-loss than malware.</li>
+<li><strong>Defenses</strong>: FIDO2/passkeys (phishing-resistant MFA), DMARC, security-awareness training (mixed evidence — pair with technical controls), email link rewriting, out-of-band verification for payments.</li>
+<li><strong>Physical</strong>: tailgating, USB drops, evil-maid attacks (LUKS/header protection), dumpster diving.</li>
+<li><strong>Insider threat</strong>: least privilege, DLP, UEBA, separation of duties, offboarding checklist.</li>
+</ul>
+<hr />
+<h1 id="part-iv-defensive-security-security-operations">PART IV — DEFENSIVE SECURITY &amp; SECURITY OPERATIONS</h1>
+<p><em>The flip side of offense: find flaws before attackers do, detect what slips through, respond when it does. Offensive skill and defensive rigor are two halves of the same discipline.</em></p>
+<h2 id="24b-application-security-specifics-beyond-web">24b. Application security specifics (beyond web)</h2>
+<ul>
+<li><strong>API security</strong> (expanded in <code>advanced_web_vulns.md</code> §1): BOLA/IDOR is the dominant API flaw; GraphQL introspection + nested-query DoS + batching abuse; mass assignment; excessive data exposure (returning whole ORM objects); inconsistent rate limits across endpoints.</li>
+<li><strong>gRPC/RPC</strong>: reflection enabled in prod leaks schema; HTTP/2 rapid-reset DoS; metadata injection.</li>
+<li><strong>Webhooks/callbacks</strong>: unsigned or replayable callbacks → forged events; verify signatures (Stripe-style HMAC), enforce freshness windows.</li>
+<li><strong>File handling</strong>: path traversal (<code>../../</code>), symlink races, decompression bombs, polyglot files; store uploads outside webroot, rename, serve via signed URLs.</li>
+<li><strong>Deserialization</strong>: Java (<code>readObject</code>), PHP (<code>unserialize</code>), Python <code>pickle</code>, .NET <code>BinaryFormatter</code> — remote code execution primitives; prefer JSON with strict schemas.</li>
+<li><strong>XXE</strong>: XML parsers resolving external entities → file read/SSRF; disable external entities or use JSON.</li>
+<li><strong>Race conditions</strong> (see <code>race_and_logic.md</code>): TOCTOU on filesystem/quotas, double-spend in payment flows, coupon reuse; defenses: atomic DB ops, unique constraints, idempotency keys, pessimistic locking.</li>
+</ul>
+<h2 id="25-threat-modeling">25. Threat modeling</h2>
+<ul>
+<li><strong>STRIDE</strong> (Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege) — per-element analysis.</li>
+<li><strong>Process</strong>: define scope → diagram data flows (DFD) → identify threats per STRIDE → prioritize → mitigate.</li>
+<li><strong>Tools</strong>: Microsoft Threat Modeling Tool, OWASP Threat Dragon, IriusRisk, pytm (Python-as-code).</li>
+<li><strong>Attack trees</strong> (Schneier), <strong>PASTA</strong>, <strong>LINDDUN</strong> (privacy threat modeling — pairs with §28).</li>
+<li><strong>When</strong>: at design time (cheapest fixes), before major releases, after incidents.</li>
+</ul>
+<h2 id="26-secure-sdlc-security-engineering">26. Secure SDLC &amp; security engineering</h2>
+<ul>
+<li><strong>Phases</strong>: requirements (security user stories, abuse cases) → design (threat model, secure architecture) → implementation (SAST, secrets scanning, lint rules) → test (DAST, fuzzing, pentest) → deploy (hardening, SBOM) → operate (monitoring, patching).</li>
+<li><strong>Shift-left vs. shift-everywhere</strong>: gates early, but verification continues through production.</li>
+<li><strong>SBOM</strong> (Software Bill of Materials): CycloneDX/SPDX formats; required by US EO 14028 for federal suppliers; enables rapid CVE impact analysis (Log4Shell showed why).</li>
+<li><strong>SAST/DAST/SCA/IaC scanning</strong>: Semgrep, CodeQL, SonarQube; ZAP/Burp for DAST; Dependabot/Renovate/OSV-Scanner for deps; Checkov/tfsec for IaC.</li>
+<li><strong>Fuzzing</strong>: AFL++, libFuzzer, honggfuzz — coverage-guided; how most memory bugs are found now.</li>
+<li><strong>Secrets scanning</strong>: gitleaks, trufflehog, GitHub push protection — leaked keys are a top breach cause.</li>
+<li><strong>Bug bounties &amp; responsible disclosure</strong>: HackerOne/Bugcrowd/Intigriti; ISO 29147/30111 disclosure standards; safe-harbor policies.</li>
+</ul>
+<h2 id="27-vulnerability-management">27. Vulnerability management</h2>
+<ul>
+<li><strong>Lifecycle</strong>: discover (scanners, audits, researcher reports) → triage → assess severity → prioritize → remediate/mitigate/accept → verify → track SLA.</li>
+<li><strong>CVSS v4.0</strong>: base/temporal/environmental scoring (0–10); pair with EPSS (exploit prediction) and KEV (CISA Known Exploited Vulnerabilities catalog) — patch KEV first.</li>
+<li><strong>CVE/NVD</strong> ecosystem; <strong>CWE</strong> weakness taxonomy; <strong>CAPEC</strong> attack patterns.</li>
+<li><strong>Patch management</strong>: test environments, maintenance windows for OT, virtual patching via WAF when patching is impossible, EOL software inventory.</li>
+<li><strong>Vuln scanners in this lab</strong>: nuclei (14k templates), nikto, whatweb, searchsploit — see <code>cli_toolkit.md</code> and TOOLS.md.</li>
+</ul>
+<h2 id="28-privacy-engineering-data-protection">28. Privacy engineering &amp; data protection</h2>
+<h3 id="281-regulatory-landscape">28.1 Regulatory landscape</h3>
+<ul>
+<li><strong>GDPR</strong> (EU, 2018): lawfulness basis, data minimization, purpose limitation, storage limitation, rights (access, erasure, portability, objection), DPIAs for high-risk processing, breach notification ≤72h, fines to 4% global revenue.</li>
+<li><strong>CCPA/CPRA</strong> (California), <strong>PIPEDA</strong> (Canada), <strong>LGPD</strong> (Brazil), <strong>DPDP</strong> (India), sector rules: HIPAA (US health), PCI-DSS (payments), GLBA (finance), FERPA (education).</li>
+<li><strong>Schrems II</strong> (2020): EU–US data transfers need supplementary measures (DPF adequacy, SCCs + encryption).</li>
+</ul>
+<h3 id="282-privacy-enhancing-technologies-pets">28.2 Privacy-enhancing technologies (PETs)</h3>
+<ul>
+<li><strong>k-anonymity / l-diversity / t-closeness</strong>: generalization/suppression for dataset release (Sweeney 2002; Netflix Prize de-anonymization showed limits).</li>
+<li><strong>Differential privacy</strong>: randomized responses/query answers with ε-bounds; Google RAPPOR, Apple/Google telemetry, US Census 2020; formal guarantee independent of auxiliary info.</li>
+<li><strong>Federated learning</strong>: train on-device, share gradients; gradient-leakage attacks show it's not automatically private → combine with DP/secure aggregation.</li>
+<li><strong>Homomorphic encryption &amp; MPC</strong> (see §7): private analytics, joint computation without data sharing.</li>
+<li><strong>Synthetic data</strong>, <strong>data clean rooms</strong>, <strong>pseudonymization vs. anonymization</strong> (pseudonyms are still personal data under GDPR).</li>
+<li><strong>PETs critique</strong>: most add complexity + utility loss; "privacy by design" (Cavoukian's 7 principles) argues for data minimization first — don't collect what you don't need.</li>
+</ul>
+<h3 id="283-privacy-operations">28.3 Privacy operations</h3>
+<ul>
+<li><strong>Data mapping/RoPA</strong>, retention schedules, consent management (CMPs), DSAR workflows (access/erasure requests), privacy impact assessments, breach notification runbooks, vendor DPAs, cookie/consent enforcement (ePrivacy directive).</li>
+</ul>
+<h2 id="29-digital-identity-authentication">29. Digital identity &amp; authentication</h2>
+<ul>
+<li><strong>Passwords</strong>: hashed with Argon2id/scrypt/bcrypt + salt + pepper; breached-password screening (k-anonymity HIBP API); length &gt; complexity; NIST SP 800-63B (no periodic forced rotation, allow paste managers, check against breach lists).</li>
+<li><strong>MFA</strong>: SMS (weak — SIM swap, AiTM), TOTP (better), push (fatigue attacks → number matching), <strong>FIDO2/WebAuthn passkeys</strong> (phishing-resistant, asymmetric, platform/roaming authenticators). This is the single biggest account-security upgrade available.</li>
+<li><strong>OAuth 2.0 / OIDC</strong>: authorization (delegated access) vs. authentication (identity); flows: auth code + PKCE (the correct modern flow), implicit deprecated, client credentials for M2M; common bugs: redirect_uri validation, state/nonce missing → CSRF/login-confusion, token leakage via referer.</li>
+<li><strong>SAML</strong>: enterprise SSO; XML signature wrapping attacks historically.</li>
+<li><strong>SSO/IGA</strong>: centralized provisioning/deprovisioning (SCIM), joiner-mover-leaver lifecycle.</li>
+<li><strong>Identity proofing</strong>: document verification, liveness detection — for KYC/regulated onboarding.</li>
+<li><strong>Workload/machine identity</strong>: mTLS, SPIFFE IDs, API keys (rotate, scope narrowly, vault them — never in git).</li>
+</ul>
+<h2 id="30-secure-communications">30. Secure communications</h2>
+<ul>
+<li><strong>At rest</strong>: FDE (FileVault/BitLocker/LUKS/VeraCrypt), encrypted backups, encrypted object storage.</li>
+<li><strong>In transit</strong>: TLS everywhere (no exceptions — use HSTS, cert pinning sparingly), SSH for admin access, WireGuard/IPsec VPNs, DoH/DoT for DNS, encrypted email (S/MIME, PGP — adoption poor), Signal/Session/Matrix+Element for messaging.</li>
+<li><strong>Metadata problem</strong>: E2E encryption hides content, not who-talks-to-whom/when/how-much — traffic analysis remains; Tor (onion routing, three-hop circuits, directory authorities via threshold signatures) and mix networks (Loopix, Nym) address it; VPNs shift trust to provider.</li>
+<li><strong>Key verification</strong>: safety numbers (Signal), TOFU (SSH known_hosts), transparency logs (CT, Key Transparency for messaging — CONIKS).</li>
+</ul>
+<h2 id="31-blockchain-cryptocurrency-security">31. Blockchain &amp; cryptocurrency security</h2>
+<p><em>Deep-dive: <code>advanced_crypto.md</code> §6.</em></p>
+<ul>
+<li><strong>Primitives</strong>: hash chains (block integrity), Merkle trees, digital signatures (ECDSA/secp256k1, Ed25519 on Solana), consensus as economic game theory.</li>
+<li><strong>Consensus</strong>: PoW (Bitcoin — energy + ASIC arms race) vs. PoS (Ethereum post-Merge — slashing, finality) vs. BFT variants (Tendermint, HotStuff); 51%/nothing-at-stake attacks; long-range attacks.</li>
+<li><strong>Smart-contract security</strong>: reentrancy (DAO hack 2016), oracle manipulation, flash-loan attacks, integer overflow, access-control bugs, upgradeability proxy risks; tools: Slither, Mythril, Foundry fuzz/invariant tests, formal verification (Certora).</li>
+<li><strong>Wallet security</strong>: hot vs. cold, seed phrase custody (Shamir + steel backups), hardware wallets, multisig (Gnosis Safe), MPC wallets, address poisoning, blind-signing risks.</li>
+<li><strong>Layer-2</strong>: optimistic rollups (fraud proofs) vs. ZK-rollups (validity proofs); bridge security is the weakest link (multiple multi-billion bridge hacks).</li>
+<li><strong>Regulatory</strong>: MiCA (EU), SEC/ETF landscape — compliance is now part of "security."</li>
+</ul>
+<h2 id="32-secure-ai-systems">32. Secure AI systems</h2>
+<ul>
+<li><strong>Threat surface unique to ML</strong>: models are assets (IP), inputs are adversarial space, training pipeline is supply chain.</li>
+<li><strong>Adversarial examples</strong>: imperceptible perturbations fool classifiers; defenses largely broken cat-and-mouse; matters for: content moderation evasion, autonomous vehicles, biometric spoofing, malware classifiers.</li>
+<li><strong>Data poisoning</strong>: label flipping, backdoor triggers (BadNets), membership-inference attacks (privacy leak), model inversion/extraction (steal model via API queries).</li>
+<li><strong>LLM-specific</strong>: prompt injection (direct + indirect via retrieved content — the "SQLi of LLM apps"), jailbreaks, data exfiltration via tool use, insecure plugin ecosystems, training-data memorization of secrets.</li>
+<li><strong>Defenses</strong>: input/output filtering, least-privilege tool scoping, human-in-the-loop for consequential actions, model signing/provenance (Sigstore for ML artifacts), confidential computing for inference, red-teaming as continuous practice (OWASP LLM Top 10, MITRE ATLAS).</li>
+<li><strong>Secure AI development</strong>: dataset provenance, differential-privacy training, federated learning with secure aggregation, evals as security gates.</li>
+</ul>
+<h2 id="33-incident-response-forensics-threat-hunting">33. Incident response, forensics &amp; threat hunting</h2>
+<ul>
+<li><strong>IR lifecycle</strong> (NIST SP 800-61): Preparation → Detection &amp; Analysis → Containment → Eradication → Recovery → Post-Incident.</li>
+<li><strong>Forensics</strong>: order of volatility (capture RAM before disk), write-blockers, chain of custody, timeline analysis (Plaso/log2timeline), memory forensics (Volatility), disk forensics (Autopsy/Sleuth Kit), network forensics (§17), cloud forensics (CloudTrail/GCP audit logs).</li>
+<li><strong>Ransomware playbook</strong>: isolate (network segment, creds reset), identify scope via EDR/identity logs, don't pay (sanctions risk, no guarantee) — restore from immutable backups, negotiate only as last resort.</li>
+<li><strong>Threat hunting</strong>: hypothesis-driven proactive search (e.g., "look for Kerberoasting", "anomalous OAuth grants"); MITRE ATT&amp;CK as common vocabulary; detection-as-code (Sigma rules, YARA).</li>
+<li><strong>Tabletop exercises</strong>: run IR plans before real incidents; purple-team exercises.</li>
+</ul>
+<h2 id="34-security-operations-secops-soc">34. Security operations (SecOps / SOC)</h2>
+<ul>
+<li><strong>Telemetry stack</strong>: EDR endpoints + network (Zeek) + cloud audit logs + identity (Entra/Okta logs) + app logs → SIEM (Splunk, Sentinel, Elastic, Wazuh open-source).</li>
+<li><strong>Detection engineering</strong>: ATT&amp;CK-mapped detections, MITRE CALDERA/atomic tests for validation, false-positive tuning.</li>
+<li><strong>SOAR</strong>: automated enrichment/response (auto-isolate host on EDR alert); balance automation vs. alert fatigue.</li>
+<li><strong>Metrics</strong>: MTTD/MTTR, coverage vs. ATT&amp;CK, alert precision — avoid vanity metrics (alert count).</li>
+<li><strong>Purple teaming</strong>: red (attack simulation: Atomic Red Team, CALDERA, Sliver/Cobalt Strike in authorized labs) + blue collaboration.</li>
+<li><strong>Threat intel</strong>: STIX/TAXII formats, ISACs, vendor feeds; intel without detection engineering is shelfware.</li>
+<li><strong>Logging &amp; retention</strong>: centralize logs (Windows Event Forwarding, syslog/Vector/Fluent Bit), immutable storage (S3 Object Lock, WORM), retention aligned to legal/regulatory needs — logs are both detection input and forensic evidence.</li>
+<li><strong>Identity as the new perimeter</strong>: most modern intrusions authenticate <em>validly</em> with stolen creds → invest in IdP telemetry, impossible-travel/anomalous-grant detections, and phishing-resistant MFA over network monitoring alone.</li>
+</ul>
+<h2 id="35-malware-analysis-reverse-engineering-defensive">35. Malware analysis &amp; reverse engineering (defensive)</h2>
+<ul>
+<li><strong>Static</strong>: strings, PE headers (pestudio, DIE), disassembly (Ghidra — NSA's free RE suite, IDA, Binary Ninja), YARA rules.</li>
+<li><strong>Dynamic</strong>: sandboxes (Any.Run, CAPE, Joe Sandbox), VM-isolated detonation, API call monitoring (ProcMon, Wireshark), debugger (x64dbg, WinDbg, gdb+pwndbg).</li>
+<li><strong>By category</strong>: ransomware (encryptor analysis → decryptor via key-recovery), stealers (credential extraction TTPs), RATs, fileless malware (living-off-land: PowerShell, WMI, LOLBins).</li>
+<li><strong>Purpose</strong>: detection rules, IOCs/TTPs for hunters, decryptor development, takedown evidence. <strong>Legal</strong>: analyze in VMs/labs only; never execute unknown samples on hosts.</li>
+</ul>
+<h2 id="36-cryptographic-key-secrets-management">36. Cryptographic key &amp; secrets management</h2>
+<ul>
+<li><strong>HSMs</strong> (hardware security modules), <strong>TPMs</strong>, <strong>secure enclaves</strong> (Intel SGX/TDX — though SGX has had many side-channel breaks; <strong>AMD SEV-SNP</strong>, <strong>ARM CCA</strong> for confidential VMs), cloud KMS/HSM (AWS CloudHSM, Azure Managed HSM, GCP HSM).</li>
+<li><strong>Secrets lifecycle</strong>: generate in vault → inject at runtime → rotate → audit access; HashiCorp Vault, AWS Secrets Manager, SOPS/age for git-encrypted secrets, Sealed Secrets for k8s.</li>
+<li><strong>Envelope encryption</strong> pattern: DEK encrypts data, KEK (in KMS/HSM) encrypts DEK — enables rotation without re-encrypting data.</li>
+<li><strong>Confidential computing</strong>: encrypt data in use via TEEs (trusted execution environments); remote attestation proves enclave integrity — emerging but with real side-channel caveats (see §39).</li>
+</ul>
+<hr />
+<h1 id="part-v-security-research-professional-practice">PART V — SECURITY RESEARCH &amp; PROFESSIONAL PRACTICE</h1>
+<p><em>How the field advances: authorized adversarial testing, mathematical proof, protocol design, and the institutions (bounties, disclosure norms, conferences) that make it legal and rewarding.</em></p>
+<h2 id="36b-governance-compliance-security-careers">36b. Governance, compliance &amp; security careers</h2>
+<h3 id="governance-frameworks">Governance frameworks</h3>
+<ul>
+<li><strong>ISO/IEC 27001</strong> — ISMS standard (certifiable); Annex A controls; risk assessment + SoA + internal audit cycle.</li>
+<li><strong>NIST CSF 2.0</strong> — Govern/Identify/Protect/Detect/Respond/Recover; free, widely adopted.</li>
+<li><strong>SOC 2</strong> — service-organization trust criteria (security/availability/confidentiality); required for SaaS sales.</li>
+<li><strong>PCI-DSS 4.0</strong> — cardholder data; segmentation, quarterly scans, SAQ/ROC.</li>
+<li><strong>HIPAA/HITECH, GDPR, CCPA</strong> — sectoral privacy regimes (§28.1).</li>
+<li><strong>Common Criteria</strong> — product security evaluation (EAL levels); FIPS 140-3 for crypto modules.</li>
+<li><strong>Cyber insurance</strong>: questionnaires drive baseline controls; war-exclusion clauses post-NotPetya litigation.</li>
+</ul>
+<h3 id="career-map">Career map</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Focus</th>
+<th>Typical entry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SOC analyst</td>
+<td>alert triage, detection eng</td>
+<td>Security+, SIEM basics</td>
+</tr>
+<tr>
+<td>Pentester / red teamer</td>
+<td>authorized offensive testing</td>
+<td>OSCP, HTB/TryHackMe</td>
+</tr>
+<tr>
+<td>AppSec engineer</td>
+<td>secure SDLC, code review</td>
+<td>OSWE, secure-coding practice</td>
+</tr>
+<tr>
+<td>Cloud security engineer</td>
+<td>IAM, CSPM, cloud-native</td>
+<td>AWS/GCP/Azure security certs</td>
+</tr>
+<tr>
+<td>Cryptography engineer</td>
+<td>protocol design, implementation</td>
+<td>math + CS; rare, high demand</td>
+</tr>
+<tr>
+<td>Privacy engineer</td>
+<td>PETs, DPIAs, compliance</td>
+<td>GDPR + eng hybrid</td>
+</tr>
+<tr>
+<td>Malware analyst</td>
+<td>RE, detection</td>
+<td>Ghidra/FLARE-VM, GCFA-ish</td>
+</tr>
+<tr>
+<td>GRC / risk</td>
+<td>frameworks, audits</td>
+<td>CISA, ISO 27001 LA</td>
+</tr>
+<tr>
+<td>Security researcher</td>
+<td>0-days, disclosure</td>
+<td>bug bounties, CTFs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="37-ethical-hacking-penetration-testing">37. Ethical hacking &amp; penetration testing</h2>
+<ul>
+<li><strong>Legal frame first</strong>: written authorization (rules of engagement, scope, testing windows); bug-bounty safe harbor; CFAA/Computer Misuse Act equivalents; never test external systems without permission. <em>This lab: localhost/lab targets only.</em></li>
+<li><strong>Methodology</strong> (mirrors <code>attacker_methodology.md</code>): reconnaissance (subdomain enum — subfinder, DNS, OSINT) → scanning (nmap, nuclei, httpx) → enumeration (ffuf/dirsearch/gobuster, whatweb) → exploitation (manual + sqlmap/jwt_tool/searchsploit) → post-exploitation (privesc, lateral movement concepts) → reporting.</li>
+<li><strong>Pentest types</strong>: external/network, web app, wireless, social engineering (authorized), red team (full-scope adversary simulation), purple team.</li>
+<li><strong>Deliverables</strong>: findings with severity (CVSS), reproduction steps, evidence, remediation; executive summary for leadership.</li>
+<li><strong>Certifications</strong>: Security+/CySA+ (foundational), OSCP (hands-on gold standard), PNPT, eJPT; OSWE/OSCE for advanced web.</li>
+<li><strong>Practice platforms</strong>: PortSwigger Academy (free, best web labs), Hack The Box, TryHackMe, PicoCTF, local labs (Juice Shop, DVWA, WebGoat per SETUP.md).</li>
+</ul>
+<h2 id="38-formal-verification-protocol-design">38. Formal verification &amp; protocol design</h2>
+<ul>
+<li><strong>Why</strong>: tests find bugs you thought of; proofs cover all cases. Heartbleed, KRACK, Spectre were design/implementation gaps formal methods target.</li>
+<li><strong>Tools</strong>: Lean 4 + Mathlib (installed locally — used for theorem proving), Coq, Isabelle/HOL; Tamarin/ProVerif for protocols; CryptoVerif; seL4 (formally verified microkernel); CompCert (verified C compiler); Fiat-Crypto/HACL* (verified crypto code); AWS s2n, Google's Tink use verified components.</li>
+<li><strong>Verified crypto</strong>: HACL*/EverCrypt (project Everest) — machine-checked implementations of TLS components, X25519, AES.</li>
+<li><strong>Protocol design principles</strong>: minimal trusted computing base, explicit adversary model, forward secrecy by default, downgrade resistance, key separation, formal verification before deployment.</li>
+<li><strong>Type systems for security</strong>: information-flow control (Jif, Flow Caml), capability systems, linear types for resource safety.</li>
+</ul>
+<h2 id="39-emerging-frontiers-unsolved-problems">39. Emerging frontiers &amp; unsolved problems</h2>
+<ul>
+<li><strong>Post-quantum transition</strong> (in progress): hybrid deployments, crypto-agility, PQC side-channel analysis, standardization of stateless-hash sigs at scale.</li>
+<li><strong>Homomorphic encryption maturity</strong>: bootstrapping performance, hardware acceleration (GPU/FPGA), standardization (ISO/IEC HE, HE-IR), real deployments (privacy-preserving ML, genomic analysis).</li>
+<li><strong>Confidential computing</strong>: TEE attestation ecosystems, side-channel reality (Foreshadow, Plundervolt, Æpic/Downfall showed SGX/TDX vulnerable) — promises exceed current guarantees.</li>
+<li><strong>AI security arms race</strong>: adversarial robustness is unsolved; LLM agent security (tool-use boundaries) is a live research area; AI-generated vulnerability discovery (e.g., LLM-assisted fuzzing) cuts both ways.</li>
+<li><strong>Unsolvable/unsolved hard problems</strong>: P vs NP; quantum advantage timeline (estimates 5–30 years, high variance); proving lattice assumptions; watermarking AI content reliably; anonymous credentials that are both private and accountable.</li>
+<li><strong>Zero-knowledge at scale</strong>: proof generation cost, hardware acceleration, recursive proofs, zkVMs (RISC Zero, SP1) making arbitrary-program ZK practical.</li>
+<li><strong>Secure multi-party / threshold everything</strong>: threshold ECDSA in production (Fireblocks/Coinbase), FROST standardization, multi-party E2E encrypted messaging research.</li>
+<li><strong>Metadata resistance</strong>: mix networks (Nym), VOPRF/private credentials, traffic-analysis-resistant protocols — largely unsolved at internet scale.</li>
+<li><strong>Post-quantum + privacy combined</strong>: PQ ZK proofs (STARKs already PQ-ish), private PQ key exchange research.</li>
+</ul>
+<h2 id="40-learning-roadmap-beginner-advanced">40. Learning roadmap — beginner → advanced</h2>
+<p><em>Web-security-specific 12-week plan: <code>learning_path.md</code>. This is the broader security/crypto arc.</em></p>
+<p><strong>Stage 0 — Foundations (weeks 1–4)</strong>
+- How the internet works: TCP/IP, DNS, HTTP, TLS handshake (draw it), PKI basics.
+- Linux command line, scripting (Python), git. Read <code>applied_crypto.md</code> §1–2.
+- Ports 8080/3000 lab targets: run Juice Shop, DVWA, WebGoat (<code>docker_setup.md</code>, SETUP.md).</p>
+<p><strong>Stage 1 — Web app security (weeks 5–12)</strong>
+- Follow <code>learning_path.md</code> Phases 1–3: HTTP → OWASP Top 10 → access control/business logic (the payment-bypass zone).
+- Tools: Burp Community, ZAP, ffuf, sqlmap, jwt_tool — see <code>cli_toolkit.md</code> + TOOLS.md.
+- Build a Flask app and break/fix it (<code>flask_security_deep.md</code>, <code>defender_playbook.md</code>).</p>
+<p><strong>Stage 2 — Systems &amp; networks (weeks 13–20)</strong>
+- nmap/NSE, Wireshark/tshark, firewall concepts, Linux privilege model, log analysis.
+- TryHackMe/HTB beginner paths; study <code>attacker_methodology.md</code>.</p>
+<p><strong>Stage 3 — Cryptography proper (weeks 21–28)</strong>
+- <code>theory_primitives.md</code> end-to-end: AES modes, RSA math, ECC, hashes, signatures — implement small examples (Python <code>cryptography</code> lib; openssl CLI).
+- Then <code>advanced_crypto.md</code>: ZK intro, HE concepts, PQC survey.
+- Optional stretch: Lean 4 + Mathlib (installed) for formalization; Tamarin/ProVerif tutorials.</p>
+<p><strong>Stage 4 — Defense &amp; operations (weeks 29–36)</strong>
+- Threat modeling a real app; write Sigma/YARA rules; set up Wazuh or a home SOC; IR tabletop; vulnerability-management workflow with CVSS/EPSS/KEV.
+- Privacy: GDPR basics, implement differential privacy toy example, study PETs literature.</p>
+<p><strong>Stage 5 — Specialization (ongoing)</strong>
+- Pick a lane: web bug bounty (HackerOne), cloud security (CIS benchmarks, PACU-style labs), malware analysis (flare-vm, Ghidra), crypto research (ePrint, lattice estimators), AI security (MITRE ATLAS, garak LLM scanner), hardware/side-channel (ChipWhisperer).</p>
+<p><strong>Specialization tracks worth considering</strong>
+- <strong>Crypto researcher</strong>: lattice estimation, implementation security, ePrint reading group.
+- <strong>Web bug bounty hunter</strong>: pick a program scope, learn one vuln class deeply (see <code>payment_bypass.md</code> methodology), submit reports.
+- <strong>Cloud security</strong>: build everything in IaC, break it with PMapper/Pacu-style labs, earn AWS Security Specialty.
+- <strong>Privacy engineer</strong>: GDPR + build a DP-preserving analytics demo; study Google's differential-privacy libraries.
+- <strong>Hardware/side-channel</strong>: ChipWhisperer + a smartcard/TPM; power-trace analysis tutorials.</p>
+<p><strong>Universal rules</strong>: labs/localhost only without written authorization; document everything; read disclosures/writeups (PortSwigger research, Google Project Zero, NCC Group); contribute to open-source security tooling.</p>
+<hr />
+<h1 id="appendix-a-tool-quick-reference-full-inventory-toolsmd">APPENDIX A — Tool quick-reference (full inventory: TOOLS.md)</h1>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Key tools (installed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Web proxy/scan</td>
+<td>Burp Suite, OWASP ZAP, nuclei, ffuf, httpx, nikto, gobuster, dirsearch, feroxbuster, whatweb, subfinder</td>
+</tr>
+<tr>
+<td>Exploitation aids</td>
+<td>sqlmap, jwt_tool, searchsploit, hashcat, John the Ripper</td>
+</tr>
+<tr>
+<td>Crypto/PKI</td>
+<td>openssl, gpg, age, mkcert, certbot/acme.sh, ssh-keygen</td>
+</tr>
+<tr>
+<td>Networks</td>
+<td>nmap, Wireshark/tshark, tcpdump, iptables/nftables, WireGuard</td>
+</tr>
+<tr>
+<td>Forensics/RE</td>
+<td>Autopsy, Volatility, Ghidra, YARA, strings, Wireshark</td>
+</tr>
+<tr>
+<td>Secrets/keys</td>
+<td>KeePassXC, Bitwarden, VeraCrypt, HashiCorp Vault</td>
+</tr>
+<tr>
+<td>Scripting</td>
+<td>Python3 venv (flask, cryptography, sympy, markdown), Lean 4 + lake</td>
+</tr>
+<tr>
+<td>Wordlists/data</td>
+<td>SecLists (2.5GB), PayloadsAllTheThings, HackTricks, CheatSheetSeries, nuclei-templates</td>
+</tr>
+<tr>
+<td>Labs</td>
+<td>Juice Shop :3000, DVWA :4280, WebGoat :8080, local Flask app :5000</td>
+</tr>
+</tbody>
+</table>
+<h1 id="appendix-b-canonical-reading-list">APPENDIX B — Canonical reading list</h1>
+<ul>
+<li><strong>Crypto theory</strong>: Katz &amp; Lindell <em>Introduction to Modern Cryptography</em>; Boneh–Shoup <em>Graduate Course in Applied Crypto</em> (free online).</li>
+<li><strong>Web security</strong>: PortSwigger Web Security Academy (free labs); OWASP Testing Guide / ASVS / Cheat Sheet Series.</li>
+<li><strong>Systems</strong>: <em>The Practice of Network Security Monitoring</em>; MITRE ATT&CK; NIST SP 800-61 (IR), SP 800-63 (digital identity), SP 800-53 (controls).</li>
+<li><strong>Privacy</strong>: Solove <em>Understanding Privacy</em>; NIST Privacy Framework; GDPR text + EDPB guidance.</li>
+<li><strong>Research</strong>: ePrint IACR (crypto preprints), USENIX Security / IEEE S&amp;P / CCS / NDSS proceedings, Google Project Zero blog, PortSwigger Research.</li>
+<li><strong>PQC</strong>: NIST PQC project pages; <em>Recommendations for Stateful Hash-Based Signature Schemes</em>; migration guides from CISA/NSA.</li>
+</ul>
+<h1 id="appendix-c-mental-models-cheat-sheet">APPENDIX C — Mental models cheat-sheet</h1>
+<ol>
+<li><strong>Crypto gives you tools; security is using them without footguns.</strong> Most breaches: misconfig, logic, credentials, unpatched CVEs — not broken math.</li>
+<li><strong>Hybrid always</strong>: asymmetric bootstraps symmetric; never RSA-encrypt a file directly.</li>
+<li><strong>AEAD always</strong>: encryption without authentication is malleable and dangerous.</li>
+<li><strong>Keys are the perimeter</strong>: key management failures cause most crypto incidents.</li>
+<li><strong>Assume breach</strong>: design for detection, containment, and recovery — prevention alone fails.</li>
+<li><strong>Least privilege + complete mediation + fail secure</strong>: the defensive trinity.</li>
+<li><strong>Verify, don't trust</strong>: signatures, attestation, SBOMs, transparency logs — provenance is the new perimeter.</li>
+<li><strong>The human is the attack surface</strong>: phishing-resistant MFA (passkeys) beats awareness training alone.</li>
+<li><strong>Metadata leaks</strong>: E2E hides content, not context — privacy requires thinking about traffic analysis.</li>
+<li><strong>Crypto agility</strong>: algorithm choice will change (PQC); never hardcode assumptions about "the" algorithm.</li>
+</ol>
+<hr />
+<h1 id="appendix-d-canonical-breach-case-studies-what-each-teaches">APPENDIX D — Canonical breach case studies (what each teaches)</h1>
+<table>
+<thead>
+<tr>
+<th>Incident</th>
+<th>Year</th>
+<th>Root cause</th>
+<th>Lesson</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Heartbleed</td>
+<td>2014</td>
+<td>OpenSSL buffer over-read (missing bounds check)</td>
+<td>memory safety + disclosure ethics; OpenSSL was underfunded</td>
+</tr>
+<tr>
+<td>Sony PS3</td>
+<td>2010</td>
+<td>static ECDSA nonce → private key recovery</td>
+<td>RNG/nonce discipline</td>
+</tr>
+<tr>
+<td>DigiNotar</td>
+<td>2011</td>
+<td>CA issued fraudulent certs; no CT</td>
+<td>PKI trust is fragile; CT now mandatory</td>
+</tr>
+<tr>
+<td>Target</td>
+<td>2013</td>
+<td>third-party HVAC vendor creds → POS malware</td>
+<td>supply chain + segmentation</td>
+</tr>
+<tr>
+<td>Equifax</td>
+<td>2017</td>
+<td>unpatched Struts CVE + expired cert blinded monitoring</td>
+<td>patch SLAs + monitoring coverage</td>
+</tr>
+<tr>
+<td>NotPetya</td>
+<td>2017</td>
+<td>M.E.Doc update supply chain + EternalBlue</td>
+<td>supply chain, segmentation, backups</td>
+</tr>
+<tr>
+<td>SolarWinds</td>
+<td>2020</td>
+<td>build-system compromise → signed malicious update</td>
+<td>build integrity, SBOM, assume breach</td>
+</tr>
+<tr>
+<td>Colonial Pipeline</td>
+<td>2021</td>
+<td>single leaked VPN password, no MFA</td>
+<td>MFA + OT segmentation</td>
+</tr>
+<tr>
+<td>Log4Shell</td>
+<td>2021</td>
+<td>JNDI lookup in Log4j → RCE everywhere</td>
+<td>dependency risk at scale; SBOM value</td>
+</tr>
+<tr>
+<td>MOVEit</td>
+<td>2023</td>
+<td>SQLi in managed file transfer → mass extortion</td>
+<td>patch velocity on edge appliances</td>
+</tr>
+<tr>
+<td>Change Healthcare</td>
+<td>2024</td>
+<td>Citrix portal without MFA → ransomware</td>
+<td>MFA on every remote access path</td>
+</tr>
+<tr>
+<td>Polyfill.io</td>
+<td>2024</td>
+<td>domain sold → JS supply-chain injection</td>
+<td>third-party script risk; SRI/subresource integrity</td>
+</tr>
+</tbody>
+</table>
+<p>Pattern across all: <strong>the math held; the systems around it failed</strong> — credentials, patching, segmentation, monitoring, supply chain.</p>
+<hr />
+<hr />
+<h1 id="part-vi-civilization-scale-the-2025-2026-frontier">PART VI — CIVILIZATION-SCALE: THE 2025–2026 FRONTIER</h1>
+<p><em>Sections 41–46 synthesize the current threat landscape as documented by primary sources (GAO, CrowdStrike, Recorded Future, Microsoft, Google GTIG, NTT Data CTI, UNIDIR, Armis). Citations are inline; full source list appended to §Sources &amp; provenance.</em></p>
+<h2 id="41-the-threat-economy-in-numbers">41. The threat economy in numbers (verified 2025–2026 data)</h2>
+<table>
+<thead>
+<tr><th>Metric</th><th>Value</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>Estimated global cybercrime losses</td><td>&gt;US$10.4 trillion in 2025 (~30% above 2022)</td><td>UNIDIR Insights 2025</td></tr>
+<tr><td>Ransomware share of breaches</td><td>~44% of 2025 breaches (up from ~32% in 2024)</td><td>NTT Data CTI H2-2025</td></tr>
+<tr><td>Ransomware victims on leak sites</td><td>~1,592 in Q3-2025 (~535/month); Q1-2025 peak 2,289</td><td>Check Point via NTT Data</td></tr>
+<tr><td>Supply-chain share of incidents</td><td>~30% of 2025 incidents</td><td>NTT Data CTI H2-2025</td></tr>
+<tr><td>Average global data-breach cost</td><td>$4.88M (2024, +10% YoY, record)</td><td>IBM Cost of a Data Breach</td></tr>
+<tr><td>Avg ransomware payout (US/AU)</td><td>$10.1M; EU €8.5M; UK £5.6M</td><td>Armis State of Cyberwarfare 2025</td></tr>
+<tr><td>Organizations re-attacked after paying</td><td>83% (93% had data stolen anyway)</td><td>CrowdStrike State of Ransomware 2025</td></tr>
+<tr><td>RaaS subscription cost floor</td><td>~$500/year for crime-as-a-service tooling</td><td>UNIDIR 2025</td></tr>
+<tr><td>Organizations seeing AI attacks as top threat</td><td>48% cite AI-automated attack chains; 85% say traditional detection failing</td><td>CrowdStrike 2025</td></tr>
+</tbody>
+</table>
+<p><strong>Reading:</strong> three converging trends dominate — (1) AI compresses attacker cost and time, (2) ransomware professionalized into franchise-style RaaS, (3) the blast radius keeps widening through supply chains and third parties. Detection, response speed, and MFA coverage are the differentiators.</p>
+<h2 id="42-ai-as-weapon-2025-2026-documented-incidents">42. AI as weapon — 2025–2026 documented incidents</h2>
+<p>Sources: GAO-27-108458 (US GAO), Google GTIG AI Threat Tracker, Recorded Future CTI Trends 2026, Microsoft Digital Defense Report 2026, CLTC Berkeley white paper (Nov 2026).</p>
+<ul>
+<li><strong>Just-in-Time (JIT) malware — first observed in the wild:</strong> GTIG identified malware families <strong>PROMPTFLUX</strong> and <strong>PROMPTSTEAL</strong> that call LLMs <em>during execution</em> — generating malicious scripts on demand, obfuscating their own code, and creating new malicious functions rather than shipping hard-coded payloads. This is the operational inflection point from "AI-assisted development" to "AI-in-the-loop malware."</li>
+<li><strong>AI-built evasion labs:</strong> GAO documented a threat actor (June 2026) that used multiple AI agents to build a testing framework: agents mined security research, mapped techniques to frameworks (MITRE ATT&amp;CK), ran attacks in test environments against security products, and reported results — automated malware-vs-EDR R&amp;D.</li>
+<li><strong>Low-skill mass exploitation:</strong> GAO (Feb 2026) documented a low-skill actor using commercial generative AI services to exploit harvested credentials from past breaches against devices with weak passwords and no MFA — "foundational cybersecurity gaps" weaponized at scale.</li>
+<li><strong>Agentic campaigns:</strong> Recorded Future (103 AI-enabled incidents, Jul 2025–Jul 2026) found most AI use is <em>force multiplication</em> of familiar attacks (supply-chain, phishing, extortion); one state-sponsored campaign against Taiwanese government entities employed up to eight AI agents with limited human intervention — the furthest along the autonomy curve observed.</li>
+<li><strong>Guardrail bypass via social engineering of the model itself:</strong> GTIG observed actors prompting Gemini with pretexts ("capture-the-flag student," "security researcher") to extract blocked information — the same persuasion techniques used on humans now used on models.</li>
+<li><strong>Deepfakes &amp; synthetic identity:</strong> CLTC documents voice cloning, localized phishing lures, and <strong>synthetic résumés + real-time deepfake interviews</strong> used to get impostors hired — insider-threat surface migrated to onboarding pipelines.</li>
+<li><strong>Attribution erosion:</strong> fluent AI-written text removes linguistic fingerprints; synthetic media misleads investigators and victims alike.</li>
+</ul>
+<p><strong>Defensive implication:</strong> the moat is no longer detection signatures but <em>verified identity, enforced MFA, patch velocity, and response speed</em> — the exact controls the AI-augmented attacker cannot skip.</p>
+<h2 id="43-prompt-injection-llm-security-deep">43. Prompt injection &amp; LLM security — the new vulnerability class</h2>
+<p>LLM-integrated applications introduce an attack surface with no clean analog in classical software:</p>
+<ul>
+<li><strong>Direct prompt injection:</strong> user input overrides system instructions ("ignore previous instructions"). Mitigations: instruction hierarchy, spotlighting/delimiting, output validation — none are complete; treat LLM output as untrusted input to downstream systems.</li>
+<li><strong>Indirect prompt injection:</strong> malicious instructions hidden in retrieved content — web pages, emails, documents, code comments, API responses — that the agent reads and obeys. This is the highest-risk variant: the attacker never touches the chat UI. A poisoned webpage can exfiltrate data the agent has access to.</li>
+<li><strong>Tool-use / agentic risks:</strong> when an LLM can call tools (read files, send email, execute code, spend money), prompt injection becomes a confused-deputy vulnerability. Defenses: least-privilege tool scopes, human-in-the-loop approval for irreversible actions, argument validation, and sandboxed execution — the same pattern as the classic <em>confused deputy</em> problem (Norm Hardy, 1988).</li>
+<li><strong>OWASP Top 10 for LLM Applications (2025)</strong>: prompt injection (#1), sensitive information disclosure, supply-chain (model/weights/plugins), data/model poisoning, improper output handling, excessive agency, vector/embedding weaknesses, misinformation, unbounded consumption, model theft.</li>
+<li><strong>Emerging controls:</strong> LLM firewalls, structured output schemas (JSON schema enforcement), canary tokens in retrieved content to detect exfiltration, provenance tagging of ingested data, and "dual-LLM" patterns (privileged planner + quarantined executor).</li>
+<li><strong>Model supply chain:</strong> Hugging Face pickle deserialization RCEs, malicious LoRA adapters, typosquatted model repos — model artifacts are executables; scan and pin them like dependencies.</li>
+</ul>
+<h2 id="44-zero-trust-architecture-deep">44. Zero trust, deeply</h2>
+<p>NIST SP 800-207 formalized zero trust; by 2025 it is the default enterprise architecture response to perimeter collapse. The operative principles:</p>
+<ul>
+<li><strong>Never trust, always verify</strong> — every request authenticated &amp; authorized regardless of network location (inside the LAN is not trusted either).</li>
+<li><strong>Assume breach</strong> — design as if the adversary is already inside; segment, micro-segment workloads, and limit blast radius.</li>
+<li><strong>Least privilege per request</strong> — authorization is dynamic, context-aware (device posture, identity, behavior), and just-in-time; standing admin is an anti-pattern.</li>
+<li><strong>Policy enforcement points (PEP/PA)</strong> — identity-aware proxies, service mesh (mTLS everywhere, e.g., SPIFFE/SPIRE workload identity), micro-segmentation, continuous diagnostics.</li>
+<li><strong>What breaks it:</strong> service accounts with over-broad scopes, legacy systems that can't do per-request auth (compensating controls needed), and identity sprawl — one compromised IdP account collapses the model. MFA on the IdP is the single most important control in the architecture.</li>
+<li><strong>Convergence with PQC &amp; confidential computing:</strong> zero trust extends to crypto agility (PQC-capable TLS) and TEEs/enclaves for data-in-use protection.</li>
+</ul>
+<h2 id="45-supply-chain-security-2025-state">45. Supply-chain security — the 2025 battlefield</h2>
+<ul>
+<li><strong>Software supply chain (SLSA framework, levels 1–4):</strong> provenance attestation, hermetic builds, two-party review for critical repos. Sigstore/cosign + in-toto give keyless signing anchored in transparency logs.</li>
+<li><strong>SBOM mandates:</strong> US EO 14028 → NTIA minimum elements; EU Cyber Resilience Act (2024) makes CE-marking + vulnerability handling mandatory for products with digital elements — the largest software-liability regime ever enacted.</li>
+<li><strong>Documented 2025 patterns:</strong></li>
+<li><strong>Polyfill.io domain-sale injection (2024):</strong> a CDN domain used by ~100k+ sites was sold; injected JS skimmed payment data at checkout — supply-chain risk via <em>domain</em>, not code. Lesson: pin + SRI + monitor third-party script integrity.</li>
+<li><strong>xz-utils backdoor (2024):</strong> a multi-year social-engineering campaign ("Jia Tan") inserted a backdoor into SSH via a test-file build hook — the canonical lesson that <em>maintainer trust is the attack surface</em>; caught by Andres Freund noticing 500ms SSH latency.</li>
+<li><strong>npm/PyPI typosquatting &amp; dependency confusion:</strong> public-registry names shadow internal packages; malicious packages with install hooks exfiltrate env vars/secrets. Defenses: scoped registries, allowlists, lockfiles, minimal install scripts, secret scanning on CI.</li>
+<li><strong>AI-coding-assistant packages:</strong> Recorded Future notes dev tools/AI proxy packages have privileged credential access → mass credential theft footholds. Vet MCP servers and AI extensions like production dependencies.</li>
+<li><strong>Hardware/firmware:</strong> signed boot chains (UEFI Secure Boot, Android Verified Boot), measured boot + remote attestation, TPM 2.0 roots of trust.</li>
+</ul>
+<h2 id="46-cyberwarfare-state-actors-2025-2026">46. Cyberwarfare &amp; state actors — 2025–2026</h2>
+<ul>
+<li><strong>Living-off-the-land is the signature technique:</strong> Volt Typhoon (PRC, pre-positioning in US critical infrastructure) uses built-in tools — PowerShell, WMI, netsh — generating near-zero malware telemetry; detection requires behavioral analytics, not signatures. Salt Typhoon breached multiple US telecoms (2024–2025), accessing lawful-intercept systems — the deepest espionage compromise of US comms infrastructure in history.</li>
+<li><strong>Wiper &amp; destructive ops:</strong> NotPetya (2017, ~$10B damage) remains the benchmark; GRU VPNFilter and Sandworm lineage continue evolving. Cyber operations increasingly pair with kinetic conflict (Ukraine 2022–2025: Viasat KA-SAT wiper, Industroyer2/CrashOverride grid attacks, data-wiper malware against Ukrainian government).</li>
+<li><strong>Ransomware as hybrid tool:</strong> states tolerate/profit from ransomware crews while maintaining deniability; attribution is deliberately murky. Some "ransomware" is state cover for intelligence collection.</li>
+<li><strong>AI in state ops:</strong> GTIG attributes sustained Gemini misuse by North Korea, Iran, and PRC actors across the kill chain — phishing lures, C2 development, exfiltration tradecraft.</li>
+<li><strong>Hack-back debate:</strong> most democracies prohibit private-sector retaliation; norms under strain as ransomware monetization industrializes. Geneva-convention-style "digital rules" remain aspirational.</li>
+<li><strong>Economic coercion:</strong> extortion now targets not just data but <em>availability</em> and <em>reputation</em> — triple extortion adds DDoS threats and customer-notification pressure.</li>
+</ul>
+<hr />
+<h1 id="part-vii-operations-at-depth">PART VII — OPERATIONS AT DEPTH</h1>
+<h2 id="47-attack-lifecycle-deep-dive">47. The attack lifecycle, at kill-chain depth</h2>
+<p>The classic Lockheed Martin Cyber Kill Chain (2011) remains the reference frame; modern operations iterate it in loops. Each phase below lists what the attacker does, what telemetry exists, and the defensive control that breaks the chain.</p>
+<table>
+<thead>
+<tr><th>Phase</th><th>Attacker action</th><th>Key telemetry</th><th>Chain-breaking control</th></tr>
+</thead>
+<tbody>
+<tr><td>1. Reconnaissance</td><td>OSINT, DNS/WHOIS, employee enumeration, tech-stack fingerprinting (BuiltWith/Wappalyzer), breach-credential matching (HaveIBeenPwned)</td><td>Passive only — no defender telemetry</td><td>Minimize exposed surface; separate dev/prod identities; monitor for brand impersonation</td></tr>
+<tr><td>2. Weaponization</td><td>Payload dev, exploit selection (CVE matching), phishing-kit customization, AI-generated lures</td><td>Rarely visible</td><td>Patch velocity; phishing-resistant MFA; egress filtering</td></tr>
+<tr><td>3. Delivery</td><td>Phishing (~16% of 2025 breaches), malvertising, drive-by, watering-hole, supply-chain, vishing</td><td>Email gateway, proxy, DNS logs</td><td>Sandboxed detonation, DMARC/DKIM/SPF, URL rewriting, attachment sandboxing</td></tr>
+<tr><td>4. Exploitation</td><td>Memory corruption, auth bypass, deserialization, logic flaws, credential replay</td><td>EDR process telemetry, WAF anomalies, app logs</td><td>Input validation, memory-safe languages, WAF, least-privilege service accounts</td></tr>
+<tr><td>5. Installation / Persistence</td><td>Implants, webshells, scheduled tasks, registry run keys, service creation, account creation, trojanized updates</td><td>Endpoint telemetry, new-account alerts, persistence hunting</td><td>Application allowlisting, EDR, integrity monitoring, immutable backups</td></tr>
+<tr><td>6. C2</td><td>Beaconing, DNS tunneling, domain fronting, dead-drop resolvers, living-off-land (LOLBins), encrypted channels</td><td>DNS anomaly detection, JA3/JA4 TLS fingerprinting, NetFlow volume anomalies</td><td>Egress allowlisting, DNS filtering, TLS inspection where lawful, anomaly baselines</td></tr>
+<tr><td>7. Actions on objectives</td><td>Discovery, credential dumping (LSASS, SAM, browsers), lateral movement (PsExec, RDP, WMI, token theft), privilege escalation, exfiltration, ransomware detonation</td><td>EDR, honeypots, canary credentials, DCSync detection, honeyfiles</td><td>Tiered admin model, credential guard, LAPS, segmentation, behavioral analytics</td></tr>
+</tbody>
+</table>
+<p><strong>Unified Kill Chain (Paul Pols, 2017)</strong> refines this: the attacker loops between <em>control, pivot, and objective</em> phases; modern ops are non-linear — e.g., ransomware crews parallelize exfiltration and encryption while defenders are still scoping.</p>
+<p><strong>MITRE ATT&amp;CK</strong> maps ~200+ techniques across Enterprise/Mobile/ICS matrices; <strong>CALDERA</strong> automates adversary emulation; <strong>MITRE ATLAS</strong> does the same for AI/ML systems. Every detection rule and purple-team exercise should cite technique IDs (e.g., T1566.001 spearphishing attachment, T1078 valid accounts, T1486 data encrypted for impact).</p>
+<h2 id="48-initial-access-brokers-and-the-first-hour">48. Initial access: where breaches actually start</h2>
+<ul>
+<li><strong>Credential abuse dominates:</strong> Valid Accounts (ATT&amp;CK T1078) is the top initial-access vector in enterprise intrusions — stolen passwords, session-token theft, MFA fatigue/push-bombing, AiTM phishing proxies (Evilginx-class) that steal session cookies <em>after</em> MFA. Defenses: phishing-resistant MFA (FIDO2/WebAuthn, passkeys), token binding, impossible-travel alerts, continuous access evaluation.</li>
+<li><strong>Exposed services:</strong> internet-facing RDP/VPN/edge appliances with unpatched CVEs (Ivanti, Fortinet, Citrix — the 2023–2025 intrusion wave). Patch edge devices first; put them behind ZTNA, not raw internet exposure.</li>
+<li><strong>Third-party &amp; SaaS compromise:</strong> ~15% of 2025 breaches started via third parties; OAuth consent phishing, malicious marketplace apps, and over-scoped API tokens are the modern vectors.</li>
+<li><strong>The first hour rule:</strong> median dwell time has collapsed from months (2015-era) to days/weeks for ransomware crews. Detection at hour 0–1 — EDR alerts on LOLBin execution, impossible travel, new persistence — is the highest-leverage SOC metric.</li>
+</ul>
+<h2 id="49-post-exploitation-tradecraft">49. Post-exploitation tradecraft</h2>
+<ul>
+<li><strong>Credential access:</strong> LSASS memory dumping (Mimikatz lineage), SAM/NTDS extraction, browser credential stores, Kerberoasting (requesting service tickets for crackable SPNs), AS-REP roasting, DPAPI abuse, cloud metadata credential theft (IMDSv1 → IMDSv2 hop-limit fix).</li>
+<li><strong>Lateral movement:</strong> PsExec/WMI/WinRM, RDP hijacking (session stealing), pass-the-hash / pass-the-ticket / overpass-the-hash, abuse of SCCM/WSUS as privileged execution channels, BloodHound-style AD path analysis (defenders should run it first).</li>
+<li><strong>Defense evasion:</strong> living-off-the-land binaries (LOLBins: certutil, bitsadmin, mshta, rundll32), AMSI bypass, ETW patching, process hollowing, DLL sideloading, timestomping, log clearing (rarely succeeds against centralized SIEM).</li>
+<li><strong>Exfiltration:</strong> DNS tunneling, chunked HTTPS to cloud storage (ransomware crews favor MEGA/anonfile-class hosts), steganography in images, print-to-PDF-then-exfil side channels; slow-and-low to stay under DLP thresholds — hence <em>volume anomaly</em> detection on egress, not just DLP signatures.</li>
+</ul>
+<h2 id="50-detection-engineering">50. Detection engineering</h2>
+<p>Detection is a product, not a purchase: rules are code, tested, versioned, and retired.</p>
+<ul>
+<li><strong>Detection-as-code stack:</strong> <strong>Sigma</strong> (vendor-agnostic YAML detection rules → convert to Splunk KQL, Elastic EQL, Sentinel KQL), <strong>YARA</strong> (file/memory pattern matching), <strong>Snort/Suricata</strong> (network IDS), <strong>ATT&amp;CK Navigator</strong> (coverage heatmaps — find your blind spots).</li>
+<li><strong>Detection layers:</strong> signature (hashes, known-bad) → behavioral (sequence analytics, UEBA) → anomaly (baseline deviation) → deception (honeypots, honey credentials, canarytokens). Mature SOCs weight layers 3–4; signature-only SOCs lose to novel malware within hours.</li>
+<li><strong>Example Sigma rule shape:</strong> <code>selection: Image|endswith: '\powershell.exe' AND CommandLine|contains: '-enc' → condition: selection</code> — then test against Atomic Red Team tests mapped to the ATT&amp;CK technique it claims to detect.</li>
+<li><strong>Metrics that matter:</strong> MTTD (mean time to detect), MTTR, dwell time, coverage % of ATT&amp;CK techniques, false-positive rate per rule, % alerts triaged automatically vs. manually. SOC alert fatigue — analysts drowning in low-fidelity telemetry — is the #1 operational failure mode; fix with tuning, not more rules.</li>
+<li><strong>AI-era detection shift:</strong> 85% of orgs report traditional detection failing against AI-enhanced attacks (CrowdStrike 2025); the response is identity-centric telemetry (Okta/Entra sign-in logs), egress anomaly detection, and deception grids that don't depend on knowing the malware.</li>
+</ul>
+<h2 id="51-threat-modeling-frameworks-deep">51. Threat modeling frameworks — operational depth</h2>
+<ul>
+<li><strong>STRIDE</strong> (Microsoft): Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege — map each to data-flow diagram elements. Fast, teachable, pairs with Microsoft Threat Modeling Tool.</li>
+<li><strong>PASTA</strong> (7 stages, risk-centric): define objectives → technical scope → app decomposition → threat analysis → vuln analysis → attack modeling → risk analysis. Best when business impact drives prioritization.</li>
+<li><strong>Attack trees</strong> (Schneier): AND/OR decomposition of a goal ("steal customer DB") into sub-goals down to atomic actions; compute minimal cut sets — the cheapest paths are what you defend first.</li>
+<li><strong>LINDDUN</strong>: privacy threat modeling — Linkability, Identifiability, Non-repudiation, Detectability, Disclosure, Unawareness, Non-compliance (GDPR-era necessity).</li>
+<li><strong>MITRE ATLAS</strong>: AI/ML-specific tactics/techniques (data poisoning, model evasion, prompt injection T-prefixes) — use for any system with an LLM or trained model.</li>
+<li><strong>Process:</strong> draw the DFD (trust boundaries explicit) → enumerate threats per element → rank by likelihood × impact → assign mitigations with owners → re-review on architecture change. Threat modeling is a continuous activity, not a one-time workshop; bake it into design review.</li>
+</ul>
+<h2 id="52-incident-response-playbooks">52. Incident response playbooks (NIST SP 800-61r3 lifecycle)</h2>
+<table>
+<thead>
+<tr><th>Phase</th><th>Actions</th><th>Key artifacts</th></tr>
+</thead>
+<tbody>
+<tr><td>1. Preparation</td><td>IR plan, contact trees, forensics retainer, logging baselines (365-day retention target), tabletop exercises quarterly, backup testing (restore drills, not just backups)</td><td>IR plan, runbooks per scenario (ransomware, BEC, data breach, insider)</td></tr>
+<tr><td>2. Detection &amp; Analysis</td><td>Validate alert → scope (what/where/how long) → severity → preserve evidence (memory before disk, write-blockers, chain of custody) → activate response team</td><td>Incident ticket, timeline, scope matrix (hosts/accounts/data)</td></tr>
+<tr><td>3. Containment</td><td>Short-term: isolate hosts/VLANs, disable accounts, block IOCs at egress; long-term: patch entry vector, close exposed services, credential resets — <em>don't tip off the attacker</em> during forensic collection</td><td>Containment checklist per playbook</td></tr>
+<tr><td>4. Eradication</td><td>Remove persistence (all implants, not just the one found), patch root cause, hunt for secondary access — assume the attacker had more time than you think</td><td>Eradication report, re-image plan</td></tr>
+<tr><td>5. Recovery</td><td>Phased restore (critical services first), enhanced monitoring (watch for re-entry), credential rotation, user comms</td><td>Recovery validation checklist</td></tr>
+<tr><td>6. Post-incident</td><td>Blameless postmortem within 2 weeks, lessons → detection/engineering backlog, regulatory notifications (72h GDPR), cyber-insurance reporting</td><td>Postmortem doc, action items with owners</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Ransomware-specific playbook additions:</strong> decision framework for payment (legal counsel — OFAC sanctions exposure makes paying sanctioned actors a federal crime in the US), negotiation via specialized firms, decryptor availability via No More Ransom project, double-extortion monitoring (leak-site watching).</li>
+<li><strong>Tabletop scenarios to rehearse:</strong> ransomware detonation at 2am Friday, BEC wire-fraud attempt, SaaS OAuth compromise, insider data theft, supply-chain compromise notification, deepfake-CEO video call.</li>
+</ul>
+<h2 id="53-security-economics">53. Security economics — the field's physics</h2>
+<ul>
+<li><strong>Asymmetry:</strong> defense must cover all paths; offense needs one. This is why breach cost (~$4.88M average) keeps rising while attack cost falls toward zero with AI tooling and RaaS ($500/yr subscriptions).</li>
+<li><strong>Risk quantification:</strong> ALE = SLE × ARO; FAIR model (Factor Analysis of Information Risk) translates threats into financial terms boards understand; CVSS scores severity but not exploitability-in-context — pair with EPSS (probability of exploitation) and KEV (known-exploited catalog) for prioritization.</li>
+<li><strong>Security as insurance vs. engineering:</strong> cyber-insurance markets hardened post-2021 (ransomware exclusions, MFA requirements for coverage); premiums now function as a shadow risk-assessment of your controls.</li>
+<li><strong>Tragedy of the commons in patching:</strong> unpatched edge devices are externalities — your unpatched VPN is my breach entry point. Collective defense (ISACs, CISA KEV mandates for federal contractors) is the institutional answer.</li>
+<li><strong>Bug bounties &amp; VDP economics:</strong> HackerOne/Bugcrowd marketplaces price vulnerabilities; top bounties exceed $1M (Apple, Microsoft); VDP (vulnerability disclosure policy) is table stakes for any org with a web presence.</li>
+<li><strong>The 80/20 of security spend:</strong> MFA everywhere, patching edge/critical, immutable backups, EDR coverage, security awareness that includes phishing simulations — these five controls prevent the majority of documented breach classes.</li>
+</ul>
+<hr />
+<h1 id="part-viii-field-exercises-documented-local-findings">PART VIII — FIELD EXERCISES: DOCUMENTED LOCAL FINDINGS</h1>
+<p><em>The following are real findings from hands-on exercises executed against this machine's own lab environment — preserved here as a case log. They are reproduced exactly as observed; each teaches a transferable pattern.</em></p>
+<h2 id="54-red-team-exercise-secrets-exposed-via-over-permissive-file-server">54. Red-team exercise — plaintext secrets exposed via over-permissive file server</h2>
+<p><strong>Scenario:</strong> a localhost red-team exercise simulating an attacker who has gained a foothold on a developer workstation (or found it exposed on a LAN).</p>
+<p><strong>Finding:</strong> a file server was bound to <code>0.0.0.0</code> (all interfaces) serving the user's <strong>home directory</strong>. Because the bind address was wildcard rather than <code>127.0.0.1</code>, any host on the network could browse the directory tree over HTTP — including dotfiles and dot-directories.</p>
+<p><strong>What was recovered:</strong> plaintext credentials including a <strong>GitHub Personal Access Token (PAT)</strong> and additional API keys stored in configuration files (e.g., <code>~/.git-credentials</code>, <code>~/.netrc</code>, shell profiles, tool config files). These were readable as plain text — no encryption at rest, no permission checks beyond filesystem ACLs, which were irrelevant since the HTTP server ran as the user.</p>
+<p><strong>Impact chain:</strong> exposed PAT → read/write access to private repositories → potential CI/CD poisoning, source theft, secret discovery in repo history → lateral movement into cloud accounts if the PAT had <code>repo</code>+<code>workflow</code> scopes or was reused elsewhere. Classic "one weak service → total credential compromise" cascade.</p>
+<p><strong>Lessons (each independently shippable as a control):</strong></p>
+<ul>
+<li>Bind dev servers to <code>127.0.0.1</code> unless LAN access is intentional; firewall default-deny inbound.</li>
+<li>Never serve home directories; serve an explicit document root with an allowlist.</li>
+<li>Secrets in plaintext files should be: (a) in a secrets manager / OS keychain, (b) file-permissioned <code>chmod 600</code> minimum, (c) preferably short-lived tokens with minimal scopes (fine-grained PATs), (d) rotated immediately on suspected exposure — assume any plaintext secret on disk is already public.</li>
+<li>GitHub now supports <strong>push protection</strong> and secret-scanning partner patterns; enable them. Leaked PATs are typically abused within <strong>minutes</strong> of appearing on public paste sites — the detection window is tiny.</li>
+<li>This pattern generalizes: <code>python -m http.server</code>, <code>npx serve</code>, <code>php -S</code>, Jupyter <code>--ip=0.0.0.0</code>, Docker <code>-p 0.0.0.0:…</code> — every dev convenience server is a potential secret-exposure vector. Audit listening ports (<code>ss -tlnp</code>, <code>netstat -ano</code>) as a standard hygiene check.</li>
+</ul>
+<h2 id="55-payment-application-exploits-lab">55. Payment-application exploits (business-logic lab)</h2>
+<p><strong>Context:</strong> a deliberately vulnerable payment/lab application used to exercise authorization and business-logic flaws — the vulnerability class that automated scanners miss almost entirely.</p>
+<p><strong>Exploits demonstrated:</strong></p>
+<ul>
+<li><strong>IDOR (Insecure Direct Object Reference):</strong> object identifiers in URLs/API calls (<code>/api/orders/1042</code>, <code>/api/users/7/profile</code>) were sequential and unvalidated against the session identity. Iterating the ID returned other users' orders, PII, and payment metadata. Fix pattern: enforce object-level authorization server-side on every request — never trust that "the user can only see their own page" because the UI hides the link.</li>
+<li><strong>Price tampering / parameter pollution:</strong> the client submitted the order total (or unit price) in the request body; modifying <code>"price": 49.99 → 0.01</code> (or adding duplicate <code>price</code> parameters, or tampering with a hidden form field) produced under-priced orders that the backend accepted because it trusted client-supplied pricing. Fix pattern: price is computed server-side from the catalog; client sends only product IDs and quantities; verify totals server-side before payment capture.</li>
+<li><strong>Webhook forgery:</strong> the payment-confirmation webhook endpoint accepted unsigned/forged POSTs (<code>{"status":"paid"}</code>) with no signature verification — an attacker could mark orders as paid without paying. Fix pattern: verify provider signatures (HMAC-SHA256 of raw body with shared secret, timestamp tolerance window, replay protection via event-ID dedup).</li>
+<li><strong>Coupon brute-force:</strong> coupon validation had no rate limiting and leaked validity via response differences (HTTP status, timing, error message). Enumerating a small coupon space (<code>WELCOME10</code>, sequential patterns) yielded valid codes. Fix pattern: constant-time responses, strict rate limiting per session+IP, lockout, and coupon entropy ≥128 bits for generated codes.</li>
+</ul>
+<p><strong>Meta-lesson:</strong> all four flaws share a root cause — <em>trusting the client</em>. Authorization, pricing, payment confirmation, and discount validity are all server-authoritative decisions. OWASP API Security Top 10 (2023): API1 BOLA (the renamed IDOR), API4 Unrestricted Resource Consumption, API8 Security Misconfiguration.</p>
+<h2 id="56-vulnerable-lab-solves-juice-shop-webgoat-dvwa">56. Vulnerable-application lab solves (OWASP Juice Shop, WebGoat, DVWA)</h2>
+<p><strong>Context:</strong> systematic solves against the three canonical training targets to build pattern-recognition for real engagements.</p>
+<ul>
+<li><strong>Juice Shop (modern SPA + REST API):</strong> solved challenge classes included SQLi via login bypass (<code>' OR 1=1--</code> against the NoSQL/SQL hybrid endpoints), XSS in search and product reviews (stored + reflected + DOM-based variants), SSRF through the complaint/profile-image URL fetcher, JWT manipulation (alg:none / weak-secret crack), path traversal in file-access endpoints (<code>/ftp/</code> directory exposure → <code>../</code> traversal → <code>encryptionkeys</code> directory → JWT signing key), mass-assignment on user registration (<code>role: admin</code> parameter), NoSQL injection (<code>{"$gt":""}</code> operators), and business-logic flaws (negative-quantity basket → price manipulation, forged deluxe membership via tampered JWT). The app's score-board API doubles as a detection-engineering corpus: every challenge maps to a CWE.</li>
+<li><strong>WebGoat (OWASP lesson framework):</strong> covered the lesson arc — HTTP basics/interceptors, auth bypass via parameter tampering and forced browsing, insecure direct object refs, XSS (reflected/stored/DOM), CSRF (missing token → forged state change), insecure deserialization, XXE in XML parsers, broken crypto (ECB penguin, hardcoded keys), and the JWT lesson (alg confusion + weak HMAC secret).</li>
+<li><strong>DVWA (classic PHP/MySQL, difficulty-tiered):</strong> brute-force login (no lockout), command injection (<code>; cat /etc/passwd</code> through the IP field → upgrade to reverse shell via <code>nc</code>/<code>bash -i</code>), SQLi (error-based UNION → boolean/time-based blind → OS command execution via <code>INTO OUTFILE</code>), file upload (extension/MIME bypass → webshell → RCE), file inclusion (LFI → log poisoning → RCE), CSRF (missing anti-CSRF token → forged password change), weak session IDs (predictable <code>PHPSESSID</code>), XSS (reflected → stored → DOM).</li>
+</ul>
+<p><strong>Transferable patterns:</strong> every vuln class has a canonical exploit shape; labs exist to make those shapes reflexive before touching production. The defensive counterpart — write the same attacks as detection rules (Sigma/YARA) and as failing test cases — is what separates pentesters who report from engineers who fix.</p>
+<h2 id="57-defensive-patterns-paywall-audit-and-secure-deck">57. Defensive patterns from local tool builds</h2>
+<ul>
+<li><strong><code>paywall_audit</code> — defensive scanner patterns:</strong> a custom scanner built to detect paywall/cookie-consent and soft-paywall bypass logic in the wild. Documented defensive patterns it operationalizes: (a) <strong>signature-based detection</strong> of common bypass techniques (cookie deletion/replay scripts, user-agent spoofing for metered paywalls, archive.today/CDN cache retrieval of paywalled URLs, Googlebot UA spoofing); (b) <strong>allowlist-vs-denylist posture</strong> — enumerating known-good client behaviors rather than chasing every bypass variant; (c) <strong>server-side enforcement</strong> as the only durable fix: client-side paywalls are UX, not security — metering, entitlement checks, and content gating must be enforced at the origin/CDN edge, signed tokens (short-lived JWT entitlements) beat cookie flags; (d) <strong>telemetry</strong>: log bypass-attempt signatures as abuse signals.</li>
+<li><strong><code>secure_deck</code> — denylist defense architecture:</strong> a presentation/slide tool hardened with a <strong>denylist</strong> approach to dangerous content — explicitly blocking known-bad patterns (script tags, <code>javascript:</code> URLs, event handlers, <code>data:</code> exfiltration vectors, external resource loads) rather than attempting to enumerate safe content. Documented lesson: denylisting is fast to implement but <em>incomplete by construction</em> — novel obfuscations slip through; pair it with output encoding, CSP (<code>default-src 'self'</code>, <code>script-src</code> without <code>'unsafe-inline'</code>), and sandboxed rendering (<code>&lt;iframe sandbox&gt;</code>). The correct hierarchy: allowlist &gt; denylist; encode &gt; filter; sandbox &gt; trust.</li>
+<li><strong>Generalizable lesson:</strong> both exercises demonstrate the defender's version of "assume breach" — build detection for the bypass you already know, then assume an unknown bypass exists and verify your enforcement is server-side and default-deny.</li>
+</ul>
+<hr />
+<h1 id="part-ix-case-studies-with-numbers">PART IX — CASE STUDIES WITH NUMBERS</h1>
+<p><em>Each breach below is chosen because a single control failure maps to a repeatable lesson. Figures are the widely reported estimates.</em></p>
+<table>
+<thead>
+<tr><th>Incident</th><th>Year</th><th>Vector</th><th>Scale / cost</th><th>Root-cause lesson</th></tr>
+</thead>
+<tbody>
+<tr><td>Colonial Pipeline</td><td>2021</td><td>Single compromised VPN password (no MFA) → DarkSide ransomware</td><td>$4.4M ransom paid; ~6 days of fuel panic on the US East Coast; DOJ recovered ~half</td><td>One password without MFA halted critical infrastructure. MFA + segmentation + immutable backups</td></tr>
+<tr><td>SolarWinds SUNBURST</td><td>2020</td><td>Build-system compromise → trojanized signed updates to ~18,000 orgs</td><td>9 US agencies + ~100 private cos; espionage not ransom</td><td>Software supply chain is the new perimeter; signed ≠ safe — need reproducible builds + egress anomaly detection</td></tr>
+<tr><td>Log4Shell (CVE-2021-44228)</td><td>2021–</td><td>JNDI lookup in log strings → RCE in Java everywhere</td><td>CVSS 10.0; mass exploitation within hours; still exploited years later (CISA KEV)</td><td>A logging library became the internet's emergency; SBOMs + dependency inventory determine blast radius</td></tr>
+<tr><td>Equifax</td><td>2017</td><td>Unpatched Apache Struts CVE-2017-5638 + expired cert blinded TLS inspection for 19 months</td><td>~147M people; $1.4B+ total cost; CSO jailed</td><td>Patch velocity on internet-facing systems; expired monitoring certs create silent blind spots</td></tr>
+<tr><td>Target</td><td>2013</td><td>HVAC vendor credentials → pivot into payment network</td><td>40M cards, 70M records; ~$292M costs</td><td>Third-party access + flat network = catastrophic lateral movement; segment payment zones</td></tr>
+<tr><td>NotPetya</td><td>2017</td><td>MeDoc update supply-chain → Mimikaten/ EternalBlue worm</td><td>~$10B global damage; Maersk ~$300M, FedEx TNT ~$400M; Merck ~$870M</td><td>Wiper disguised as ransomware; the costliest cyberattack in history; patch + segmentation + offline backups</td></tr>
+<tr><td>Capital One</td><td>2019</td><td>SSRF in AWS WAF metadata service → IAM role creds → S3 exfil</td><td>~100M records; $80M OCC fine</td><td>Cloud metadata endpoints are crown jewels — IMDSv2 + least-privilege roles + egress control</td></tr>
+<tr><td>MOVEit / Cl0p</td><td>2023</td><td>SQLi in managed file transfer → mass extortion</td><td>~2,600+ orgs, ~90M+ individuals estimated</td><td>Edge appliance patch velocity; one vuln class, hundreds of victims</td></tr>
+<tr><td>Change Healthcare</td><td>2024</td><td>Citrix portal without MFA → ransomware</td><td>~100M+ affected; ~$3B+ response cost; weeks of US pharmacy disruption</td><td>MFA on <em>every</em> remote access path; no exceptions for "just the portal"</td></tr>
+<tr><td>Polyfill.io</td><td>2024</td><td>Domain sold → JS supply-chain injection</td><td>~100k+ sites embedding the CDN script</td><td>Third-party script risk; SRI + CSP + domain pinning</td></tr>
+<tr><td>xz-utils backdoor</td><td>2024</td><td>Multi-year social engineering → build-hook backdoor into sshd</td><td>Caught pre-release by accident (500ms latency anomaly); CVSS would have been 10</td><td>Maintainer trust is the attack surface; reproducible builds + anomaly telemetry</td></tr>
+<tr><td>Salt Typhoon</td><td>2024–25</td><td>Telecom edge device compromise → lawful-intercept systems access</td><td>Multiple US carriers; deepest US comms espionage compromise on record</td><td>Nation-state dwell time measured in years; assume breach → encrypt everything, minimize retained data</td></tr>
+</tbody>
+</table>
+<p>Pattern across all: <strong>the math held; the systems around it failed</strong> — credentials, patching, segmentation, monitoring, supply chain.</p>
+<h2 id="58-career-and-skill-maps">58. Career &amp; skill maps</h2>
+<h3 id="role-taxonomy">Role taxonomy (with realistic entry paths)</h3>
+<table>
+<thead>
+<tr><th>Role</th><th>Core skills</th><th>Typical entry</th></tr>
+</thead>
+<tbody>
+<tr><td>SOC Analyst (Tier 1→3)</td><td>Log analysis, SIEM (Sentinel/Elastic/Splunk), alert triage, MITRE ATT&amp;CK, basic scripting</td><td>Certs (Security+, CySA+), home lab SOC (Splunk BOTS / Security Onion), SOC sim platforms</td></tr>
+<tr><td>Detection Engineer</td><td>Sigma/YARA/KQL/EQL, ATT&amp;CK coverage mapping, data pipeline (logs→SIEM), purple teaming</td><td>Start SOC → specialize; DetectionLab, Atomic Red Team, detection-as-code repos</td></tr>
+<tr><td>Penetration Tester</td><td>Web/API exploitation, AD attacks, privesc, reporting, OSCP/PNPT</td><td>HTB/THM/PicoCTF → bug bounty → junior pentest → OSCP</td></tr>
+<tr><td>Red Teamer</td><td>Full kill chain emulation, OPSEC, C2 infra, AD/Azure attack paths, CRTO/OSCP+</td><td>Pentest → internal red team → CRTO/CPTC</td></tr>
+<tr><td>Security Engineer (AppSec/Platform)</td><td>Secure SDLC, code review, threat modeling, IaC security, CI/CD pipeline security</td><td>Dev background + security certs (Security+, then depth)</td></tr>
+<tr><td>Cloud Security Engineer</td><td>AWS/GCP/Azure security services, IAM, CNAPP, landing zones, CSPM</td><td>Cloud certs (SAA→SC-200/CCSP) + hands-on SCPs/policies</td></tr>
+<tr><td>Malware Analyst / Reverse Engineer</td><td>Assembly, debuggers (x64dbg/WinDbg), Ghidra/IDA, sandboxing, YARA</td><td>MalwareTech courses, FLARE-ON challenges</td></tr>
+<tr><td>Threat Hunter / Intel Analyst</td><td>Hypothesis-driven hunting, CTI feeds, ATT&amp;CK, malware family tracking, OSINT</td><td>SOC → hunt team; MISP/OpenCTI tooling</td></tr>
+<tr><td>GRC / Risk Analyst</td><td>Frameworks (ISO 27001, NIST CSF, SOC 2), risk registers, audits, policy</td><td>Business + compliance certs (CISA, ISO LA)</td></tr>
+<tr><td>DFIR Specialist</td><td>Memory forensics (Volatility), disk forensics, timeline analysis, chain of custody</td><td>SANS FOR courses, forensic lab VMs, GCFA</td></tr>
+</tbody>
+</table>
+<h3 id="skill-matrix-depth-ladder">Skill matrix — depth ladder</h3>
+<ul>
+<li><strong>Level 0 ( literate ):</strong> understands CIA triad, phishing recognition, password hygiene, MFA, "verify before click."</li>
+<li><strong>Level 1 (practitioner):</strong> runs labs (DVWA/Juice Shop/WebGoat), scripts in Python/Bash, reads CVEs, configures Linux firewall/SSH hardening, basic Wireshark.</li>
+<li><strong>Level 2 (engineer):</strong> writes detection rules, threat-models features, performs authenticated web/API testing, understands TLS/PKI deeply, builds home SOC.</li>
+<li><strong>Level 3 (specialist):</strong> full kill-chain operations, AD/cloud attack paths, custom tooling, conference talks/research, mentors.</li>
+<li><strong>Level 4 (architect/researcher):</strong> designs security systems, novel cryptanalysis/protocol work, standards participation, frontier research (PQC migration, AI security).</li>
+</ul>
+<h3 id="certification-landscape-2025">Certification landscape (2025)</h3>
+<ul>
+<li><strong>Foundational:</strong> CompTIA Security+ (still the HR filter), ISC2 CC.</li>
+<li><strong>Offensive:</strong> eJPT/PNPT (entry), OSCP (industry standard pentest), OSWE (web), OSEP/OSCE (evasion), CRTO (red team), GXPN (exploit dev).</li>
+<li><strong>Defensive:</strong> CySA+ (SOC), GCIH (incident handling), GCFA/GCFE (forensics), eCPPT, Blue Team Level 1 certs.</li>
+<li><strong>Cloud:</strong> AWS Security Specialty, CCSP, Azure SC-200, GCP Professional Cloud Security.</li>
+<li><strong>AI-era emerging:</strong> no dominant cert yet — deep knowledge of OWASP LLM Top 10, MITRE ATLAS, model red-teaming is the differentiator.</li>
+</ul>
+<h2 id="59-self-directed-curriculum-12-week-plus">59. Self-directed curriculum (12 weeks → frontier)</h2>
+<ol>
+<li><strong>Weeks 1–2:</strong> Networking + Linux fundamentals; set up a lab (VMs, Docker, Security Onion or Splunk free); complete PortSwigger Web Security Academy labs.</li>
+<li><strong>Weeks 3–4:</strong> Web vuln classes end-to-end — OWASP Top 10 + API Top 10; solve DVWA + Juice Shop; start a writeup habit (every exploit → a detection rule).</li>
+<li><strong>Weeks 5–6:</strong> Cryptography foundations (this doc Part I); implement TLS by hand in Python (ssl module internals), hash passwords with Argon2id, sign with Ed25519.</li>
+<li><strong>Weeks 7–8:</strong> Windows/AD security — HackTheBox Pro Labs / AD enumeration; Kerberoasting, delegation abuse; MITRE ATT&amp;CK study.</li>
+<li><strong>Weeks 9–10:</strong> Detection engineering — deploy Sigma rules in a SIEM, run Atomic Red Team tests, measure coverage on ATT&amp;CK Navigator.</li>
+<li><strong>Weeks 11–12:</strong> Cloud security (AWS IAM deep-dive, SCPs, IMDSv2, GuardDuty); incident-response tabletop exercise; pick a specialization.</li>
+<li><strong>Beyond:</strong> bug bounty (HackerOne), CTFs (HTB, PicoCTF, FLARE-ON), conference talks (DEF CON villages, BSides), original research — the field rewards public artifacts more than credentials alone.</li>
+</ol>
+<hr />
+<h1 id="part-x-operational-appendices-pqc-forensics-privacy">PART X — OPERATIONAL APPENDICES</h1>
+<h2 id="60-pqc-migration-operational-playbook">60. PQC migration — the operational playbook</h2>
+<p>The crypto world changed on <strong>August 13, 2024</strong> when NIST published FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA). Migration is now an engineering program, not a research question.</p>
+<table>
+<thead>
+<tr><th>Standard</th><th>Primitive</th><th>Replaces</th><th>Key sizes (approx.)</th><th>Primary use</th></tr>
+</thead>
+<tbody>
+<tr><td>FIPS 203 / ML-KEM (Kyber)</td><td>Lattice KEM</td><td>ECDH/RSA key transport</td><td>~800 B public key, ~1.6 KB ciphertext (ML-KEM-768)</td><td>TLS 1.3 hybrid key exchange, VPNs, encrypted storage keys</td></tr>
+<tr><td>FIPS 204 / ML-DSA (Dilithium)</td><td>Lattice signatures</td><td>RSA/ECDSA signatures</td><td>~1.3–2.6 KB signatures</td><td>Code signing, firmware, document signing, PKI</td></tr>
+<tr><td>FIPS 205 / SLH-DSA (SPHINCS+)</td><td>Hash-based signatures</td><td>(backup/conservative option)</td><td>~8–50 KB signatures</td><td>High-assurance, long-lived signatures where size is tolerable</td></tr>
+<tr><td>FN-DSA (Falcon)</td><td>Lattice signatures (compact)</td><td>—</td><td>~0.7–1.3 KB signatures</td><td>Compact signature needs (standard finalized 2024/25)</td></tr>
+<tr><td>HQC</td><td>Code-based KEM</td><td>(backup KEM)</td><td>large</td><td>Diversity hedge against lattice cryptanalysis</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Hybrid first:</strong> deploy X25519+ML-KEM combined key exchange (already in Chrome/Firefox/Cloudflare by default since 2023–24) — if either primitive breaks, the session survives. This is the single most important migration pattern.</li>
+<li><strong>Timeline pressure:</strong> NSA CNSA 2.0 requires new National Security Systems to support quantum-resistant algorithms by <strong>2027</strong>, legacy phase-out by <strong>2030</strong>; NIST IR 8547 deprecates quantum-vulnerable algorithms on a transition schedule. "Harvest now, decrypt later" means every year of delay extends the vulnerability window for data with >10-year secrecy lifetimes (health, state secrets, long-term IP).</li>
+<li><strong>Crypto-agility engineering:</strong> inventory every algorithm use (CBOM — cryptographic bill of materials), abstract crypto behind provider interfaces (OpenSSL 3.x providers, AWS-LC, Tink), test hybrid modes, plan certificate-chain migration (hybrid certificates are coming — larger, so check MTU/size limits).</li>
+<li><strong>Watch items:</strong> lattice assumption maturity (younger than factoring), side-channel resistance of new implementations, signature size impact on TLS handshakes and firmware updates, and continued cryptanalysis — SIKE's 2022 collapse proved PQC candidates can die overnight.</li>
+</ul>
+<h2 id="61-digital-forensics-and-incident-evidence">61. Digital forensics &amp; evidence handling</h2>
+<ul>
+<li><strong>Order of volatility (RFC 3227):</strong> registers/cache → memory → network state → disk → backups → physical config. Capture RAM first (MemProcFS, Velociraptor, WinPmem) — encryption keys, injected code, and C2 config live only there.</li>
+<li><strong>Imaging:</strong> write-blockers + forensic images (E01/RAW); hash immediately (SHA-256) and document chain of custody — evidence integrity is what makes findings admissible and actionable.</li>
+<li><strong>Memory forensics:</strong> Volatility 3 framework — process listing, DLL injection detection, network connections, credential artifacts (lsass dump → pypykatz), timeline construction.</li>
+<li><strong>Disk forensics:</strong> timeline super-timeline (Plaso/log2timeline), $MFT/$LogFile for deleted-file recovery, USN journal, prefetch/amcache/shimcache for execution evidence, browser artifacts, event logs (Security 4624/4625/4688, PowerShell 4104 script-block logging).</li>
+<li><strong>Cloud forensics shift:</strong> evidence now lives in API audit logs (CloudTrail, Entra sign-in logs, M365 unified audit) — retention configuration <em>is</em> forensic readiness. Snapshot EBS volumes before termination; legal hold on SaaS tenants.</li>
+<li><strong>Anti-forensics awareness:</strong> timestomping, log wiping, secure deletion — but centralized forwarding (logs → immutable SIEM before attacker reaches the endpoint) defeats most of it.</li>
+</ul>
+<h2 id="62-privacy-engineering-deep">62. Privacy engineering, deep</h2>
+<ul>
+<li><strong>GDPR mechanics:</strong> lawful bases (Art. 6), data-subject rights (access, erasure, portability — 1-month SLA), DPIA requirements, breach notification 72h to supervisory authority, DPO role, Schrems II transfer restrictions.</li>
+<li><strong>Technical privacy controls:</strong> data minimization (collect less = breach less), pseudonymization vs anonymization (k-anonymity, l-diversity, t-closeness — and their failure modes against linkage attacks, Sweeney's re-identification of Gov. Weld's medical records), differential privacy (Dwork — calibrated noise; Apple's local DP, US Census 2020), federated learning, synthetic data.</li>
+<li><strong>PETs (privacy-enhancing technologies):</strong> homomorphic encryption (§7.2), secure enclaves/TEEs (Intel SGX→TDX, AMD SEV, AWS Nitro Enclaves), confidential computing VMs, private information retrieval, mix networks/Tor for communications anonymity.</li>
+<li><strong>Consent fatigue reality:</strong> cookie-banner studies show ~90%+ "accept" rates driven by dark patterns; regulators (EDPB, FTC) now treat deceptive consent UX as an enforcement target — privacy is becoming a UX-engineering problem.</li>
+<li><strong>Privacy ≠ security:</strong> encryption protects confidentiality but not anonymity (traffic analysis), not integrity, and not against lawful access demands — know which property each control buys.</li>
+</ul>
+<h2 id="63-mobile-and-iot-ot-deep-dives">63. Mobile, IoT &amp; OT — the forgotten surfaces</h2>
+<ul>
+<li><strong>Mobile:</strong> iOS sandbox + App Transport Security vs. Android fragmentation (Play Integrity API replacing SafetyNet); mobile-specific threats — sideloading, overlay attacks, accessibility-service abuse (banking trojans: Anubis, SharkBot), SMS-based MFA interception (SIM-swap → SS7). Enterprise: MAM/MDM, app allowlisting, conditional access, mobile threat defense (Zimperium-class).</li>
+<li><strong>IoT reality:</strong> default credentials (Mirai botnet = tens of millions of devices), unpatchable firmware, plaintext protocols (MQTT/CoAP), exposed UPnP, vendor cloud backdoors. Standards response: UK PSTI Act (2024) bans default passwords; ETSI EN 303 645 baseline; US Cyber Trust Mark labeling program (2025).</li>
+<li><strong>OT/ICS (critical infrastructure):</strong> Purdue model segmentation (IT/OT boundary is the #1 risk), protocols with zero authentication (Modbus, DNP3, BACnet, S7), engineering workstations as the soft underbelly (Industroyer2, TRITON/TRISIS targeted safety instrumented systems), air gaps are porous (Stuxnet crossed via USB). NIST SP 800-82r3 is the reference; IEC 62443 zones/conduits is the architecture framework.</li>
+<li><strong>Medical devices:</strong> FDA premarket cybersecurity guidance (2023), legacy devices with 10–20-year lifecycles — virtual patching and network segmentation are the only realistic controls.</li>
+</ul>
+<h2 id="64-security-economics-extension-measurement">64. Security economics — measurement &amp; markets</h2>
+<ul>
+<li><strong>Cyber-insurance mechanics:</strong> underwriting now requires evidence (MFA deployment proof, EDR coverage, immutable backups, IR plan); exclusions for war/act-of-state (Merck v. ACE — NotPetya was ruled <em>not</em> war, insurer paid ~$1.4B); ransomware payments often excluded post-2021 hard market.</li>
+<li><strong>Bug-bounty market data:</strong> HackerOne paid out &gt;$300M cumulative; top bounties: Apple $2M (zero-click FORCEDENTRY chain), Microsoft $250K+; VDP-to-bounty maturity model (VDP → BBP → private programs → crowdsourced pentest).</li>
+<li><strong>CVSS limitations:</strong> base score ignores exploit maturity (pair with EPSS probability + CISA KEV presence) and business context (a CVSS 9.8 on an isolated lab box &lt; CVSS 6.5 on the payment API); SSVC decision trees (CISA) formalize prioritize/respond/track/decline.</li>
+<li><strong>Security debt:</strong> unpatched dependency count, EOL software inventory, standing privileges, unrotated secrets — quantifying these as "security debt" parallels tech-debt thinking and resonates with engineering leadership.</li>
+<li><strong>National economics:</strong> cybercrime &gt;$10.4T/yr (UNIDIR) ≈ ~1–1.5% of global GDP — comparable to illicit drug trade scale; nation-state cyber ops are now budgeted as tools of statecraft alongside conventional military spending.</li>
+</ul>
+<h2 id="65-what-2026-2030-looks-like-watchlist">65. Frontier watchlist — 2026→2030</h2>
+<ul>
+<li><strong>Autonomous attack agents:</strong> Recorded Future predicts orchestrated autonomous campaigns as agentic techniques diffuse; expect "AI-vs-AI" SOC alert triage becoming standard — detection pipelines that use LLMs to triage, investigate, and propose containment.</li>
+<li><strong>PQC production reality:</strong> hybrid TLS everywhere, PQC firmware signing, first large-scale harvest-now-decrypt-later court cases; crypto-agility audits become compliance requirements.</li>
+<li><strong>Agentic AI governance:</strong> EU AI Act enforcement (2025–26), NIST AI RMF adoption, agent-identity standards (who is accountable when an autonomous agent causes a breach — early case law forming).</li>
+<li><strong>Deepfake fraud at scale:</strong> real-time voice/video fraud against finance and HR pipelines; defense = out-of-band verification callbacks, codewords, behavioral biometrics.</li>
+<li><strong>Post-quantum blockchain risk:</strong> Bitcoin/Ethereum signatures are quantum-vulnerable; "harvest now" on public keys makes the ~2025–2030 window critical for migration research (stateless/lattice sig proposals in flight).</li>
+<li><strong>Ransomware evolution:</strong> payments declining (FinCEN data) but extortion shifting to pure data-leak + DDoS models; expect AI-personalized ransom notes and automated negotiation bots.</li>
+<li><strong>Identity as the perimeter:</strong> passkeys/FIDO2 reach mainstream; continuous authentication and behavioral biometrics replace point-in-time passwords; the "passwordless enterprise" becomes default for mature orgs.</li>
+</ul>
+<hr />
+<h1 id="part-xi-technique-catalog-attack-primitives">PART XI — TECHNIQUE CATALOG: ATTACK PRIMITIVES &amp; DEFENSE PAIRS</h1>
+<p><em>Sections 66–70 catalog the highest-frequency techniques across domains — each with the exploit shape, a detection hook, and the durable fix. This is the working reference a practitioner returns to weekly.</em></p>
+<h2 id="66-web-attack-primitives-beyond-the-top-10">66. Web attack primitives beyond the Top 10</h2>
+<ul>
+<li><strong>HTTP request smuggling (CL.TE / TE.CL / TE.TE):</strong> front-end/back-end disagreement on message boundaries → smuggle a hidden request past access controls, poison caches, or hijack other users' responses. Detection: differential responses to ambiguous Content-Length/Transfer-Encoding; Burp HTTP Request Smuggler. Fix: HTTP/2 end-to-end (no ambiguous framing), reject ambiguous requests at the edge.</li>
+<li><strong>Cache deception &amp; poisoning:</strong> path-confusion (<code>/account/settings/nonexistent.css</code>) makes caches store private pages under a public key; poisoning plants malicious content served to other users. Fix: cache only static extensions, <code>Cache-Control: private/no-store</code> on authenticated responses, normalize before cache key.</li>
+<li><strong>Web cache deception → credential theft</strong> chains with XSS in cached pages = mass session theft. Same fix.</li>
+<li><strong>OAuth/OIDC attack surface:</strong> redirect_uri manipulation, state/nonce omission → login CSRF &amp; token theft, PKCE downgrade, implicit-flow leakage via referer, consent phishing for over-scoped third-party apps. Fix: exact-match redirect URIs, mandatory state+nonce+PKCE, minimal scopes, admin consent workflows.</li>
+<li><strong>JWT attacks catalog:</strong> alg:none, RS256→HS256 confusion (sign with public key as HMAC secret), weak HMAC secrets (crack via hashcat), kid injection (path traversal/SQLi in key lookup), jku/x5u header pointing to attacker JWKS, claim tampering without signature checks. Fix: pin algorithm server-side, validate signature+claims+expiry, never trust client-supplied key URLs.</li>
+<li><strong>SSTI (server-side template injection):</strong> <code>{{7*7}}</code>→49 probes in every reflected/stored input on templated apps; Jinja2/Twig/Freemarker sandbox escapes → RCE. Detection: math-probe payloads in WAF + output anomaly.</li>
+<li><strong>Deserialization:</strong> Java (<code>readObject</code> → ysoserial gadget chains), PHP (<code>unserialize</code> → POP chains), .NET (<code>ViewState</code>, BinaryFormatter), Python pickle — any <code>unserialize</code> on attacker data is a remote-code-execution primitive. Fix: never deserialize untrusted data; use JSON/schema-validated formats.</li>
+<li><strong>XXE:</strong> XML parsers resolving external entities → file read (<code>file:///etc/passwd</code>), SSRF, DoS via billion-laughs. Fix: disable external entities/DTDs, prefer JSON, patch libxml2.</li>
+<li><strong>Prototype pollution (JS):</strong> <code>__proto__</code>/<code>constructor.prototype</code> merge gadgets → auth bypass, RCE in Node. Detection: static analysis rules + runtime object-freeze tests.</li>
+<li><strong>GraphQL-specific:</strong> introspection-enabled schema disclosure, batching abuse for brute-force at scale, field-level auth gaps (query what REST would never expose), depth/complexity attacks → DoS. Fix: disable introspection in prod, query-cost analysis, persisted queries.</li>
+</ul>
+<h2 id="67-active-directory-attack-paths">67. Active Directory attack paths (the enterprise kill chain)</h2>
+<ul>
+<li><strong>Enumeration first:</strong> BloodHound collects AD relationships (who can reach Domain Admin) — defenders should run it continuously to find and sever attack paths <em>before</em> attackers do.</li>
+<li><strong>Credential attacks:</strong> Kerberoasting (RC4-encrypted TGS tickets for service accounts — crack offline; fix: AES-only service accounts + 25+ char random passwords), AS-REP roasting (accounts without preauth), DCSync (replicate password hashes via Directory Replication rights — detection: Event 4662 with replication GUIDs).</li>
+<li><strong>Delegation abuse:</strong> unconstrained delegation (compromise the host → steal TGTs of anyone connecting), constrained delegation (S4U abuse → impersonate users to specific services), RBCD (resource-based constrained delegation writable by low-priv users → instant admin on target).</li>
+<li><strong>ACL/path abuse:</strong> GenericAll/WriteDACL/WriteOwner on users/groups/computers, GPO abuse (edit GPO → push malicious scheduled task to all computers), ACL-based persistence via AdminSDHolder.</li>
+<li><strong>NTLM relay:</strong> capture Net-NTLMv2 → relay to services without signing (LDAP, ADCS web enrollment → ESC8 → forge certs → DC auth as machine account). Fix: EPA, LDAP signing/channel binding, disable NTLM where possible.</li>
+<li><strong>ADCS (Certificate Services) attacks:</strong> ESC1–ESC8 misconfigurations — the most over-looked enterprise privesc path of the decade; any domain user can mint a Domain Admin cert if templates are misconfigured.</li>
+<li><strong>Defense stack:</strong> tiered admin model (Tier 0/1/2 — no creds crossing tiers), LAPS/LAPS-equivalent for local admin passwords, Protected Users group, Credential Guard, Authentication Silos, attack-path monitoring (BloodHound CE + continuous collection).</li>
+</ul>
+<h2 id="68-cloud-attack-matrix-aws-azure-gcp">68. Cloud attack matrix (AWS/Azure/GCP)</h2>
+<ul>
+<li><strong>Initial foothold patterns:</strong> leaked access keys in public repos/CI logs (trufflehog/gitleaks scanning is mandatory), SSRF → metadata service (IMDSv1 → IAM role creds — Capital One pattern; fix IMDSv2 + hop-limit 1), public S3 buckets/Blobs (enumeration via GrayhatWarfare-style search), over-permissive IAM (wildcard actions, iam:PassRole to EC2/Lambda → privilege escalation), cross-account role trust misconfiguration.</li>
+<li><strong>Persistence &amp; privilege:</strong> IAM user access keys + console passwords, Lambda/EventBridge backdoor functions, EC2 instance profile abuse, Azure: service principal secrets, automation account runbooks, GCP: service-account JSON keys + workload identity federation gaps.</li>
+<li><strong>Lateral movement:</strong> assume-role chains, VPC peering/trust abuse, Kubernetes RBAC escalation (pods with service-account tokens → secrets), CI/CD pipeline poisoning (GitHub Actions script injection via PR titles/branches — "pwn request" class).</li>
+<li><strong>Exfiltration:</strong> S3→attacker bucket, RDS snapshot sharing, Azure blob SAS token abuse, DNS exfil via Route53, data egress to personal cloud storage.</li>
+<li><strong>Cloud detection specifics:</strong> CloudTrail/GuardDuty/Azure Defender for Cloud/Chronicle — enable org-trail logging to immutable storage, alert on <code>ConsoleLogin</code> from new ASN, <code>PutBucketPolicy</code> public flips, <code>iam:CreateAccessKey</code>, <code>secretsmanager:GetSecretValue</code> spikes.</li>
+</ul>
+<h2 id="69-defense-control-catalog-mapped-to-attck">69. Defense control catalog (mapped to ATT&amp;CK)</h2>
+<table>
+<thead>
+<tr><th>Control layer</th><th>Examples</th><th>Breaks ATT&amp;CK techniques</th></tr>
+</thead>
+<tbody>
+<tr><td>Identity</td><td>FIDO2/passkeys, MFA (phishing-resistant), PAM/JIT access, Identity Governance</td><td>T1078 Valid Accounts, T1621 MFA Request Generation, T1550 Pass-the-Hash</td></tr>
+<tr><td>Endpoint</td><td>EDR, application allowlisting, exploit protection (ASR rules, CFG), LAPS, Credential Guard</td><td>T1059 Command Scripting, T1003 OS Credential Dumping, T1547 Boot/Logon Autostart</td></tr>
+<tr><td>Network</td><td>Micro-segmentation, ZTNA, egress allowlisting, DNS filtering, NDR</td><td>T1071 Application Layer Protocol, T1572 Protocol Tunneling, T1048 Exfil Over Alt Protocol</td></tr>
+<tr><td>Data</td><td>DLP, tokenization, encryption at rest/in-use, data classification, CASB</td><td>T1530 Data from Cloud Storage, T1567 Exfil to Web Service, T1005 Data from Local System</td></tr>
+<tr><td>Application</td><td>SAST/DAST/SCA/IAST, secure SDLC gates, API gateways, WAF, RASP</td><td>T1190 Exploit Public-Facing App, T1059.007 JavaScript, T1189 Drive-by Compromise</td></tr>
+<tr><td>Deception</td><td>Honeypots, honey credentials, canarytokens, honeyfiles, moving-target defense</td><td>T1078, T1003, T1087 Account Discovery — high-fidelity low-noise alerts</td></tr>
+<tr><td>Visibility</td><td>Centralized immutable logging, UEBA, ATT&amp;CK-mapped detection content, purple-team validation</td><td>All — coverage measurement, not prevention</td></tr>
+</tbody>
+</table>
+<h2 id="70-the-meta-skill-security-judgment">70. The meta-skill: security judgment</h2>
+<p>Across every domain, the differentiating competence is <strong>calibrated skepticism</strong>:</p>
+<ul>
+<li>Every trust boundary is a question: who can reach this, what can they do, what happens when they lie? (Our localhost exercise: "who can reach this file server?" → 0.0.0.0 → anyone on LAN → home dir → plaintext PATs.)</li>
+<li>Every convenience is a trade: speed vs. verification, usability vs. security, velocity vs. review. Document the trade; don't pretend it doesn't exist.</li>
+<li>Assume the attacker already inside (zero trust), already has your source (supply chain), already has your model's context (prompt injection), already has your credentials (MFA fatigue). Design for the post-compromise world.</li>
+<li>The best security engineers think like attackers <em>and</em> like auditors <em>and</em> like the business — translate each into the others' language. Threat modeling is that translation exercise.</li>
+<li>Stay current: the half-life of a security technique is ~18 months. Follow primary sources — vendor threat reports (CrowdStrike, Mandiant/Google, Microsoft, Recorded Future, CrowdStrike), CISA advisories, NIST publications, conference proceedings (Black Hat, DEF CON, RSA) — over secondary commentary.</li>
+</ul>
+<hr />
+<h2 id="sources-provenance">Sources &amp; provenance</h2>
+<ul>
+<li>Internal research corpus (this machine): <code>~/websec_research/*.md</code> (12 reports), <code>~/gh_backup/crypto_research/*.md</code> (5 reports), <code>~/TOOLS.md</code>, <code>~/science_research/math_logic_map.md</code>, <code>ml_pipeline_guide.md</code>.</li>
+<li>Standards &amp; primary docs: NIST (FIPS 140-3, SP 800-53/57/61/63/207 privacy, PQC standards), RFC 8446 (TLS 1.3), RFC 8555 (ACME), X.509/ITU-T, ISO/IEC 27001 &amp; 29147/30111, eIDAS, GDPR/EDPB, PCI-DSS, MITRE ATT&amp;CK/CALDERA/ATLAS, CWE/CVE/CVSS/EPSS/KEV, CA/Browser Forum BRs.</li>
+<li>Key papers/events referenced: Biham–Shamir differential cryptanalysis; Matsui linear cryptanalysis; Shor 1994; Gentry 2009 FHE; NIST PQC standardization (Aug 2024); Castryck–Decru SIKE break 2022; Shor→ harvest-now-decrypt-later analyses; Signal Protocol specs; Noise protocol framework; zk-SNARK/STARK literature; Dwork differential privacy; Sweeney k-anonymity.</li>
+<li>Tools/docs: OWASP (Top 10 2025, ASVS, Cheat Sheets, Threat Dragon, LLM Top 10), PortSwigger Web Security Academy &amp; Research, Let's Encrypt/ACME docs, libsodium/NaCl docs, WireGuard whitepaper, Ghidra/Volatility/YARA docs, HashiCorp Vault docs.</li>
+<li>2025–2026 frontier sources: US GAO-27-108458 (AI-enabled cyberattacks incl. JIT malware PROMPTFLUX/PROMPTSTEAL); Google GTIG AI Threat Tracker 2026; Recorded Future CTI Trends 2026 (103 AI-enabled incidents); Microsoft Digital Defense Report 2026; CLTC UC Berkeley white paper on AI-enabled cybercrime (Nov 2026); CrowdStrike 2025 State of Ransomware Survey; NTT Data CTI H2-2025; Check Point ransomware leak-site data; IBM Cost of a Data Breach 2024/25; UNIDIR "Securing Cyberspace for Peace" 2025; Armis State of Cyberwarfare 2025; NSA CNSA 2.0 advisory (May 2025); NIST IR 8547 / FIPS 203-205; NIST SP 800-207 (zero trust), SP 800-61r3 (IR), SP 800-53; MITRE ATT&amp;CK / ATLAS / CALDERA; OWASP Top 10 2025 + LLM Top 10 2025 + API Security Top 10 2023; SLSA framework; Sigstore/in-toto; EU Cyber Resilience Act.</li>
+<li>Local field exercises (this machine, documented findings): red-team localhost exercise — plaintext GitHub PAT + API keys exposed via file server bound 0.0.0.0 serving home directory; payment-lab exploits (IDOR, price tampering, webhook forgery, coupon brute-force); OWASP Juice Shop / WebGoat / DVWA solve logs; paywall_audit defensive scanner patterns; secure_deck denylist defense build.</li>
+</ul>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 45 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

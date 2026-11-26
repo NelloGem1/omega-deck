@@ -1,0 +1,15 @@
+*.key
+*.log
+*.mp4
+*.wav
+*.webp
+*.png
+*.jpg
+__pycache__/
+footage/
+renders/
+vault/
+dna/
+vault_test/
+*.jsonl
+node_modules/

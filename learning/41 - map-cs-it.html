@@ -1,0 +1,1342 @@
+<!doctype html><html><head><meta charset="utf-8"><title>cs-it-map</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="computer-science-information-technology-master-field-map">💻 COMPUTER SCIENCE &amp; INFORMATION TECHNOLOGY — MASTER FIELD MAP</h1>
+<p><em>A comprehensive map of the entire CS/IT landscape: what each field is, the core concepts, tools, technologies, applications, prerequisites, and how the fields interconnect. Companion to <code>math_logic_map.md</code> and <code>ml_pipeline_guide.md</code> in this directory.</em></p>
+<blockquote>
+<p>Version note: tool versions verified against official release pages as of <strong>November 2026</strong> (see Sources). Languages and frameworks move fast — check <code>endoflife.date</code> for current support windows before pinning versions.</p>
+<p><strong>January 2026 SSSSS upgrade:</strong> added §7.9–7.14 (WASM/WASI, AI agents &amp; MCP, Rust systems, bioinformatics, Web3 reality-check, edge/TinyML), §11 emerging frontier fields (LLM inference serving, AI safety/security, quantum–classical hybrid, embodied AI, verifiable computing), §12 open problems, §13 controversies, §14 market/benchmark tables, §15 breakthrough timeline, §16 key papers &amp; people, §17 sibling-map cross-links, and a local lab-verification callout in §3.4 citing <code>~/science_lab/math/REPORT.md</code> (Dijkstra negative-edge &amp; union-find experiments).</p>
+</blockquote>
+<hr />
+<h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+<ol>
+<li><a href="#1-the-big-picture">The Big Picture — How CS/IT Fits Together</a></li>
+<li><a href="#2-programming--software-development">Programming &amp; Software Development</a></li>
+<li><a href="#3-algorithms--data-structures">Algorithms &amp; Data Structures</a></li>
+<li><a href="#4-computer-architecture--systems">Computer Architecture &amp; Systems</a></li>
+<li><a href="#5-data--information-systems">Data &amp; Information Systems</a></li>
+<li><a href="#6-networking--infrastructure">Networking &amp; Infrastructure</a></li>
+<li><a href="#7-specialized-cs-fields">Specialized CS Fields</a></li>
+<li><a href="#8-career-tracks">Career Tracks &amp; Specialization Map</a></li>
+<li><a href="#9-learning-roadmap">Beginner → Advanced Learning Roadmap</a></li>
+<li><a href="#11-emerging-frontier-fields">Emerging Frontier Fields (2025–26)</a></li>
+<li><a href="#12-open-problems">Open Problems</a></li>
+<li><a href="#13-controversies-debates">Controversies &amp; Debates</a></li>
+<li><a href="#14-data-tables-market-numbers">Data Tables &amp; Market Numbers</a></li>
+<li><a href="#15-timeline-cs-breakthroughs">Timeline of Breakthroughs</a></li>
+<li><a href="#16-key-papers-people">Key Papers &amp; People</a></li>
+<li><a href="#17-cross-links-sibling-maps">Cross-Links to Sibling Maps</a></li>
+<li><a href="#18-sources">Sources</a></li>
+</ol>
+<hr />
+<h2 id="1-the-big-picture">1. THE BIG PICTURE</h2>
+<p>CS is the theory of computation; IT is the engineering of systems that apply it. Everything below hangs off a few load-bearing ideas:</p>
+<ul>
+<li><strong>Abstraction layers</strong>: transistors → logic gates → machine code → assembly → C → managed runtimes → application code. Each layer hides complexity below it.</li>
+<li><strong>The hardware/software contract</strong>: the CPU executes instructions; compilers and interpreters translate high-level code into that instruction stream.</li>
+<li><strong>Data in motion vs. data at rest</strong>: networks move data, storage persists it, databases structure it.</li>
+<li><strong>Scale forces trade-offs</strong>: correctness vs. speed, consistency vs. availability, simplicity vs. flexibility — almost every design decision in this map is one of these trade-offs.</li>
+</ul>
+<p>Master mental model:</p>
+<pre><code>APPLICATIONS (web apps, ML, games, OS)
+    ↓ APIs / libraries / frameworks
+LANGUAGES &amp; RUNTIMES (Python, C++, JVM, Go, Node)
+    ↓ compilation / interpretation
+SYSTEM SOFTWARE (OS, compilers, DBMS, hypervisors)
+    ↓ syscalls / drivers
+HARDWARE (CPU, GPU, RAM, storage, NIC, sensors)
+    ↑ connected by NETWORKS + PROTOCOLS
+</code></pre>
+<hr />
+<h2 id="2-programming-software-development">2. PROGRAMMING &amp; SOFTWARE DEVELOPMENT</h2>
+<h3 id="21-core-concepts-language-agnostic">2.1 Core Concepts (language-agnostic)</h3>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>What it means</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variables &amp; types</td>
+<td>Named storage, static vs. dynamic typing</td>
+<td>Memory layout, safety, performance</td>
+</tr>
+<tr>
+<td>Control flow</td>
+<td><code>if/else</code>, loops, <code>switch</code>, exceptions</td>
+<td>Program structure</td>
+</tr>
+<tr>
+<td>Functions &amp; scope</td>
+<td>Reusable units, closures, recursion</td>
+<td>Code organization, stack behavior</td>
+</tr>
+<tr>
+<td>Data structures</td>
+<td>Arrays, lists, maps, sets, trees, graphs</td>
+<td>The bridge to §3</td>
+</tr>
+<tr>
+<td>OOP</td>
+<td>Classes, inheritance, polymorphism, encapsulation</td>
+<td>Modeling real systems; see design patterns below</td>
+</tr>
+<tr>
+<td>FP</td>
+<td>Pure functions, immutability, higher-order fns</td>
+<td>Concurrency safety, testability</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>Threads, async/await, actors, coroutines</td>
+<td>Modern multicore reality</td>
+</tr>
+<tr>
+<td>Memory management</td>
+<td>Stack vs. heap, GC vs. manual, RAII</td>
+<td>Bugs, leaks, performance</td>
+</tr>
+<tr>
+<td>Error handling</td>
+<td>Exceptions, Result types, error codes</td>
+<td>Robustness</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>Unit → integration → E2E, TDD, property-based</td>
+<td>Confidence at scale</td>
+</tr>
+<tr>
+<td>Debugging</td>
+<td>breakpoints, profiling, logging, tracing</td>
+<td>Finding what you can't see</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-major-languages-verified-nov-2026">2.2 Major Languages (verified Nov 2026)</h3>
+<p><strong>Python 3.15.x</strong> (current stable line; 3.14 and 3.13 still in security support; 3.10 reached EOL Oct 2026)
+- <em>Paradigm</em>: multi-paradigm, dynamically typed, interpreted (CPython), JIT experiments ongoing
+- <em>Strengths</em>: readability, huge ecosystem (PyPI ~500k+ packages), ML/data dominance, scripting, glue code
+- <em>Weaknesses</em>: GIL limits CPU parallelism; slower than compiled languages
+- <em>Key tools</em>: <code>venv</code>/<code>uv</code>, <code>pip</code>, <code>pytest</code>, <code>ruff</code>, <code>mypy</code>, <code>black</code>, <code>pandas</code>, <code>numpy</code>, <code>PyTorch</code>/<code>TensorFlow</code>, <code>Django</code>/<code>FastAPI</code>/<code>Flask</code>
+- <em>Applications</em>: data science, ML, web backends, automation, scripting, education
+- <em>Prereqs</em>: basic math, terminal literacy</p>
+<p><strong>C (C17/C23)</strong> — the lingua franca of systems
+- <em>Paradigm</em>: imperative, statically typed, compiled, manual memory
+- <em>Strengths</em>: minimal abstraction over hardware, ubiquitous, tiny runtime
+- <em>Weaknesses</em>: memory bugs, undefined behavior, no safety net
+- <em>Key tools</em>: <code>gcc</code>/<code>clang</code>, <code>make</code>/<code>cmake</code>, <code>gdb</code>, <code>valgrind</code>, <code>AddressSanitizer</code>
+- <em>Applications</em>: OS kernels, embedded, compilers, drivers, performance-critical libraries
+- <em>Prereqs</em>: comfort with pointers and bitwise thinking; ideally some assembly exposure</p>
+<p><strong>C++ (C++23/26)</strong> — C plus abstraction without runtime cost
+- <em>Paradigm</em>: multi-paradigm (OOP, generic, functional-lite), zero-overhead principle
+- <em>Strengths</em>: performance + modern features (RAII, templates, concepts, ranges, coroutines)
+- <em>Weaknesses</em>: complexity, steep learning curve, footguns remain
+- <em>Key tools</em>: <code>cmake</code>, <code>vcpkg</code>/<code>conan</code>, <code>clang</code>/<code>gcc</code>, <code>gdb</code>, <code>clang-tidy</code>, <code>sanitizers</code>, <code>Catch2</code>/<code>GoogleTest</code>
+- <em>Applications</em>: game engines, browsers, trading systems, HPC, graphics, databases
+- <em>Prereqs</em>: solid C, then modern C++ features incrementally</p>
+<p><strong>Java (LTS: 21, 25; current non-LTS ~27)</strong> — enterprise &amp; Android
+- <em>Paradigm</em>: OOP, statically typed, JVM bytecode, JIT-compiled, garbage collected
+- <em>Strengths</em>: portability ("write once"), mature ecosystem, excellent tooling, strong typing
+- <em>Weaknesses</em>: JVM memory footprint, verbosity, GC pauses (mitigated by ZGC/Shenandoah)
+- <em>Key tools</em>: <code>javac</code>, <code>Maven</code>/<code>Gradle</code>, <code>Spring Boot</code>, <code>JUnit</code>, <code>IntelliJ IDEA</code>, <code>jshell</code>, <code>jlink</code>/<code>jpackage</code>
+- <em>Applications</em>: enterprise backends, Android, big-data (Hadoop/Spark/Kafka), microservices
+- <em>Prereqs</em>: OOP fundamentals; JVM memory model for advanced work</p>
+<p><strong>JavaScript / TypeScript 7.x</strong> — the web's native tongue
+- <em>Paradigm</em>: multi-paradigm, dynamically typed (JS), optionally statically typed (TS), single-threaded event loop with Web Workers/Atomics
+- <em>Strengths</em>: runs everywhere (browser, Node.js, edge, mobile via React Native, desktop via Electron/Tauri); largest package registry (npm)
+- <em>Weaknesses</em>: weird coercion rules, <code>this</code> pitfalls, ecosystem churn
+- <em>Key tools</em>: <code>Node.js</code> (LTS), <code>npm</code>/<code>pnpm</code>/<code>yarn</code>, <code>Vite</code>, <code>TypeScript</code>, <code>React</code>/<code>Vue</code>/<code>Svelte</code>, <code>Express</code>/<code>Fastify</code>/<code>NestJS</code>, <code>Vitest</code>/<code>Jest</code>, <code>ESLint</code>
+- <em>Applications</em>: web frontends, web backends (Node), full-stack, CLI tools, serverless/edge functions
+- <em>Prereqs</em>: HTML/CSS for web; the event loop model is the core mental model</p>
+<p><strong>Rust 1.100.x</strong> (latest ~1.100, Nov 2026) — safety without GC
+- <em>Paradigm</em>: systems language, ownership + borrow checker, zero-cost abstractions, fearless concurrency
+- <em>Strengths</em>: memory safety at C++ speed, excellent tooling (<code>cargo</code>, <code>rustup</code>, <code>clippy</code>)
+- <em>Weaknesses</em>: steep ownership learning curve, compile times, smaller ecosystem than C++
+- <em>Key tools</em>: <code>cargo</code>, <code>rustfmt</code>, <code>clippy</code>, <code>tokio</code> (async), <code>axum</code>, <code>serde</code>, <code>wasm-pack</code>
+- <em>Applications</em>: systems tools, WASM, blockchain, CLI tools, embedded, performance backends (Discord, Cloudflare)
+- <em>Prereqs</em>: C or C++ helps enormously; ownership model is the gate</p>
+<p><strong>Go 1.27.x</strong> (latest stable ~1.27.4, Nov 2026) — simplicity at scale
+- <em>Paradigm</em>: statically typed, compiled, garbage collected, CSP-inspired concurrency (goroutines + channels)
+- <em>Strengths</em>: fast compile, single binary deploys, built-in concurrency, huge stdlib
+- <em>Weaknesses</em>: less expressive than Rust/C++, no generics until recently, opinionated
+- <em>Key tools</em>: <code>go</code> toolchain, <code>go mod</code>, <code>gofmt</code>, <code>gin</code>/<code>echo</code>/<code>chi</code>, <code>grpc</code>, <code>Docker</code>/<code>K8s</code> ecosystem, <code>prometheus</code>/<code>pprof</code>
+- <em>Applications</em>: cloud-native microservices, CLI tools, infrastructure (Docker, Kubernetes, Terraform are Go), networking tools
+- <em>Prereqs</em>: C-family syntax familiarity; concurrency concepts</p>
+<p><strong>Other notable languages</strong>
+- <strong>Swift</strong> — Apple platforms, memory-safe, modern concurrency
+- <strong>Kotlin</strong> — Android + JVM, concise, null-safety, multiplatform
+- <strong>C#/.NET 10</strong> — Microsoft ecosystem, game dev (Unity), enterprise, ASP.NET
+- <strong>PHP 8.x</strong> — still powers ~75% of web servers; Laravel dominates legacy web
+- <strong>Ruby</strong> — Rails for rapid web dev; declining but stable niche
+- <strong>Zig</strong> — emerging C competitor, explicit control, no hidden control flow
+- <strong>Assembly (x86-64, ARM64)</strong> — not a "language" for apps but essential for architecture/debugging (§4)</p>
+<h3 id="23-software-engineering-practices">2.3 Software Engineering Practices</h3>
+<ul>
+<li><strong>Version control</strong>: Git (dominant) — commits, branches, merges, rebases, tags; hosting on GitHub/GitLab/Bitbucket; <code>git-flow</code> vs. trunk-based development</li>
+<li><strong>Build systems</strong>: <code>make</code>, <code>CMake</code>, <code>Bazel</code> (Google-scale), <code>Maven</code>/<code>Gradle</code>, <code>cargo</code>, language-native tools</li>
+<li><strong>Package management</strong>: <code>npm</code>/<code>pnpm</code>, <code>pip</code>/<code>uv</code>, <code>cargo</code>, <code>go mod</code>, <code>nuget</code>, <code>apt</code>/<code>brew</code></li>
+<li><strong>CI/CD</strong>: GitHub Actions, GitLab CI, Jenkins, CircleCI, ArgoCD — build → test → deploy pipelines</li>
+<li><strong>Code review</strong>: pull requests, pair programming, static analysis (<code>eslint</code>, <code>ruff</code>, <code>SonarQube</code>)</li>
+<li><strong>Documentation</strong>: README, ADRs (architecture decision records), API docs (OpenAPI/Swagger), docstrings</li>
+<li><strong>Project management</strong>: Agile/Scrum/Kanban, issue trackers (Linear, Jira, GitHub Issues)</li>
+</ul>
+<h3 id="24-design-patterns">2.4 Design Patterns</h3>
+<p><strong>Creational</strong>: Factory, Abstract Factory, Singleton (use sparingly), Builder, Prototype
+<strong>Structural</strong>: Adapter, Bridge, Composite, Decorator, Facade, Proxy
+<strong>Behavioral</strong>: Observer, Strategy, Command, State, Template Method, Iterator, Mediator
+<strong>Architectural patterns</strong>: MVC, MVP, MVVM, layered architecture, hexagonal/clean architecture, microservices, event-driven, serverless
+- <em>Source of truth</em>: "Design Patterns" (Gamma et al., 1994) is dated but foundational; "A Philosophy of Software Design" (Ousterhout) and "Clean Architecture" (Martin) are modern classics.</p>
+<h3 id="25-testing-debugging">2.5 Testing &amp; Debugging</h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Scope</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit</td>
+<td>single function/class</td>
+<td><code>pytest</code>, <code>JUnit</code>, <code>vitest</code>, <code>Catch2</code>, <code>go test</code></td>
+</tr>
+<tr>
+<td>Integration</td>
+<td>component interactions</td>
+<td>test containers, <code>testcontainers</code></td>
+</tr>
+<tr>
+<td>E2E</td>
+<td>whole system</td>
+<td>Playwright, Cypress, Selenium</td>
+</tr>
+<tr>
+<td>Property-based</td>
+<td>generated inputs</td>
+<td><code>hypothesis</code> (Py), <code>quickcheck</code></td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>benchmarks</td>
+<td><code>criterion</code> (Rust), <code>pytest-benchmark</code>, <code>k6</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Debugging tools</strong>: <code>gdb</code>/<code>lldb</code>, IDE debuggers, <code>pdb</code>/<code>ipdb</code>, Chrome DevTools, <code>strace</code>, core dumps</li>
+<li><strong>Observability</strong> (production debugging): structured logging, metrics (<code>Prometheus</code>), tracing (<code>OpenTelemetry</code>, Jaeger), profiling (<code>pprof</code>, <code>perf</code>, <code>py-spy</code>, <code>flamegraphs</code>)</li>
+</ul>
+<h3 id="26-devops-sre">2.6 DevOps &amp; SRE</h3>
+<ul>
+<li><strong>Infrastructure as Code</strong>: Terraform, Pulumi, Ansible, CloudFormation</li>
+<li><strong>Containers</strong>: Docker, Podman, containerd (see §6.4)</li>
+<li><strong>Orchestration</strong>: Kubernetes, Docker Swarm, Nomad, serverless (AWS Lambda, Cloud Run, Vercel)</li>
+<li><strong>Monitoring</strong>: Prometheus + Grafana, Datadog, New Relic, ELK/Loki stacks</li>
+<li><strong>Reliability</strong>: SLOs/SLIs, error budgets, incident response, chaos engineering</li>
+<li><strong>Security in pipeline</strong>: SAST/DAST, dependency scanning (<code>npm audit</code>, <code>dependabot</code>), secrets management (Vault)</li>
+</ul>
+<p><strong>Prereqs</strong>: programming fluency → version control → Linux basics → networking basics → cloud.</p>
+<hr />
+<h2 id="3-algorithms-data-structures">3. ALGORITHMS &amp; DATA STRUCTURES</h2>
+<p>The mathematical core of CS. Everything in §2 and beyond is built from these.</p>
+<h3 id="31-algorithmic-paradigms">3.1 Algorithmic Paradigms</h3>
+<ul>
+<li><strong>Brute force</strong> — try everything; fine for small n</li>
+<li><strong>Divide &amp; conquer</strong> — split, solve, merge (merge sort, quicksort, FFT)</li>
+<li><strong>Greedy</strong> — locally optimal choice hoping for global (Dijkstra, Huffman)</li>
+<li><strong>Dynamic programming</strong> — memoization/tabulation over overlapping subproblems (knapsack, LCS, edit distance)</li>
+<li><strong>Backtracking</strong> — DFS with pruning (N-queens, Sudoku)</li>
+<li><strong>Graph traversal</strong> — BFS, DFS, Dijkstra, A*, topological sort</li>
+<li><strong>Randomized</strong> — quicksort pivot, hashing, Monte Carlo methods</li>
+<li><strong>Streaming/online</strong> — process data once, bounded memory</li>
+</ul>
+<h3 id="32-core-data-structures">3.2 Core Data Structures</h3>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Access</th>
+<th>Insert</th>
+<th>Use cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array / contiguous list</td>
+<td>O(1) index</td>
+<td>O(n) insert</td>
+<td>cache-friendly storage, matrices</td>
+</tr>
+<tr>
+<td>Linked list</td>
+<td>O(n)</td>
+<td>O(1) at ends</td>
+<td>queues, LRU caches</td>
+</tr>
+<tr>
+<td>Stack / Queue</td>
+<td>O(1) ends</td>
+<td>O(1)</td>
+<td>call stacks, BFS, undo, buffers</td>
+</tr>
+<tr>
+<td>Hash table / map</td>
+<td>O(1) avg</td>
+<td>O(1) avg</td>
+<td>indexing, caching, dedup; <em>every language's <code>dict</code>/<code>Map</code></em></td>
+</tr>
+<tr>
+<td>Binary search tree / balanced BST</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+<td>ordered data; <code>std::map</code>, <code>TreeMap</code></td>
+</tr>
+<tr>
+<td>Heap / priority queue</td>
+<td>O(1) peek, O(log n) pop</td>
+<td>O(log n)</td>
+<td>scheduling, Dijkstra, top-k</td>
+</tr>
+<tr>
+<td>Trie</td>
+<td>O(k) per key</td>
+<td>O(k)</td>
+<td>autocomplete, routing tables, IP lookup</td>
+</tr>
+<tr>
+<td>Bloom filter</td>
+<td>O(1), false positives</td>
+<td>O(1)</td>
+<td>"definitely not present" checks (CDN, caches)</td>
+</tr>
+<tr>
+<td>Disjoint-set (union-find)</td>
+<td>~O(1)</td>
+<td>~O(1)</td>
+<td>Kruskal's MST, connected components</td>
+</tr>
+<tr>
+<td>Segment tree / Fenwick</td>
+<td>O(log n) range ops</td>
+<td>O(log n)</td>
+<td>range queries, competitive programming</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-trees">3.3 Trees</h3>
+<ul>
+<li><strong>Binary trees</strong>, <strong>BSTs</strong>, <strong>AVL/red-black trees</strong> (self-balancing; Java's <code>TreeMap</code>, C++ <code>std::map</code>)</li>
+<li><strong>Heaps</strong> — binary heap, pairing heap</li>
+<li><strong>B-trees / B+ trees</strong> — disk-friendly; the backbone of database indexes (§5)</li>
+<li><strong>Tries</strong> — prefix trees</li>
+<li><strong>Segment trees, Fenwick trees</strong> — range queries</li>
+<li><strong>Expression/parse trees</strong> — ASTs (§7.1 compilers), calculators</li>
+<li><strong>Game trees / decision trees</strong> — AI, ML (§ML companion doc)</li>
+<li><strong>kd-trees, R-trees</strong> — spatial data, geo queries, vector search</li>
+</ul>
+<h3 id="34-graphs">3.4 Graphs</h3>
+<ul>
+<li><strong>Representations</strong>: adjacency matrix vs. adjacency list (list wins except dense graphs)</li>
+<li><strong>Traversals</strong>: BFS (shortest unweighted), DFS (cycles, topo sort, connected components)</li>
+<li><strong>Shortest paths</strong>: Dijkstra (non-negative weights), Bellman-Ford (negatives), Floyd-Warshall (all pairs), A* (heuristic-guided, pathfinding)</li>
+<li><strong>MST</strong>: Kruskal, Prim</li>
+<li><strong>Flow networks</strong>: Ford-Fulkerson, max-flow/min-cut</li>
+<li><strong>Graph algorithms in practice</strong>: PageRank, social-network analysis, dependency resolution (package managers!), scheduling, compiler optimization</li>
+</ul>
+<blockquote>
+<p><strong>🧪 Local lab verification</strong> — our own experiments in <code>~/science_lab/math/REPORT.md</code> confirm the textbook caveats empirically: on 300 random directed graphs with negative edges, the "settled-set" Dijkstra silently disagreed with Bellman-Ford in acyclic cases (e.g., graph <code>0→1(1), 0→2(5), 2→1(−10)</code>: Dijkstra returns dist[1]=1 vs. correct −5 — off by 6, no error raised). Dijkstra's settle-once invariant <em>is</em> the non-negativity assumption. Same report measured scaling: Dijkstra ~O(m log n) vs. Bellman-Ford ~O(nm) vs. union-find ~α(n) near-constant per op. Lesson: complexity theory isn't academic — wrong-algorithm-for-the-domain produces silently wrong answers.</p>
+</blockquote>
+<h3 id="35-sorting-searching">3.5 Sorting &amp; Searching</h3>
+<ul>
+<li><strong>Sorting</strong>: bubble/selection/insertion (O(n²) — teaching only), merge sort (stable, O(n log n)), quicksort (fast average, O(n²) worst), heapsort (O(n log n) guaranteed), radix sort (linear for fixed-width keys), <code>sort</code>/<code>sorted</code> builtins in every language</li>
+<li><strong>Searching</strong>: linear O(n), binary O(log n) (requires sorted data), hashing O(1) avg, interpolation search</li>
+<li><strong>Key insight</strong>: complexity analysis (Big-O) lets you predict behavior at scale — learn it early</li>
+</ul>
+<h3 id="36-complexity-theory-theory-side">3.6 Complexity Theory (theory side)</h3>
+<ul>
+<li><strong>P vs NP</strong> — the most famous open problem in CS; implications for cryptography, optimization, ML</li>
+<li><strong>NP-completeness</strong> — traveling salesman, SAT, graph coloring; guides when to use heuristics/approximation</li>
+<li><strong>Big-O / amortized / average vs. worst case</strong></li>
+<li><strong>Lower bounds, reductions</strong></li>
+<li><strong>Space-time trade-offs</strong> — e.g., hash tables trade memory for speed</li>
+</ul>
+<h3 id="37-advanced-topics">3.7 Advanced Topics</h3>
+<ul>
+<li><strong>String algorithms</strong>: KMP, Rabin-Karp, suffix trees/arrays, rolling hashes, regex engines</li>
+<li><strong>Numerical algorithms</strong>: FFT, numerical integration, linear algebra (links to math map)</li>
+<li><strong>Probabilistic data structures</strong>: Bloom filters, HyperLogLog, Count-Min sketch, LSH — approximate answers at massive scale</li>
+<li><strong>Computational geometry</strong>: convex hulls, closest pair, Voronoi diagrams</li>
+<li><strong>Randomized algorithms</strong>: Monte Carlo vs. Las Vegas, expected-case analysis</li>
+</ul>
+<p><strong>Prereqs</strong>: algebra (loops, recursion), basic proof skills; math map companion for formalization.</p>
+<hr />
+<h2 id="4-computer-architecture-systems">4. COMPUTER ARCHITECTURE &amp; SYSTEMS</h2>
+<h3 id="41-hardware-fundamentals">4.1 Hardware Fundamentals</h3>
+<ul>
+<li><strong>CPU</strong>: ALU, control unit, registers, instruction pipeline, superscalar execution, branch prediction, out-of-order execution</li>
+<li><strong>Instruction set architectures (ISAs)</strong>: x86-64 (desktop/server dominant), ARM64 (mobile, Apple Silicon, servers growing), RISC-V (open ISA, education &amp; embedded)</li>
+<li><strong>Cores &amp; parallelism</strong>: multicore, SIMD (vector instructions), SMT/hyperthreading, big.LITTLE mobile designs</li>
+<li><strong>Memory hierarchy</strong>: registers → L1/L2/L3 cache → RAM → NVMe SSD → HDD. Cache lines, cache coherence (MESI), prefetching. <em>This is why "cache-friendly" code is 10-100x faster.</em></li>
+<li><strong>Storage</strong>: NAND flash, SSD controllers (FTL), wear leveling, HDDs, optical (legacy), persistent memory (Intel Optane discontinued but concept lives)</li>
+<li><strong>Buses &amp; I/O</strong>: PCIe, USB, SATA/NVMe, interrupts, DMA — how devices talk to CPU</li>
+<li><strong>GPU</strong>: thousands of small cores for data-parallel work; CUDA (NVIDIA), ROCm (AMD), Metal (Apple), Vulkan/WebGPU (cross-platform); tensor cores for ML</li>
+<li><strong>Accelerators</strong>: TPUs/NPUs for ML inference, FPGAs, ASICs</li>
+<li><strong>Embedded systems</strong>: microcontrollers (ARM Cortex-M, AVR, ESP32, RISC-V), real-time constraints, bare-metal vs. RTOS (FreeRTOS, Zephyr)</li>
+</ul>
+<h3 id="42-assembly-language">4.2 Assembly Language</h3>
+<ul>
+<li>Not what you write apps in — what you read when things break</li>
+<li><strong>x86-64 AT&amp;T vs. Intel syntax</strong>, calling conventions, stack frames</li>
+<li><strong>ARM64 assembly</strong> for mobile/Apple Silicon</li>
+<li>Tools: <code>objdump</code>, <code>gdb</code>, <code>radare2</code>/<code>rizin</code>, <code>ghidra</code> (NSA's open-source RE suite)</li>
+<li>Critical for: reverse engineering, exploit dev, performance debugging, understanding what compilers emit</li>
+</ul>
+<h3 id="43-operating-systems">4.3 Operating Systems</h3>
+<ul>
+<li><strong>Core concepts</strong>: processes vs. threads, virtual memory (paging, segmentation), address spaces, context switching, system calls, interrupts/exceptions</li>
+<li><strong>Scheduling</strong>: CFS (Linux), priorities, real-time scheduling</li>
+<li><strong>Memory management</strong>: paging, TLB, swapping, <code>mmap</code>, kernel memory allocators (slab)</li>
+<li><strong>Filesystems</strong>: ext4, XFS, Btrfs, APFS, NTFS, FAT/exFAT; VFS layer; journaling</li>
+<li><strong>I/O</strong>: drivers, device files, <code>read/write/ioctl</code>, async I/O (io_uring, epoll/kqueue)</li>
+<li><strong>Security</strong>: users/permissions, capabilities, namespaces, seccomp, SELinux/AppArmor</li>
+<li><strong>Synchronization</strong>: mutexes, semaphores, condition variables, futexes, spinlocks; deadlock/starvation/livelock</li>
+<li><strong>Major OSes</strong>: Linux (kernel ~6.x; distros: Ubuntu, Debian, Fedora, Arch), Windows (NT kernel), macOS (XNU = Mach + BSD), *BSDs, and embedded RTOSes</li>
+<li><strong>Unix philosophy</strong>: small composable tools, pipes, "everything is a file"</li>
+</ul>
+<h3 id="44-virtualization-the-cloud-substrate">4.4 Virtualization &amp; the Cloud Substrate</h3>
+<ul>
+<li><strong>Hypervisors</strong>: Type 1 (bare-metal: KVM, Xen, ESXi, Hyper-V) vs. Type 2 (hosted: VirtualBox, VMware Workstation, QEMU)</li>
+<li><strong>VM mechanics</strong>: hardware virtualization extensions (Intel VT-x, AMD-V), virtual memory → guest physical → host physical, virtio drivers</li>
+<li><strong>Containers</strong> (OS-level virtualization): namespaces + cgroups; see Docker in §6.4</li>
+<li><strong>Cloud models</strong>: IaaS/PaaS/SaaS; major providers AWS, Azure, GCP, plus Oracle/IBM/alibaba; on-prem OpenStack</li>
+</ul>
+<h3 id="45-compiler-runtime-theory-bridge-to-71">4.5 Compiler &amp; Runtime Theory (bridge to §7.1)</h3>
+<ul>
+<li><strong>Pipeline</strong>: lexing → parsing → semantic analysis → IR → optimization → codegen</li>
+<li><strong>Key optimizations</strong>: constant folding, inlining, loop unrolling, vectorization, escape analysis, dead code elimination</li>
+<li><strong>JIT vs. AOT</strong>: Java/.NET/.NET Native, V8 (JS), PyPy, HotSpot tiered compilation</li>
+<li><strong>Runtime systems</strong>: GC algorithms (mark-sweep, copying, generational), stack unwinding, FFI</li>
+</ul>
+<p><strong>Prereqs</strong>: digital logic → data representation (bits, two's complement, floats) → ISA → OS concepts. CSAPP ("Computer Systems: A Programmer's Perspective") is <em>the</em> book — learn C first, then read it.</p>
+<hr />
+<h2 id="5-data-information-systems">5. DATA &amp; INFORMATION SYSTEMS</h2>
+<h3 id="51-databases">5.1 Databases</h3>
+<p><strong>Relational (SQL)</strong>
+- <strong>Model</strong>: tables, rows, columns, keys, normalization (1NF–BCNF), denormalization for speed
+- <strong>Query language</strong>: SQL — <code>SELECT/JOIN/WHERE/GROUP BY</code>, window functions, CTEs, transactions (<code>ACID</code>)
+- <strong>Engines</strong>: PostgreSQL (open-source king), MySQL/MariaDB, SQLite (embedded), SQL Server, Oracle
+- <strong>Internal machinery</strong>: B+ tree indexes, query planner/optimizer, MVCC, WAL (write-ahead log), isolation levels (read committed → serializable), joins (hash/nested-loop/merge)
+- <strong>Advanced</strong>: stored procedures, triggers, views, materialized views, partitioning, replication (primary-replica), sharding</p>
+<p><strong>NoSQL</strong>
+- <strong>Key-value</strong>: Redis (in-memory, caching/queues), DynamoDB, Memcached
+- <strong>Document</strong>: MongoDB, Couchbase, Firestore — JSON-like docs, flexible schema
+- <strong>Column-family</strong>: Cassandra, HBase, ScyllaDB — massive write throughput, wide-column
+- <strong>Graph</strong>: Neo4j, Amazon Neptune, ArangoDB — relationships as first-class citizens (social nets, fraud rings, recommendations)
+- <strong>Search engines</strong> (specialized DBs): Elasticsearch/OpenSearch — inverted indexes, full-text + vector search
+- <strong>Time series</strong>: InfluxDB, TimescaleDB, Prometheus TSDB — metrics/logs at scale</p>
+<p><strong>NewSQL / distributed SQL</strong>: CockroachDB, TiDB, YugabyteDB — SQL semantics + horizontal scale
+<strong>Vector databases</strong>: pgvector, Pinecone, Weaviate, Milvus, Qdrant — embeddings for RAG/semantic search (§ML companion)</p>
+<h3 id="52-data-warehousing-analytics">5.2 Data Warehousing &amp; Analytics</h3>
+<ul>
+<li><strong>OLTP vs. OLAP</strong>: row-oriented transactional vs. columnar analytical</li>
+<li><strong>Warehouse architecture</strong>: staging → cleaning → dimensional modeling (star/snowflake schemas) → marts</li>
+<li><strong>Schemas</strong>: Kimball (bottom-up, dimensional) vs. Inmon (top-down, normalized)</li>
+<li><strong>ETL/ELT</strong>: Extract-Transform-Load vs. Extract-Load-Transform; <code>dbt</code> for transformation-as-code</li>
+<li><strong>Columnar engines</strong>: ClickHouse, Snowflake, BigQuery, Redshift, DuckDB (embedded analytics)</li>
+<li><strong>Data lakes/lakehouses</strong>: object storage (S3) + Parquet/ORC/Avro + Delta Lake/Iceberg/Hudi (ACID on lake)</li>
+<li><strong>BI tools</strong>: Tableau, Power BI, Looker, Metabase, Superset</li>
+</ul>
+<h3 id="53-big-data-distributed-processing">5.3 Big Data &amp; Distributed Processing</h3>
+<ul>
+<li><strong>Hadoop ecosystem</strong> (legacy but instructive): HDFS, MapReduce, YARN, Hive, HBase</li>
+<li><strong>Spark</strong> — in-memory distributed compute; DataFrames, Spark SQL, MLlib, Structured Streaming; the industry standard for batch/stream ETL</li>
+<li><strong>Streaming</strong>: Kafka (distributed log — the backbone of real-time data), Flink, Spark Streaming, Kinesis</li>
+<li><strong>Message queues</strong>: RabbitMQ, NATS, Redis Streams, SQS — decoupling services</li>
+<li><strong>Orchestration</strong>: Airflow, Dagster, Prefect — scheduling data pipelines</li>
+<li><strong>Coordination</strong>: ZooKeeper, etcd — consensus for distributed systems (§6.3)</li>
+</ul>
+<h3 id="54-data-engineering-data-science">5.4 Data Engineering &amp; Data Science</h3>
+<ul>
+<li><strong>Data engineering</strong>: ingestion, pipelines, quality (Great Expectations, dbt tests), governance, cataloging (DataHub, Amundsen)</li>
+<li><strong>Data science</strong>: see <code>ml_pipeline_guide.md</code>; stack = Python/R + pandas/polars + notebooks (Jupyter, Deepnote) + viz (matplotlib, seaborn) + ML (scikit-learn, XGBoost, PyTorch)</li>
+<li><strong>Analytics engineering</strong>: SQL-heavy middle ground between eng and DS</li>
+<li><strong>MLOps</strong>: model versioning (MLflow), feature stores (Feast), deployment, monitoring/drift</li>
+</ul>
+<h3 id="55-information-retrieval-search">5.5 Information Retrieval &amp; Search</h3>
+<ul>
+<li><strong>IR fundamentals</strong>: inverted index, TF-IDF, BM25, vector space model, PageRank</li>
+<li><strong>Modern retrieval</strong>: dense embeddings, hybrid search (keyword + vector), reranking (cross-encoders)</li>
+<li><strong>Applications</strong>: web search, enterprise search, RAG for LLMs, recommender systems, e-commerce faceted search</li>
+<li><strong>Tools</strong>: Elasticsearch, OpenSearch, Solr, Typesense, Meilisearch, Vespa</li>
+</ul>
+<h3 id="56-knowledge-representation">5.6 Knowledge Representation</h3>
+<ul>
+<li><strong>Databases → knowledge graphs</strong>: RDF, SPARQL, OWL, property graphs (Neo4j's Cypher)</li>
+<li><strong>Ontologies &amp; taxonomies</strong> for data integration and enterprise search</li>
+</ul>
+<p><strong>Prereqs</strong>: relational algebra → SQL → Linux/CLI → Python → distributed systems concepts for scale-out topics.</p>
+<hr />
+<h2 id="6-networking-infrastructure">6. NETWORKING &amp; INFRASTRUCTURE</h2>
+<h3 id="61-computer-networks">6.1 Computer Networks</h3>
+<ul>
+<li><strong>Layered models</strong>: OSI (7 layers, academic) vs. TCP/IP (4 layers, practical)</li>
+<li><strong>Physical/link</strong>: Ethernet, Wi-Fi (802.11), fiber, coax — CSMA/CD, switching vs. routing</li>
+<li><strong>Network layer</strong>: IP (IPv4 exhaustion → IPv6), subnets/CIDR, NAT, ICMP/ping, ARP</li>
+<li><strong>Transport</strong>: TCP (reliable, ordered — handshake, congestion control, retransmission) vs. UDP (fast, lossy — DNS, streaming, gaming); QUIC (HTTP/3, UDP-based, modern)</li>
+<li><strong>Application</strong>: HTTP/HTTPS, DNS, DHCP, SMTP/IMAP/POP3, SSH, FTP/SFTP, WebSocket, gRPC</li>
+<li><strong>Core concepts</strong>: latency vs. bandwidth, jitter, packet loss, MTU, routing (BGP, OSPF, RIP), firewalls, NAT traversal, CDN</li>
+<li><strong>Tools</strong>: <code>curl</code>, <code>dig</code>/<code>nslookup</code>, <code>traceroute</code>/<code>mtr</code>, Wireshark/tshark, <code>nmap</code> (see TOOLS.md), <code>iptables</code>/<code>nftables</code>, <code>ss</code>/<code>netstat</code></li>
+</ul>
+<h3 id="62-security-networking-defensive-side">6.2 Security Networking (defensive side)</h3>
+<ul>
+<li>TLS/SSL (handshake, certificates, PKI), VPNs (WireGuard, OpenVPN, IPsec), proxies, zero-trust architecture</li>
+<li>See <code>websec_research/</code> and <code>crypto_research/</code> in home directory for applied depth</li>
+</ul>
+<h3 id="63-distributed-systems">6.3 Distributed Systems</h3>
+<ul>
+<li><strong>Fundamental challenges</strong>: partial failure, no global clock, network partitions — <em>"the network is reliable" is the fallacy that breaks everything</em></li>
+<li><strong>Consistency models</strong>: strong vs. eventual; CAP theorem (consistency, availability, partition tolerance — pick 2 under partition)</li>
+<li><strong>Consensus</strong>: Paxos, Raft (etcd, Consul, TiKV), Byzantine fault tolerance</li>
+<li><strong>Replication</strong>: leader-follower, multi-leader, leaderless (Dynamo-style); sync vs. async</li>
+<li><strong>Sharding/partitioning</strong>: horizontal scale strategies, consistent hashing</li>
+<li><strong>Distributed transactions</strong>: 2PC, sagas, outbox pattern; exactly-once is a lie — it's effectively-once via idempotency</li>
+<li><strong>Time</strong>: logical clocks (Lamport, vector), TrueTime (Spanner), clock skew problems</li>
+<li><strong>Patterns</strong>: microservices, service mesh (Istio/Linkerd), API gateways, sidecars, event sourcing, CQRS</li>
+<li><strong>Failure handling</strong>: retries with backoff+jitter, circuit breakers, bulkheads, timeouts everywhere, health checks, chaos engineering</li>
+<li><strong>Key reads</strong>: "Designing Data-Intensive Applications" (Kleppmann) — <em>the</em> book; DDIA covers most of §5 too</li>
+</ul>
+<h3 id="64-virtualization-containers-cloud">6.4 Virtualization, Containers &amp; Cloud</h3>
+<ul>
+<li><strong>Containers</strong>: images (layered, immutable), containers (process isolation), registries (Docker Hub, GHCR, ECR); Docker/Podman/Buildah; rootless containers</li>
+<li><strong>Orchestration</strong>: Kubernetes — pods, services, deployments, ReplicaSets, StatefulSets, ingress, ConfigMaps/Secrets, Helm charts, operators; K8s is the industry standard</li>
+<li><strong>Serverless</strong>: FaaS (Lambda, Cloud Functions, Cloud Run), event-driven, cold starts, pay-per-invocation</li>
+<li><strong>Edge computing</strong>: CDN workers (Cloudflare Workers), edge functions, low-latency geo-distribution</li>
+<li><strong>Cloud architecture</strong>: regions/AZs, VPCs, IAM, load balancers, autoscaling groups, managed services (RDS, S3, SQS)</li>
+<li><strong>Multi-cloud &amp; hybrid</strong>: portability trade-offs, FinOps (cloud cost optimization)</li>
+<li><strong>Infrastructure as Code</strong>: Terraform (declarative), Pulumi (programmatic), Ansible (config mgmt), Crossplane</li>
+</ul>
+<h3 id="65-apis-integration">6.5 APIs &amp; Integration</h3>
+<ul>
+<li><strong>API styles</strong>: REST (resources, HTTP verbs, stateless), GraphQL (client-shaped queries), gRPC (protobuf, HTTP/2, streaming), WebSockets (bidirectional), Webhooks (callbacks), SOAP (legacy enterprise)</li>
+<li><strong>API design</strong>: versioning, pagination, rate limiting, idempotency keys, HATEOAS, OpenAPI spec</li>
+<li><strong>Auth</strong>: API keys, OAuth 2.0/OIDC, JWTs, mTLS, API gateways</li>
+<li><strong>Serialization</strong>: JSON, YAML, TOML, Protocol Buffers, Avro, MessagePack</li>
+<li><strong>Webhooks &amp; event-driven integration</strong>: pub/sub, webhooks, event buses</li>
+</ul>
+<p><strong>Prereqs</strong>: TCP/IP basics → HTTP → Linux CLI → one cloud provider → Kubernetes for production depth.</p>
+<hr />
+<h2 id="7-specialized-cs-fields">7. SPECIALIZED CS FIELDS</h2>
+<h3 id="71-compilers-language-implementation">7.1 Compilers &amp; Language Implementation</h3>
+<ul>
+<li><strong>Front end</strong>: lexer/parser (recursive descent, LR/LL), ASTs, symbol tables, type checking, semantic analysis</li>
+<li><strong>Middle end</strong>: IRs (SSA form), optimization passes, SSA construction</li>
+<li><strong>Back end</strong>: instruction selection, register allocation, instruction scheduling, codegen</li>
+<li><strong>Runtime</strong>: GC, JIT compilation, FFI, bytecode VMs (JVM, CPython, BEAM/Erlang, WASM)</li>
+<li><strong>Formal tools</strong>: LLVM (the dominant compiler infrastructure), ANTLR (parser generator), Bison/Flex, tree-sitter (used by GitHub for syntax highlighting!)</li>
+<li><strong>Parsing in practice</strong>: every linter, formatter, and IDE feature is a parser problem</li>
+<li><strong>Prereqs</strong>: automata theory → formal languages → strong PL/systems background; "Crafting Interpreters" (Nystrom) is the best entry</li>
+</ul>
+<h3 id="72-computer-graphics-visualization">7.2 Computer Graphics &amp; Visualization</h3>
+<ul>
+<li><strong>Pipeline</strong>: model → vertex shader → rasterization → fragment shader → framebuffer; modern GPU pipeline (Vulkan/D3D12/Metal/WebGPU)</li>
+<li><strong>Math</strong>: linear algebra (matrices, vectors, quaternions), projective geometry, homogeneous coordinates</li>
+<li><strong>Rendering</strong>: rasterization vs. ray tracing; shading models (Phong/BRDF); global illumination; shadows; post-processing</li>
+<li><strong>APIs</strong>: OpenGL (legacy but ubiquitous), Vulkan (explicit, modern), DirectX 12, Metal (Apple), WebGPU (web standard)</li>
+<li><strong>Game engines</strong>: Unity (C#), Unreal (C++), Godot (GDScript/C#), Bevy (Rust), custom engines</li>
+<li><strong>Domains</strong>: real-time graphics, scientific visualization, CAD, digital twins, VFX (Houdini), film rendering (RenderMan, Arnold)</li>
+<li><strong>Prereqs</strong>: linear algebra + calculus → C/C++ or Rust → GPU APIs</li>
+</ul>
+<h3 id="73-human-computer-interaction-hci">7.3 Human-Computer Interaction (HCI)</h3>
+<ul>
+<li><strong>Core topics</strong>: usability heuristics (Nielsen's 10), cognitive load, Fitts's law, interaction paradigms (GUI, CLI, TUI, voice, AR/VR, brain-computer)</li>
+<li><strong>Design process</strong>: user research (interviews, contextual inquiry), personas, journey maps, wireframing, prototyping (Figma), usability testing, A/B testing, accessibility (WCAG)</li>
+<li><strong>Input systems</strong>: touch, gesture, eye-tracking, haptics</li>
+<li><strong>Emerging</strong>: AR/VR (Vision Pro, Quest, WebXR), conversational UI, AI-augmented interfaces</li>
+<li><strong>Tools</strong>: Figma, Framer, Principle; hot-swap testing on real users beats theory</li>
+<li><strong>Bridge fields</strong>: UX design, product design, accessibility engineering, design systems</li>
+</ul>
+<h3 id="74-game-development">7.4 Game Development</h3>
+<ul>
+<li><strong>Architecture</strong>: game loop, entity-component-system (ECS), scene graphs, state machines, asset pipelines</li>
+<li><strong>Systems</strong>: physics engines (Box2D, PhysX, Jolt), animation (skeletal, IK), pathfinding (navmeshes, A*), networking (client-server, lockstep, rollback netcode)</li>
+<li><strong>Rendering</strong>: see §7.2; engines handle most of it</li>
+<li><strong>Content</strong>: 3D modeling (Blender, Maya), texturing, audio (FMOD, Wwise), shaders</li>
+<li><strong>Engines</strong>: Unity, Unreal Engine, Godot, custom; mobile (Unity dominates), console exclusivity</li>
+<li><strong>Monetization/business</strong>: live-ops, F2P economies, esports — game dev is as much production management as code</li>
+<li><strong>Prereqs</strong>: C++ or C# → math (linear algebra essential) → engine-specific learning</li>
+</ul>
+<h3 id="75-quantum-computing">7.5 Quantum Computing</h3>
+<ul>
+<li><strong>Basics</strong>: qubits, superposition, entanglement, quantum gates, measurement collapse, no-cloning theorem</li>
+<li><strong>Algorithms</strong>: Shor's (factoring → threatens RSA), Grover's (search speedup), quantum Fourier transform, variational algorithms (VQE, QAOA)</li>
+<li><strong>Hardware</strong>: superconducting qubits (IBM, Google), trapped ions (IonQ, Quantinuum), photonic, neutral atoms, annealers (D-Wave)</li>
+<li><strong>Software stack</strong>: Qiskit (IBM), Cirq (Google), PennyLane (ML integration), Q# (Microsoft); quantum simulators for small circuits</li>
+<li><strong>NISQ era reality</strong>: noisy, ~1000 qubits, error correction unsolved at scale — hype vs. reality check needed</li>
+<li><strong>Applications (near-term)</strong>: optimization, simulation (chemistry, materials), ML subroutines; cryptography impact is the big long-term story</li>
+<li><strong>Prereqs</strong>: linear algebra (complex vector spaces) + probability + basic quantum mechanics</li>
+</ul>
+<h3 id="76-theory-of-computation">7.6 Theory of Computation</h3>
+<ul>
+<li><strong>Formal languages &amp; automata</strong>: regular languages (DFAs/NFAs → regex), context-free (pushdown automata → parsing), decidability, Turing machines</li>
+<li><strong>Computability</strong>: Turing-complete languages, halting problem, Rice's theorem, reductions</li>
+<li><strong>Complexity classes</strong>: P, NP, PSPACE, EXP; NP-completeness proofs</li>
+<li><strong>Logic</strong>: propositional &amp; predicate logic, proof systems, Gödel's incompleteness</li>
+<li><strong>Why it matters</strong>: what computers <em>can't</em> do; foundations of compilers, security (crypto relies on hardness assumptions), algorithms</li>
+<li><strong>Prereqs</strong>: discrete math → logic → automata theory; companion to <code>math_logic_map.md</code></li>
+</ul>
+<h3 id="77-formal-methods-verification">7.7 Formal Methods &amp; Verification</h3>
+<ul>
+<li><strong>Model checking</strong>: exhaustively verify finite-state systems (SPIN, NuSMV, TLA+)</li>
+<li><strong>Theorem proving</strong>: Coq, Isabelle/HOL, Lean 4 <em>(installed on this system at ~/.elan/bin/lake)</em>, Agda/Idris (dependent types)</li>
+<li><strong>Specification languages</strong>: TLA+ (Amazon uses it for DynamoDB/S3 design!), Alloy</li>
+<li><strong>Program verification</strong>: Dafny, Why3, Frama-C; verified compilers (CompCert)</li>
+<li><strong>Applications</strong>: aerospace (DO-178C), OS kernels (seL4 verified microkernel), crypto protocols, smart contracts</li>
+<li><strong>Practical value</strong>: finding bugs before deployment in systems where failure is catastrophic</li>
+</ul>
+<h3 id="78-other-specialized-areas">7.8 Other Specialized Areas</h3>
+<ul>
+<li><strong>Bioinformatics</strong>: sequence alignment (BLAST), genome assembly, phylogenetics, structural biology tools</li>
+<li><strong>Computational science</strong>: HPC, numerical simulation, CFD, weather modeling (GPU-accelerated now), MPI/OpenMP</li>
+<li><strong>Cryptography</strong>: symmetric (AES), asymmetric (RSA, ECC), hashes, protocols (TLS), zero-knowledge proofs; see <code>crypto_research/</code></li>
+<li><strong>Information theory</strong>: entropy, compression (Huffman, LZ77, arithmetic coding), channel capacity, error-correcting codes — the math of "how much can a channel carry"</li>
+<li><strong>Programming language theory</strong>: type systems, lambda calculus, category theory connections</li>
+<li><strong>Computer vision</strong>: image classification/detection, CNNs → transformers; OpenCV, PyTorch, ONNX runtime</li>
+<li><strong>Robotics</strong>: ROS/ROS2, SLAM, motion planning, control theory, sensor fusion</li>
+<li><strong>Embedded/IoT</strong>: microcontrollers, RTOS, edge AI (TinyML), protocols (MQTT, Zigbee, BLE)</li>
+</ul>
+<h3 id="79-webassembly-wasi">7.9 WebAssembly &amp; WASI — the portable bytecode layer</h3>
+<ul>
+<li><strong>What it is</strong>: a stack-based binary instruction format that runs near-native speed in browsers, servers, and edge devices. Not a language — a <em>compilation target</em> that ~40 languages now emit to (Rust, C/C++, Go, Python via Pyodide, Java via TeaVM/JWebAssembly).</li>
+<li><strong>WASI (WebAssembly System Interface)</strong>: the standardized capability-based API letting WASM run <em>outside</em> the browser — filesystem, sockets, clocks — with explicit permission grants instead of ambient authority. WASI Preview 2 (2024) added component-model composition: WASM modules now link like microservices.</li>
+<li><strong>Why it matters in 2025–26</strong>: Cloudflare Workers, Fastly Compute, Vercel Edge, Fermyon Spin, and AWS Lambda Web Adapter all run WASM at the edge; Fermyon/Spin and Wasmtime (Bytecode Alliance) are the reference runtimes; wasmCloud enables "actor" services; Extism embeds plugins in host apps.</li>
+<li><strong>Component Model + WIT</strong>: typed interfaces between WASM components — the missing piece that makes WASM a real plugin/plugin-ecosystem substrate (used by Shopify, Figma plugins, Envoy extensions).</li>
+<li><strong>Limits</strong>: still weak at threads/shared-memory (threads proposal landed but adoption uneven), no mature GC story for all languages, debugging tooling lags native, cold-start still ~ms not ~µs.</li>
+<li><strong>Learning path</strong>: Rust → <code>wasm-pack</code> → run in browser → port a CLI tool to WASI → read Bytecode Alliance docs.</li>
+</ul>
+<h3 id="710-ai-agents-llm-infrastructure">7.10 AI Agents &amp; LLM Infrastructure</h3>
+<ul>
+<li><strong>The stack</strong>: foundation models (GPT/Claude/Gemini/Llama/Qwen/DeepSeek) → inference serving (vLLM, TensorRT-LLM, SGLang, llama.cpp, Ollama) → orchestration frameworks (LangChain/LlamaIndex legacy, newer: LangGraph, CrewAI, AutoGen, OpenAI Agents SDK) → tool-use protocols (MCP — Model Context Protocol, Anthropic 2024, now adopted by OpenAI/Google; A2A agent-to-agent) → deployment (agent runtimes, durable execution: Temporal, Restate).</li>
+<li><strong>MCP (Model Context Protocol)</strong>: the "USB-C for AI" — standardizes how models connect to tools/data sources. By late 2025 it became the de facto agent-tool interface across Claude, Cursor, VS Code, and enterprise gateways.</li>
+<li><strong>Agent patterns</strong>: ReAct (reason+act), plan-and-execute, reflection/self-critique, multi-agent debate, tool-use/function-calling loops, RAG-grounded agents, computer-use agents (Anthropic Claude Computer Use, OpenAI Operator, browser agents).</li>
+<li><strong>Production realities</strong>: context-window economics (long-context vs. RAG trade-off), eval harnesses (LLM-as-judge, trajectory evals, Braintrust/LangSmith/Arize), guardrails (NeMo Guardrails, Llama Guard), cost per task not per token, latency budgets, human-in-the-loop checkpoints.</li>
+<li><strong>Open problems</strong>: reliable long-horizon agency (error compounding over 50+ steps), agent security (prompt injection via tool outputs — OWASP LLM Top 10), memory architectures, verifiable agent actions, liability for autonomous purchases/actions.</li>
+<li><strong>Prereqs</strong>: solid Python + APIs + basic ML → then agent frameworks; security mindset essential (§6.2, see <code>45 - map-cybersecurity.html</code>).</li>
+</ul>
+<h3 id="711-rust-systems-deep-dive">7.11 Rust Systems Deep Dive — the memory-safe systems language</h3>
+<ul>
+<li><strong>Where Rust wins in 2025–26</strong>: Linux kernel modules (merged since 6.1, expanding each release), Windows kernel components (Microsoft rewriting core OS pieces in Rust), Android (~70% reduction in memory-safety vulns in Rust-rewritten components per Google 2024), AWS Firecracker, Cloudflare (Pingora proxy handling billions of req/day), Figma's multiplayer server, Discord, Polars, uv (Python package manager — written in Rust), Ruff (Python linter).</li>
+<li><strong>Ownership model mastery path</strong>: borrow checker → lifetimes → interior mutability (<code>RefCell</code>/<code>Mutex</code>/<code>RwLock</code>) → <code>unsafe</code> boundaries → async (tokio) → unsafe-code auditing (cargo-geiger, Miri interpreter).</li>
+<li><strong>Ecosystem</strong>: cargo (build/package), crates.io (~150k crates), tokio (async runtime), axum/hyper (web), serde (serialization), sqlx/diesel (DB), bevy (game engine), tauri (desktop apps), embassy (embedded async).</li>
+<li><strong>Interop reality</strong>: Rust↔C FFI is mature; WASM is a first-class Rust target; Python bindings via PyO3/maturin are the standard for performance-critical Python extensions.</li>
+<li><strong>Honest trade-offs</strong>: compile times, borrow-checker friction on tree structures (often needs arena/index patterns), smaller hiring pool than Go/Python, async complexity still learning-heavy.</li>
+</ul>
+<h3 id="712-bioinformatics-computational-biology">7.12 Bioinformatics &amp; Computational Biology</h3>
+<ul>
+<li><strong>Core pipelines</strong>: sequence analysis (BLAST, BWA/Bowtie alignment, minimap2 long-reads) → assembly (SPAdes, Canu for long reads, reference-guided) → variant calling (GATK best-practices, DeepVariant) → annotation → visualization (IGV).</li>
+<li><strong>Modern layers</strong>: RNA-seq differential expression (DESeq2, edgeR), single-cell (Scanpy, Seurat, cellxgene), spatial transcriptomics (10x Visium, MERFISH analysis), multi-omics integration, structural biology (AlphaFold DB, PyMOL, RDKit for chemistry), proteomics (MaxQuant, OpenSWATH).</li>
+<li><strong>Scale realities</strong>: whole-genome BAM/CRAM files are 100s of GB; pipelines run on HPC/Nextflow/Snakemake/WDL (Cromwell, miniwdl); cloud burst via Terra/AnVIL (NHGRI genomics cloud).</li>
+<li><strong>AI crossover</strong>: protein structure (AlphaFold2/3, ESMFold, RoseTTAFold), variant effect prediction (AlphaMissense), foundation models for genomics (Nucleotide Transformer, Evo/Evo2 genome models), virtual cell models (emerging).</li>
+<li><strong>Tools to learn</strong>: Python + Biopython/pysam, R + Bioconductor, command-line bioinformatics (samtools/bcftools), Nextflow for pipelines, basic stats (multiple-testing correction is non-negotiable).</li>
+</ul>
+<h3 id="713-web3-blockchain-infrastructure-2025-status">7.13 Web3 &amp; Blockchain Infrastructure — post-2024 reality check</h3>
+<ul>
+<li><strong>What survived the 2022–23 crash</strong>: the <em>infrastructure</em> layer — Ethereum L1 (post-Merge PoS, ~99.95% energy cut), L2 rollups (Arbitrum, Optimism/Base, zkSync, Starknet) now settling &gt;$1B+/day, Ethereum blobs (EIP-4844, March 2024) making L2 fees ~10–100x cheaper, real institutional stablecoin settlement (USDC/USDT on-chain), DeFi primitives (lending, DEXs like Uniswap/Aerodrome), restaking (EigenLayer AVS).</li>
+<li><strong>What deflated</strong>: NFT speculation, play-to-earn gaming, most "web3 social" — the consumer-app layer largely retreated; enterprise blockchain mostly consolidated into permissioned/hybrid ledgers or plain databases.</li>
+<li><strong>2025–26 frontier</strong>: account abstraction (ERC-4337/7702 — smart wallets going mainstream via Coinbase Smart Wallet), intents/solvers (UniswapX, CoW Protocol) replacing naive AMM swaps, real-world asset tokenization (BlackRock BUIDL fund on Ethereum/Solana, Ondo), ZK proofs for privacy (zkTLS, Semaphore), Bitcoin L2s (Lightning, Citrea, BitVM), AI-agent payments (x402 protocol, AP2 by Google — agents paying agents).</li>
+<li><strong>Engineering relevance</strong>: Solidity/Rust smart contracts, Foundry/Hardhat testing, formal verification of contracts (Certora, K framework — see §7.7), MEV-aware design, oracle problem (Chainlink/Pyth), cross-chain messaging risk.</li>
+<li><strong>Honest assessment</strong>: treat blockchain as "a database with a consensus network and token incentives" — apply it where multi-party trust without a central operator is the actual problem; most apps don't need it.</li>
+</ul>
+<h3 id="714-edge-computing-tinyml">7.14 Edge Computing &amp; TinyML</h3>
+<ul>
+<li><strong>Edge computing</strong>: moving compute from cloud to CDN edges (Cloudflare Workers ~300+ cities, Fastly Compute, AWS Lambda@Edge/CloudFront Functions), on-prem (Dell/HP edge servers), and device (gateway boxes). Drivers: latency (&lt;50 ms interactive), bandwidth cost, data-sovereignty laws, offline resilience.</li>
+<li><strong>TinyML</strong>: ML inference on microcontrollers — TensorFlow Lite Micro, ONNX Runtime Micro, CMSIS-NN on ARM Cortex-M, ESP32-S3/CAM running person-detection at ~$10 BOM. Use cases: predictive maintenance vibration sensors, always-on keyword spotting, wildlife/acoustic monitoring, industrial anomaly detection.</li>
+<li><strong>Federated learning</strong>: train on-device, share only model updates — privacy-preserving (Google Gboard, Apple Siri suggestions, healthcare consortia). Open problems: heterogeneity (non-IID data), communication cost, poisoning attacks, formal privacy guarantees (DP-SGD).</li>
+<li><strong>Standards/protocols</strong>: MQTT, CoAP, OPC UA (industrial), Matter (smart home, CSA-backed), DDS (ROS2/real-time pub-sub), WebTransport/WebRTC for low-latency streaming.</li>
+<li><strong>Prereqs</strong>: embedded C → RTOS basics → ML fundamentals → quantization/pruning (INT8/FP16 models) → deployment toolchains.</li>
+</ul>
+<hr />
+<h2 id="8-career-tracks-specialization-map">8. CAREER TRACKS &amp; SPECIALIZATION MAP</h2>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Core stack</th>
+<th>Fields touched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend engineer</td>
+<td>Python/Go/Java + SQL + Linux + cloud</td>
+<td>§2, §5, §6</td>
+</tr>
+<tr>
+<td>Frontend engineer</td>
+<td>TypeScript + React/Vue + CSS + browser APIs</td>
+<td>§2 (JS/TS), §6 (HTTP)</td>
+</tr>
+<tr>
+<td>Full-stack</td>
+<td>both of the above + DevOps basics</td>
+<td>§2, §5, §6</td>
+</tr>
+<tr>
+<td>Data engineer</td>
+<td>Python/Scala + SQL/Spark/Kafka + Airflow</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>Data scientist / ML engineer</td>
+<td>Python + pandas + PyTorch + MLOps</td>
+<td>§5, §7.2-adjacent ML</td>
+</tr>
+<tr>
+<td>DevOps / SRE / platform</td>
+<td>Linux + K8s + Terraform + CI/CD + observability</td>
+<td>§4, §6</td>
+</tr>
+<tr>
+<td>Security engineer</td>
+<td>networks + crypto + web vulns + tooling</td>
+<td>§4, §6, §7.8 crypto, see security docs</td>
+</tr>
+<tr>
+<td>Systems engineer</td>
+<td>C/C++/Rust + OS + arch + perf</td>
+<td>§2, §3, §4</td>
+</tr>
+<tr>
+<td>Compiler/PL engineer</td>
+<td>LLVM + formal methods</td>
+<td>§7.1, §7.7</td>
+</tr>
+<tr>
+<td>Graphics/engine programmer</td>
+<td>C++/Rust + math + GPU APIs</td>
+<td>§7.2, §7.4</td>
+</tr>
+<tr>
+<td>Quant / HPC researcher</td>
+<td>math + parallel computing + numerics</td>
+<td>§3, §7.8</td>
+</tr>
+<tr>
+<td>Research scientist (CS theory)</td>
+<td>automata, complexity, logic</td>
+<td>§7.6, <code>math_logic_map.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-learning-roadmap-beginner-advanced">9. LEARNING ROADMAP — BEGINNER → ADVANCED</h2>
+<h3 id="phase-0-foundations-weeks-18">Phase 0 — Foundations (weeks 1–8)</h3>
+<ol>
+<li><strong>How computers work at a high level</strong>: bits, bytes, binary/hex, what a program is, files vs. processes</li>
+<li><strong>A terminal</strong>: navigate files, run commands, pipes, redirection (do this on Linux/WSL — see TOOLS.md)</li>
+<li><strong>Pick ONE language and go deep</strong>: Python (easiest path to applications) or C (best path to systems understanding)</li>
+<li><strong>Basic math refresh</strong>: algebra, logic, discrete structures (see <code>math_logic_map.md</code>)</li>
+</ol>
+<h3 id="phase-1-programming-fluency-months-26">Phase 1 — Programming Fluency (months 2–6)</h3>
+<ol>
+<li><strong>Core CS</strong>: variables, functions, control flow, error handling, basic OOP</li>
+<li><strong>Data structures &amp; algorithms</strong>: start with arrays, lists, hash maps, stacks, queues, trees; learn Big-O alongside (§3)</li>
+<li><strong>Version control</strong>: Git daily — commits, branches, merges, PRs</li>
+<li><strong>Build real projects</strong>: CLI tools, small web apps, automation scripts — <em>shipping beats tutorials</em></li>
+<li><strong>Testing basics</strong>: write tests for your projects from day one</li>
+</ol>
+<h3 id="phase-2-systems-literacy-months-612">Phase 2 — Systems Literacy (months 6–12)</h3>
+<ol>
+<li><strong>A second language</strong>: if you started Python → learn C; if you started C → learn Python for productivity</li>
+<li><strong>Operating systems</strong>: processes, memory, filesystems, syscalls — CSAPP chapters 1–9</li>
+<li><strong>Networking</strong>: TCP/IP, HTTP, DNS — enough to debug why things don't connect</li>
+<li><strong>Databases</strong>: SQL deeply (joins, indexing, transactions, normalization), then try MongoDB/Redis</li>
+<li><strong>Linux mastery</strong>: shell scripting, permissions, processes, <code>strace</code>, package management</li>
+</ol>
+<h3 id="phase-3-software-engineering-year-12">Phase 3 — Software Engineering (year 1–2)</h3>
+<ol>
+<li><strong>Design patterns &amp; architecture</strong>: layered, MVC, clean architecture; read "A Philosophy of Software Design"</li>
+<li><strong>APIs &amp; web dev</strong>: REST, auth, databases-backed services; build and deploy a real app</li>
+<li><strong>DevOps</strong>: Docker → Kubernetes basics → CI/CD → monitoring; Terraform for IaC</li>
+<li><strong>Cloud</strong>: pick AWS/Azure/GCP, learn core services (compute, storage, DB, networking)</li>
+<li><strong>Concurrency</strong>: threads, async, distributed-system pitfalls (read DDIA)</li>
+</ol>
+<h3 id="phase-4-depth-specialization-year-2">Phase 4 — Depth &amp; Specialization (year 2+)</h3>
+<ol>
+<li><strong>Pick a specialization</strong> from §8 matching your interests</li>
+<li><strong>Compiler/architecture track</strong>: assembly, ISA, OS kernel reading, LLVM tutorials</li>
+<li><strong>Systems track</strong>: Rust or C++ deep dive, performance profiling, memory layout</li>
+<li><strong>Data track</strong>: statistics + ML fundamentals → <code>ml_pipeline_guide.md</code> → MLOps</li>
+<li><strong>Theory track</strong>: automata → complexity → logic (Lean 4 is installed here for formalization!)</li>
+<li><strong>Security track</strong>: <code>websec_research/</code> + <code>crypto_research/</code> + practical labs (Juice Shop, DVWA, PortSwigger Academy — see TOOLS.md)</li>
+</ol>
+<h3 id="cross-cutting-advice">Cross-cutting advice</h3>
+<ul>
+<li><strong>Learn by building</strong>: every phase should produce artifacts, not just notes</li>
+<li><strong>Read source code</strong>: Go's stdlib, CPython, Rust compiler — real code teaches what textbooks can't</li>
+<li><strong>Depth over breadth</strong>: 1 language + systems + one specialization beats shallow exposure to 10</li>
+<li><strong>Community</strong>: open-source contributions, local meetups, conference talks (YouTube), RFCs for protocols</li>
+<li><strong>Tools of the trade</strong>: your editor/IDE, debugger, profiler, git client, terminal multiplexer (<code>tmux</code>), dotfiles</li>
+</ul>
+<hr />
+<h2 id="95-field-interconnection-map">9.5 FIELD INTERCONNECTION MAP</h2>
+<p>How the fields feed each other — the "why learn X before Y" graph:</p>
+<pre><code>Math &amp; Logic (math_logic_map.md)
+    └─► Algorithms &amp; Data Structures (§3)
+            ├─► Programming Languages (§2)  ← learn these together
+            ├─► Compilers (§7.1)             ← needs PL theory + A&amp;D
+            └─► Computer Architecture (§4)   ← needs digital logic + A&amp;D
+                    ├─► Operating Systems   ← needs arch + concurrency
+                    │       └─► Systems programming (C/Rust/Go)
+                    │               └─► DevOps / Infrastructure (§6.4)
+                    └─► Embedded / Robotics (§7.8)
+
+Databases (§5)
+    ├─► Requires: programming + data structures (indexes = trees)
+    ├─► Enables: backend dev, data engineering, BI
+    └─► Scales into: distributed systems (§6.3) via replication/sharding
+
+Networking (§6.1)
+    ├─► Requires: OS I/O + a little math (probability for congestion)
+    ├─► Enables: distributed systems, cloud, security
+    └─► Everything runs on networks — APIs (§6.5) are its application layer
+
+Distributed Systems (§6.3)
+    ├─► Requires: concurrency + networking + databases + failure thinking
+    ├─► Is required by: cloud-native apps, big data, microservices
+    └─► Theory roots: automata, logic (§7.6), formal methods (§7.7)
+
+ML / AI (see ml_pipeline_guide.md)
+    ├─► Requires: programming + linear algebra + probability + data systems
+    ├─► Uses: GPUs (§4.1), vector DBs (§5.1), distributed training (§6.3)
+    └─► Applied in: graphics (§7.2), robotics (§7.8), HCI (§7.3)
+
+Security (websec_research/, crypto_research/)
+    ├─► Requires: networking + systems + crypto fundamentals (§7.8)
+    ├─► Applies to: every layer — web, OS, protocols, crypto
+    └─► Quantum computing (§7.5) threatens current crypto → post-quantum crypto is an active field
+</code></pre>
+<p><strong>The shortest path to employability</strong>: programming fluency (§2) → data structures (§3) → one backend or frontend stack → databases + networking → cloud/DevOps (§6). The shortest path to <em>depth</em>: C → CSAPP → OS → systems language (Rust/C++) → compilers/architecture.</p>
+<h3 id="96-ai-assisted-development-workflow-2026">9.6 AI-Assisted Development Workflow (2026)</h3>
+<ul>
+<li><strong>The new normal</strong>: AI pair-programmers (Copilot, Cursor, Windsurf, Claude Code, Aider, Devin-class agents) handle boilerplate, tests, and docs; senior engineers shift to architecture, review, and debugging what the model can't see.</li>
+<li><strong>Agentic workflows</strong>: spec → plan → implement → test → PR loops run by agents with human checkpoints; MCP (§7.10) lets agents read your DB/docs/repos as tools.</li>
+<li><strong>What survives automation</strong>: system design judgment, code review taste, debugging novel failures, security reasoning, performance intuition — the "taste" layer of §2.4.</li>
+<li><strong>New failure modes</strong>: confident-but-wrong generated code (plausible hallucinated APIs), license contamination from training data, over-reliance eroding debugging skill, prompt-injection via repo contents (malicious comments/README attacking coding agents — documented 2025).</li>
+<li><strong>Best practice 2026</strong>: treat AI output as a junior dev's PR — always review diffs, run tests, verify deps, keep humans accountable for production code; use agents for exploration/prototyping, verify before merge.</li>
+</ul>
+<hr />
+<h2 id="10-glossary-cross-field-terms">10. GLOSSARY — CROSS-FIELD TERMS</h2>
+<p>Terms that appear across multiple sections:</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+<th>Where it shows up</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>API</strong></td>
+<td>Application Programming Interface — contract for code-to-code or service-to-service communication</td>
+<td>§2 (libraries), §6.5</td>
+</tr>
+<tr>
+<td><strong>ABI</strong></td>
+<td>Application Binary Interface — lower-level contract (calling conventions, struct layout)</td>
+<td>§4 (assembly, C)</td>
+</tr>
+<tr>
+<td><strong>Big-O</strong></td>
+<td>Asymptotic complexity notation — how cost grows with input size</td>
+<td>§3 everywhere</td>
+</tr>
+<tr>
+<td><strong>Cache</strong></td>
+<td>Fast memory layer between CPU and RAM; also used for KV stores</td>
+<td>§4.1, §5.1 (Redis)</td>
+</tr>
+<tr>
+<td><strong>Concurrency vs. parallelism</strong></td>
+<td>Concurrency = managing many tasks (interleaved); parallelism = executing simultaneously</td>
+<td>§2, §4.1 (cores), §6.3</td>
+</tr>
+<tr>
+<td><strong>Container</strong></td>
+<td>OS-level isolation (namespaces + cgroups); lighter than a VM</td>
+<td>§4.4, §6.4</td>
+</tr>
+<tr>
+<td><strong>Daemon</strong></td>
+<td>Background process serving requests (Unix convention)</td>
+<td>§4.3, §6</td>
+</tr>
+<tr>
+<td><strong>DSL</strong></td>
+<td>Domain-Specific Language — SQL, CSS, regex, GraphQL, Makefiles</td>
+<td>§5, §6.5, §7.1</td>
+</tr>
+<tr>
+<td><strong>ETL/ELT</strong></td>
+<td>Extract-Transform-Load pipelines for data movement</td>
+<td>§5.2, §5.3</td>
+</tr>
+<tr>
+<td><strong>FFI</strong></td>
+<td>Foreign Function Interface — calling C from other languages</td>
+<td>§2, §7.1</td>
+</tr>
+<tr>
+<td><strong>Garbage collection</strong></td>
+<td>Automatic memory reclamation (JVM, Go, Python, C#) vs. manual (C/C++) vs. ownership (Rust)</td>
+<td>§2, §4.3</td>
+</tr>
+<tr>
+<td><strong>Idempotent</strong></td>
+<td>Operation safe to retry — same result on repeat</td>
+<td>§6.3, §6.5 (API design)</td>
+</tr>
+<tr>
+<td><strong>Index</strong></td>
+<td>Data structure speeding lookups — B+ tree in DBs, inverted index in search</td>
+<td>§3, §5</td>
+</tr>
+<tr>
+<td><strong>IPC</strong></td>
+<td>Inter-Process Communication — pipes, sockets, shared memory</td>
+<td>§4.3, §6</td>
+</tr>
+<tr>
+<td><strong>JIT</strong></td>
+<td>Just-In-Time compilation — compile during execution (V8, JVM, .NET)</td>
+<td>§2, §4.5</td>
+</tr>
+<tr>
+<td><strong>Kernel</strong></td>
+<td>Core of the OS — manages hardware, syscalls</td>
+<td>§4.3</td>
+</tr>
+<tr>
+<td><strong>Latency vs. throughput</strong></td>
+<td>Time per operation vs. operations per second</td>
+<td>§6.1, §6.3</td>
+</tr>
+<tr>
+<td><strong>Monolith vs. microservices</strong></td>
+<td>One deployable vs. many small services</td>
+<td>§2.4, §6.3</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td>Object-Relational Mapper — code objects ↔ SQL rows (Prisma, SQLAlchemy, Hibernate)</td>
+<td>§2, §5</td>
+</tr>
+<tr>
+<td><strong>Protocol</strong></td>
+<td>Agreed format/rules for communication (TCP, HTTP, TLS, gRPC)</td>
+<td>§6.1, §6.5</td>
+</tr>
+<tr>
+<td><strong>Race condition</strong></td>
+<td>Bug from uncontrolled concurrent access</td>
+<td>§2, §4.3, §6.3</td>
+</tr>
+<tr>
+<td><strong>Serialization</strong></td>
+<td>Converting data structures to bytes for storage/transmission</td>
+<td>§5, §6.5</td>
+</tr>
+<tr>
+<td><strong>SHA / hash</strong></td>
+<td>Cryptographic fingerprint function — integrity, dedup, passwords</td>
+<td>§3 (hash tables), §7.8 (crypto)</td>
+</tr>
+<tr>
+<td><strong>Side effect</strong></td>
+<td>Observable effect beyond return value (I/O, mutation) — pure functions have none</td>
+<td>§2</td>
+</tr>
+<tr>
+<td><strong>State machine</strong></td>
+<td>Model of system as states + transitions — UI flows, protocols, games</td>
+<td>§2.4, §7.4</td>
+</tr>
+<tr>
+<td><strong>Syscall</strong></td>
+<td>User→kernel request (read, write, open, mmap)</td>
+<td>§4.3</td>
+</tr>
+<tr>
+<td><strong>Throughput</strong></td>
+<td>Work done per unit time</td>
+<td>§6.1</td>
+</tr>
+<tr>
+<td><strong>Transaction</strong></td>
+<td>ACID unit of DB work — all-or-nothing</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td><strong>Type system</strong></td>
+<td>Rules governing types — static/dynamic, strong/weak</td>
+<td>§2</td>
+</tr>
+<tr>
+<td><strong>VM</strong></td>
+<td>Virtual Machine — hardware-emulated computer (hypervisor) or managed runtime (JVM)</td>
+<td>§4.4, §2</td>
+</tr>
+<tr>
+<td><strong>WAL</strong></td>
+<td>Write-Ahead Log — durability mechanism in DBs</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td><strong>Zero-downtime deploy</strong></td>
+<td>Rolling/blue-green releases — no service interruption</td>
+<td>§2.6, §6.4</td>
+</tr>
+<tr>
+<td><strong>KV cache</strong></td>
+<td>Transformer inference cache of past key/value states — the memory bottleneck in LLM serving (PagedAttention manages it)</td>
+<td>§11.1</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Model Context Protocol — standard for connecting LLMs/agents to tools and data sources</td>
+<td>§7.10, §11.2</td>
+</tr>
+<tr>
+<td><strong>WASM / WASI</strong></td>
+<td>WebAssembly binary format + capability-based system interface — portable near-native bytecode</td>
+<td>§7.9</td>
+</tr>
+<tr>
+<td><strong>PQC</strong></td>
+<td>Post-quantum cryptography — NIST-standardized algorithms (ML-KEM/ML-DSA/SLH-DSA) resisting quantum attack</td>
+<td>§11.3, §12.1</td>
+</tr>
+<tr>
+<td><strong>RAG</strong></td>
+<td>Retrieval-Augmented Generation — grounding LLM output in retrieved documents</td>
+<td>§5.5, §7.10</td>
+</tr>
+<tr>
+<td><strong>GPU / TPU / NPU</strong></td>
+<td>Accelerators: graphics-parallel (CUDA), Google tensor cores, neural-network inference chips</td>
+<td>§4.1, §11.6</td>
+</tr>
+<tr>
+<td><strong>Agent</strong></td>
+<td>LLM system that plans, calls tools, and acts across multiple steps toward a goal</td>
+<td>§7.10, §9.6, §11.2</td>
+</tr>
+<tr>
+<td><strong>MFU</strong></td>
+<td>Model FLOPs Utilization — fraction of theoretical peak a training run actually achieves (~30–50% typical)</td>
+<td>§11.6, §14.4</td>
+</tr>
+<tr>
+<td><strong>VLA model</strong></td>
+<td>Vision-Language-Action model — robot policy mapping camera+language input to motor actions</td>
+<td>§11.4</td>
+</tr>
+<tr>
+<td><strong>SIMD / NUMA</strong></td>
+<td>Single-instruction-multiple-data vector ops / Non-uniform memory access — performance-critical hardware concepts</td>
+<td>§4.1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-emerging-frontier-fields">11. EMERGING FRONTIER FIELDS (2025–26)</h2>
+<p>Fields that barely existed in curricula five years ago — now hiring pipelines and research programs.</p>
+<h3 id="111-llm-inference-serving">11.1 LLM Inference &amp; Serving Engineering</h3>
+<ul>
+<li><strong>Serving stack</strong>: vLLM (PagedAttention — OS-style memory management for KV cache), SGLang (RadixAttention for prefix reuse), TensorRT-LLM (NVIDIA-optimized), llama.cpp (CPU/edge), TGI (HF), Ollama (dev UX), LMDeploy, Mooncake/KvCache-centric disaggregation.</li>
+<li><strong>Key techniques</strong>: continuous batching, KV-cache paging/quantization (FP8/INT4/INT8 KV), speculative decoding (draft model + verify), prefix caching, chunked prefill, disaggregated prefill/decode (split across GPU pools), expert parallelism for MoE models.</li>
+<li><strong>Hardware reality</strong>: H100/B200 dominate training; inference spreads to A100, L40S, MI300, and even CPUs for small models; power-per-token is now a first-class metric (see §14 data).</li>
+<li><strong>Economics</strong>: cost per 1M tokens fell ~10x 2023→2025 for frontier open models; the bottleneck shifted from FLOPs to memory bandwidth and interconnect (NVLink vs. InfiniBand vs. Ethernet).</li>
+</ul>
+<h3 id="112-ai-safety-security-for-llms">11.2 AI Safety, Security &amp; Alignment Engineering</h3>
+<ul>
+<li><strong>Threat surface</strong>: prompt injection (direct/indirect), jailbreaks, model extraction, data poisoning of training sets, supply-chain attacks on model hubs (Hugging Face pickle scanning), agent tool-abuse.</li>
+<li><strong>Defense stack</strong>: input/output guardrails (Llama Guard, NeMo), constitutional classifiers, circuit breakers, red-teaming pipelines, canary tokens, provenance (C2PA for media), model signing (Sigstore for ML models — model signing is emerging standard).</li>
+<li><strong>Alignment research</strong>: RLHF → RLAIF → Constitutional AI; mechanistic interpretability (Anthropic's sparse autoencoders extracting features from Claude); scalable oversight; AI control protocols (untrusted models in sandboxed deployment).</li>
+<li><strong>Standards</strong>: NIST AI RMF + GenAI Profile (2024), EU AI Act GPAI obligations (Aug 2025), OWASP Top 10 for LLM Apps (2025), MITRE ATLAS for AI-threat tactics.</li>
+</ul>
+<h3 id="113-quantum-classical-hybrid">11.3 Quantum–Classical Hybrid Computing</h3>
+<ul>
+<li><strong>NISQ reality (2025–26)</strong>: IBM Condor-class ~1,100+ physical qubits, Google Willow 105-qubit below-threshold error correction (Dec 2024), Quantinuum/Honeywell trapped-ion systems, logical qubits emerging (early fault-tolerant demos).</li>
+<li><strong>Near-term algorithms</strong>: QAOA/VQE for optimization, quantum ML kernels, quantum simulation of molecules/materials (the credible near-term win), quantum-enhanced sensing (see doc 40 Part VII §3).</li>
+<li><strong>PQC transition</strong>: NIST standards FIPS 203/204/205 finalized Aug 2024 (ML-KEM, ML-DSA, SLH-DSA) — <strong>every TLS/cert stack is migrating now</strong>; CNSA 2.0 timelines; "harvest now, decrypt later" threat drives urgency; hybrid key exchange (X25519+ML-KEM) already deployed by Google/Cloudflare.</li>
+<li><strong>Software stack</strong>: Qiskit 1.x/2.x, Cirq, PennyLane (differentiable quantum programming), Q# + Azure Quantum, tket (Quantinuum), CUDA-Q (NVIDIA quantum-classical).</li>
+</ul>
+<h3 id="114-robotics-embodied-ai">11.4 Embodied AI / Robot Foundation Models</h3>
+<ul>
+<li><strong>The shift</strong>: 2024–26 saw the "LLM moment" hit robotics — vision-language-action (VLA) models mapping camera+language → motor commands: RT-2/RT-X (Google), OpenVLA, π0/π0.5 (Physical Intelligence), GR00T (NVIDIA), Octo, Gemini Robotics.</li>
+<li><strong>Sim-to-real pipeline</strong>: Isaac Sim/Gym, MuJoCo (DeepMind open-sourced 2022), Genesis, NVIDIA Isaac Lab, domain randomization, teleoperation data collection (Aloha, UMI grippers), diffusion-policy action heads.</li>
+<li><strong>Hardware platforms</strong>: Franka/UR arms, Unitree/G1 humanoids, Boston Dynamics Atlas-class, mobile manipulators (Hello Robot Stretch), drone autonomy stacks (PX4/ArduPilot).</li>
+<li><strong>Open problems</strong>: dexterous manipulation reliability, long-horizon task planning, sim-to-real gap on contact-rich tasks, data scarcity (teleoperation is the bottleneck), safety certification for learned controllers.</li>
+</ul>
+<h3 id="115-verifiable-computing-proofs">11.5 Verifiable Computing &amp; Cryptographic Proofs</h3>
+<ul>
+<li><strong>Zero-knowledge proofs</strong>: zk-SNARKs (Groth16, PLONK, Halo2), STARKs (no trusted setup, Polygon), SNARK-friendly chains — used in rollups, private DeFi, identity (zkKYC/zkTLS).</li>
+<li><strong>Verifiable computation</strong>: RISC Zero (zkVM proving arbitrary Rust programs), SP1 (Succinct), Halo2-based zkEVMs — proving off-chain computation correct on-chain; also used for AI inference verification (zkML, e.g., EZKL, Modulus).</li>
+<li><strong>Trusted execution</strong>: Intel SGX/TDX, AMD SEV-SNP, ARM CCA, AWS Nitro Enclaves — confidential computing; remote attestation lets verifiers check what code is actually running.</li>
+<li><strong>Relevance beyond crypto</strong>: verifiable ML inference, audit logs you can prove without revealing data, regulatory compliance proofs — converging with §7.7 formal methods.</li>
+</ul>
+<h3 id="116-distributed-ai-training-gpu-infrastructure">11.6 Distributed AI Training &amp; GPU Infrastructure</h3>
+<ul>
+<li><strong>Parallelism strategies</strong>: data parallelism (DDP/FSDP — fully sharded), tensor parallelism (within-node, NVLink), pipeline parallelism (across nodes), expert parallelism (MoE routing), context parallelism (long sequences); frameworks: PyTorch FSDP/DTensor, DeepSpeed, Megatron-LM, JAX pjit, Ray Train.</li>
+<li><strong>Interconnect is the moat</strong>: NVLink/NVSwitch (intra-node ~900 GB/s), InfiniBand NDR/XDR (400G/800G), RoCE over Ethernet — training runs are communication-bound; topology-aware scheduling matters more than raw FLOPs.</li>
+<li><strong>Cluster engineering</strong>: Slurm/kueue/Kubernetes (Kueue, Volcano, KubeRay) for job scheduling; checkpointing strategies (async, tiered to parallel FS); stragglers &amp; fault tolerance at 10k+ GPU scale; spot/preemptible economics.</li>
+<li><strong>Efficiency reality</strong>: MFU (model FLOPs utilization) of 30–50% is typical for large runs; NVIDIA's reported ~40–60% on optimized stacks; power capping and datacenter PUE (~1.1–1.3) are now board-level concerns.</li>
+<li><strong>Alternatives</strong>: Google TPU pods (JAX/TorchAX), AWS Trainium/Inferentia, Cerebras wafer-scale (single-die 4 trillion transistors — fastest single-chip training), Graphcore (IPU, pivoting), AMD MI300X clusters, Tenstorrent.</li>
+</ul>
+<h3 id="117-programming-language-implementation-case-studies">11.7 Language Implementation Case Studies</h3>
+<ul>
+<li><strong>CPython</strong>: C-implemented interpreter + optional JIT (PEP 744, 3.13+); free-threaded (no-GIL) build experimental in 3.13/3.14 — biggest runtime change in a decade; uv/pip ecosystem shift.</li>
+<li><strong>Go</strong>: gc compiler + goroutine scheduler (M:N since Go 1.14); single static binary; used for Docker/K8s/Terraform/etcd/Prometheus — infrastructure's default language.</li>
+<li><strong>Rust</strong>: LLVM backend, zero-cost abstractions via ownership; used for Linux kernel, Windows components, WASM tooling, uv, Ruff, polars.</li>
+<li><strong>JVM/.NET</strong>: mature JITs (HotSpot C1/C2, .NET RyuJIT/NativeAOT); GraalVM polyglot; WASM emerging as managed-language target.</li>
+<li><strong>TypeScript 7.x</strong>: native (Go) port of the compiler — 10x faster type-checking; "tsgo" preview 2025, full native toolchain replacing the JS-implemented compiler.</li>
+<li><strong>Elixir/BEAM</strong>: Erlang VM — actor model, preemptive scheduling, "let it crash" supervision; powers Discord (millions of concurrent voice connections), WhatsApp (historically 2M conn/server), Phoenix framework.</li>
+<li><strong>WebAssembly runtimes</strong>: Wasmtime (Bytecode Alliance, Rust), Wasmer, WAVM; browser engines (V8, SpiderMonkey, JavaScriptCore) all ship WASM.</li>
+</ul>
+<hr />
+<h2 id="12-open-problems">12. OPEN PROBLEMS IN CS/IT</h2>
+<h3 id="121-fundamental">12.1 Fundamental / Research-Grade</h3>
+<ul>
+<li><strong>P vs NP</strong> — still open after 50+ years; would reshape cryptography, optimization, and ML if resolved (see §3.6, §7.6).</li>
+<li><strong>Consensus at internet scale</strong> — BFT assumes &lt;1/3 Byzantine; real networks have unknown adversary fractions, eclipse attacks, and MEV incentives that break honest-majority assumptions.</li>
+<li><strong>Formal verification of real software</strong> — verified kernels (seL4), compilers (CompCert), and crypto protocols exist, but verifying a million-line OS/browser remains infeasible; the "proof-carrying code" dream is partial.</li>
+<li><strong>Energy-efficient computing</strong> — data centers ~1.5–2% of global electricity (IEA 2024); beyond-CMOS devices (spintronics, photonic interconnects, superconducting logic) all pre-commercial.</li>
+<li><strong>Post-quantum migration completeness</strong> — PQC standards exist (FIPS 203/204/205) but protocol-level integration (TLS 1.3 hybrid handshakes, certificate chains, HSM firmware) is a decade-long migration; "harvest now, decrypt later" makes every year of delay a stored-risk.</li>
+<li><strong>AI reliability</strong> — LLMs hallucinate, agents compound errors over long horizons, and there's no agreed formal spec for "correct" agent behavior; eval science lags capability.</li>
+</ul>
+<h3 id="122-engineering-practice">12.2 Engineering Practice</h3>
+<ul>
+<li><strong>Technical debt measurement</strong> — no reliable metric; code churn, defect density, and architecture-drift proxies all imperfect.</li>
+<li><strong>Microservices failure modes</strong> — distributed debugging (which service? which trace?), partial-failure reasoning, and the operational cost of N services vs. one monolith is still being learned per-organization.</li>
+<li><strong>Software supply-chain security</strong> — SolarWinds/Log4Shell/xz-utils (2024, near-miss backdoor in sshd dependency) showed build systems are the soft underbelly; SLSA/in-toto/sigstore adoption is growing but incomplete.</li>
+<li><strong>Legacy modernization</strong> — COBOL/mainframe systems run trillions in daily finance; migration cost vs. risk is a permanent tension.</li>
+<li><strong>Energy-aware scheduling</strong> — carbon-aware computing (Shiftsmart, Google's carbon-intelligent computing) is early; grid-interactive datacenters are a 2025–26 research area.</li>
+</ul>
+<hr />
+<h2 id="13-controversies-debates">13. CONTROVERSIES &amp; DEBATES</h2>
+<ul>
+<li><strong>AI coding assistants: productivity or deskilling?</strong> — GitHub Copilot studies (2023–24) show task-completion speedups (~55% on a controlled task) but juniors risk never learning fundamentals; "vibe coding" debates (Karpathy's term, 2025) split the community between speed and rigor.</li>
+<li><strong>Rust vs. Go for new services</strong> — Go wins on simplicity/compile speed/hiring pool; Rust wins on memory safety/performance/expressiveness; the Linux-kernel adoption of Rust (6.1+) legitimized it for infrastructure, but most business backends remain Go/Java/TS.</li>
+<li><strong>Microservices vs. modular monolith</strong> — the 2010s microservices wave is being partially walked back; Shopify/Prime Video/DoorDash publicized monolith-returns cases; the debate is now "right-sized decomposition" not ideology.</li>
+<li><strong>JavaScript fatigue</strong> — framework churn (Angular→React→Vue→Svelte cycles), npm supply-chain risk (hundreds of deps per app), and "it runs everywhere" tax vs. staying power of the ecosystem.</li>
+<li><strong>Blockchain utility</strong> — see §7.13; the debate is whether token-incentivized consensus solves real problems or is a solution looking for one; institutional adoption is real (stablecoins, tokenized treasuries) while consumer speculation deflated.</li>
+<li><strong>Quantum computing hype</strong> — NISQ devices are real but error-corrected useful machines are likely 2030s; PQC urgency is real <em>now</em> because migration takes a decade, not because quantum computers are here.</li>
+<li><strong>CS degree value vs. bootcamps/AI-assisted learning</strong> — fundamentals (algorithms, systems, math) remain the durable moat; tool-specific skills commoditize fastest.</li>
+</ul>
+<hr />
+<h2 id="14-data-tables-market-numbers">14. DATA TABLES &amp; MARKET NUMBERS</h2>
+<h3 id="141-programming-language-popularity">14.1 Language Popularity Signals (2025–26)</h3>
+<table>
+<thead>
+<tr><th>Signal</th><th>Leader(s)</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>GitHub Octoverse most-used language</td><td>JavaScript / Python (top-2 swap yearly)</td><td>Python grew fastest 2023–25 on data/AI demand</td></tr>
+<tr><td>TIOBE index top-5 (approx)</td><td>C, Python, C++, Java, C#</td><td>C keeps top spot on embedded/systems weight; Rust entering top-20</td></tr>
+<tr><td>Stack Overflow Developer Survey "most admired"</td><td>Rust (11+ years running)</td><td>Rust also among "most wanted"; Go steady top-10</td></tr>
+<tr><td>npm weekly downloads (approx)</td><td>react ecosystem packages dominate</td><td>TypeScript is the default for new web code; plain JS declining in new projects</td></tr>
+<tr><td>PyPI</td><td>~500k+ packages; growth ~10%/yr</td><td>ML/AI drove 2023–25 surge; uv/PDM replacing pip workflows</td></tr>
+<tr><td>crates.io</td><td>~150k crates</td><td>Rust ecosystem maturing; tokio/serde/axum are the backbone</td></tr>
+</tbody>
+</table>
+<h3 id="142-cloud-infrastructure-market">14.2 Cloud &amp; Infrastructure (approx, 2025)</h3>
+<table>
+<thead>
+<tr><th>Metric</th><th>Value</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>AWS market share (IaaS)</td><td>~30–32%</td><td>Synergy Research quarterly</td></tr>
+<tr><td>Azure share</td><td>~21–24%</td><td>Synergy Research</td></tr>
+<tr><td>Google Cloud share</td><td>~10–12%</td><td>Synergy Research</td></tr>
+<tr><td>Kubernetes adoption</td><td>~76–80% of orgs use containers; K8s dominant orchestrator</td><td>CNCF surveys 2024–25</td></tr>
+<tr><td>Global datacenter electricity</td><td>~1.5–2% of world electricity; AI training is the fastest-growing load</td><td>IEA, 2024–25</td></tr>
+<tr><td>Global IT spending</td><td>~$5T+ (Gartner)</td><td>Gartner forecast 2025</td></tr>
+</tbody>
+</table>
+<h3 id="143-key-benchmarks">14.3 Benchmarks Worth Memorizing</h3>
+<table>
+<thead>
+<tr><th>Benchmark</th><th>What it measures</th><th>Current state</th></tr>
+</thead>
+<tbody>
+<tr><td>SPEC CPU / MLPerf</td><td>CPU &amp; accelerator performance</td><td>MLPerf Inference v5.x: frontier GPUs ~10–100x perf/W vs. 2020</td></tr>
+<tr><td>LLM evals (MMLU, SWE-bench, GPQA)</td><td>Reasoning/coding ability</td><td>SWE-bench Verified &gt;70% for frontier models (2025); scores saturate → new harder benchmarks (SWE-bench Pro, Terminal-Bench)</td></tr>
+<tr><td>TPC-C / TPC-H</td><td>OLTP / OLAP databases</td><td>Postgres &amp; cloud warehouses within ~2x of each other; workload-dependent</td></tr>
+<tr><td>Top500 supercomputers</td><td>HPC capability</td><td>Frontier ~1.2 EFLOPS; Aurora &amp; El Capitan exascale (2024–25)</td></tr>
+<tr><td>LMArena (Chatbot Arena)</td><td>Human-preference LLM ranking</td><td>De facto leaderboard; frontier models within noise of each other — eval gaming concerns rising</td></tr>
+</tbody>
+</table>
+<h3 id="144-ai-compute-semi-market">14.4 AI Compute &amp; Semiconductor (approx, 2025)</h3>
+<table>
+<thead>
+<tr><th>Metric</th><th>Value</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>NVIDIA datacenter revenue</td><td>~$115B FY2025 (vs. ~$15B FY2023)</td><td>NVIDIA earnings</td></tr>
+<tr><td>Global AI accelerator market</td><td>~$60–80B (2025), growing &gt;25%/yr</td><td>industry estimates</td></tr>
+<tr><td>Hyperscaler capex</td><td>AWS+Azure+GCP combined &gt;$200B/yr (2025), mostly AI</td><td>company filings</td></tr>
+<tr><td>HBM memory shortage</td><td>SK Hynix/Samsung/Micron supply constrained through 2026</td><td>industry reports</td></tr>
+<tr><td>TSMC advanced-node share</td><td>~90% of leading-edge (&lt;10nm) logic</td><td>industry estimates</td></tr>
+</tbody>
+</table>
+<h3 id="145-internet-usage-security-stats">14.5 Internet &amp; Security Stats (approx)</h3>
+<table>
+<thead>
+<tr><th>Metric</th><th>Value</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>Global internet users</td><td>~5.5B (~68% of population)</td><td>ITU/Statista 2025</td></tr>
+<tr><td>IPv6 adoption</td><td>~45% of Google-served traffic; ~40%+ of internet users have IPv6</td><td>Google IPv6 stats</td></tr>
+<tr><td>HTTPS share</td><td>&gt;95% of Chrome page loads encrypted</td><td>Google Transparency Report</td></tr>
+<tr><td>Cybercrime cost</td><td>~$10.5T/yr by 2025 (Cybersecurity Ventures estimate)</td><td>industry estimate</td></tr>
+<tr><td>Median time-to-exploit known vuln</td><td>shrinking to hours–days for high-profile CVEs</td><td>Mandiant/Google M-Trends</td></tr>
+</tbody>
+</table>
+<hr />
+<h2 id="15-timeline-cs-breakthroughs">15. TIMELINE OF CS/IT BREAKTHROUGHS</h2>
+<table>
+<thead>
+<tr><th>Year</th><th>Breakthrough</th><th>Significance</th></tr>
+</thead>
+<tbody>
+<tr><td>1945</td><td>ENIAC; von Neumann architecture</td><td>General-purpose electronic computing</td></tr>
+<tr><td>1948</td><td>Shannon information theory; transistor (1947 Bell Labs)</td><td>Theory + hardware foundations</td></tr>
+<tr><td>1950s–60s</td><td>Fortran/Cobol; ALGOL; TCP/IP concepts (Baran, Davies)</td><td>High-level languages; packet switching</td></tr>
+<tr><td>1969</td><td>ARPANET; Unix born (Bell Labs)</td><td>Networking + OS lineage</td></tr>
+<tr><td>1970s</td><td>C language; relational model (Codd 1970); Ethernet (Metcalfe 1973); TCP/IP spec (Cerf/Kahn 1974)</td><td>The modern stack's skeleton</td></tr>
+<tr><td>1980s</td><td>PC (IBM 1981); WWW proposal (Berners-Lee 1989); GNU/Linux; DNS (1983); Motorola 68000 era</td><td>Personal computing + internet substrate</td></tr>
+<tr><td>1990s</td><td>WWW public (1991); Linux kernel (1991); Java (1995); Google (1998); Wi-Fi (1997); Blockchain concept (1998 Wei Dai / 2008 Bitcoin whitepaper)</td><td>Web era + mobile-era prelude</td></tr>
+<tr><td>2000s</td><td>Bitcoin (2009); iPhone (2007); AWS (2006); Android (2008); Kubernetes (2014, Google); React (2013); Docker (2013)</td><td>Cloud + mobile + container era</td></tr>
+<tr><td>2010s</td><td>Deep learning breakthroughs (AlexNet 2012); Transformers (2017); GPT series; Kubernetes mainstream; Rust 1.0 (2015); WebAssembly MVP (2017); MCP-era agents (2022–25)</td><td>AI revolution + cloud-native consolidation</td></tr>
+<tr><td>2020s</td><td>ChatGPT (2022); LLM agent era; PQC standards (2024); WASM component model; AlphaFold-style AI-for-science; quantum error-correction milestone (Willow 2024)</td><td>Generative-AI decade</td></tr>
+</tbody>
+</table>
+<hr />
+<h2 id="16-key-papers-people">16. KEY PAPERS &amp; PEOPLE</h2>
+<h3 id="161-cs-landmark-papers">16.1 Landmark Papers</h3>
+<table>
+<thead>
+<tr><th>Paper</th><th>Year</th><th>Field</th></tr>
+</thead>
+<tbody>
+<tr><td>Turing, "On Computable Numbers"</td><td>1936</td><td>Theory</td></tr>
+<tr><td>Shannon, "A Mathematical Theory of Communication"</td><td>1948</td><td>Information theory</td></tr>
+<tr><td>Codd, "A Relational Model of Data"</td><td>1970</td><td>Databases</td></tr>
+<tr><td>Dijkstra, "Go To Statement Considered Harmful"</td><td>1968</td><td>Structured programming</td></tr>
+<tr><td>Hoare, "An Axiomatic Basis for Computer Programming"</td><td>1969</td><td>Program verification</td></tr>
+<tr><td>Lamport, "Time, Clocks, and the Ordering of Events"</td><td>1978</td><td>Distributed systems</td></tr>
+<tr><td>Brewer CAP conjecture → Gilbert &amp; Lynch proof</td><td>2002</td><td>Distributed systems</td></tr>
+<tr><td>Vaswani et al., "Attention Is All You Need"</td><td>2017</td><td>AI/ML</td></tr>
+<tr><td>He et al., ResNet (CVPR)</td><td>2015</td><td>Deep learning</td></tr>
+<tr><td>Devlin et al., BERT</td><td>2018</td><td>NLP</td></tr>
+<tr><td>Brown et al., GPT-3 few-shot</td><td>2020</td><td>LLMs</td></tr>
+<tr><td>Nakamoto, "Bitcoin: A Peer-to-Peer Electronic Cash System"</td><td>2008</td><td>Distributed systems/crypto</td></tr>
+</tbody>
+</table>
+<h3 id="162-key-figures">16.2 Key Figures</h3>
+<ul>
+<li><strong>Theory</strong>: Turing, Church, Kleene, Cook (NP-completeness), Karp (21 problems), Sipser (textbook author)</li>
+<li><strong>Systems/OS</strong>: Thompson &amp; Ritchie (Unix/C), Torvalds (Linux), Engelbart (NLS/mouse), Cerf &amp; Kahn (TCP/IP)</li>
+<li><strong>Languages/compilers</strong>: Hoare, Dijkstra, Wirth (Pascal/Modula), Stroustrup (C++), Gosling (Java), Eich (JS), Hejlsberg (C#/TS), Matsumoto (Ruby), van Rossum (Python), Matz (Ruby), Eich→Brendan; Graydon Hoare (Rust), Bjarne; Kernighan &amp; Ritchie ("K&amp;R C")</li>
+<li><strong>Databases</strong>: Codd, Stonebraker (Postgres/Ingres/Vertica), Stonebraker's "one size fits all" critique</li>
+<li><strong>Web</strong>: Berners-Lee, Vint Cerf, Brin &amp; Page, Eich</li>
+<li><strong>AI/ML</strong>: McCarthy (coined "AI"), Minsky, Rosenblatt (perceptron), LeCun, Hinton, Bengio (Nobel 2024 Physics for neural networks), Fei-Fei Li (ImageNet), Vaswani, Karpathy, Sutskever, Amodei, Hassabis</li>
+<li><strong>Security</strong>: Diffie &amp; Hellman (1976), Rivest-Shamir-Adleman (1977), Schneier, Zimmermann (PGP), Anderson (security engineering)</li>
+</ul>
+<h3 id="163-essential-books-by-field">16.3 Essential Books by Field</h3>
+<table>
+<thead>
+<tr><th>Field</th><th>Book</th><th>Author</th></tr>
+</thead>
+<tbody>
+<tr><td>Systems programming</td><td>Computer Systems: A Programmer's Perspective</td><td>Bryant &amp; O'Hallaron</td></tr>
+<tr><td>Compilers/interpreters</td><td>Crafting Interpreters</td><td>Nystrom</td></tr>
+<tr><td>Distributed systems</td><td>Designing Data-Intensive Applications</td><td>Kleppmann</td></tr>
+<tr><td>Software design</td><td>A Philosophy of Software Design</td><td>Ousterhout</td></tr>
+<tr><td>Architecture</td><td>Clean Architecture</td><td>Martin</td></tr>
+<tr><td>Algorithms</td><td>Introduction to Algorithms (CLRS)</td><td>Cormen et al.</td></tr>
+<tr><td>Theory</td><td>Introduction to the Theory of Computation</td><td>Sipser</td></tr>
+<tr><td>Databases</td><td>Database System Concepts</td><td>Silberschatz/Korth/Sudarshan</td></tr>
+<tr><td>Security</td><td>The Web Application Hacker's Handbook; Security Engineering</td><td>Stuttard &amp; Pinto; Anderson</td></tr>
+<tr><td>Networking</td><td>Computer Networking: A Top-Down Approach</td><td>Kurose &amp; Ross</td></tr>
+<tr><td>Concurrency</td><td>Java Concurrency in Practice / Go concurrency patterns</td><td>Goetz et al. / Google</td></tr>
+<tr><td>ML theory</td><td>Pattern Recognition and Machine Learning</td><td>Bishop</td></tr>
+<tr><td>Deep learning</td><td>Deep Learning</td><td>Goodfellow, Bengio, Courville</td></tr>
+<tr><td>Rust</td><td>The Rust Programming Language (TRPL)</td><td>Klabnik &amp; Nichols (free online)</td></tr>
+<tr><td>Go</td><td>The Go Programming Language</td><td>Donovan &amp; Kernighan</td></tr>
+</tbody>
+</table>
+<hr />
+<h2 id="17-cross-links-sibling-maps">17. CROSS-LINKS — SIBLING MAPS</h2>
+<p><em>This map is one node in the PRIME knowledge network. Follow the links for depth in adjacent domains.</em></p>
+<a class="doc" href="39 - ml-data-pipeline.html">📊 39 — ML Data Pipeline <small>· the data side of every AI/ML field above</small></a>
+<a class="doc" href="40 - map-engineering-medicine.html">⚙️ 40 — Engineering · Medicine · Agri Map <small>· applied domains where CS/IT is the enabling layer</small></a>
+<a class="doc" href="42 - map-math-logic.html">📐 42 — Math &amp; Logic Map <small>· the formal substrate: algorithms, complexity, logic</small></a>
+<a class="doc" href="43 - map-natural-sciences.html">🔬 43 — Natural Sciences Map <small>· physics/chemistry/bio foundations for HPC &amp; scientific computing</small></a>
+<a class="doc" href="44 - map-ai-ml.html">🤖 44 — AI &amp; ML Map <small>· model architectures, training, evaluation — the math behind §11.1/§11.4</small></a>
+<a class="doc" href="45 - map-cybersecurity.html">🛡️ 45 — Cybersecurity Map <small>· web vulns, crypto, secure coding — applied depth for §6.2/§11.2</small></a>
+<a class="doc" href="46 - map-knowledge-archive.html">🗄️ 46 — Knowledge Archive <small>· how this corpus is organized and retrieved</small></a>
+<a class="doc" href="47 - map-humanities-society.html">🌍 47 — Humanities &amp; Society Map <small>· tech ethics, policy, labor-market effects of automation</small></a>
+<a class="doc" href="00 - PRIME INDEX.html">⬡ 00 — PRIME INDEX <small>· master navigation for the full knowledge base</small></a>
+<hr />
+<h2 id="18-sources">18. SOURCES</h2>
+<p>Verified November 2026 against official sources, plus January 2026 upgrade pass:</p>
+<ul>
+<li><strong>Python releases</strong>: python.org/downloads — 3.15.2 latest; 3.14/3.13 in security support; 3.10 EOL Oct 2026</li>
+<li><strong>Go releases</strong>: go.dev/dl — go1.27.4 latest stable</li>
+<li><strong>Rust releases</strong>: rust-lang.org / release radar — Rust 1.100.0 (Nov 12, 2026)</li>
+<li><strong>TypeScript releases</strong>: typescriptlang.org / npm — TypeScript 7.0.2 (Go-native port era)</li>
+<li><strong>Java LTS</strong>: Oracle/OpenJDK release cadence — JDK 21 (2023 LTS), JDK 25 (2025 LTS)</li>
+<li><strong>endoflife.date</strong> — support-window data for all languages/runtimes</li>
+<li><strong>Kleppmann, "Designing Data-Intensive Applications" (2017)</strong> — §5, §6.3 bible</li>
+<li><strong>CSAPP (Bryant &amp; O'Hallaron)</strong> — §4 canonical text</li>
+<li><strong>Nystrom, "Crafting Interpreters"</strong> — §7.1 entry point</li>
+<li><strong>Gamma et al., "Design Patterns" (1994)</strong>; <strong>Ousterhout, "A Philosophy of Software Design" (2018)</strong>; <strong>Martin, "Clean Architecture" (2017)</strong> — §2.4</li>
+<li><strong>RFCs</strong>: rfc-editor.org — TCP/IP, HTTP, TLS specifications</li>
+<li><strong>OWASP CheatSheetSeries</strong> (<code>~/CheatSheetSeries</code>) — security cross-reference</li>
+<li><strong>Local resources</strong>: <code>~/websec_research/</code>, <code>~/crypto_research/</code>, <code>~/HackTricks/</code>, <code>~/TOOLS.md</code>, <code>~/science_lab/math/REPORT.md</code> (Dijkstra/Bellman-Ford/union-find verification)</li>
+<li><strong>January 2026 additions</strong>: Anthropic MCP spec (modelcontextprotocol.io); NIST FIPS 203/204/205 PQC standards (Aug 2024); OWASP Top 10 for LLM Applications (2025); IEA Electricity/Data-Centre reports; CNCF State of Cloud-Native surveys; Synergy Research cloud market shares; vLLM/SGLang/RISC Zero/zkTLS docs; Physical Intelligence π0, Google RT-X, NVIDIA GR00T papers for embodied AI.</li>
+</ul>
+<p><em>Generated as a research artifact. Living document — update version numbers and tool names as the ecosystem evolves.</em></p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 41 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

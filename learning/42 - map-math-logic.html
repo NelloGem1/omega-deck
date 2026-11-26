@@ -1,0 +1,1392 @@
+<!doctype html><html><head><meta charset="utf-8"><title>math-logic-map</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="mathematics-logic-formal-sciences-comprehensive-classification-map">🧮 MATHEMATICS, LOGIC &amp; FORMAL SCIENCES — COMPREHENSIVE CLASSIFICATION MAP</h1>
+<p><em>A structured knowledge map of the entire mathematical sciences. Compiled Nov 25, 2026.</em>
+<em>Every field documents: subfields, fundamental concepts, key principles, methods, applications, prerequisites, and connections. See §11 Gaps &amp; Emerging Fields — this map is deliberately NOT claimed complete.</em></p>
+<hr />
+<h2 id="table-of-contents">📋 TABLE OF CONTENTS</h2>
+<ol>
+<li><a href="#1-what-are-the-formal-sciences">What Are the Formal Sciences?</a></li>
+<li><a href="#2-pure-mathematics">Pure Mathematics</a></li>
+<li><a href="#3-applied-mathematics">Applied Mathematics</a></li>
+<li><a href="#4-discrete-mathematics">Discrete Mathematics</a></li>
+<li><a href="#5-probability--statistics">Probability &amp; Statistics</a></li>
+<li><a href="#6-information-decision--computational-sciences">Information, Decision &amp; Computational Sciences</a></li>
+<li><a href="#7-formal-sciences-logic-foundations--proof">Formal Sciences: Logic, Foundations &amp; Proof</a></li>
+<li><a href="#8-knowledge-hierarchy-framework">Knowledge Hierarchy Framework</a></li>
+<li><a href="#9-how-mathematics-underpins-cs-engineering-crypto--ai">How Mathematics Underpins CS, Engineering, Crypto &amp; AI</a></li>
+<li><a href="#10-cross-domain-connections--prerequisite-ladder">Cross-Domain Connections &amp; Prerequisite Ladder</a></li>
+<li><a href="#11-gaps--emerging-fields">Gaps &amp; Emerging Fields</a></li>
+<li><a href="#12-sources">Sources</a></li>
+</ol>
+<hr />
+<h2 id="1-what-are-the-formal-sciences">1. WHAT ARE THE FORMAL SCIENCES?</h2>
+<p>The <strong>formal sciences</strong> (also called the <em>mathematical sciences</em>, <em>abstract sciences</em>, or <em>formal methods</em>) study abstract objects, structures, and the rules governing them — using <strong>axioms, definitions, and deductive proof</strong> rather than empirical experiment. They form the theoretical backbone of every other science and of all engineered technology.</p>
+<h3 id="11-the-six-great-branches">1.1 The six great branches</h3>
+<table>
+<thead>
+<tr>
+<th>Branch</th>
+<th>Character</th>
+<th>Primary question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pure Mathematics</strong></td>
+<td>Structures, patterns, beauty for their own sake</td>
+<td>"What is true about abstract structure?"</td>
+</tr>
+<tr>
+<td><strong>Applied Mathematics</strong></td>
+<td>Math deployed to model real systems</td>
+<td>"How do we compute/simulate reality?"</td>
+</tr>
+<tr>
+<td><strong>Discrete Mathematics</strong></td>
+<td>Finitary and countable structures</td>
+<td>"How do we count, organize, and compute over finite sets?"</td>
+</tr>
+<tr>
+<td><strong>Probability &amp; Statistics</strong></td>
+<td>Uncertainty and data</td>
+<td>"How do we reason under uncertainty and learn from evidence?"</td>
+</tr>
+<tr>
+<td><strong>Information/Decision Sciences</strong></td>
+<td>Information, choice, control</td>
+<td>"How is information measured, and how should agents choose?"</td>
+</tr>
+<tr>
+<td><strong>Formal Sciences proper</strong></td>
+<td>Logic, formal systems, proof</td>
+<td>"What can be proven, computed, and mechanized?"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-epistemology-how-formal-sciences-differ-from-empirical-ones">1.2 Epistemology — how formal sciences differ from empirical ones</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Formal Sciences</th>
+<th>Empirical Sciences</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Truth criterion</td>
+<td>Proof from axioms</td>
+<td>Experimental observation</td>
+</tr>
+<tr>
+<td>Objects of study</td>
+<td>Abstract (numbers, functions, spaces, structures)</td>
+<td>Physical/empirical entities</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>Logical deduction; formal proof</td>
+<td>Measurement; replication</td>
+</tr>
+<tr>
+<td>Falsification</td>
+<td>Disproof via counterexample or inconsistency</td>
+<td>Failure of prediction</td>
+</tr>
+<tr>
+<td>Knowledge accumulates</td>
+<td>Additively (theorems are permanent)</td>
+<td>Revocably (theories can be superseded)</td>
+</tr>
+<tr>
+<td>Primary tools</td>
+<td>Proof, computation, abstraction</td>
+<td>Experiment, measurement, modeling</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-the-application-theory-cycle">1.3 The application ↔ theory cycle</h3>
+<p>Mathematics in the broad sense develops as a continuous interplay between application and theory (per Trinity College Dublin's framing):</p>
+<pre><code>Real-world problem  →  mathematical model  →  abstract theory
+       ↑                                          ↓
+       └──────────  new applications  ←────  new theorems
+</code></pre>
+<ul>
+<li><strong>Applied Mathematics</strong> is the entry point: turn engineering/physics/business problems into mathematics.</li>
+<li><strong>Pure Mathematics</strong> is the deepening: once abstraction takes over, the structure itself becomes the object of study.</li>
+<li><strong>Formal Sciences</strong> supply the foundations both sides stand on: logic says what "proof" means; computability says what "algorithm" means.</li>
+</ul>
+<hr />
+<h2 id="2-pure-mathematics">2. PURE MATHEMATICS</h2>
+<p><em>Pure mathematics studies structures, patterns, and symmetries for their inherent interest. In practice, today's pure fields routinely become tomorrow's applied tools: number theory → cryptography, topology → data science, algebraic geometry → machine learning.</em></p>
+<h3 id="21-algebra">2.1 Algebra</h3>
+<p><strong>Subfields:</strong> elementary algebra; abstract/modern algebra; linear algebra; multilinear algebra; ring theory; field theory/Galois theory; group theory; module theory; representation theory; Lie theory; homological algebra; K-theory; universal algebra; nonassociative algebra.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Group</strong> — set with an associative binary operation having identity and inverses (encodes symmetry)
+- <strong>Ring</strong> — two operations (addition forms an abelian group; multiplication distributes)
+- <strong>Field</strong> — ring where every nonzero element has a multiplicative inverse (ℚ, ℝ, ℂ, finite fields 𝔽_p)
+- <strong>Vector space / module</strong> — algebraic structure generalizing linear spaces
+- <strong>Homomorphism / isomorphism</strong> — structure-preserving maps; formal "sameness" of structures
+- <strong>Ideal</strong> — kernel-like subset absorbing multiplication
+- <strong>Spectrum</strong> — set of prime ideals; the modern bridge between algebra and geometry
+- <strong>Algebraic closure</strong> — smallest extension field containing all roots of all polynomials</p>
+<p><strong>Key principles:</strong>
+- <strong>Symmetry = structure</strong>: groups encode all possible symmetry; every continuous symmetry of space is a Lie group
+- <strong>Homomorphism theorems</strong>: every quotient of a structure factors through a canonical map
+- <strong>Galois correspondence</strong>: field extensions ↔ subgroups; settles solvability of polynomial equations by radicals
+- <strong>Fundamental theorem of algebra</strong>: every degree-n polynomial over ℂ has exactly n roots (with multiplicity)
+- <strong>Structure theorems</strong>: finitely generated abelian groups are ℤ^r ⊕ torsion; finite simple groups classified (CFSG)</p>
+<p><strong>Methods:</strong> axiomatic reasoning, diagram chasing, spectral sequences, sheaf methods (algebraic geometry), Gröbner bases (computational algebra), tensor products, adjoint functors, free constructions.</p>
+<p><strong>Prerequisites:</strong> set theory, logic, elementary proof; real analysis recommended.</p>
+<p><strong>Connections:</strong> number theory (rings of integers, class field theory); geometry (algebraic geometry, Lie groups); logic (model theory, universal algebra); CS (cryptographic groups — RSA uses cyclic groups, ECC uses elliptic-curve groups; Lie groups in robotics/control).</p>
+<h3 id="22-number-theory">2.2 Number Theory</h3>
+<p><strong>Subfields:</strong> elementary number theory; analytic number theory; algebraic number theory; arithmetic geometry; transcendental number theory; additive combinatorics; Diophantine geometry; prime number theory; modular forms; p-adic numbers; L-functions; automorphic forms.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Primes</strong> — atoms of multiplication (Fundamental Theorem of Arithmetic)
+- <strong>Congruences / modular arithmetic</strong> ℤ/nℤ
+- <strong>Euler totient φ(n)</strong> — count of units mod n; the number-theoretic heart of RSA
+- <strong>Quadratic reciprocity</strong> — law governing which primes are quadratic residues of others
+- <strong>Riemann zeta function</strong> ζ(s) = Σ n^(−s) — encodes prime distribution
+- <strong>L-functions</strong> — generalizations linking number theory to representation theory
+- <strong>Elliptic curves</strong> — genus-1 algebraic curves with a group law; basis of modern cryptography
+- <strong>p-adic numbers</strong> — completion of ℚ w.r.t. the p-adic metric; essential in modern NT</p>
+<p><strong>Key principles:</strong>
+- <strong>Prime Number Theorem</strong>: π(x) ~ x/ln x — primes thin out logarithmically
+- <strong>Dirichlet's theorem</strong>: infinitely many primes in every coprime arithmetic progression
+- <strong>Riemann Hypothesis</strong> (OPEN, Millennium Prize): all nontrivial zeros of ζ lie on Re(s)=1/2 — sharpens prime distribution bounds
+- <strong>Fermat's Last Theorem</strong> (Wiles, 1994): x^n + y^n = z^n has no positive integer solutions for n &gt; 2
+- <strong>Modularity theorem</strong>: every rational elliptic curve is modular — the bridge Wiles used</p>
+<p><strong>Methods:</strong> sieve methods (Selberg, large sieve), circle method (Hardy–Ramanujan–Vinogradov), modular forms, p-adic analysis, heights, exponential sums, automorphic representations.</p>
+<p><strong>Prerequisites:</strong> algebra (groups, rings, fields, Galois theory), complex analysis for analytic NT, algebraic geometry for arithmetic geometry.</p>
+<p><strong>Connections:</strong> algebra (Galois, algebraic geometry); analysis (zeta/L-functions); cryptography (RSA security = factoring hardness; ECC = discrete logarithm hardness; Diffie–Hellman key exchange); CS (primality testing — AKS deterministic polynomial algorithm 2002; hashing).</p>
+<h3 id="23-geometry">2.3 Geometry</h3>
+<p><strong>Subfields:</strong> Euclidean/affine/projective geometry; differential geometry; Riemannian geometry; algebraic geometry; complex geometry; symplectic geometry; contact geometry; discrete/convex geometry; geometric group theory; non-Euclidean geometry; conformal geometry.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Manifold</strong> — space locally modeled on ℝ^n, smoothly glued
+- <strong>Metric tensor / line element</strong> — infinitesimal distance structure
+- <strong>Curvature</strong> — Gaussian, sectional, Ricci, scalar; measures deviation from flatness
+- <strong>Connection / covariant derivative</strong> — rule for differentiating tensor fields on manifolds
+- <strong>Geodesic</strong> — shortest-path curve generalizing straight lines
+- <strong>Sheaf</strong> — assigns algebraic data to open sets; modern language of geometry
+- <strong>Scheme</strong> — Grothendieck's unification of algebraic geometry and commutative algebra
+- <strong>Moduli space</strong> — parameter space classifying geometric objects
+- <strong>Symplectic form</strong> — closed nondegenerate 2-form; the geometry of phase space</p>
+<p><strong>Key principles:</strong>
+- <strong>Gauss's Theorema Egregium</strong>: Gaussian curvature is intrinsic — measurable from within the surface
+- <strong>Gauss–Bonnet theorem</strong>: ∫ curvature dA = 2πχ — total curvature determined by topology
+- <strong>Noether's theorem</strong>: every continuous symmetry ↔ conserved quantity (physics)
+- <strong>Brouwer fixed-point theorem</strong>: continuous self-map of a disk has a fixed point
+- <strong>Parallel postulate independence</strong>: rejection yields hyperbolic and elliptic geometries
+- <strong>Hairy ball theorem</strong>: no nonvanishing continuous tangent vector field on S²</p>
+<p><strong>Methods:</strong> tensor calculus, exterior differential forms, moving frames, variational methods, elliptic PDEs on manifolds, sheaf cohomology, moduli theory, h-principle (Gromov).</p>
+<p><strong>Prerequisites:</strong> linear algebra, multivariable calculus, topology basics; ODEs for geodesics.</p>
+<p><strong>Connections:</strong> topology (manifold classification); algebra (algebraic geometry, schemes); analysis (geometric analysis); physics (general relativity, gauge theory, string theory); CS (computer graphics, robotics, computer vision, geometric deep learning).</p>
+<h3 id="24-topology">2.4 Topology</h3>
+<p><strong>Subfields:</strong> point-set/general topology; algebraic topology; differential topology; geometric topology; low-dimensional topology (2D, 3D, 4D); knot theory; manifold topology; homotopy theory; homology/cohomology theory; persistent homology &amp; topological data analysis (applied interface).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Topological space</strong> — set + collection of open sets satisfying axioms
+- <strong>Continuous map / homeomorphism</strong> — "rubber-sheet equivalence"
+- <strong>Compactness, connectedness, separation axioms</strong>
+- <strong>Homotopy / homotopy groups π_n</strong> — deformations; higher-dimensional holes
+- <strong>Fundamental group π₁</strong> — loops modulo homotopy; first algebraic invariant of a space
+- <strong>Homology H_n / cohomology H^n</strong> — algebraic invariants counting holes in each dimension
+- <strong>Fiber bundle / fibration</strong> — space locally a product
+- <strong>Cobordism</strong> — classification of manifolds up to bounding a manifold</p>
+<p><strong>Key principles:</strong>
+- <strong>Brouwer invariance of domain/dimension</strong>: continuous bijection of ℝ^n implies homeomorphism
+- <strong>Borsuk–Ulam theorem</strong>: any map S^n → ℝ^n identifies some antipodal pair — yields ham sandwich theorem, necklace-splitting
+- <strong>Poincaré conjecture</strong> (Perelman, 2003): every simply-connected closed 3-manifold is S³ — proved via Ricci flow
+- <strong>Surface classification</strong>: closed surfaces classified by Euler characteristic &amp; orientability
+- <strong>4-manifold richness</strong>: Donaldson &amp; Seiberg–Witten theory show 4D topology is wildly more complex than other dimensions</p>
+<p><strong>Methods:</strong> simplicial approximation, singular (co)homology, spectral sequences, obstruction theory, surgery theory, Ricci flow with surgery.</p>
+<p><strong>Prerequisites:</strong> set theory, analysis (compactness), basic algebra (groups for π₁).</p>
+<p><strong>Connections:</strong> geometry (differential topology of manifolds); analysis (geometric analysis, PDE on manifolds); algebra (homological algebra); CS (topological data analysis, persistent homology, network topology); physics (topological phases of matter, topological quantum field theory).</p>
+<h3 id="25-analysis">2.5 Analysis</h3>
+<p><strong>Subfields:</strong> real analysis; complex analysis; functional analysis; harmonic analysis; measure theory; operator theory; several complex variables; potential theory; asymptotic analysis; geometric analysis; microlocal analysis.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>ε–δ definition of limit</strong> — rigorous foundation of calculus
+- <strong>Metric space / normed space</strong> — abstract distance and size
+- <strong>Complete space (Banach/Hilbert spaces)</strong> — spaces where Cauchy sequences converge
+- <strong>Measure &amp; integration</strong> — generalization of length/area/volume to arbitrary sets
+- <strong>Holomorphic function</strong> — complex-differentiable; satisfies Cauchy–Riemann equations
+- <strong>Operator</strong> — linear map between function spaces (differential operators, integral operators)
+- <strong>Distribution / generalized function</strong> — Dirac delta and beyond; foundation of PDE theory
+- <strong>Fourier transform</strong> — decomposes functions into frequencies
+- <strong>Spectrum of an operator</strong> — generalized eigenvalues</p>
+<p><strong>Key principles:</strong>
+- <strong>Completeness &amp; convergence</strong>: Banach fixed-point theorem — contraction mappings have unique fixed points (basis of numerical analysis and ODE existence)
+- <strong>Cauchy integral theorem</strong>: contour integrals of holomorphic functions vanish — the engine of complex analysis
+- <strong>Maximum modulus principle</strong>: holomorphic functions attain max on boundary
+- <strong>Hahn–Banach theorem</strong>: extension of linear functionals — separates points from closed convex sets
+- <strong>Riesz representation theorem</strong>: continuous linear functionals on Hilbert spaces are inner products with vectors
+- <strong>Plancherel theorem</strong>: Fourier transform preserves L² norm — unitary equivalence between position and frequency</p>
+<p><strong>Methods:</strong> ε–δ proofs, Lebesgue integration, functional calculus, Sobolev spaces, spectral theory, singular integrals, pseudodifferential operators, Calderón–Zygmund theory.</p>
+<p><strong>Prerequisites:</strong> calculus, real numbers, set theory, basic topology.</p>
+<p><strong>Connections:</strong> differential equations (existence/regularity via Sobolev spaces); geometry (geometric analysis, Ricci flow); probability (measure-theoretic probability, stochastic processes); physics (quantum mechanics = Hilbert space operator theory; Fourier optics); engineering (signal processing, control theory, PDE models).</p>
+<h3 id="26-calculus-differential-equations">2.6 Calculus &amp; Differential Equations</h3>
+<p><strong>Subfields:</strong> differential calculus; integral calculus; multivariable calculus; vector calculus; ordinary differential equations (ODEs); partial differential equations (PDEs); calculus of variations; differential forms; tensor analysis.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Derivative</strong> — local rate of change; linear approximation
+- <strong>Integral</strong> — accumulation; inverse operation of differentiation
+- <strong>Gradient, divergence, curl, Laplacian</strong> — fundamental differential operators
+- <strong>ODE</strong> — equation involving derivatives of one unknown function of one variable
+- <strong>PDE</strong> — equation involving partial derivatives of several variables
+- <strong>Initial/boundary value problem</strong> — constraints making a differential equation solvable
+- <strong>Phase space / flow</strong> — trajectories of a dynamical system
+- <strong>Variational principle</strong> — physical laws as stationary points of action functionals</p>
+<p><strong>Key principles:</strong>
+- <strong>Fundamental theorem of calculus</strong>: differentiation and integration are inverse operations
+- <strong>Mean value theorems</strong>: link average rate to instantaneous rate
+- <strong>Existence &amp; uniqueness (Picard–Lindelöf)</strong>: Lipschitz conditions guarantee unique local solutions of ODEs
+- <strong>Well-posedness (Hadamard)</strong>: solution exists, is unique, and depends continuously on data
+- <strong>Maximum principle</strong>: solutions of elliptic/parabolic PDEs attain extrema on boundary — basis of numerical schemes
+- <strong>Energy methods</strong>: multiply PDE by solution and integrate to get a priori estimates</p>
+<p><strong>Methods:</strong> separation of variables, eigenfunction expansions, Green's functions, characteristics, finite differences, finite elements, spectral methods, perturbation methods, numerical continuation.</p>
+<p><strong>Prerequisites:</strong> algebra, trigonometry, basic limits; linear algebra for systems of ODEs/PDEs.</p>
+<p><strong>Connections:</strong> physics (nearly all of classical &amp; quantum physics is differential equations); engineering (structural mechanics, fluid dynamics, heat transfer, control); CS (numerical simulation, graphics); biology (population dynamics, epidemiology, neural models); economics (optimal control, growth models).</p>
+<h3 id="27-set-theory-foundations">2.7 Set Theory &amp; Foundations</h3>
+<p><strong>Subfields:</strong> naive/classical set theory; axiomatic set theory (ZFC); constructive set theory; alternative foundations (type theory, topos theory, homotopy type theory); large cardinals; forcing; inner model theory; independence results.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Set</strong> — collection of objects (naive) or defined via axioms (ZFC)
+- <strong>Axioms of ZFC</strong> — pairing, union, power set, infinity, replacement, separation, choice, extensionality, foundation
+- <strong>Cardinality</strong> — size of a set; ℵ₀ (countable), continuum 2^ℵ₀
+- <strong>Ordinal numbers</strong> — well-ordered sets; generalize natural numbers to transfinite
+- <strong>Axiom of Choice</strong> — every family of nonempty sets has a choice function; independent of ZFC
+- <strong>Gödel universe L, forcing extensions</strong> — methods for proving independence
+- <strong>Large cardinals</strong> — strongly inaccessible, measurable, supercompact cardinals
+- <strong>Axiom of determinacy (AD)</strong> — alternative to Choice; makes all sets Lebesgue measurable</p>
+<p><strong>Key principles:</strong>
+- <strong>Cantor's theorem</strong>: no set is in bijection with its power set — hierarchy of infinities
+- <strong>Cantor's diagonal argument</strong>: real numbers uncountable; Gödel's incompleteness (logic)
+- <strong>Continuum Hypothesis</strong> (CH): 2^ℵ₀ = ℵ₁? — independent of ZFC (Gödel 1938, Cohen 1963)
+- <strong>Well-ordering theorem</strong>: equivalent to AC
+- <strong>Foundation/regularity</strong>: no set contains itself — prevents paradoxes</p>
+<p><strong>Methods:</strong> transfinite induction/recursion, forcing (Cohen), inner models, fine structure theory, Boolean-valued models, constructibility.</p>
+<p><strong>Prerequisites:</strong> logic (first-order logic), basic proof techniques.</p>
+<p><strong>Connections:</strong> logic (independence results, model theory); topology (cardinal invariants, descriptive set theory); category theory (topos-theoretic foundations); type theory (homotopy type theory as alternative foundation); computer science (type theory underlies proof assistants).</p>
+<h3 id="28-category-theory">2.8 Category Theory</h3>
+<p><strong>Subfields:</strong> pure category theory; homological algebra; topos theory; higher category theory; ∞-categories; monoidal/closed categories; enriched categories; operads; sheaf theory; derived categories.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Category</strong> — objects + morphisms + composition laws (generalizes sets-with-functions, groups-with-homomorphisms)
+- <strong>Functor</strong> — structure-preserving map between categories
+- <strong>Natural transformation</strong> — map between functors
+- <strong>Adjunction</strong> — universal relationship between functors ("free ⊣ forgetful")
+- <strong>Limit / colimit</strong> — categorical product/sum; universal constructions
+- <strong>Monoidal category</strong> — category with tensor product (vector spaces, representations)
+- <strong>Topos</strong> — category generalizing Set with internal logic
+- <strong>∞-category / (∞,1)-category</strong> — weak higher-category where morphisms between morphisms exist up to coherent homotopy</p>
+<p><strong>Key principles:</strong>
+- <strong>Yoneda lemma</strong>: an object is fully determined by its interactions — "the category is determined by its morphisms"
+- <strong>Adjoint functor theorems</strong>: existence of adjoints from completeness/cocompleteness + preservation conditions
+- <strong>Representability</strong>: many constructions are representable functors (e.g., Spec of a ring)
+- <strong>Universal property</strong>: defines objects by how they relate to all others, not by elements
+- <strong>Grothendieck's six functors</strong>: formalism unifying cohomology theories in algebraic geometry</p>
+<p><strong>Methods:</strong> diagram chasing, universal properties, Kan extensions, model categories, simplicial methods, derivators, higher topoi.</p>
+<p><strong>Prerequisites:</strong> set theory, basic algebra, comfort with abstraction; topology for sheaves.</p>
+<p><strong>Connections:</strong> algebraic geometry (schemes, étale cohomology); topology (homotopy theory via ∞-groupoids); logic (topos logic, categorical logic); CS (functional programming — Haskell/Scala typeclasses; database theory; applied category theory); homotopy type theory (univalent foundations).</p>
+<h3 id="29-logic-mathematical-logic-see-also-7">2.9 Logic (mathematical logic — see also §7)</h3>
+<p><strong>Subfields:</strong> propositional logic; first-order/predicate logic; higher-order logic; modal logic; intuitionistic/constructive logic; many-valued logic; non-classical logics; model theory; proof theory; recursion theory; algorithmic information theory; philosophical logic.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Syntax vs semantics</strong>: formulas (proof theory) vs structures (model theory)
+- <strong>Satisfiability / validity</strong> — when formulas are true in all/some models
+- <strong>Completeness theorem</strong>: every valid formula is provable (Gödel completeness, 1930)
+- <strong>Compactness theorem</strong>: satisfiable every finite subset → satisfiable
+- <strong>Löwenheim–Skolem theorems</strong>: model sizes are flexible
+- <strong>Decidability / undecidability</strong> — whether truth is mechanically checkable
+- <strong>Model</strong> — a structure interpreting a formal language</p>
+<p><strong>Key principles:</strong>
+- <strong>Soundness &amp; completeness</strong>: provable = true (for first-order logic)
+- <strong>Gödel's incompleteness theorems</strong>: any consistent system containing arithmetic has true-but-unprovable statements (first); cannot prove own consistency (second)
+- <strong>Church–Turing thesis</strong>: effective computability = Turing machine computability
+- <strong>Compactness → ultraproducts</strong>: nonstandard analysis is a corollary of model theory</p>
+<p><strong>Methods:</strong> natural deduction, sequent calculus, tableau methods, resolution (automated theorem proving), ultraproducts, Ehrenfeucht–Fraïssé games, type theory.</p>
+<p><strong>Prerequisites:</strong> set theory, basic proof techniques, philosophy of mathematics optional.</p>
+<p><strong>Connections:</strong> foundations (set theory, proof theory); CS (formal verification, logic programming, SAT solving); mathematics itself (all rigorous proof rests on logic); philosophy (truth, meaning, existence).</p>
+<hr />
+<h2 id="3-applied-mathematics">3. APPLIED MATHEMATICS</h2>
+<p><em>Applied mathematics turns real-world problems into mathematical models, solves them (often numerically), and interprets results back in physical terms.</em></p>
+<h3 id="31-mathematical-modeling">3.1 Mathematical Modeling</h3>
+<p><strong>Subfields:</strong> physical modeling; biological modeling; economic/financial modeling; engineering modeling; social modeling; continuum mechanics; multi-scale modeling; uncertainty quantification.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Model</strong> — simplified mathematical representation of a real system
+- <strong>Governing equations</strong> — ODEs, PDEs, difference equations, stochastic equations
+- <strong>Constitutive relations</strong> — material-specific laws closing a model
+- <strong>Dimensional analysis</strong> — Buckingham π theorem; reduces parameter space
+- <strong>Scaling / asymptotic analysis</strong> — dominant-balance approximations
+- <strong>Validation &amp; verification (V&amp;V)</strong> — does the model match reality? is the computation correct?</p>
+<p><strong>Key principles:</strong>
+- <strong>Model hierarchy</strong>: phenomenological → mechanistic → first-principles models trade simplicity for fidelity
+- <strong>Conservation laws</strong>: mass, momentum, energy underpin most physical models
+- <strong>Dimensional homogeneity</strong>: equations must be dimensionally consistent
+- <strong>Asymptotic regimes</strong>: solutions simplify in distinguished limits (small/large parameters)</p>
+<p><strong>Methods:</strong> dimensional analysis, perturbation theory, scaling analysis, inverse problems, parameter estimation, uncertainty propagation (Monte Carlo, polynomial chaos).</p>
+<p><strong>Prerequisites:</strong> core calculus, ODEs/PDEs, linear algebra, basic probability.</p>
+<p><strong>Connections:</strong> every empirical science (physics, chemistry, biology, economics); engineering (all disciplines); statistics (model checking); numerical analysis (solution methods).</p>
+<h3 id="32-numerical-analysis-scientific-computing">3.2 Numerical Analysis &amp; Scientific Computing</h3>
+<p><strong>Subfields:</strong> numerical linear algebra; numerical integration/differentiation; ODE/PDE solvers; root finding; interpolation/approximation; optimization algorithms; numerical stability; high-performance computing (HPC); scientific visualization; computational geometry algorithms.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Discretization</strong> — replacing continuous problems by finite-dimensional ones
+- <strong>Convergence</strong> — solution approaches true answer as mesh/time step → 0
+- <strong>Stability</strong> — errors do not amplify catastrophically
+- <strong>Condition number</strong> — sensitivity of problem to input perturbations
+- <strong>Truncation vs roundoff error</strong> — approximation error vs floating-point error
+- <strong>Mesh / grid / elements</strong> — spatial discretizations
+- <strong>Iterative vs direct solvers</strong> — e.g., Jacobi/Gauss–Seidel vs LU decomposition</p>
+<p><strong>Key principles:</strong>
+- <strong>Lax equivalence theorem</strong>: for linear problems, consistency + stability ⟹ convergence
+- <strong>Well-conditioned problems have unique solutions</strong>; ill-conditioned problems amplify noise
+- <strong>Order of accuracy</strong>: method with error O(h^p) converges p-th order
+- <strong>CFL condition</strong>: explicit time-stepping stability requires Δt ≤ C·Δx (Courant–Friedrichs–Lewy)</p>
+<p><strong>Methods:</strong> finite differences, finite volumes, finite elements, spectral methods, boundary elements, Monte Carlo, quasi-Monte Carlo, multigrid, Krylov subspace methods, adaptive mesh refinement.</p>
+<p><strong>Prerequisites:</strong> linear algebra, calculus, ODEs/PDEs, basic programming; numerical linear algebra (SVD, QR, LU) essential.</p>
+<p><strong>Connections:</strong> applied math broadly (all computational modeling); CS (algorithms, HPC, GPU computing); engineering simulation; AI (training large models is numerical optimization at scale); climate/weather prediction; CFD; structural analysis.</p>
+<h3 id="33-optimization-operations-research">3.3 Optimization &amp; Operations Research</h3>
+<p><strong>Subfields:</strong> linear programming; integer/mixed-integer programming; nonlinear programming; convex optimization; combinatorial optimization; dynamic programming; stochastic programming; game-theoretic optimization; multi-objective optimization; large-scale optimization.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Objective function</strong> — quantity to minimize/maximize
+- <strong>Feasible set / constraints</strong> — admissible solutions
+- <strong>Convexity</strong> — any local optimum is global (for convex problems)
+- <strong>Duality</strong> — every primal problem has a dual; strong duality under conditions
+- <strong>KKT conditions</strong> — first-order necessary conditions for constrained optima
+- <strong>Gradient/Hessian</strong> — first/second-order local behavior
+- <strong>Complexity class</strong> — P, NP, NP-hard; determines algorithmic difficulty</p>
+<p><strong>Key principles:</strong>
+- <strong>Fundamental theorem of linear programming</strong>: optimum at vertex of feasible polytope
+- <strong>Karush–Kuhn–Tucker conditions</strong>: generalize Lagrange multipliers to inequality constraints
+- <strong>Convex duality</strong>: maximizing concave / minimizing convex functions is tractable
+- <strong>No free lunch theorem</strong>: no algorithm beats all others on all problems — average-case matters
+- <strong>P ≠ NP conjecture</strong>: most important open problem in complexity (Millennium Prize)</p>
+<p><strong>Methods:</strong> simplex method, interior-point methods, branch-and-bound, cutting planes, gradient descent variants (SGD, Adam), simulated annealing, genetic algorithms, Benders decomposition, column generation.</p>
+<p><strong>Prerequisites:</strong> linear algebra, calculus, basic probability; linear programming foundations.</p>
+<p><strong>Connections:</strong> operations research (logistics, scheduling, supply chains); machine learning (training = optimization; deep learning = stochastic gradient descent); economics (utility maximization); engineering (optimal design, control); cryptography (lattice-based crypto relies on hardness of lattice problems).</p>
+<h3 id="34-computational-mathematics">3.4 Computational Mathematics</h3>
+<p><strong>Subfields:</strong> symbolic computation; computer algebra systems; exact arithmetic; algorithmic geometry; computational algebraic geometry; computer-aided proof; formal verification (see §7); computational number theory; numerical-symbolic hybrid methods.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Symbolic computation</strong> — manipulation of mathematical expressions exactly
+- <strong>Computer algebra system (CAS)</strong> — software like Mathematica, Maple, SageMath, SymPy
+- <strong>Exact vs floating-point arithmetic</strong> — rational/algebraic numbers vs IEEE doubles
+- <strong>Gröbner bases</strong> — algorithmic tool for polynomial systems
+- <strong>Formal proof assistant</strong> — software verifying proofs step-by-step (Lean, Coq, Isabelle)</p>
+<p><strong>Key principles:</strong>
+- <strong>Exactness</strong>: symbolic methods avoid roundoff; essential for cryptography and number theory
+- <strong>Computational complexity governs feasibility</strong>: which math problems are solvable in practice
+- <strong>Proof-carrying code</strong>: programs come with machine-checked correctness proofs</p>
+<p><strong>Methods:</strong> Buchberger's algorithm (Gröbner bases), cylindrical algebraic decomposition, resultant methods, interval arithmetic, SAT/SMT solving, formal proof in dependent type theory.</p>
+<p><strong>Prerequisites:</strong> programming, algebra, basic algorithms; numerical methods for hybrid approaches.</p>
+<p><strong>Connections:</strong> CS (algorithms, formal methods); crypto (exact arithmetic, lattice algorithms); pure math (experimental mathematics, conjecture generation — Ramanujan machine, TxGraffiti); AI (automated theorem proving).</p>
+<h3 id="35-mathematical-physics">3.5 Mathematical Physics</h3>
+<p><strong>Subfields:</strong> classical mechanics; quantum mechanics; statistical mechanics; general relativity; quantum field theory; string theory; condensed matter theory; fluid dynamics; plasma physics; mathematical biology interfaces; integrable systems.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Lagrangian/Hamiltonian mechanics</strong> — variational formulations of dynamics
+- <strong>Action principle</strong> — δS = 0 governs all fundamental physics
+- <strong>Wavefunction / Hilbert space</strong> — quantum state space
+- <strong>Operator formalism</strong> — observables as self-adjoint operators
+- <strong>Partition function</strong> — bridge between statistical mechanics and thermodynamics
+- <strong>Gauge theory</strong> — symmetry-based description of fundamental forces
+- <strong>Renormalization</strong> — handling infinities in quantum field theory</p>
+<p><strong>Key principles:</strong>
+- <strong>Noether's theorem</strong>: continuous symmetry → conserved quantity (energy, momentum, charge)
+- <strong>Least action principle</strong>: systems follow paths extremizing action
+- <strong>Correspondence principle</strong>: quantum mechanics reduces to classical in appropriate limit
+- <strong>Ergodic hypothesis</strong>: time averages = ensemble averages (foundational for statistical mechanics)</p>
+<p><strong>Methods:</strong> PDE analysis, spectral theory, path integrals, operator algebras, conformal field theory, integrable system methods (inverse scattering, solitons), lattice methods, tensor networks.</p>
+<p><strong>Prerequisites:</strong> classical mechanics, PDEs, functional analysis (Hilbert spaces), group theory, differential geometry.</p>
+<p><strong>Connections:</strong> physics (of course); pure math (geometry, topology, algebra — physics drives pure math); engineering (quantum computing, materials); CS (quantum algorithms, simulation).</p>
+<hr />
+<h2 id="4-discrete-mathematics">4. DISCRETE MATHEMATICS</h2>
+<p><em>Discrete mathematics studies countable/finitary structures — the mathematics of computation itself.</em></p>
+<h3 id="41-graph-theory">4.1 Graph Theory</h3>
+<p><strong>Subfields:</strong> structural graph theory; extremal graph theory; algebraic graph theory; topological graph theory; geometric graph theory; probabilistic graph theory; network science (applied); graph algorithms; random graphs.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Graph</strong> — vertices + edges; directed/undirected, weighted/unweighted
+- <strong>Path, cycle, connectivity, components</strong>
+- <strong>Tree</strong> — connected acyclic graph; minimum connector
+- <strong>Planarity</strong> — embeddable in plane without crossings
+- <strong>Chromatic number</strong> — minimum colors for proper vertex coloring
+- <strong>Matching, flow, cut</strong> — central combinatorial structures
+- <strong>Spectral graph theory</strong> — eigenvalues of adjacency/Laplacian matrices
+- <strong>Random graph models</strong> — Erdős–Rényi, preferential attachment, small-world</p>
+<p><strong>Key principles:</strong>
+- <strong>Euler's formula</strong>: V − E + F = 2 for planar graphs (generalized by Euler characteristic)
+- <strong>Kuratowski's theorem</strong>: planar graphs exclude K₅ and K₃,₃ minors
+- <strong>Four color theorem</strong>: every planar map is 4-colorable (proved by computer, 1976 — first major computer-assisted proof)
+- <strong>Max-flow min-cut theorem</strong>: max flow = min cut capacity — cornerstone of network optimization
+- <strong>Handshaking lemma</strong>: sum of degrees is even
+- <strong>Small-world phenomenon</strong>: most real networks have short average path lengths</p>
+<p><strong>Methods:</strong> combinatorial arguments, graph algorithms (DFS, BFS, Dijkstra, Ford–Fulkerson, Kruskal/Prim), spectral methods, probabilistic method (Erdős), graph limits, expander theory.</p>
+<p><strong>Prerequisites:</strong> set theory, basic combinatorics, elementary algebra; linear algebra for spectral methods.</p>
+<p><strong>Connections:</strong> CS (data structures, algorithms, network routing, compilers — CFGs); operations research (network flow, scheduling); physics (lattice models, network science); biology (protein interaction networks, phylogenetics); social science (social networks); topology (graph embeddings).</p>
+<h3 id="42-combinatorics">4.2 Combinatorics</h3>
+<p><strong>Subfields:</strong> enumerative combinatorics; extremal combinatorics; algebraic combinatorics; analytic combinatorics; probabilistic combinatorics; design theory; partition theory; matroid theory; order theory/combinatorial optimization interfaces.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Permutation / combination</strong> — arrangements vs selections
+- <strong>Generating function</strong> — encodes sequences as power series
+- <strong>Recurrence relation</strong> — sequence defined by previous terms
+- <strong>Inclusion-exclusion</strong> — counting union via intersections
+- <strong>Pigeonhole principle</strong> — n+1 objects into n boxes forces collision
+- <strong>Ramsey theory</strong> — unavoidable structure in large enough systems
+- <strong>Matroid</strong> — abstraction of linear independence/graphic matroids
+- <strong>Design</strong> — balanced incomplete block designs (BIBD), finite geometries</p>
+<p><strong>Key principles:</strong>
+- <strong>Pigeonhole principle</strong>: forces structure from size alone
+- <strong>Ramsey's theorem</strong>: for any coloring of large enough complete graph, monochromatic substructure exists
+- <strong>Sperner's lemma</strong>: combinatorial analog of Brouwer fixed point
+- <strong>Hall's marriage theorem</strong>: condition for perfect matching in bipartite graphs
+- <strong>Generating function duality</strong>: sequences ↔ analytic functions; asymptotics via singularity analysis</p>
+<p><strong>Methods:</strong> bijective proofs, generating functions, sieve methods, probabilistic method, entropy methods, algebraic techniques (representation theory), computer enumeration.</p>
+<p><strong>Prerequisites:</strong> discrete math basics, induction, basic probability.</p>
+<p><strong>Connections:</strong> graph theory (designs, matchings); CS (algorithm analysis, data structures); number theory (additive combinatorics); statistics (design of experiments, sampling); cryptography (combinatorial designs in secret sharing).</p>
+<h3 id="43-boolean-algebra-logic-based-structures">4.3 Boolean Algebra &amp; Logic-Based Structures</h3>
+<p><strong>Subfields:</strong> Boolean algebra; propositional logic; Boolean function theory; switch-level design; logic minimization; digital circuit design; SAT solving; formal verification (Boolean methods).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Boolean algebra</strong> — algebra of {0,1} with AND/OR/NOT satisfying lattice axioms
+- <strong>Boolean function</strong> — mapping {0,1}^n → {0,1}; represented by truth tables, DNF/CNF, BDDs
+- <strong>Binary decision diagram (BDD)</strong> — canonical representation enabling efficient manipulation
+- <strong>SAT (satisfiability)</strong> — deciding if a Boolean formula has a satisfying assignment
+- <strong>Logic gate</strong> — physical implementation of Boolean operations
+- <strong>Combinational vs sequential logic</strong> — memoryless vs stateful circuits</p>
+<p><strong>Key principles:</strong>
+- <strong>De Morgan's laws</strong>: duality between AND/OR under negation
+- <strong>Quine–McCluskey / espresso</strong>: algorithms for minimal Boolean expressions
+- <strong>CNF transformation</strong>: every Boolean formula equivalent to conjunctive normal form
+- <strong>Cook–Levin theorem</strong>: SAT is NP-complete — the canonical NP-complete problem
+- <strong>Functional completeness</strong>: {AND, OR, NOT} or {NAND} alone suffice for all Boolean functions</p>
+<p><strong>Methods:</strong> Karnaugh maps, Quine–McCluskey, BDD manipulation, SAT solvers (DPLL, CDCL), AIG rewriting, formal equivalence checking.</p>
+<p><strong>Prerequisites:</strong> propositional logic, set theory, basic digital electronics.</p>
+<p><strong>Connections:</strong> digital electronics (all hardware); CS (SAT solving, formal verification, hardware verification); cryptography (Boolean circuits implement ciphers); logic (§7); coding theory.</p>
+<h3 id="44-algorithms-data-structures">4.4 Algorithms &amp; Data Structures</h3>
+<p><strong>Subfields:</strong> algorithm design &amp; analysis; data structures; computational complexity; randomized algorithms; approximation algorithms; streaming algorithms; parallel/distributed algorithms; quantum algorithms; online algorithms; algorithmic game theory.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Algorithm</strong> — finite sequence of unambiguous steps solving a problem
+- <strong>Time/space complexity</strong> — resource usage as function of input size
+- <strong>Big-O / Θ / Ω notation</strong> — asymptotic growth classification
+- <strong>P, NP, NP-complete, NP-hard</strong> — complexity classes
+- <strong>Lower bounds</strong> — information-theoretic/communication/algebraic limits
+- <strong>Randomized algorithm</strong> — uses randomness (Monte Carlo vs Las Vegas)
+- <strong>Amortized analysis</strong> — average cost over sequences of operations</p>
+<p><strong>Key principles:</strong>
+- <strong>Master theorem</strong>: recursive divide-and-conquer recurrence solutions
+- <strong>Potential method / accounting method</strong>: amortized analysis techniques
+- <strong>Greedy stays ahead / exchange argument</strong>: proving greedy optimality
+- <strong>Dynamic programming optimal substructure</strong>: optimal solution contains optimal subsolutions
+- <strong>Reduction</strong>: problem A reduces to B → solving B solves A; basis of NP-completeness proofs
+- <strong>P vs NP</strong>: whether efficiently verifiable = efficiently solvable (OPEN, Millennium Prize)</p>
+<p><strong>Methods:</strong> divide-and-conquer, dynamic programming, greedy algorithms, backtracking, branch-and-bound, hashing, probabilistic analysis, amortization, competitive analysis (online algorithms).</p>
+<p><strong>Prerequisites:</strong> programming, discrete math, basic probability; linear algebra for some advanced algorithms.</p>
+<p><strong>Connections:</strong> all of CS; operations research; crypto (algorithmic hardness assumptions); computational biology; machine learning (training algorithms); physics (simulations).</p>
+<h3 id="45-coding-theory-cryptography-interfaces">4.5 Coding Theory &amp; Cryptography Interfaces</h3>
+<p><strong>Subfields:</strong> error-correcting codes; cryptographic primitives; information-theoretic security; lattice-based crypto; post-quantum crypto; zero-knowledge proofs (mathematical foundations).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Error-correcting code</strong> — systematic redundancy enabling error detection/correction
+- <strong>Hamming distance / code rate</strong> — distance vs efficiency tradeoff
+- <strong>Perfect code</strong> — achieves Hamming bound with equality
+- <strong>Linear code</strong> — codewords form a vector subspace
+- <strong>Cryptographic hardness assumption</strong> — problem believed computationally intractable
+- <strong>Public-key cryptography</strong> — asymmetric key establishment
+- <strong>Zero-knowledge proof</strong> — prove knowledge without revealing it</p>
+<p><strong>Key principles:</strong>
+- <strong>Shannon's channel coding theorem</strong>: reliable communication possible iff rate &lt; capacity
+- <strong>Singleton bound</strong>: d ≤ n − k + 1 for [n,k,d] codes
+- <strong>RSA security</strong> rests on integer factorization hardness
+- <strong>ECC security</strong> rests on elliptic-curve discrete logarithm hardness
+- <strong>Post-quantum crypto</strong> must resist quantum attacks (lattice, code-based, hash-based, isogeny-based)</p>
+<p><strong>Methods:</strong> Hamming codes, Reed–Solomon codes, LDPC codes, polar codes, BCH codes, lattice reduction (LLL), number-theoretic transforms.</p>
+<p><strong>Prerequisites:</strong> algebra (finite fields, groups), linear algebra, information theory basics.</p>
+<p><strong>Connections:</strong> information theory (§6); number theory (RSA, ECC); algebra (finite fields, lattices); CS (implementation, side-channel attacks); communications engineering.</p>
+<hr />
+<h2 id="5-probability-statistics">5. PROBABILITY &amp; STATISTICS</h2>
+<p><em>The mathematics of uncertainty, randomness, and data-driven inference.</em></p>
+<h3 id="51-probability-theory">5.1 Probability Theory</h3>
+<p><strong>Subfields:</strong> measure-theoretic probability; combinatorial probability; conditional probability/Bayes; random variables &amp; distributions; limit theorems; stochastic processes; martingales; Markov chains; queuing theory; extreme value theory; large deviations.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Probability space</strong> — (Ω, F, P): sample space, σ-algebra, probability measure
+- <strong>Random variable</strong> — measurable function Ω → ℝ
+- <strong>Distribution function / density / mass function</strong> — complete description of a random variable
+- <strong>Expectation, variance, moments</strong> — summary statistics
+- <strong>Independence, conditional probability</strong> — core dependence structures
+- <strong>Martingale</strong> — fair-game process; E[X_{n+1}|F_n] = X_n
+- <strong>Markov property</strong> — future depends only on present state</p>
+<p><strong>Key principles:</strong>
+- <strong>Kolmogorov axioms</strong>: non-negativity, normalization, countable additivity
+- <strong>Law of large numbers</strong>: sample means converge to expectation
+- <strong>Central limit theorem</strong>: sums of iid variables → Gaussian (universal limit)
+- <strong>Bayes' theorem</strong>: P(A|B) = P(B|A)P(A)/P(B) — updating beliefs with evidence
+- <strong>Optional stopping theorem</strong>: martingale expectations preserved at stopping times
+- <strong>Total probability / law of total expectation</strong>: decomposition over partitions</p>
+<p><strong>Methods:</strong> measure theory integration, characteristic functions, generating functions, coupling, Poisson approximation, Stein's method, martingale inequalities, renewal theory.</p>
+<p><strong>Prerequisites:</strong> measure theory (or at least integration), real analysis, basic combinatorics.</p>
+<p><strong>Connections:</strong> statistics (the inferential half); stochastic processes (§5.3); finance (option pricing, risk); physics (statistical mechanics, quantum probability); CS (randomized algorithms, machine learning); insurance/actuarial science.</p>
+<h3 id="52-statistics-statistical-inference">5.2 Statistics &amp; Statistical Inference</h3>
+<p><strong>Subfields:</strong> descriptive statistics; frequentist inference; Bayesian inference; parametric &amp; nonparametric statistics; regression analysis; hypothesis testing; experimental design; multivariate statistics; time series analysis; survival analysis; high-dimensional statistics; causal inference; statistical learning theory.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Population vs sample</strong> — inference from data to underlying distribution
+- <strong>Parameter / estimator / statistic</strong> — θ, θ̂(X), T(X)
+- <strong>Sufficiency, completeness</strong> — when data reduction loses no information
+- <strong>Likelihood function</strong> — L(θ|x) ∝ P(x|θ); basis of ML estimation
+- <strong>Prior / posterior / likelihood</strong> — Bayesian inference components
+- <strong>Confidence interval / credible interval</strong> — uncertainty quantification
+- <strong>p-value / Bayes factor</strong> — evidence measures (contested interpretations)
+- <strong>Bias-variance tradeoff</strong> — fundamental prediction dilemma
+- <strong>Confounding / selection bias</strong> — threats to causal inference</p>
+<p><strong>Key principles:</strong>
+- <strong>Cramér–Rao bound</strong>: lower bound on variance of unbiased estimators via Fisher information
+- <strong>Gauss–Markov theorem</strong>: OLS is BLUE under classical assumptions
+- <strong>Law of large numbers + CLT</strong> underpin asymptotic inference
+- <strong>Bayes' theorem</strong> is the engine of Bayesian updating
+- <strong>Neyman–Pearson lemma</strong>: likelihood ratio test is most powerful for simple hypotheses
+- <strong>Multiple comparisons problem</strong>: testing many hypotheses inflates false positives (Bonferroni, FDR)</p>
+<p><strong>Methods:</strong> maximum likelihood estimation (MLE), method of moments, Bayesian MCMC, bootstrap/resampling, permutation tests, ANOVA, regression (linear, logistic, mixed-effects), generalized linear models, propensity score matching, instrumental variables, difference-in-differences.</p>
+<p><strong>Prerequisites:</strong> probability theory, calculus, linear algebra; measure theory for theoretical depth.</p>
+<p><strong>Connections:</strong> all empirical sciences (data analysis); machine learning (§6.6); epidemiology; econometrics; quality control; A/B testing in tech; survey methodology.</p>
+<h3 id="53-stochastic-processes">5.3 Stochastic Processes</h3>
+<p><strong>Subfields:</strong> discrete-time processes; continuous-time processes; Markov chains; Brownian motion &amp; diffusion processes; Lévy processes; point processes; queueing theory; renewal theory; stochastic calculus; filtering theory; interacting particle systems; random walks.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Stochastic process</strong> — collection of random variables indexed by time/space
+- <strong>Markov chain</strong> — memoryless state transitions
+- <strong>Stationarity</strong> — distribution invariant under time shifts
+- <strong>Brownian motion</strong> — continuous-time Gaussian process with independent increments
+- <strong>Martingale</strong> — fair stochastic process
+- <strong>Poisson process</strong> — random event arrivals
+- <strong>Itô integral / stochastic differential equation (SDE)</strong> — calculus for random paths
+- <strong>Generator / transition semigroup</strong> — operator description of Markov processes</p>
+<p><strong>Key principles:</strong>
+- <strong>Markov property</strong>: P(X_{t+1}|history) = P(X_{t+1}|X_t)
+- <strong>Kolmogorov forward/backward equations</strong>: evolution of Markov transition probabilities
+- <strong>Itô's formula / Itô isometry</strong>: rules of stochastic calculus differ from ordinary calculus (second-order term)
+- <strong>Girsanov theorem</strong>: change of measure for Brownian motion — foundation of mathematical finance
+- <strong>Martingale representation theorem</strong>: every martingale is a stochastic integral
+- <strong>Ergodic theorem</strong>: time averages → space averages for stationary ergodic processes</p>
+<p><strong>Methods:</strong> discrete-state analysis, generating functions, spectral methods, martingale techniques, Itô calculus, Monte Carlo simulation, thinning algorithms for point processes, fluid limits, heavy-traffic approximations.</p>
+<p><strong>Prerequisites:</strong> probability theory, real analysis; measure theory and functional analysis for rigor.</p>
+<p><strong>Connections:</strong> statistics (time series); finance (option pricing — Black–Scholes from Itô calculus); physics (statistical mechanics, quantum field theory — stochastic quantization); biology (population dynamics, gene expression noise); queueing (telecom, call centers); CS (randomized algorithms, probabilistic verification).</p>
+<h3 id="54-experimental-design-sampling">5.4 Experimental Design &amp; Sampling</h3>
+<p><strong>Subfields:</strong> classical experimental design; survey sampling; clinical trial design; A/B testing; optimal design; space-filling designs; adaptive designs; design of computer experiments (surrogate modeling).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Experimental unit / treatment / response</strong> — basic design vocabulary
+- <strong>Randomization</strong> — protects against confounding
+- <strong>Blocking / stratification</strong> — control known nuisance variation
+- <strong>Replication / replication vs pseudoreplication</strong> — true independent units
+- <strong>Factorial design</strong> — varying multiple factors systematically
+- <strong>Response surface methodology</strong> — modeling continuous factors
+- <strong>Power analysis</strong> — sample size determination</p>
+<p><strong>Key principles:</strong>
+- <strong>Fisher's principles</strong>: randomization, replication, local control
+- <strong>ANOVA decomposition</strong>: partitioning variance into treatment + error components
+- <strong>Orthogonality of designs</strong>: uncorrelated treatment estimates
+- <strong>Information matrix</strong>: quantifies design efficiency</p>
+<p><strong>Methods:</strong> randomized controlled trials (RCTs), Latin squares, split-plot designs, fractional factorials, response surface designs, sequential probability ratio tests (SPRT), multi-armed bandits (adaptive designs).</p>
+<p><strong>Prerequisites:</strong> probability, statistics basics, linear models.</p>
+<p><strong>Connections:</strong> statistics (inference machinery); medicine (clinical trials); agriculture (historical origin — Rothamsted); tech industry (A/B testing); psychology; economics (natural experiments).</p>
+<hr />
+<h2 id="6-information-decision-computational-sciences">6. INFORMATION, DECISION &amp; COMPUTATIONAL SCIENCES</h2>
+<p><em>Sciences at the intersection of mathematics, information, and rational choice.</em></p>
+<h3 id="61-information-theory">6.1 Information Theory</h3>
+<p><strong>Subfields:</strong> Shannon information theory; rate-distortion theory; network information theory; quantum information theory; algorithmic information theory; cryptographic information theory; statistical learning theory connections.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Entropy H(X)</strong> — average uncertainty of a random variable
+- <strong>Mutual information I(X;Y)</strong> — information shared between variables
+- <strong>Channel capacity C</strong> — maximum reliable communication rate
+- <strong>Source coding / channel coding theorems</strong> — fundamental limits of compression &amp; transmission
+- <strong>Kullback–Leibler divergence</strong> — distance between distributions
+- <strong>Rate-distortion function</strong> — minimum rate for given distortion
+- <strong>Kolmogorov complexity</strong> — algorithmic information content of individual objects</p>
+<p><strong>Key principles:</strong>
+- <strong>Shannon's source coding theorem</strong>: compression below entropy is impossible; achievable asymptotically
+- <strong>Shannon's channel coding theorem</strong>: reliable communication iff rate &lt; capacity C = max I(X;Y)
+- <strong>Data processing inequality</strong>: processing cannot increase mutual information
+- <strong>Channel capacity of Gaussian channel</strong>: C = B log₂(1 + SNR) — Shannon–Hartley law
+- <strong>No free lunch in compression</strong>: cannot compress all messages</p>
+<p><strong>Methods:</strong> entropy coding (Huffman, arithmetic), error-correcting codes, LDPC/polar codes, hypothesis testing via information measures, rate-distortion optimization, typical set arguments.</p>
+<p><strong>Prerequisites:</strong> probability, basic analysis; measure theory for rigor.</p>
+<p><strong>Connections:</strong> communications engineering (all digital comms); cryptography (entropy = security measure, perfect secrecy via one-time pad); CS (data compression, Kolmogorov complexity bounds computability); statistics (information criteria — AIC/BIC); machine learning (information bottleneck, mutual information maximization).</p>
+<h3 id="62-game-theory-decision-theory">6.2 Game Theory &amp; Decision Theory</h3>
+<p><strong>Subfields:</strong> cooperative game theory; non-cooperative game theory; mechanism design; auction theory; evolutionary game theory; bargaining theory; social choice theory; decision theory under uncertainty; utility theory; behavioral game theory; algorithmic game theory.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Game</strong> — players, strategies, payoffs
+- <strong>Nash equilibrium</strong> — strategy profile where no player can unilaterally improve
+- <strong>Dominant strategy / iterated elimination</strong> — solution concepts
+- <strong>Zero-sum games</strong> — strictly competitive (minimax theorem)
+- <strong>Mechanism</strong> — rules of a game designed to achieve desired outcome
+- <strong>Utility function</strong> — preferences over outcomes
+- <strong>Expected utility / subjective expected utility</strong> — rational choice under risk
+- <strong>Bayesian game</strong> — games with incomplete information
+- <strong>Core, Shapley value</strong> — cooperative solution concepts
+- <strong>Arrow's impossibility theorem</strong> — no voting system satisfies all fairness axioms</p>
+<p><strong>Key principles:</strong>
+- <strong>Von Neumann minimax theorem</strong>: every finite zero-sum game has a value in mixed strategies
+- <strong>Nash existence theorem</strong>: every finite game has a mixed-strategy Nash equilibrium
+- <strong>Revelation principle</strong>: any implementable outcome can be achieved by a direct truthful mechanism
+- <strong>Gibbard–Satterthwaite theorem</strong>: every non-dictatorial voting system is manipulable
+- <strong>Expected utility maximization</strong>: rational agent maximizes E[U] under risk
+- <strong>Allais paradox / Ellsberg paradox</strong>: violations of expected utility → behavioral critiques</p>
+<p><strong>Methods:</strong> normal/extended form representation, backward induction, linear programming for zero-sum games, mechanism design constructions, evolutionary dynamics (replicator equation), computational equilibrium finding (simplicial subdivision, homotopy methods).</p>
+<p><strong>Prerequisites:</strong> probability, basic algebra; utility theory needs some analysis.</p>
+<p><strong>Connections:</strong> economics (market design, auctions — spectrum auctions, ad auctions); political science (voting, international relations); biology (evolutionary stable strategies, signaling); CS (algorithmic mechanism design, auctions for ad placement); AI (multi-agent systems, RL).</p>
+<h3 id="63-control-theory-dynamical-systems">6.3 Control Theory &amp; Dynamical Systems</h3>
+<p><strong>Subfields:</strong> classical control (frequency domain); modern control (state space); optimal control; robust control; adaptive control; nonlinear control; stochastic control; hybrid systems; networked control; control of PDEs (distributed parameter systems); systems identification; MPC (model predictive control).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>State-space model</strong> — ẋ = Ax + Bu, y = Cx + Du (linear systems)
+- <strong>Transfer function</strong> — frequency-domain I/O description
+- <strong>Stability</strong> — asymptotic (eigenvalues in LHP), BIBO stability
+- <strong>Controllability / observability</strong> — can inputs steer states? can outputs reveal states?
+- <strong>Feedback</strong> — closed-loop control; fundamental to all engineering
+- <strong>Optimal control</strong> — minimize cost functional subject to dynamics
+- <strong>Lyapunov function</strong> — energy-like function proving stability
+- <strong>Kalman filter</strong> — optimal linear estimator for noisy systems</p>
+<p><strong>Key principles:</strong>
+- <strong>Cayley–Hamilton theorem</strong>: matrix satisfies its own characteristic polynomial
+- <strong>PBH test</strong>: controllability/observability via rank conditions
+- <strong>Pontryagin's maximum principle</strong>: necessary conditions for optimal control
+- <strong>Bellman equation / dynamic programming</strong>: optimal cost-to-go satisfies recursion
+- <strong>Separation principle</strong>: for LQG, estimation and control can be designed independently
+- <strong>Lyapunov's direct method</strong>: stability via energy decrease
+- <strong>Small-gain theorem</strong>: stability of interconnected systems under gain bounds</p>
+<p><strong>Methods:</strong> state-space analysis, pole placement, LQR/LQG design, root locus, Bode/Nyquist plots, Lyapunov methods, MPC optimization, Kalman filtering, system identification (subspace methods), backstepping for nonlinear systems.</p>
+<p><strong>Prerequisites:</strong> linear algebra (matrix theory), differential equations, basic probability (for stochastic control).</p>
+<p><strong>Connections:</strong> engineering (aerospace, automotive, robotics, power systems, process control); CS (real-time systems, robotics planning); economics (dynamic optimization); neuroscience (motor control models); AI (reinforcement learning is optimal control with unknown dynamics).</p>
+<h3 id="64-complexity-theory">6.4 Complexity Theory</h3>
+<p><strong>Subfields:</strong> computational complexity (P, NP, PSPACE, EXPTIME); circuit complexity; communication complexity; proof complexity; average-case complexity; parameterized complexity; fine-grained complexity; quantum complexity; descriptive complexity; structural complexity.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Time/space complexity classes</strong> — resource-bounded computation classes
+- <strong>NP-completeness</strong> — hardest problems in NP; Cook–Levin theorem (SAT)
+- <strong>Oracle machines / relativization</strong> — computation with black-box subroutines
+- <strong>Circuit complexity</strong> — size/depth of Boolean circuits needed
+- <strong>Communication complexity</strong> — bits needed for distributed computation
+- <strong>Proof complexity</strong> — length of proofs in formal systems
+- <strong>P ≠ NP</strong> — the central open problem (Millennium Prize, $1M)</p>
+<p><strong>Key principles:</strong>
+- <strong>Cook–Levin theorem</strong>: SAT is NP-complete — every NP problem reduces to it
+- <strong>Karp–Lipton theorem</strong>: if NP ⊆ P/poly then PH collapses
+- <strong>Savitch's theorem</strong>: NSPACE(s) ⊆ DSPACE(s²)
+- <strong>Hierarchy theorems</strong>: more time/space → strictly more problems solvable
+- <strong>Natural proofs barrier</strong> (Razborov–Rudich): explains why circuit lower bounds are hard
+- <strong>IP = PSPACE</strong> (Shamir): interactive proofs capture polynomial space
+- <strong>BPP ⊆ Σ₂ ∩ Π₂</strong>: randomized computation is not too powerful</p>
+<p><strong>Methods:</strong> diagonalization, circuit lower bound techniques, algebraic methods (polynomial identity testing), probabilistic method, communication protocols, arithmetization, sum-of-squares hierarchy.</p>
+<p><strong>Prerequisites:</strong> algorithms, computability theory (§7), basic logic; some need algebraic geometry (PCP theorem).</p>
+<p><strong>Connections:</strong> CS (core of theoretical CS); crypto (NP-hardness → one-way functions assumption); logic (proof complexity connects to Gödel); optimization (NP-hard problems define intractability); quantum computing (quantum complexity classes).</p>
+<h3 id="65-operations-research-or-management-science">6.5 Operations Research (OR) &amp; Management Science</h3>
+<p><strong>Subfields:</strong> linear/integer programming; network optimization; scheduling; inventory theory; queueing applications; facility location; transportation/logistics; supply chain management; revenue management; project management (PERT/CPM); multi-criteria decision analysis (MCDA).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Decision variables</strong> — quantities under control
+- <strong>Objective + constraints</strong> — optimization formulation
+- <strong>Relaxation</strong> — dropping constraints for tractable bounds
+- <strong>Heuristic / metaheuristic</strong> — approximate solution methods
+- <strong>Critical path</strong> — longest path determining project duration
+- <strong>Safety stock</strong> — buffer inventory against uncertainty</p>
+<p><strong>Key principles:</strong>
+- <strong>Simplex method</strong> solves LP in practice polynomially (Karmarkar interior-point provably polynomial)
+- <strong>Branch-and-bound</strong>: exact method for integer programs via relaxation bounds
+- <strong>Critical path method</strong>: minimum project duration = longest path in precedence network
+- <strong>Newsvendor model</strong>: optimal order quantity balances overage vs underage costs
+- <strong>Queueing tradeoff</strong>: utilization vs waiting time (Kingman's formula)</p>
+<p><strong>Methods:</strong> simplex/interior-point, branch-and-cut, heuristics (greedy, local search, genetic algorithms, simulated annealing, tabu search), Monte Carlo simulation, queuing analysis, linear programming under uncertainty (stochastic programming, robust optimization).</p>
+<p><strong>Prerequisites:</strong> optimization (§3.3), probability, linear algebra.</p>
+<p><strong>Connections:</strong> business/management; logistics; manufacturing; healthcare (surgery scheduling, resource allocation); defense (logistics); economics; engineering.</p>
+<h3 id="66-machine-learning-ai-foundations-mathematical-view">6.6 Machine Learning &amp; AI Foundations (Mathematical View)</h3>
+<p><strong>Subfields:</strong> statistical learning theory; supervised learning; unsupervised learning; reinforcement learning; deep learning (mathematical aspects); optimization for ML; generalization theory; PAC learning; kernel methods; graphical models; Bayesian deep learning; neural network theory.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Empirical risk minimization</strong> — minimize training error
+- <strong>Generalization gap</strong> — difference between training and test error
+- <strong>VC dimension</strong> — capacity measure of hypothesis class
+- <strong>PAC learning</strong> — probably approximately correct framework
+- <strong>Kernel trick</strong> — implicit high-dimensional feature maps via inner products
+- <strong>Neural network</strong> — parameterized function composed of linear maps + nonlinearities
+- <strong>Loss function</strong> — training objective
+- <strong>Regularization</strong> — penalty preventing overfitting</p>
+<p><strong>Key principles:</strong>
+- <strong>Bias-variance decomposition</strong>: test error = bias² + variance + irreducible noise
+- <strong>No free lunch theorem</strong>: no learner dominates all others on all distributions
+- <strong>Universal approximation theorem</strong>: sufficiently large neural networks approximate any continuous function
+- <strong>Gradient descent convergence</strong>: under smoothness/strong convexity assumptions, GD converges
+- <strong>Double descent</strong>: modern overparameterized models defy classical bias-variance — active research area
+- <strong>PAC-Bayes bounds</strong>: generalization bounds via posterior distributions</p>
+<p><strong>Methods:</strong> empirical risk minimization, SGD variants (Adam, momentum), backpropagation (chain rule), kernel methods (SVM, kernel ridge), boosting, EM algorithm, MCMC, variational inference, attention mechanisms (transformers), optimization (L-BFGS, Newton methods).</p>
+<p><strong>Prerequisites:</strong> probability, statistics, linear algebra, multivariable calculus, optimization; functional analysis for theory.</p>
+<p><strong>Connections:</strong> statistics (§5.2); optimization (§3.3); information theory (§6.1); computation (§4.4); neuroscience (inspiration for neural nets); all application domains of AI.</p>
+<hr />
+<h2 id="7-formal-sciences-logic-foundations-proof">7. FORMAL SCIENCES: LOGIC, FOUNDATIONS &amp; PROOF</h2>
+<p><em>The sciences of formal systems themselves — what can be proven, computed, and mechanized.</em></p>
+<h3 id="71-mathematical-logic">7.1 Mathematical Logic</h3>
+<p><strong>Subfields:</strong> propositional logic; first-order logic; higher-order logic; modal logic (necessity/possibility); intuitionistic/constructive logic; many-valued &amp; fuzzy logic; paraconsistent logic; relevance logic; linear logic; non-standard analysis (model-theoretic); abstract model theory.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Formal language</strong> — alphabet + grammar generating well-formed formulas
+- <strong>Axiom / inference rule</strong> — starting points and deduction rules
+- <strong>Proof / derivation</strong> — finite sequence of formulas each justified by rules
+- <strong>Semantics</strong> — truth in structures/models
+- <strong>Soundness</strong> — provable → true
+- <strong>Completeness</strong> — true → provable
+- <strong>Consistency</strong> — no contradictions derivable
+- <strong>Decidability</strong> — whether validity is mechanically checkable</p>
+<p><strong>Key principles:</strong>
+- <strong>Soundness &amp; completeness of first-order logic</strong> (Gödel): provable = valid
+- <strong>Compactness theorem</strong>: every finitely satisfiable theory is satisfiable — yields nonstandard analysis, ultraproducts
+- <strong>Löwenheim–Skolem</strong>: countable theories have countable models (downward); infinite models of any larger cardinality (upward)
+- <strong>Gödel incompleteness (first)</strong>: consistent systems containing arithmetic have true-but-unprovable statements
+- <strong>Gödel incompleteness (second)</strong>: such systems cannot prove own consistency
+- <strong>Church–Turing thesis</strong>: all reasonable models of effective computation are equivalent
+- <strong>Lindenbaum's lemma</strong>: every consistent theory extends to a complete consistent theory</p>
+<p><strong>Methods:</strong> natural deduction, sequent calculus, Hilbert-style systems, tableau method, resolution (Robinson), model construction, ultraproducts, Ehrenfeucht–Fraïssé games, forcing for independence.</p>
+<p><strong>Prerequisites:</strong> set theory, basic proof techniques; philosophy optional.</p>
+<p><strong>Connections:</strong> foundations (set theory, type theory); CS (SAT solving, formal verification, logic programming, database theory); all of mathematics (proof itself); philosophy (truth, meaning, existence).</p>
+<h3 id="72-proof-theory-formal-systems">7.2 Proof Theory &amp; Formal Systems</h3>
+<p><strong>Subfields:</strong> Hilbert-style systems; natural deduction; sequent calculus; structural proof theory; cut elimination; ordinal analysis; reverse mathematics; proof mining; provability logic; proof complexity (interaction with §6.4).</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Formal system</strong> — language + axioms + rules of inference
+- <strong>Proof normalization / cut elimination</strong> — removing detours from proofs
+- <strong>Subformula property</strong> — proofs only use subformulas of conclusion
+- <strong>Consistency proof</strong> — proof that a system has no contradictions
+- <strong>Ordinal analysis</strong> — measuring consistency strength via ordinals
+- <strong>Reverse mathematics</strong> — which axioms are needed for which theorems</p>
+<p><strong>Key principles:</strong>
+- <strong>Gentzen's cut-elimination theorem</strong>: sequent calculus proofs can be normalized
+- <strong>Curry–Howard correspondence</strong>: proofs ↔ programs; propositions ↔ types; normalization ↔ computation termination
+- <strong>Gentzen's consistency proof for PA</strong>: arithmetic consistency via ordinal analysis up to ε₀
+- <strong>Reverse mathematics</strong>: over RCA₀, many theorems equivalent to ACA₀, ATR₀, Π¹₁-CA₀ — big five systems
+- <strong>Hilbert's program</strong>: formalize all mathematics finitely — shown impossible by Gödel, but partially rehabilitated by ordinal analysis</p>
+<p><strong>Methods:</strong> sequent calculus manipulation, natural deduction trees, ordinal notation systems, proof mining (extracting computational content), functional interpretation (Dialectica interpretation), realizability.</p>
+<p><strong>Prerequisites:</strong> mathematical logic, basic proof theory; type theory for Curry–Howard.</p>
+<p><strong>Connections:</strong> logic (§7.1); type theory (§7.4); CS (proof assistants use Curry–Howard — Lean, Coq); foundations (consistency strength hierarchy).</p>
+<h3 id="73-computability-recursion-theory">7.3 Computability &amp; Recursion Theory</h3>
+<p><strong>Subfields:</strong> Turing machines; recursive functions; λ-calculus; register machines; degrees of unsolvability; computable analysis; algorithmic randomness; Kolmogorov complexity; oracle computation; enumeration degrees; inductive inference.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Turing machine</strong> — abstract device manipulating tape symbols; universal definition of computation
+- <strong>Recursive/decidable function</strong> — computable by algorithm
+- <strong>Recursively enumerable (RE)</strong> — enumerable but not necessarily decidable
+- <strong>Halting problem</strong> — undecidable (Turing, 1936)
+- <strong>Reduction</strong> — problem A reduces to B if solving B solves A
+- <strong>Turing degree</strong> — relative computability classification
+- <strong>Oracle machine</strong> — TM with black-box subroutine
+- <strong>Computable real number</strong> — reals computable to arbitrary precision</p>
+<p><strong>Key principles:</strong>
+- <strong>Church–Turing thesis</strong>: every effectively calculable function is Turing-computable
+- <strong>Undecidability of halting</strong>: no algorithm decides whether arbitrary programs halt
+- <strong>Rice's theorem</strong>: every nontrivial semantic property of programs is undecidable
+- <strong>Kleene's recursion theorem</strong>: programs can produce their own descriptions
+- <strong>s-m-n theorem</strong>: parameter specialization of computable functions
+- <strong>Hierarchy theorems</strong>: time/space hierarchies for computable functions
+- <strong>Algorithmic information theory</strong>: Kolmogorov complexity K(x) = length of shortest program producing x — uncomputable but deeply useful</p>
+<p><strong>Methods:</strong> diagonalization, recursion theorem applications, priority arguments, forcing for computability, algorithmic randomness (Martin-Löf tests), lattice of c.e. degrees.</p>
+<p><strong>Prerequisites:</strong> logic, basic set theory; programming intuition helps.</p>
+<p><strong>Connections:</strong> CS (all of theoretical CS); complexity (§6.4); logic (§7.1); algorithmic information theory connects to information theory (§6.1); cryptography (one-way functions relate to average-case vs worst-case hardness).</p>
+<h3 id="74-type-theory-formal-verification">7.4 Type Theory &amp; Formal Verification</h3>
+<p><strong>Subfields:</strong> simple type theory; dependent type theory; homotopy type theory (HoTT); Martin-Löf type theory; System F / polymorphic lambda calculus; intuitionistic type theory; category-theoretic semantics of type theory; proof assistants; program verification; certified programming.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Type</strong> — classification of terms (like sets, but constructive)
+- <strong>Dependent type</strong> — type depending on a term (e.g., vectors of length n)
+- <strong>Propositions as types / Curry–Howard</strong>: proofs = programs, propositions = types
+- <strong>Universe</strong> — type of types
+- <strong>Identity type / path type</strong> — equality as a type, not a proposition
+- <strong>Univalence axiom</strong> — equivalent types are equal (in HoTT)
+- <strong>Proof assistant</strong> — software checking proofs: Lean 4, Coq/Rocq, Isabelle/HOL, Agda, Metamath</p>
+<p><strong>Key principles:</strong>
+- <strong>Curry–Howard–Lambek correspondence</strong>: proofs ↔ programs ↔ categorical morphisms — triple isomorphism
+- <strong>Univalence</strong>: isomorphism = equality for types — makes type theory equivalent to homotopy theory
+- <strong>Canonicity</strong>: closed terms of type-theoretic naturals compute to numerals
+- <strong>Proof irrelevance vs propositional truncation</strong>: handling proof content in type theory
+- <strong>Normalization for type theories</strong>: ensures type checking terminates (for strongly normalizing systems)</p>
+<p><strong>Methods:</strong> natural deduction style, tactics (in Lean/Coq), rewriting, dependent elimination, higher inductive types (HoTT), cubical type theory, proof search heuristics, SMT integration.</p>
+<p><strong>Prerequisites:</strong> logic, basic programming, λ-calculus; category theory for semantics.</p>
+<p><strong>Connections:</strong> logic (§7.1–7.3); category theory (§2.8); topology (HoTT = synthetic homotopy theory); CS (verified software, compiler correctness, proof-carrying code); mathematics (formalization of major theorems — four color theorem, Kepler conjecture, odd order theorem).</p>
+<h3 id="75-formal-methods-automated-reasoning">7.5 Formal Methods &amp; Automated Reasoning</h3>
+<p><strong>Subfields:</strong> theorem proving (automated &amp; interactive); model checking; SAT/SMT solving; program verification; deductive verification; abstract interpretation; symbolic execution; proof-carrying code; formal specification.</p>
+<p><strong>Fundamental concepts:</strong>
+- <strong>Theorem prover</strong> — software deriving proofs automatically or interactively
+- <strong>Model checker</strong> — exhaustively verifies finite-state system properties
+- <strong>SAT solver</strong> — decides Boolean satisfiability (DPLL, CDCL algorithms)
+- <strong>SMT solver</strong> — SAT + theories (linear arithmetic, arrays, bitvectors)
+- <strong>Hoare logic</strong> — {P} C {Q} program correctness triples
+- <strong>Abstract interpretation</strong> — approximate semantics for static analysis
+- <strong>TLA+ / Z / Alloy</strong> — formal specification languages</p>
+<p><strong>Key principles:</strong>
+- <strong>Soundness of verification</strong>: verified property truly holds (if checker is sound)
+- <strong>Completeness tradeoff</strong>: full verification is undecidable; practical methods are sound but incomplete
+- <strong>Small model property</strong>: many logics have finite counterexamples — enables model checking
+- <strong>CDCL efficiency</strong>: conflict-driven clause learning makes modern SAT solvers practical</p>
+<p><strong>Methods:</strong> resolution, tableau, sequent calculus automation, BDD-based model checking, bounded model checking, abstract interpretation domains (intervals, octagons, polyhedra), symbolic execution with constraint solving.</p>
+<p><strong>Prerequisites:</strong> logic, basic CS/programming; some need automata theory.</p>
+<p><strong>Connections:</strong> CS (software/hardware correctness); crypto (verified implementations); aerospace/defense (DO-178C requires formal methods); mathematics (automated theorem proving, AI for math).</p>
+<hr />
+<h2 id="8-knowledge-hierarchy-framework">8. KNOWLEDGE HIERARCHY FRAMEWORK</h2>
+<p><em>An expandable hierarchy for organizing any mathematical/logic knowledge domain. Each level can be drilled into — this structure applies recursively.</em></p>
+<pre><code>DOMAIN (e.g., Pure Mathematics)
+ └── DISCIPLINE (e.g., Algebra)
+      └── SUBDISCIPLINE (e.g., Representation Theory)
+           └── FIELD (e.g., Modular Representations)
+                └── CONCEPT (e.g., Brauer character)
+                     └── PRINCIPLE (e.g., Brauer's theorem on blocks)
+                          └── METHOD (e.g., decomposition matrix computation)
+                               └── EXPERIMENT (e.g., GAP computation of small groups)
+                                    └── EVIDENCE (e.g., published theorem, computer verification)
+                                         └── APPLICATION (e.g., classification of finite simple groups)
+                                              └── OUTCOME (e.g., Atlas of finite groups, sporadic group discovery)
+</code></pre>
+<h3 id="81-definitions-of-each-level">8.1 Definitions of each level</h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>What it is</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Broadest category of study</td>
+<td>Pure Mathematics, Applied Mathematics, Formal Sciences</td>
+</tr>
+<tr>
+<td><strong>Discipline</strong></td>
+<td>Major recognized branch</td>
+<td>Algebra, Topology, Probability, Logic</td>
+</tr>
+<tr>
+<td><strong>Subdiscipline</strong></td>
+<td>Specialized area within discipline</td>
+<td>Algebraic Geometry, Algebraic Topology, Bayesian Statistics</td>
+</tr>
+<tr>
+<td><strong>Field</strong></td>
+<td>Specific research/topic area</td>
+<td>Elliptic Curves over Finite Fields, Persistent Homology, Homotopy Type Theory</td>
+</tr>
+<tr>
+<td><strong>Concept</strong></td>
+<td>Fundamental idea/definition</td>
+<td>Group, Manifold, Entropy, Nash Equilibrium, Turing Machine</td>
+</tr>
+<tr>
+<td><strong>Principle</strong></td>
+<td>Law/theorem governing concepts</td>
+<td>Fundamental Theorem of Algebra, Bayes' Theorem, Noether's Theorem, Pigeonhole Principle</td>
+</tr>
+<tr>
+<td><strong>Method</strong></td>
+<td>Technique for applying principles</td>
+<td>Gröbner bases, Monte Carlo simulation, spectral methods, proof by induction</td>
+</tr>
+<tr>
+<td><strong>Experiment</strong></td>
+<td>Concrete instantiation/test</td>
+<td>Computing a decomposition matrix in GAP; simulating Brownian motion; SAT-solving a formula</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Result supporting knowledge</td>
+<td>Published proof, computer verification, experimental data, counterexample</td>
+</tr>
+<tr>
+<td><strong>Application</strong></td>
+<td>Real-world use of the knowledge</td>
+<td>ECC cryptography, medical imaging, A/B testing, verified software</td>
+</tr>
+<tr>
+<td><strong>Outcome</strong></td>
+<td>Measurable consequence</td>
+<td>Secure communications, new materials, drug approvals, bug-free systems</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-why-this-hierarchy-matters">8.2 Why this hierarchy matters</h3>
+<ol>
+<li><strong>Prerequisite mapping</strong>: to understand a Field, you need its Concepts and Principles; to apply a Method, you need the underlying Field.</li>
+<li><strong>Cross-domain linking</strong>: the same Concept (e.g., "group") appears in Algebra, Geometry (symmetry), Physics (gauge theory), and CS (cryptography) — the hierarchy reveals these connections.</li>
+<li><strong>Pedagogical sequencing</strong>: learning paths follow the hierarchy bottom-up or top-down depending on goal (theorist vs practitioner).</li>
+<li><strong>Research frontier identification</strong>: Gaps &amp; Emerging Fields (§11) appear where new Subdisciplines are forming.</li>
+</ol>
+<h3 id="83-cross-cutting-lateral-connections">8.3 Cross-cutting "lateral" connections</h3>
+<p>Many concepts transcend single domains:</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Appears in</th>
+<th>Connection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Symmetry/Group</strong></td>
+<td>Algebra, Geometry, Physics, Chemistry</td>
+<td>Noether's theorem links symmetry to conservation</td>
+</tr>
+<tr>
+<td><strong>Probability</strong></td>
+<td>Statistics, Physics, CS, Finance, Biology</td>
+<td>Universal language of uncertainty</td>
+</tr>
+<tr>
+<td><strong>Linear Algebra</strong></td>
+<td>Pure Math, ML, Physics, Engineering, Graphics</td>
+<td>Ubiquitous computational backbone</td>
+</tr>
+<tr>
+<td><strong>Topology</strong></td>
+<td>Pure Math, Data Science, Physics, Neuroscience</td>
+<td>Shape of data, phase transitions, brain networks</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>Foundations, CS, Math itself, Philosophy</td>
+<td>What "proof" and "computation" mean</td>
+</tr>
+<tr>
+<td><strong>Optimization</strong></td>
+<td>OR, ML, Control, Economics, Engineering</td>
+<td>Choosing best among alternatives</td>
+</tr>
+<tr>
+<td><strong>Information</strong></td>
+<td>Info Theory, CS, Biology, Physics</td>
+<td>Universal currency of communication</td>
+</tr>
+<tr>
+<td><strong>Category Theory</strong></td>
+<td>Algebra, Topology, Logic, CS, Physics</td>
+<td>Universal language of structure and composition</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-how-mathematics-underpins-cs-engineering-crypto-ai">9. HOW MATHEMATICS UNDERPINS CS, ENGINEERING, CRYPTO &amp; AI</h2>
+<h3 id="91-mathematics-computer-science">9.1 Mathematics → Computer Science</h3>
+<table>
+<thead>
+<tr>
+<th>Math Area</th>
+<th>CS Application</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Logic &amp; Proof Theory</strong></td>
+<td>Formal verification, type systems, program correctness proofs</td>
+</tr>
+<tr>
+<td><strong>Computability Theory</strong></td>
+<td>What computers can/cannot compute; halting problem limits</td>
+</tr>
+<tr>
+<td><strong>Complexity Theory</strong></td>
+<td>P vs NP defines tractability; NP-completeness guides algorithm design</td>
+</tr>
+<tr>
+<td><strong>Graph Theory</strong></td>
+<td>Data structures, network algorithms, compilers (parse trees), social networks</td>
+</tr>
+<tr>
+<td><strong>Boolean Algebra</strong></td>
+<td>Digital circuits, SAT solving, hardware verification</td>
+</tr>
+<tr>
+<td><strong>Linear Algebra</strong></td>
+<td>Graphics, ML, numerical methods, PageRank, data analysis</td>
+</tr>
+<tr>
+<td><strong>Category Theory</strong></td>
+<td>Functional programming semantics, database theory, type theory</td>
+</tr>
+<tr>
+<td><strong>Information Theory</strong></td>
+<td>Data compression, communication protocols, Kolmogorov complexity</td>
+</tr>
+<tr>
+<td><strong>Probability &amp; Statistics</strong></td>
+<td>Randomized algorithms, ML, A/B testing, anomaly detection</td>
+</tr>
+<tr>
+<td><strong>Number Theory</strong></td>
+<td>Cryptography (RSA, ECC, Diffie-Hellman, post-quantum)</td>
+</tr>
+<tr>
+<td><strong>Algorithms &amp; Discrete Math</strong></td>
+<td>Everything in CS — algorithms ARE discrete mathematics made executable</td>
+</tr>
+<tr>
+<td><strong>Formal Methods</strong></td>
+<td>Model checking, theorem proving, verified software</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key insight</strong>: CS is applied discrete mathematics + applied logic. Every algorithm is a mathematical object; every data structure is an algebraic/combinatorial structure; every correctness proof is a logical derivation.</p>
+<h3 id="92-mathematics-engineering">9.2 Mathematics → Engineering</h3>
+<table>
+<thead>
+<tr>
+<th>Math Area</th>
+<th>Engineering Application</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Differential Equations</strong></td>
+<td>Structural mechanics, fluid dynamics, heat transfer, electromagnetics, control</td>
+</tr>
+<tr>
+<td><strong>Linear Algebra</strong></td>
+<td>Circuit analysis, structural analysis, signal processing, robotics (kinematics)</td>
+</tr>
+<tr>
+<td><strong>Numerical Analysis</strong></td>
+<td>All simulation: CFD, FEA, thermal analysis, electromagnetic simulation</td>
+</tr>
+<tr>
+<td><strong>Optimization</strong></td>
+<td>Design optimization, control systems, resource allocation, logistics</td>
+</tr>
+<tr>
+<td><strong>Probability &amp; Statistics</strong></td>
+<td>Quality control, reliability engineering, signal processing, risk analysis</td>
+</tr>
+<tr>
+<td><strong>Fourier/Harmonic Analysis</strong></td>
+<td>Signal processing, communications, image processing, vibration analysis</td>
+</tr>
+<tr>
+<td><strong>Differential Geometry</strong></td>
+<td>Robotics (configuration spaces), general relativity (physics), computer graphics</td>
+</tr>
+<tr>
+<td><strong>Graph Theory</strong></td>
+<td>Network design, power grids, transportation systems, VLSI layout</td>
+</tr>
+<tr>
+<td><strong>Stochastic Processes</strong></td>
+<td>Queueing (telecom), reliability, maintenance scheduling, inventory</td>
+</tr>
+<tr>
+<td><strong>Complex Analysis</strong></td>
+<td>Control theory (Nyquist stability), fluid mechanics, electromagnetics</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key insight</strong>: Engineering is applied mathematics constrained by physical laws. Every engineered system is a mathematical model solved (usually numerically) under constraints.</p>
+<h3 id="93-mathematics-cryptography">9.3 Mathematics → Cryptography</h3>
+<table>
+<thead>
+<tr>
+<th>Math Area</th>
+<th>Crypto Application</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Number Theory</strong></td>
+<td>RSA (factoring), Diffie-Hellman (discrete log), ECC (elliptic curves), primality testing</td>
+</tr>
+<tr>
+<td><strong>Algebra</strong></td>
+<td>Group theory (finite fields, elliptic curves), ring theory (lattices, ideals)</td>
+</tr>
+<tr>
+<td><strong>Computational Complexity</strong></td>
+<td>One-way functions, NP-hardness assumptions, zero-knowledge proofs</td>
+</tr>
+<tr>
+<td><strong>Information Theory</strong></td>
+<td>Perfect secrecy (one-time pad), entropy bounds, channel capacity for secure comms</td>
+</tr>
+<tr>
+<td><strong>Boolean Algebra/Logic</strong></td>
+<td>Circuit implementations, SAT-based cryptanalysis, formal verification of crypto</td>
+</tr>
+<tr>
+<td><strong>Lattice Theory</strong></td>
+<td>LWE/RLWE (post-quantum crypto), NTRU, GGH cryptosystems</td>
+</tr>
+<tr>
+<td><strong>Coding Theory</strong></td>
+<td>Error-correcting codes, McEliece cryptosystem (code-based crypto)</td>
+</tr>
+<tr>
+<td><strong>Probability</strong></td>
+<td>Random number generation, side-channel analysis, differential privacy</td>
+</tr>
+<tr>
+<td><strong>Graph Theory</strong></td>
+<td>Graph isomorphism-based crypto, network security protocols</td>
+</tr>
+<tr>
+<td><strong>Algebraic Geometry</strong></td>
+<td>Elliptic curve cryptography, isogeny-based crypto (SIKE — broken by Castryck-Decru 2022)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key insight</strong>: Cryptography is mathematics weaponized for security. Every cryptosystem rests on a mathematical hardness assumption; every break is a mathematical advance (or a computational breakthrough, e.g., Shor's quantum algorithm).</p>
+<h3 id="94-mathematics-artificial-intelligence">9.4 Mathematics → Artificial Intelligence</h3>
+<table>
+<thead>
+<tr>
+<th>Math Area</th>
+<th>AI Application</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Linear Algebra</strong></td>
+<td>Neural networks (matrix operations), embeddings, attention mechanisms, PCA</td>
+</tr>
+<tr>
+<td><strong>Calculus</strong></td>
+<td>Backpropagation (chain rule), gradient descent, optimization</td>
+</tr>
+<tr>
+<td><strong>Probability &amp; Statistics</strong></td>
+<td>Bayesian inference, generative models, uncertainty quantification, RL</td>
+</tr>
+<tr>
+<td><strong>Optimization</strong></td>
+<td>Training neural networks, convex relaxations, combinatorial optimization in planning</td>
+</tr>
+<tr>
+<td><strong>Information Theory</strong></td>
+<td>Information bottleneck, mutual information objectives, entropy regularization</td>
+</tr>
+<tr>
+<td><strong>Graph Theory</strong></td>
+<td>GNNs, knowledge graphs, social network analysis, recommendation systems</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>Knowledge representation, neuro-symbolic AI, automated reasoning, theorem proving</td>
+</tr>
+<tr>
+<td><strong>Topology</strong></td>
+<td>Topological data analysis for ML, persistent homology features</td>
+</tr>
+<tr>
+<td><strong>Category Theory</strong></td>
+<td>Deep learning architectures (functorial formulations), compositionality</td>
+</tr>
+<tr>
+<td><strong>Computational Complexity</strong></td>
+<td>What AI can/can't compute efficiently; sample complexity bounds</td>
+</tr>
+<tr>
+<td><strong>Dynamical Systems</strong></td>
+<td>Recurrent networks, continuous-time models, chaos in neural dynamics</td>
+</tr>
+<tr>
+<td><strong>Game Theory</strong></td>
+<td>Multi-agent RL, mechanism design for AI systems, adversarial robustness</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key insight</strong>: AI is applied mathematics at massive scale. Neural networks are parameterized functions trained by gradient-based optimization on probability distributions; the theory (generalization, optimization landscapes, expressivity) is actively developed mathematics.</p>
+<hr />
+<h2 id="10-cross-domain-connections-prerequisite-ladder">10. CROSS-DOMAIN CONNECTIONS &amp; PREREQUISITE LADDER</h2>
+<h3 id="101-the-prerequisite-ladder-simplified">10.1 The prerequisite ladder (simplified)</h3>
+<pre><code>Level 0: Arithmetic, basic algebra, logic basics
+    ↓
+Level 1: Precalculus, elementary functions, set theory basics
+    ↓
+Level 2: Calculus (differential &amp; integral), linear algebra basics, discrete math basics
+    ↓
+Level 3: Multivariable calculus, linear algebra (advanced), probability basics, proof techniques
+    ↓
+Level 4: Real analysis, abstract algebra, topology basics, measure theory basics
+    ↓
+Level 5: Functional analysis, differential geometry, measure-theoretic probability, advanced algebra
+    ↓
+Level 6: Research-level specialization (algebraic geometry, stochastic processes, proof theory, etc.)
+</code></pre>
+<h3 id="102-major-interconnection-hubs">10.2 Major interconnection hubs</h3>
+<ol>
+<li><strong>Linear Algebra</strong> — connects pure (modules, representations), applied (numerical methods), ML, physics, engineering.</li>
+<li><strong>Analysis</strong> — connects ODEs/PDEs, functional analysis, probability, geometry (geometric analysis), physics.</li>
+<li><strong>Algebra</strong> — connects number theory, geometry (algebraic geometry), topology (homological algebra), CS (crypto groups).</li>
+<li><strong>Topology</strong> — connects geometry, algebra (algebraic topology), analysis (geometric analysis), data science (TDA).</li>
+<li><strong>Logic</strong> — connects foundations, proof theory, CS (formal methods), mathematics itself.</li>
+<li><strong>Probability</strong> — connects statistics, stochastic processes, physics (stat mech), finance, ML.</li>
+<li><strong>Optimization</strong> — connects OR, control, ML, economics, engineering design.</li>
+<li><strong>Category Theory</strong> — connects algebra, topology, logic, CS (type theory), physics (topological QFT).</li>
+<li><strong>Information Theory</strong> — connects communications, cryptography, statistics, ML, physics.</li>
+</ol>
+<h3 id="103-the-applied-pure-feedback-loop">10.3 The "applied ↔ pure" feedback loop</h3>
+<ul>
+<li><strong>Number theory</strong> (pure) → <strong>cryptography</strong> (applied) → <strong>post-quantum crypto</strong> (new pure problems in lattices).</li>
+<li><strong>Topology</strong> (pure) → <strong>topological data analysis</strong> (applied) → <strong>new invariants</strong> (pure).</li>
+<li><strong>Category theory</strong> (pure) → <strong>applied category theory</strong> in CS/database → <strong>new categorical structures</strong> (pure).</li>
+<li><strong>Statistical mechanics</strong> (applied physics) → <strong>probability theory</strong> (pure) → <strong>concentration inequalities</strong> → <strong>ML theory</strong> (applied).</li>
+<li><strong>Fourier analysis</strong> (pure) → <strong>signal processing</strong> (applied) → <strong>uncertainty principle refinements</strong> (pure).</li>
+</ul>
+<hr />
+<h2 id="11-gaps-emerging-fields">11. GAPS &amp; EMERGING FIELDS</h2>
+<p><em>This map is intentionally NOT exhaustive. The following areas are rapidly developing, underrepresented in classical classifications, or sit at disciplinary boundaries.</em></p>
+<h3 id="111-homotopy-type-theory-hott-univalent-foundations">11.1 Homotopy Type Theory (HoTT) &amp; Univalent Foundations</h3>
+<ul>
+<li><strong>What</strong>: Type theory where equality is modeled as paths/homotopies; univalence axiom makes equivalent types equal.</li>
+<li><strong>Status</strong>: Active research program (Voevodsky, 2006–2017); Lean's mathlib uses related ideas.</li>
+<li><strong>Connections</strong>: §2.8 category theory, §7.4 type theory, topology (synthetic homotopy theory).</li>
+<li><strong>Gap</strong>: Not yet mainstream in mathematics education; practical adoption limited.</li>
+</ul>
+<h3 id="112-tropical-geometry-idempotent-mathematics">11.2 Tropical Geometry &amp; Idempotent Mathematics</h3>
+<ul>
+<li><strong>What</strong>: Algebraic geometry over the tropical semiring (min-plus algebra); degenerations of algebraic varieties.</li>
+<li><strong>Status</strong>: Active research (2000s–present); connections to mirror symmetry, enumerative geometry.</li>
+<li><strong>Connections</strong>: §2.3 algebraic geometry, §3.5 mathematical physics, optimization (tropical = piecewise-linear optimization).</li>
+<li><strong>Gap</strong>: Still largely pure; applied uses emerging.</li>
+</ul>
+<h3 id="113-applied-category-theory">11.3 Applied Category Theory</h3>
+<ul>
+<li><strong>What</strong>: Using category-theoretic methods (monoidal categories, operads, sheaves) in CS, data science, systems engineering.</li>
+<li><strong>Status</strong>: Growing community; used in database theory, machine learning architectures, systems modeling.</li>
+<li><strong>Connections</strong>: §2.8 category theory, §7.4 type theory, §4.4 algorithms.</li>
+<li><strong>Gap</strong>: Often criticized as "abstract nonsense" by practitioners; empirical benefits still being demonstrated.</li>
+</ul>
+<h3 id="114-ai-assisted-mathematical-discovery-proof">11.4 AI-Assisted Mathematical Discovery &amp; Proof</h3>
+<ul>
+<li><strong>What</strong>: Machine learning for conjecture generation, proof search, theorem proving; neural theorem provers; autoformalization.</li>
+<li><strong>Status</strong>: Rapidly growing (2020s); notable results: Ramanujan machine, TxGraffiti conjectures, DeepMind's AlphaGeometry, GPT-based math.</li>
+<li><strong>Connections</strong>: §7.5 formal methods, §6.6 ML, all of pure mathematics.</li>
+<li><strong>Gap</strong>: Whether AI will produce genuinely novel mathematics vs. repackaging known results is open.</li>
+</ul>
+<h3 id="115-topological-data-analysis-tda-applied-topology">11.5 Topological Data Analysis (TDA) &amp; Applied Topology</h3>
+<ul>
+<li><strong>What</strong>: Using topological invariants (persistent homology) to analyze data shape.</li>
+<li><strong>Status</strong>: Active applied field (2000s–present); used in genomics, materials science, neuroscience.</li>
+<li><strong>Connections</strong>: §2.4 topology, §6.6 ML, §5 statistics.</li>
+<li><strong>Gap</strong>: Interpretation of topological features can be subtle; computational scalability.</li>
+</ul>
+<h3 id="116-quantum-mathematics-quantum-information">11.6 Quantum Mathematics &amp; Quantum Information</h3>
+<ul>
+<li><strong>What</strong>: Mathematics of quantum computing, quantum error correction, quantum information theory.</li>
+<li><strong>Status</strong>: Rapidly growing; post-quantum cryptography depends on it.</li>
+<li><strong>Connections</strong>: §2.5 functional analysis, §5.3 stochastic processes, §6.1 information theory, §2.2 number theory (lattices).</li>
+<li><strong>Gap</strong>: Many foundational questions about quantum computation's power remain open (BQP vs NP, etc.).</li>
+</ul>
+<h3 id="117-machine-learning-theory-neural-network-mathematics">11.7 Machine Learning Theory &amp; Neural Network Mathematics</h3>
+<ul>
+<li><strong>What</strong>: Rigorous theory of deep learning: optimization landscapes, generalization bounds, expressivity, implicit bias.</li>
+<li><strong>Status</strong>: Very active (2010s–present); "deep learning theory" is now a recognized field.</li>
+<li><strong>Connections</strong>: §6.6 ML, §3.3 optimization, §5.2 statistics, §2.5 analysis.</li>
+<li><strong>Gap</strong>: Theory lags practice; many empirical phenomena (double descent, grokking) lack complete explanation.</li>
+</ul>
+<h3 id="118-experimental-mathematics-computer-assisted-proof">11.8 Experimental Mathematics &amp; Computer-Assisted Proof</h3>
+<ul>
+<li><strong>What</strong>: Using computation to discover conjectures, verify proofs (four color theorem), and explore mathematical objects.</li>
+<li><strong>Status</strong>: Established but growing; SageMath, Mathematica, Lean enable new workflows.</li>
+<li><strong>Connections</strong>: §3.4 computational math, §7.5 formal methods, all of pure math.</li>
+<li><strong>Gap</strong>: Acceptance of computer proofs varies by community; reproducibility concerns.</li>
+</ul>
+<h3 id="119-mathematical-biology-epidemiological-modeling">11.9 Mathematical Biology &amp; Epidemiological Modeling</h3>
+<ul>
+<li><strong>What</strong>: Mathematical models of biological systems: population dynamics, epidemiology, neuroscience, ecology.</li>
+<li><strong>Status</strong>: Mature but expanding; COVID-19 highlighted importance.</li>
+<li><strong>Connections</strong>: §3.1 modeling, §5 probability/statistics, §2.6 differential equations, §6.3 dynamical systems.</li>
+<li><strong>Gap</strong>: Multi-scale integration (molecular → organism → population) remains challenging.</li>
+</ul>
+<h3 id="1110-econophysics-complex-systems-mathematics">11.10 Econophysics &amp; Complex Systems Mathematics</h3>
+<ul>
+<li><strong>What</strong>: Applying statistical physics methods to economics, finance, social systems; emergence, phase transitions, power laws.</li>
+<li><strong>Status</strong>: Interdisciplinary; some results controversial.</li>
+<li><strong>Connections</strong>: §3.5 math physics, §5 probability, §6.2 game theory, §4 graph theory.</li>
+<li><strong>Gap</strong>: Rigorous foundations often weaker than in physics; predictive power debated.</li>
+</ul>
+<h3 id="1111-other-notable-gaps">11.11 Other Notable Gaps</h3>
+<ul>
+<li><strong>Fuzzy/rough set theory</strong> — alternatives to classical logic for vagueness; niche but used in AI.</li>
+<li><strong>Fractal geometry &amp; chaos theory</strong> — geometric structures of fractional dimension; active in physics/biology.</li>
+<li><strong>Numerical algebraic geometry</strong> — solving polynomial systems numerically; growing field.</li>
+<li><strong>Formal epistemology of mathematics</strong> — how we know mathematical truths; philosophy-math interface.</li>
+<li><strong>Mathematical psychology &amp; neuroeconomics</strong> — mathematical models of cognition and decision-making.</li>
+<li><strong>Proof theory for AI safety</strong> — using formal methods to verify AI systems; emerging critical area.</li>
+<li><strong>Mathematics of deep learning</strong> — specific subfield covering transformers, diffusion models, RL theory.</li>
+<li><strong>Synthetic differential geometry</strong> — infinitesimal reasoning without limits; niche but elegant.</li>
+<li><strong>Noncommutative geometry</strong> — geometry of noncommutative algebras; Connes' program connecting to physics.</li>
+<li><strong>Higher category theory in physics</strong> — topological field theories, factorization algebras.</li>
+</ul>
+<hr />
+<h2 id="12-sources">12. SOURCES</h2>
+<p><em>Compiled from standard mathematical references and verified via web search Nov 25, 2026.</em></p>
+<h3 id="121-classification-structure">12.1 Classification &amp; Structure</h3>
+<ul>
+<li><strong>NSF Division of Mathematical Sciences</strong> — "The Mathematical Sciences: Their Structure and Contributions" — nine subfields classification (foundations, algebra/combinatorics, number theory/algebraic geometry, topology/geometry, analysis, probability, applied math, computational math, statistics).</li>
+<li><strong>Trinity College Dublin — School of Mathematics</strong> — "Types of Mathematics" — applied vs pure vs theoretical physics framing; application ↔ theory cycle.</li>
+<li><strong>MSC2020 (Mathematics Subject Classification)</strong> — zbMATH/Open — official subject classification scheme used for research indexing.</li>
+<li><strong>Wikipedia — Mathematics</strong> — general overview, epistemology, major areas.</li>
+</ul>
+<h3 id="122-pure-mathematics">12.2 Pure Mathematics</h3>
+<ul>
+<li><strong>Wikipedia — Abstract Algebra, Number Theory, Geometry, Topology, Mathematical Analysis, Set Theory, Category Theory</strong> — standard reference for subfields and key results.</li>
+<li><strong>Stanford Encyclopedia of Philosophy</strong> — entries on set theory, philosophy of mathematics, logic.</li>
+<li><strong>nLab</strong> — category theory and higher category theory reference.</li>
+<li><strong>nCatLab</strong> — applied category theory resources.</li>
+</ul>
+<h3 id="123-applied-mathematics-computation">12.3 Applied Mathematics &amp; Computation</h3>
+<ul>
+<li><strong>SIAM (Society for Industrial and Applied Mathematics)</strong> — journals and classification for applied math.</li>
+<li><strong>Trinity College Dublin</strong> — mathematical modeling methodology.</li>
+<li><strong>Numerical Recipes</strong> — standard reference for numerical methods.</li>
+<li><strong>Wikipedia — Numerical Analysis, Optimization, Operations Research</strong> — method classifications.</li>
+</ul>
+<h3 id="124-probability-statistics">12.4 Probability &amp; Statistics</h3>
+<ul>
+<li><strong>Wikipedia — Probability Theory, Statistics, Stochastic Processes, Information Theory</strong> — standard references.</li>
+<li><strong>MIT OpenCourseWare</strong> — probability, statistics, stochastic processes course materials.</li>
+<li><strong>Casella &amp; Berger, Statistical Inference</strong> — standard graduate textbook.</li>
+<li><strong>Durrett, Probability: Theory and Examples</strong> — standard probability textbook.</li>
+</ul>
+<h3 id="125-information-decision-computational-sciences">12.5 Information, Decision &amp; Computational Sciences</h3>
+<ul>
+<li><strong>Cover &amp; Thomas, Elements of Information Theory</strong> — canonical information theory text.</li>
+<li><strong>Myerson, Game Theory</strong> — canonical game theory text.</li>
+<li><strong>Sutton &amp; Barto, Reinforcement Learning</strong> — RL foundations.</li>
+<li><strong>Arora &amp; Barak, Computational Complexity</strong> — standard complexity text.</li>
+<li><strong>Papadimitriou, Computational Complexity</strong> — classic text.</li>
+</ul>
+<h3 id="126-formal-sciences-logic">12.6 Formal Sciences &amp; Logic</h3>
+<ul>
+<li><strong>Stanford Encyclopedia of Philosophy</strong> — entries on logic, computability, Gödel's theorems.</li>
+<li><strong>Enderton, A Mathematical Introduction to Logic</strong> — standard logic textbook.</li>
+<li><strong>Sipser, Introduction to the Theory of Computation</strong> — standard computability/complexity text.</li>
+<li><strong>Homotopy Type Theory book</strong> (HoTT Book, 2013) — univalent foundations.</li>
+<li><strong>Lean 4 / mathlib documentation</strong> — current state of formalized mathematics.</li>
+</ul>
+<h3 id="127-emerging-fields-verified-via-web-search">12.7 Emerging Fields (verified via web search)</h3>
+<ul>
+<li><strong>AMS Notices</strong> — "Mathematics: the Rise of the Machines" (arXiv:2511.17203) — AI for mathematical discovery survey.</li>
+<li><strong>arXiv:2601.13209</strong> — "AI for Mathematics: Progress, Challenges, and Prospects" — AI4Math review.</li>
+<li><strong>arXiv:2510.15795</strong> — "Synthetic perspectives on spaces and categories" — HoTT and simplicial type theory.</li>
+<li><strong>arXiv:2511.17203</strong> — AI for mathematical discovery: Ramanujan machine, TxGraffiti, AlphaGeometry.</li>
+<li><strong>MIT Vantage lecture notes</strong> — Drew Armstrong on AI-assisted theorem proving.</li>
+</ul>
+<h3 id="128-cross-domain-applications">12.8 Cross-Domain Applications</h3>
+<ul>
+<li><strong>Shor's algorithm (1994)</strong> — quantum factoring; motivates post-quantum crypto.</li>
+<li><strong>Castryck–Decru attack (2022)</strong> — broke SIKE isogeny crypto; example of math breaking crypto.</li>
+<li><strong>Four color theorem (1976)</strong> — first major computer-assisted proof.</li>
+<li><strong>Perelman (2003)</strong> — Ricci flow proof of Poincaré conjecture; example of geometric analysis solving topology.</li>
+<li><strong>Wiles (1994)</strong> — Fermat's Last Theorem via modular forms; number theory landmark.</li>
+</ul>
+<hr />
+<p><em>End of map. This document covers the major branches of mathematics, logic, and formal sciences as of November 2026. It is not exhaustive — see §11 for emerging areas and acknowledged gaps. For deeper exploration, follow the knowledge hierarchy (§8) within each field.</em></p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 42 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

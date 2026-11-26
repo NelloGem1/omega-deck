@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⬡ RSA Folder Lock — Hybrid Encryption Guide</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--border:#30363d;--gold:#f0b429;--blue:#58a6ff;--green:#3fb950;--txt:#c9d1d9;--dim:#8b949e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.65;padding:32px}
+.wrap{max-width:900px;margin:0 auto}
+h1{color:var(--gold);font-size:26px;border-bottom:2px solid var(--gold);padding-bottom:12px}
+h2{color:var(--blue);font-size:18px;margin:28px 0 10px}
+h3{color:var(--gold);font-size:15px;margin:18px 0 6px}
+p,li{font-size:14px;margin:6px 0}
+code,pre{font-family:Consolas,monospace;background:var(--panel);border:1px solid var(--border);border-radius:6px}
+code{padding:1px 6px;font-size:13px;color:var(--gold)}
+pre{padding:14px;overflow-x:auto;font-size:13px;line-height:1.5;margin:10px 0}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;margin:14px 0}
+.warn{border-left:3px solid var(--gold)}
+.danger{border-left:3px solid #f85149}
+.ok{border-left:3px solid var(--green)}
+.dim{color:var(--dim);font-size:12px}
+a{color:var(--blue)}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+td,th{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+th{color:var(--dim);font-size:11px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>⬡ RSA Folder Lock <span class="dim">— hybrid RSA-2048 + AES-256-GCM</span></h1>
+<p class="dim">Tool: <code>folder_lock.py</code> · Source: <code>/home/neilh/folder_lock.py</code> (149 lines) · Built for prime-discovery / Nello Gem</p>
+
+<h2>🔑 The Idea — why hybrid?</h2>
+<div class="panel">
+<p><strong>RSA can't encrypt large data</strong> — it's slow and limited to ~245 bytes at 2048-bit. AES is fast but has the key-distribution problem. Hybrid solves both:</p>
+<table>
+<tr><th>Layer</th><th>Algorithm</th><th>Job</th></tr>
+<tr><td>Bulk data</td><td><b>AES-256-GCM</b></td><td>Encrypts every file with a fresh random key + nonce (authenticated — tamper-proof)</td></tr>
+<tr><td>Key wrap</td><td><b>RSA-2048-OAEP</b></td><td>Wraps the small AES key — RSA's only job</td></tr>
+<tr><td>Manifest</td><td><b>JSON (.flock)</b></td><td>Records filenames/sizes/nonces so <code>unlock</code> rebuilds the tree</td></tr>
+</table>
+<p>File format magic: <code>FLOCK1\n</code> header on every <code>.enc</code> file.</p>
+</div>
+
+<h2>⚡ Commands</h2>
+<pre>python folder_lock.py keygen                  # creates pub + priv PEM keys
+python folder_lock.py lock &lt;folder&gt;           # encrypts every file in place → .enc
+python folder_lock.py unlock &lt;folder&gt;         # restores files from .enc
+python folder_lock.py ... --keydir DIR         # keys live somewhere else</pre>
+
+<h2>🗝️ Key Rules</h2>
+<div class="panel danger">
+<p><code>folder_lock_pub.pem</code> — <b>share freely</b> (the "padlock"). Anyone can lock files to you.</p>
+<p><code>folder_lock_priv.pem</code> — <b>KEEP SECRET</b>. The only way in. Lose it = data gone forever. No backdoors, no recovery — that's the point.</p>
+</div>
+
+<h2>🔬 How it works internally</h2>
+<div class="panel">
+<h3>keygen</h3>
+<p>Generates RSA-2048 keypair (public exponent 65537), writes both PEMs unencrypted.</p>
+<h3>lock</h3>
+<p>Walks the folder (<code>os.walk</code>), skips existing <code>.enc</code>/<code>.flock</code> files, and for each file:</p>
+<ol>
+<li>Fresh <code>os.urandom(32)</code> AES key + 12-byte nonce</li>
+<li><code>AESGCM.encrypt(nonce, data, None)</code> → ciphertext+tag</li>
+<li>RSA-OAEP encrypt the AES key with the <b>public</b> key</li>
+<li>Write <code>.enc</code>: MAGIC + wrapped key + nonce + ciphertext</li>
+<li>Manifest <code>.flock</code> JSON maps original paths → enc metadata</li>
+</ol>
+<h3>unlock</h3>
+<p>Reverse: RSA-decrypt wrapped key with <b>private</b> key → AES-GCM decrypt → restore original bytes and names.</p>
+</div>
+
+<h2>🛡️ Security notes</h2>
+<div class="panel ok">
+<ul>
+<li><b>GCM gives authenticity</b> — tampered ciphertext fails the tag check. Better than CBC+HMAC manual combos.</li>
+<li><b>Fresh key+nonce per file</b> — no nonce reuse (the AES-GCM killer we proved in crypto challenges).</li>
+<li><b>2048-bit RSA</b> — factoring infeasible (we broke 191-bit in 17s; 2048 is ~10³⁸× harder).</li>
+<li><b>No passwords</b> — keys ARE the credentials. Back up <code>priv.pem</code> like a birth certificate.</li>
+<li><b>In-place lock</b> — originals are overwritten/deleted after encrypt. Test on a copy first.</li>
+</ul>
+</div>
+
+<h2>📂 File locations</h2>
+<table>
+<tr><th>What</th><th>Where</th></tr>
+<tr><td>Source</td><td><code>/home/neilh/folder_lock.py</code> (WSL) · also <code>downloads_archive/folder_lock.py</code></td></tr>
+<tr><td>This page</td><td><code>Learning\rsa_folder.html</code> — reached from <code>02 - 00-start-here.html</code></td></tr>
+<tr><td>Crypto theory behind it</td><td><a href="21 - crypto-theory-primitives.html">21 — Crypto Theory &amp; Primitives</a></td></tr>
+<tr><td>Our RSA break experiments</td><td><a href="42 - map-math-logic.html">42 — Math/Logic map</a> · <code>science_lab/math/</code></td></tr>
+</table>
+
+<p class="dim">⬡ prime-discovery · Nello Gem · hybrid encryption, no compromises.</p>
+</div>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body>
+</html>

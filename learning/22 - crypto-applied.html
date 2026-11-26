@@ -1,0 +1,262 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Applied Real-World Cryptography</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="applied-real-world-cryptography">Applied Real-World Cryptography</h1>
+<p><em>A practical, fact-checked guide to the cryptography you actually use every day — TLS/HTTPS, certificates, encrypted messaging, password hashing, and the crypto in banking, Wi-Fi, and code signing.</em></p>
+<blockquote>
+<p>Scope note: this report covers deployed, standardized, audited cryptography as actually used in the real world — not academic algorithms in isolation. Algorithm details are kept accurate but intentionally brief; pointers to primary sources are in the Sources section.</p>
+</blockquote>
+<hr />
+<h2 id="1-https-tls-in-practice">1. HTTPS / TLS in Practice</h2>
+<h3 id="what-a-tls-handshake-actually-does">What a TLS handshake actually does</h3>
+<p>When your browser connects to <code>https://example.com</code>, it performs a TLS handshake before any HTTP bytes flow:</p>
+<ol>
+<li><strong>ClientHello</strong> — the browser sends supported TLS versions, cipher suites, and extensions (supported groups/elliptic curves, key-share for TLS 1.3, ALPN for HTTP/2 vs 1.3, SNI to tell the server which hostname you want).</li>
+<li><strong>ServerHello + certificate</strong> — the server picks a protocol version and cipher suite and sends its <strong>X.509 certificate chain</strong> (server cert + intermediates, usually 2–3 certificates).</li>
+<li><strong>Certificate validation</strong> — the client verifies the chain up to a trusted root CA in its trust store, checks expiry, hostname (SNI), and revocation status (OCSP stapling or CRLs; soft-fail in practice).</li>
+<li><strong>Key exchange</strong> — both sides establish shared secrets. In TLS 1.3 this is ephemeral Diffie–Hellman (usually X25519) with the client's certificate signature binding it to the handshake — providing <strong>forward secrecy</strong>: compromise of the server's long-term private key does not decrypt past sessions.</li>
+<li><strong>Session keys</strong> — a Key Schedule (HKDF in TLS 1.3) derives distinct keys for client→server and server→client encryption and integrity.</li>
+<li><strong>Encrypted application data</strong> — all subsequent records are protected by an AEAD cipher.</li>
+</ol>
+<p><strong>The hybrid trick:</strong> asymmetric (public-key) crypto is used only to authenticate and agree on shared secrets; symmetric crypto does the bulk encryption because it is orders of magnitude faster and gives confidentiality <em>and</em> integrity (AEAD) at once.</p>
+<h3 id="tls-12-vs-tls-13-major-differences">TLS 1.2 vs TLS 1.3 (major differences)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>TLS 1.2 (2008)</th>
+<th>TLS 1.3 (2018)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Handshake RTTs</td>
+<td>2 (full) / 1 (resumed)</td>
+<td>1 (full) / 0-RTT (resumed)</td>
+</tr>
+<tr>
+<td>Key exchange</td>
+<td>Many options incl. static RSA (no forward secrecy)</td>
+<td>Ephemeral DH only — all key exchanges have forward secrecy</td>
+</tr>
+<tr>
+<td>Cipher suites</td>
+<td>CBC + HMAC combos, RC4/3DES legacy</td>
+<td>AEAD only (AES-GCM, ChaCha20-Poly1305)</td>
+</tr>
+<tr>
+<td>Handshake visibility</td>
+<td>ServerHello and certs in cleartext</td>
+<td>EncryptedExtensions and later handshake encrypted</td>
+</tr>
+<tr>
+<td>Signature algorithms</td>
+<td>RSA/DSA/ECDSA</td>
+<td>Removes static RSA key transport, legacy hashes</td>
+</tr>
+</tbody>
+</table>
+<p>TLS 1.3 (RFC 9846) removed insecure legacy algorithms, made everything post-ServerHello encrypted, and simplified the state machine. TLS 1.2 remains widely deployed and is not "broken" when configured correctly (AEAD suites, ECDHE, strong certs), but TLS 1.3 is now dominant on major sites.</p>
+<h3 id="what-the-padlock-actually-guarantees-and-doesnt">What the padlock actually guarantees — and doesn't</h3>
+<p><strong>It guarantees:</strong> the connection is encrypted in transit and authenticated to <em>a domain name</em> (the one in the certificate). It does <strong>not</strong> guarantee the website is trustworthy, that the operator is honest, or that content is safe. A phishing site with a valid cert gets a padlock. Padlocks mean "encrypted + authenticated to this hostname," not "safe."</p>
+<hr />
+<h2 id="2-certificates-pki">2. Certificates &amp; PKI</h2>
+<h3 id="x509-structure">X.509 structure</h3>
+<p>X.509 v3 certificates are signed data structures containing (RFC 5280):</p>
+<ul>
+<li><strong>Subject/issuer</strong> fields, serial number, validity window (<code>notBefore</code>–<code>notAfter</code>)</li>
+<li><strong>Public key</strong> of the subject + signature algorithm</li>
+<li><strong>Extensions</strong>: Subject Alternative Names (SANs — the actual hostnames), Key Usage / Extended Key Usage (serverAuth), Basic Constraints (CA vs end-entity), Authority/Subject Key Identifiers, Certificate Policies, SCT list</li>
+</ul>
+<h3 id="certificate-authorities">Certificate authorities</h3>
+<p>Browsers/OSes ship a <strong>trust store</strong> of ~100–150 root CA certificates. Chains work leaf → intermediate → root. Major commercial CAs: <strong>DigiCert, Sectigo (formerly Comodo), GlobalSign</strong>; free CA: <strong>Let's Encrypt</strong> (now issues the majority of web certs). Enterprise/private PKI (Active Directory CS, step-ca, Vault PKI) exists for internal networks.</p>
+<h3 id="certificate-transparency-ct">Certificate Transparency (CT)</h3>
+<p>Since ~2018, browsers require publicly trusted TLS certs to carry <strong>Signed Certificate Timestamps</strong> from multiple independent CT logs (RFC 6962). All issued certs are logged publicly; monitors detect mis-issuance. Let's Encrypt operates its own logs (Sycamore, Willow) and submits everything it issues. CT is a major deterrent against rogue-CA issuance.</p>
+<h3 id="expiry-renewal">Expiry &amp; renewal</h3>
+<ul>
+<li>Let's Encrypt certs last <strong>90 days</strong> (6-day short-lived option exists). Industry rules (CA/B Forum Baseline Requirements) cap public TLS cert lifetime at 398 days since Sept 2020, and <strong>47 days starting March 15, 2029</strong>.</li>
+<li>Renewal is automated via <strong>ACME</strong> (the protocol Let's Encrypt pioneered): HTTP-01, DNS-01, or TLS-ALPN-01 challenges prove domain control. Tools: certbot, acme.sh, Caddy/Traefik/Nginx auto-renewal.</li>
+<li>Expired certs are the #1 self-inflicted TLS outage — automation is the norm, manual renewal the exception.</li>
+</ul>
+<hr />
+<h2 id="3-encrypted-tools-people-actually-use">3. Encrypted Tools People Actually Use</h2>
+<h3 id="veracrypt-full-disk-container-encryption">VeraCrypt — full-disk / container encryption</h3>
+<p>Free, open-source successor to TrueCrypt. Creates encrypted file containers or encrypts entire partitions/OS drives. On-the-fly encryption: data is decrypted transparently on read/write. Algorithms: AES, Serpent, Twofish (and cascades like AES-Twofish-Serpent), XTS mode, with PBKDF2/RIPEMD-160 or SHA-512 key derivation and a bootloader PIN/password system. The "hidden volume" feature allows plausible deniability. Cross-platform (Windows, macOS, Linux).</p>
+<h3 id="signal-e2e-messaging">Signal — E2E messaging</h3>
+<p>Signal uses the <strong>Signal Protocol</strong> (formerly Axolotl):</p>
+<ul>
+<li><strong>X3DH</strong> (now largely superseded by <strong>PQXDH</strong> for post-quantum hybrid key agreement) bootstraps a shared secret from pre-published key bundles.</li>
+<li>The <strong>Double Ratchet</strong> then derives fresh message keys per message using two ratchets: a symmetric KDF chain (forward secrecy within a session) and a Diffie–Hellman ratchet that ratchets keys every round-trip (post-compromise security — healing after key theft). See signal.org specifications.</li>
+<li>Messages are sealed with AES-256-CBC (or ChaCha20-Poly1305) plus HMAC; sender keys for group chats. Metadata minimization: sealed sender hides who sent what from Signal's servers.</li>
+<li>Signal also offers <strong>disappearing messages</strong>, registration lock, and usernames (phone-number-private mode).</li>
+</ul>
+<h3 id="age-and-gpg-file-encryption">age and GPG — file encryption</h3>
+<ul>
+<li><strong>age</strong> (Filippo Valsorda, 2019): deliberately tiny, modern file-encryption tool/format. X25519 (classic) or X25519+ML-KEM-768 (post-quantum hybrid) recipients, ChaCha20-Poly1305 AEAD, HKDF-SHA-256, 128-bit file key per file wrapped to each recipient — a <strong>hybrid RSA/ECC + symmetric</strong> construction like PGP but sane defaults, no config options, no keyrings. It can encrypt to SSH public keys for convenience.</li>
+<li><strong>GnuPG / OpenPGP</strong>: the old standard. RSA or Curve25519 keys, hybrid encryption (asymmetric wraps a session key; symmetric encrypts the payload), signatures, web-of-trust keyservers, armor format. Powerful but notoriously complex UX — and PGP's crypto is sound while its ecosystem (key management, UX) is the weak point.</li>
+</ul>
+<h3 id="password-managers">Password managers</h3>
+<ul>
+<li><strong>Bitwarden</strong> (open source, self-hostable), <strong>1Password</strong> (closed source, polished): master password → derives encryption key (PBKDF2/Argon2) → encrypts the vault locally → syncs ciphertext to cloud. The server never sees plaintext vaults. 1Password uses <strong>Secret Key</strong> (a second 128-bit key) for zero-knowledge even against their own servers.</li>
+<li>Browser extensions autofill over TLS; vault lock/unlock, emergency access, TOTP storage included.</li>
+</ul>
+<h3 id="proton-suite">Proton suite</h3>
+<p>Proton Mail/Calendar/Drive/Pass/VPN: Swiss-jurisdiction end-to-end encrypted email (OpenPGP under the hood, with automatic key exchange between Proton users), encrypted cloud storage, password manager, and VPN (WireGuard/OpenVPN-based). Notable because it offers E2E email to non-technical users at scale.</p>
+<hr />
+<h2 id="4-cryptography-in-your-daily-life">4. Cryptography in Your Daily Life</h2>
+<ul>
+<li><strong>Wi-Fi WPA2/WPA3</strong>: WPA2 uses <strong>AES-CCMP</strong> (AES-CTR + CBC-MAC) for data encryption plus <strong>4-way handshake</strong> (EAPOL) to derive per-session keys from PMK/PTK — replay-resistant. WPA3 replaces the PSK 4-way exchange with <strong>SAE (Dragonfly/Dragonfly-HS)</strong>, a password-authenticated key exchange (PAKE) resistant to offline dictionary attacks, plus forward secrecy (perfect forward secrecy via ephemeral DH) and protected management frames (802.11w). Enterprise modes: 802.1X/EAP.</li>
+<li><strong>Banking</strong>: card numbers protected by <strong>EMV chip</strong> crypto (per-transaction cryptograms, asymmetric card authentication), <strong>TLS</strong> for online banking, <strong>HSMs</strong> (Hardware Security Modules — tamper-resistant devices performing crypto ops, FIPS 140-2/140-3 validated) inside banks/payment processors, and <strong>3-D Secure</strong> for card-not-present auth.</li>
+<li><strong>Secure Boot</strong>: UEFI Secure Boot verifies signatures on bootloader/kernel/shim against keys in the firmware's db, establishing a chain of trust from firmware → OS. Enabled by default on most modern PCs; Microsoft's Secure Boot key enrollment (2026 plan) extends this to third-party/option-ROM code. Measured against bootkits/rootkits, not a silver bullet.</li>
+<li><strong>Code signing</strong>: Authenticode (Windows), Apple code signing/notarization, GPG-signed commits/packages — digital signatures prove publisher identity and integrity of binaries.</li>
+<li><strong>JWT tokens</strong>: JSON Web Tokens (RFC 7519) are <code>header.payload.signature</code> — typically RS256/ES256/EdDSA signatures (asymmetric) or HS256 (HMAC symmetric, for internal services). Used pervasively in OAuth2/OIDC APIs. Gotchas: <code>alg: none</code> confusion, algorithm confusion attacks, <code>kid</code> injection — hence strict validation libraries.</li>
+</ul>
+<hr />
+<h2 id="5-password-security">5. Password Security</h2>
+<h3 id="how-passwords-are-actually-stored">How passwords are actually stored</h3>
+<p>You <strong>never store plaintext or fast hashes</strong>. Instead:</p>
+<ol>
+<li><strong>Salt</strong>: a unique random value per user (stored next to the hash).</li>
+<li><strong>Slow KDF / password hash</strong>: bcrypt, scrypt, or <strong>Argon2id</strong> (winner of the Password Hashing Competition, 2015; RFC 9106). These are memory-hard/CPU-hard functions designed to make brute force expensive on both CPUs and GPUs/ASICs.</li>
+<li>Store the resulting hash; verify by recomputing.</li>
+</ol>
+<h3 id="why-not-plain-sha-256sha-512-for-passwords">Why NOT plain SHA-256/SHA-512 for passwords</h3>
+<p>SHA-256 is designed to be <em>fast</em> — a modern GPU can try billions of guesses/sec. A breached database of SHA-256(password) falls to rainbow tables and dictionary attacks in seconds. bcrypt (1999) adds a work factor (cost parameter, e.g. 12 → ~250ms per hash on typical hardware); scrypt adds memory-hardness; Argon2id adds both plus side-channel resistance. Even salted SHA-256 is only marginally better — still too fast.</p>
+<h3 id="mfa-modern-practice">MFA &amp; modern practice</h3>
+<ul>
+<li><strong>MFA</strong>: TOTP (RFC 6238, e.g. Google Authenticator), hardware security keys (FIDO2/WebAuthn — phishing-resistant public-key auth), push approvals. SMS codes are the weakest common factor.</li>
+<li><strong>Password managers</strong> (see §3) generate and store unique high-entropy passwords — the single biggest real-world defense.</li>
+<li>Guidance (NIST SP 800-63B): favor length over arbitrary complexity rules, check against breached-password lists, no forced periodic rotation unless compromise suspected.</li>
+</ul>
+<hr />
+<h2 id="6-filefolder-encryption-workflows-tool-comparison">6. File/Folder Encryption Workflows — Tool Comparison</h2>
+<p>Consider a typical <code>folder_lock.py</code>-style script: RSA (or ECC) encrypts a random AES key per file; AES (likely GCM or CBC+HMAC) encrypts the contents. This is the correct <strong>hybrid public-key encryption</strong> pattern — same as age/GPG.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Model</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Custom script (RSA+AES hybrid)</strong></td>
+<td>Per-file or per-folder keys, recipient public keys</td>
+<td>Learning, controlled environments; fine if built on vetted primitives (cryptography.io, PyNaCl) — dangerous if hand-rolled</td>
+</tr>
+<tr>
+<td><strong>age</strong></td>
+<td>Same hybrid idea, standardized format, modern primitives, post-quantum option</td>
+<td>Encrypting files/folders to specific people; backup archives; git-crypt-like workflows; CLI composability</td>
+</tr>
+<tr>
+<td><strong>GPG</strong></td>
+<td>Mature, keyservers/web-of-trust, signatures</td>
+<td>Long-established interop, signed+encrypted email attachments</td>
+</tr>
+<tr>
+<td><strong>VeraCrypt</strong></td>
+<td>Encrypted container/volume mounted as a drive</td>
+<td>Whole-disk or large-folder confidentiality where you want files to "just be there" while unlocked; plausible deniability</td>
+</tr>
+<tr>
+<td><strong>Cryptomator</strong></td>
+<td>Transparent per-file encryption inside cloud folders (Dropbox/Drive)</td>
+<td>Encrypting files <em>before</em> they hit untrusted cloud sync</td>
+</tr>
+<tr>
+<td><strong>7-Zip / zip AES-256</strong></td>
+<td>Password-protected archives</td>
+<td>Quick sharing of an archive to someone who has the password (weaker: single password, no per-recipient keys)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to use which:</strong> share with specific recipients → age or GPG; protect an entire folder transparently → VeraCrypt container; protect files syncing to cloud → Cryptomator; whole-disk → VeraCrypt system encryption or OS-native (FileVault, BitLocker — note BitLocker without TPM PIN is weaker). Custom code is acceptable for education/interop but should wrap vetted libraries, not implement primitives.</p>
+<hr />
+<h2 id="7-common-mistakes-real-world-crypto-fails">7. Common Mistakes (Real-World Crypto Fails)</h2>
+<ul>
+<li><strong>Rolling your own crypto</strong>: The #1 sin. Implementing AES, RSA, or modes from scratch almost always introduces subtle, exploitable flaws. Use vetted libraries (libsodium, OpenSSL, <code>cryptography</code>, BoringSSL) and standard constructions.</li>
+<li><strong>ECB mode penguin</strong>: ECB encrypts identical plaintext blocks to identical ciphertext blocks — patterns leak (the famous encrypted-Tux image). ECB is only acceptable for tiny fixed-size data (e.g., some single-block fields). Use CBC (withEncrypt-then-MAC) or, preferably, AEAD modes (GCM, ChaCha20-Poly1305).</li>
+<li><strong>IV/nonce reuse</strong>: Reusing a nonce in GCM/CTR catastrophically leaks the keystream and can recover the auth key. Generate fresh random nonces (or use XChaCha20-Poly1305 for random nonces).</li>
+<li><strong>Hardcoded keys/secrets in source</strong>: Keys in GitHub get scraped within minutes. Use env vars, secret managers, KMS/HSM.</li>
+<li><strong>Security through obscurity</strong>: "The algorithm is secret" fails the Kerckhoffs principle — secrecy must reside only in keys. Obscurity can be a <em>layer</em>, never the foundation.</li>
+<li><strong>MD5/SHA-1 anywhere security-relevant</strong>: Both broken for collision resistance (SHAttered 2017; chosen-prefix collisions since). Still fine for checksums, never for signatures/passwords.</li>
+<li><strong>RSA without OAEP / textbook RSA</strong>: Raw RSA (textbook) is malleable; always use OAEP padding (age does). RSA keys &lt;2048 bits are deprecated.</li>
+<li><strong>JWT <code>alg:none</code> / algorithm confusion</strong>: Accepting attacker-supplied <code>alg</code> lets attackers forge tokens — pin algorithms server-side.</li>
+<li><strong>Ignoring metadata</strong>: Encryption hides content, not traffic patterns, recipients, or timestamps — metadata protection requires different tools (mixnets, Tor).</li>
+<li><strong>Not verifying signatures/hosts</strong>: Disabling cert validation (<code>verify=False</code>, <code>--insecure</code>) silently removes authentication — the most common real-world TLS failure.</li>
+</ul>
+<hr />
+<h2 id="8-legal-ethical-landscape">8. Legal &amp; Ethical Landscape</h2>
+<h3 id="export-controls-the-crypto-wars">Export controls &amp; the "crypto wars"</h3>
+<ul>
+<li>Until <strong>1996</strong>, U.S. classified cryptography as <strong>munitions</strong> under ITAR — export of strong crypto was treated like arms exports. Limits included key-length caps (40-bit "export-grade" crypto in browsers, famously breakable).</li>
+<li><strong>1993: Clipper Chip</strong> — Clinton admin proposed key-escrow hardware (government-held copies of all keys). Rejected after cryptographer Matt Blaze found flaws and industry/academia pushed back; abandoned 1996.</li>
+<li><strong>1996–1999</strong>: Clinton admin gradually liberalized — moved crypto to Commerce Control List, removed key-length limits; by <strong>January 2000</strong>, "any encryption of any key length" could be exported to most countries (with carve-outs for state sponsors of terrorism). This effectively ended export controls for mass-market crypto.</li>
+<li>Today: Wassenaar Arrangement still covers some crypto exports, but mainstream TLS/strong crypto is freely distributable. PGP, Signal, VeraCrypt are legal everywhere; some countries (China, Russia, Iran) restrict <em>use</em> domestically or require backdoor cooperation.</li>
+</ul>
+<h3 id="backdoor-debates">Backdoor debates</h3>
+<ul>
+<li>"Going dark" vs "golden key" arguments recur (FBI–Apple 2016 dispute over encrypted iPhones; EU Chat Control proposals; UK Online Safety Act client-side scanning debates).</li>
+<li>The cryptographic consensus: <strong>you cannot build a backdoor only for good actors</strong>. Math doesn't know who's asking — a key escrow or exceptional-access mechanism weakens the whole system (Keys Under Doormats, Abelson et al. 2015). E2E encryption in Signal/WhatsApp/Proton is legal; <em>mandating</em> weakened crypto is the contested policy question.</li>
+<li><strong>Why strong crypto is legal</strong>: speech/code is protected expression (US First Amendment — <em>Junger v. Daley</em>, <em>Bernstein v. US</em>), harms are speculative, and strong crypto demonstrably prevents real harms (ransomware, fraud, surveillance abuse).</li>
+</ul>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>TLS 1.3 RFC 9846: https://www.rfc-editor.org/rfc/rfc9846.html</li>
+<li>IETF TLS 1.3 overview: https://www.ietf.org/blog/tls13/</li>
+<li>TLS 1.2 vs 1.3 (Microsoft VirtualClient docs): https://microsoft.github.io/VirtualClient/docs/workloads/openssl-tls12-vs-tls13/</li>
+<li>Let's Encrypt — CT logs: https://letsencrypt.org/docs/ct-logs/</li>
+<li>Let's Encrypt — certificate lifetimes: https://letsencrypt.org/docs/cert-lifetimes/</li>
+<li>Let's Encrypt — profiles: https://letsencrypt.org/docs/profiles/</li>
+<li>Let's Encrypt — FAQ: https://letsencrypt.org/docs/faq/</li>
+<li>Signal Double Ratchet spec: https://signal.org/docs/specifications/doubleratchet/</li>
+<li>Signal X3DH spec: https://signal.org/docs/specifications/x3dh/</li>
+<li>Signal protocol overview: https://cryptography.gundy.dev/applied/signal/</li>
+<li>age repository: https://github.com/filosottile/age</li>
+<li>age format spec (C2SP): https://github.com/C2SP/C2SP/blob/main/age.md</li>
+<li>age man page (recipient/identity formats): https://github.com/FiloSottile/age/blob/main/doc/age.1.ronn</li>
+<li>Clinton admin encryption export policy update (1999): https://clintonwhitehouse6.archives.gov/1999/09/1999-09-16-fact-sheet-on-administration-updates-encryption-export-policy.html</li>
+<li>New America — Crypto Wars of the 1990s: https://www.newamerica.org/insights/doomed-to-repeat-history-lessons-from-the-crypto-wars-of-the-1990s/</li>
+<li>Wired — Clinton relaxes crypto exports (1999): https://www.wired.com/1999/09/clinton-relaxes-crypto-exports/</li>
+<li>Brookings — brief history of US encryption policy: https://www.brookings.edu/articles/a-brief-history-of-u-s-encryption-policy/</li>
+<li>NIST SP 800-63B (digital identity guidelines): https://pages.nist.gov/800-63-3/sp800-63b.html</li>
+<li>RFC 9106 (Argon2): https://www.rfc-editor.org/rfc/rfc9106.html</li>
+<li>RFC 6238 (TOTP): https://www.rfc-editor.org/rfc/rfc6238.html</li>
+<li>RFC 7519 (JWT): https://www.rfc-editor.org/rfc/rfc7519.html</li>
+<li>RFC 5280 (X.509 PKI): https://www.rfc-editor.org/rfc/rfc5280.html</li>
+<li>RFC 6962 (Certificate Transparency): https://www.rfc-editor.org/rfc/rfc6962.html</li>
+<li>Keys Under Doormats paper (Abelson et al.): https://www.schneier.com/wp-content/uploads/2015/07/PDF-keys_under_doormats.pdf</li>
+<li>VeraCrypt: https://veracrypt.fr</li>
+<li>Proton: https://proton.me</li>
+<li>Bitwarden: https://bitwarden.com · 1Password: https://1password.com</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from applied_crypto.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 22 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

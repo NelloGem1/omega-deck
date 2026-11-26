@@ -1,0 +1,100 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>📋 EXPERIMENT MANIFEST — everything we built (Nov 25, 2026)</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="experiment-manifest-everything-we-built-nov-25-2026">📋 EXPERIMENT MANIFEST — everything we built (Nov 25, 2026)</h1>
+<p><em>Private backup. Owner: Nello Gem / Neilbert G. Carillo × Devin</em></p>
+<h2 id="published-public-not-secret">🎬 PUBLISHED (public — not secret)</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prime Discovery video (~8min)</td>
+<td>https://youtu.be/TOX3foVXTJA</td>
+</tr>
+<tr>
+<td>Story page</td>
+<td>https://nellogem1.github.io/prime-discovery/</td>
+</tr>
+<tr>
+<td>Verify page</td>
+<td>https://nellogem1.github.io/prime-discovery/verify.html</td>
+</tr>
+<tr>
+<td>GitHub repo (public, 2 files only)</td>
+<td>github.com/NelloGem1/prime-discovery</td>
+</tr>
+</tbody>
+</table>
+<h2 id="prime-math-lean-4-verified-theorems">🔬 PRIME MATH — Lean 4 verified theorems</h2>
+<p><code>lean_lab/LeanLab/</code> — 8 files, all kernel-verified, clean axioms (no sorryAx):
+- <code>PrimeDigits.lean</code> (39 lines) — <code>prime_gt_five_last_digit</code>: every prime &gt;5 ends in 1,3,7,9 ★ NELLO'S THEOREM
+- <code>PrimeSieve.lean</code> (90 lines) — <code>prime_mod30</code> (8 of 30 classes) + <code>infinite_primes_ours</code> (own Euclid proof)
+- <code>PrimeSieve210.lean</code> (64 lines) — <code>prime_coprime_210</code>: mod-210 sieve, φ(210)=48 classes ★ NEW
+- <code>Basic.lean</code> — Gauss sum formulas · <code>More.lean</code> — bounds + Mathlib infinite_primes
+- <code>GapClaims.lean</code> (110 lines) — GAP audit · <code>Gap.lean</code>, <code>Check.lean</code> — supporting</p>
+<p><strong>The infinite ladder</strong> (verified to 1M primes): mod 2→1, 6→2, 30→8, 210→48, 2310→480, 30030→5760, 510510→92160, 9699690→1658880, 223092870→36495360, 6469693230→1021870080, 200560490130→30656102400, 7420738134810→1103619686400 — density → 0, ladder never ends.</p>
+<h2 id="video-production-prime_video">🎥 VIDEO PRODUCTION (<code>prime_video/</code>)</h2>
+<ul>
+<li>Pipeline: PIL slides (<code>gen_fixes.py</code> in scripts/) + edge-tts (<code>en-US-ChristopherNeural</code>, 24kHz mp3) + ffmpeg concat</li>
+<li><code>audio/seg_01..14.txt</code> = narration scripts · <code>slides/s*.png</code> = 14 slides · <code>concat.txt</code> = segment list</li>
+<li>Upload: <code>scripts/upload_prime.py</code> (YouTube Data API v3, unlisted→thumbnail→public)</li>
+</ul>
+<h2 id="rsa-crypto-experiments">🔐 RSA / CRYPTO EXPERIMENTS</h2>
+<ul>
+<li><code>scripts/folder_lock.py</code> source + <code>rsa_demo.py</code> — hybrid RSA-2048+AES-256-GCM folder encryption (TESTED)</li>
+<li>Windows copies: <code>C:\Users\neilh\RSA-Tools\</code> (venv) + <code>C:\Users\neilh\Downloads\</code> guides</li>
+<li><code>C:\Users\neilh\RSA-Keys\folder_lock_priv.pem</code> — ⚠️ MASTER KEY, backed up NOWHERE else — copy to USB!</li>
+</ul>
+<h2 id="research-library-crypto_research-20000-words-web-verified">📚 RESEARCH LIBRARY (<code>crypto_research/</code> — ~20,000 words, web-verified)</h2>
+<ul>
+<li><code>theory_primitives.md</code> — AES/RSA/ECC/hashes/signatures/NIST tables</li>
+<li><code>applied_crypto.md</code> — TLS/PKI/VeraCrypt/Signal/passwords/daily crypto</li>
+<li><code>advanced_crypto.md</code> — cryptanalysis/ZK/FHE/PQC/blockchain/formal verification</li>
+<li><code>certificates_free.md</code> — Let's Encrypt/ACME/Certbot/acme.sh (cert lifetimes →45d by 2028)</li>
+<li><code>certificates_other.md</code> — paid CAs/AWS ACM/self-signed/private CA/wildcards</li>
+</ul>
+<h2 id="tools-installed-windows-11-all-winget-verified">🛡️ TOOLS INSTALLED (Windows 11, all winget-verified)</h2>
+<p>folder_lock.py · age 1.3.2 · Gpg4win 5.1.2 · VeraCrypt 1.26.31 · Cryptomator 1.19.7 · KeePassXC 2.8.0 · Bitwarden 2026.11 · Wireshark 4.6.10 · Nmap 7.80 · mkcert 1.4.4 · Hashcat 8.0.0 · Tor Browser · OpenSSL
+→ guides for each in <code>guides/</code> (was Downloads*_guide.md)</p>
+<h2 id="youtube-automation-youtube_tool_scripts">📺 YOUTUBE AUTOMATION (<code>youtube_tool_scripts/</code>)</h2>
+<p>Code only — auth.py, upload/client scripts, channel checkers. <strong>SECRETS EXCLUDED</strong>: token<em>.json, client_secret</em>.json, assets/ (43GB videos stay local).</p>
+<h2 id="sealed-vault-local-only">🗄️ SEALED VAULT (local only)</h2>
+<p><code>/home/neilh/secure/vault/</code> — folder_lock RSA-2048 keys + .enc copies of all experiments. Unlock: <code>folder_lock.py unlock &lt;dir&gt; --keydir /home/neilh/secure/vault</code></p>
+<h2 id="not-in-this-repo-by-design">⚠️ NOT IN THIS REPO (by design)</h2>
+<ul>
+<li>All .pem private keys, token.json, client_secret*.json — secrets stay local ONLY</li>
+<li>youtube-tool/assets (43GB rendered videos) — local only</li>
+<li>lean_lab/.lake deps — public Mathlib, regenerable via <code>lake exe cache get</code></li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from MANIFEST.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 36 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

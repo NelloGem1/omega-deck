@@ -1,0 +1,1203 @@
+<!doctype html><html><head><meta charset="utf-8"><title>ai-ml-map</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="ai-machine-learning-field-map-comprehensive-classification">AI &amp; MACHINE LEARNING FIELD MAP — Comprehensive Classification</h1>
+<p><em>A structured survey of every major field in artificial intelligence, machine learning, and adjacent disciplines. Compiled November 2026. Tool/framework versions verified against official release pages (see Sources).</em></p>
+<hr />
+<h2 id="0-how-to-read-this-map">0. HOW TO READ THIS MAP</h2>
+<h3 id="01-the-discipline-taxonomy">0.1 The discipline taxonomy</h3>
+<p>This document classifies AI into seven top-level families:</p>
+<ol>
+<li><strong>AI Foundations</strong> — the pre-ML and symbolic core: search, knowledge representation, automated reasoning, planning, expert systems.</li>
+<li><strong>Machine Learning</strong> — statistical learning paradigms: supervised, unsupervised, semi/self-supervised, reinforcement, transfer/meta.</li>
+<li><strong>Deep Learning</strong> — neural architectures: MLPs, CNNs, RNNs, Transformers, generative models, specialized architectures.</li>
+<li><strong>AI Applications</strong> — domain deployments: NLP, computer vision, speech, robotics, autonomous systems, recommender systems, predictive analytics.</li>
+<li><strong>Advanced AI</strong> — frontier research: agents, multi-agent systems, AGI, cognitive architectures, neuro-symbolic AI, alignment/safety, XAI.</li>
+<li><strong>Interdisciplinary</strong> — fields that feed into or borrow from AI: computational neuroscience, cognitive science, artificial life, computational biology, AI-for-science.</li>
+<li><strong>Cross-Cutting Infrastructure</strong> — data, training pipelines, MLOps, hardware.</li>
+</ol>
+<h3 id="02-existing-capabilities-vs-hypothetical-future-ai">0.2 Existing capabilities vs. hypothetical future AI</h3>
+<p><strong>CRITICAL DISTINCTION.</strong> Throughout this document, fields are tagged:</p>
+<ul>
+<li><strong>[EXISTING]</strong> — deployed, working technology today (2026). Every claim about "current capability" refers to this.</li>
+<li><strong>[FRONTIER]</strong> — active research with real but limited results; partial prototypes exist.</li>
+<li><strong>[HYPOTHETICAL]</strong> — speculative future AI (e.g., human-level AGI, full brain emulation). No working system exists; claims are conjecture.</li>
+</ul>
+<p>Almost everything in Parts 1–5 is <strong>[EXISTING]</strong> or <strong>[FRONTIER]</strong>. <strong>[HYPOTHETICAL]</strong> items are confined to AGI timelines, superintelligence, and speculative capabilities. The single most important mental model: <em>today's AI is a collection of narrow, benchmark-validated systems — not a general mind.</em></p>
+<h3 id="03-universal-skeleton-per-field">0.3 Universal skeleton per field</h3>
+<p>Each field below is described with the same anatomy where applicable:</p>
+<ul>
+<li><strong>Math foundations</strong> — the formal machinery (probability, optimization, logic, information theory).</li>
+<li><strong>Core algorithms</strong> — named methods.</li>
+<li><strong>Training methods</strong> — how models are fit (gradient descent variants, RL loops, evolutionary search).</li>
+<li><strong>Evaluation metrics</strong> — how performance is measured.</li>
+<li><strong>Architectures/tools</strong> — canonical models and software.</li>
+<li><strong>Limitations</strong> — known failure modes.</li>
+<li><strong>Risks</strong> — societal/technical risks specific to the field.</li>
+<li><strong>Open challenges</strong> — unsolved research problems.</li>
+</ul>
+<hr />
+<h2 id="part-1-ai-foundations">PART 1 — AI FOUNDATIONS</h2>
+<p>The classical, pre-deep-learning core of AI. These fields are <strong>not obsolete</strong>: they underpin modern systems (planning in robotics, search in game engines, logic in verification) and remain the strongest tools where interpretability and guarantees matter.</p>
+<h3 id="11-search">1.1 Search</h3>
+<ul>
+<li><strong>Math foundations</strong>: graph theory, state-space formalization, admissible heuristics, complexity classes (NP-completeness of many planning/search problems).</li>
+<li><strong>Core algorithms</strong>: breadth-first, depth-first, uniform-cost, A* and variants (IDA<em>, Anytime A</em>, Anytime Repairing A*), bidirectional search, beam search, Monte Carlo Tree Search (MCTS), minimax/alpha-beta pruning, constraint propagation (AC-3, forward checking).</li>
+<li><strong>Metaheuristics</strong>: genetic algorithms, simulated annealing, tabu search, particle swarm, ant colony, large neighborhood search.</li>
+<li><strong>Training methods</strong>: none — search is typically non-learning; modern hybrids learn heuristics (e.g., learned value functions inside MCTS, "neural A*").</li>
+<li><strong>Evaluation metrics</strong>: solution quality, nodes expanded, time/space complexity, optimality guarantees.</li>
+<li><strong>Tools</strong>: custom implementations dominate; libraries like NetworkX (graph algorithms), OR-Tools (CP-SAT constraint solver), Z3 (SMT for constraint solving).</li>
+<li><strong>Limitations</strong>: exponential state spaces; heuristic quality determines feasibility; no learning of reusable abstractions in classical versions.</li>
+<li><strong>Risks</strong>: low direct risk; used in logistics, games, chip design — errors are operational, not existential.</li>
+<li><strong>Open challenges</strong>: learned heuristics that generalize; hierarchical/lifelong search; combining symbolic search with neural policies.</li>
+</ul>
+<h3 id="12-knowledge-representation-kr">1.2 Knowledge Representation (KR)</h3>
+<ul>
+<li><strong>Math foundations</strong>: first-order logic, description logics (ALC, SROIQ), ontologies, frame problem, non-monotonic logic, Bayesian networks.</li>
+<li><strong>Core formalisms</strong>: propositional/first-order logic, semantic networks, frames/scripts (historical), description logics (OWL), knowledge graphs (RDF triples, property graphs), probabilistic graphical models.</li>
+<li><strong>Training methods</strong>: knowledge graph completion (TransE, RotatE, ComplEx embeddings), ontology learning, rule mining (AMIE, AnyBURL).</li>
+<li><strong>Evaluation metrics</strong>: link prediction MRR/Hits@k, ontology reasoning task accuracy, consistency checking.</li>
+<li><strong>Tools</strong>: Protégé (ontology editor), Apache Jena, RDFLib, Neo4j, NetworkX, PyKEEN, Owlready2, PyTorch-BigGraph.</li>
+<li><strong>Limitations</strong>: the knowledge acquisition bottleneck (encoding world knowledge by hand is expensive); brittle ontologies; embeddings capture statistical patterns, not true semantics.</li>
+<li><strong>Risks</strong>: incorrect encoded knowledge propagates silently; used in medical/legal reasoning where errors are costly.</li>
+<li><strong>Open challenges</strong>: automatic ontology construction at scale; combining KR with neural embeddings (see neuro-symbolic, §5.5); commonsense knowledge bases that cover the long tail.</li>
+</ul>
+<h3 id="13-automated-reasoning-theorem-proving">1.3 Automated Reasoning &amp; Theorem Proving</h3>
+<ul>
+<li><strong>Math foundations</strong>: formal logic, proof theory, satisfiability (SAT/SMT), higher-order logic, type theory.</li>
+<li><strong>Core systems</strong>: resolution theorem provers (E, Vampire, Prover9/Mace4), SMT solvers (Z3, CVC5, Boolector), SAT solvers (CaDiCaL, Kissat), interactive theorem provers (Lean 4, Coq, Isabelle/HOL, Agda), ATP systems for first-order logic (E prover, Vampire), higher-order provers (Satallax, Leo-III).</li>
+<li><strong>Training methods</strong>: premise selection via learned models (DeepMath, LeanDojo, GPT-f for proof search); reinforcement learning for proof-step selection; neural theorem proving (DeepSeek-Prover, Goedel-Prover).</li>
+<li><strong>Evaluation metrics</strong>: problems solved on TPTP/CASC benchmarks, miniF2F/PutnamBench for olympiad math, proof checking correctness.</li>
+<li><strong>Tools</strong>: Lean 4 + <code>lake</code> (installed on this machine — <code>/home/neilh/.elan/bin/lake</code>), Coq, Isabelle, Z3, CVC5, TPTP library, Mathlib (Lean math library), HuggingFace LeanDojo datasets.</li>
+<li><strong>Limitations</strong>: combinatorial explosion in search; limited commonsense reasoning; autoformalization (NL→formal) remains error-prone; current provers excel at competition math but not informal mathematical intuition.</li>
+<li><strong>Risks</strong>: verified code generation could be misused for verified malware; low near-term risk overall.</li>
+<li><strong>Open challenges</strong>: scaling to research-level mathematics; autoformalization quality; proof search efficiency; connecting provers to informal LLM reasoning.</li>
+</ul>
+<h3 id="14-planning">1.4 Planning</h3>
+<ul>
+<li><strong>Math foundations</strong>: STRIPS/PDDL action languages, situation calculus, Markov decision processes (MDPs), partially observable MDPs (POMDPs), hierarchical task networks (HTN).</li>
+<li><strong>Core algorithms</strong>: forward/backward state-space search, GraphPlan, Fast Downward (heuristic search), FF planner, HTN planners, hierarchical RL, Monte Carlo planning, POMDP solvers (POMCP, DESPOT).</li>
+<li><strong>Training methods</strong>: learning domain-independent heuristics (h^add, h^max, landmark heuristics); learning action models from data (AMODEUS, FAMA); neural planners.</li>
+<li><strong>Evaluation metrics</strong>: plan length/cost, planning time, success rate on IPC (International Planning Competition) benchmarks, IPC domains (Blocks World, Logistics, etc.).</li>
+<li><strong>Tools</strong>: Fast Downward, FF, VAL plan validator, PDDL standard, PyBullet/Isaac Sim for embodied testing, ROS 2 plan-execution stacks.</li>
+<li><strong>Limitations</strong>: open-world assumptions break classical planners; long-horizon real-world tasks have enormous state spaces; replanning latency in dynamic environments.</li>
+<li><strong>Risks</strong>: autonomous systems making irreversible decisions (medical, military); planning errors compound over long horizons.</li>
+<li><strong>Open challenges</strong>: open-world planning under uncertainty; combining planning with learned policies (LLM+planner hybrids like SayCan, PaLM-E style architectures — now largely superseded by end-to-end agents); lifelong planning.</li>
+</ul>
+<h3 id="15-expert-systems-rule-engines">1.5 Expert Systems &amp; Rule Engines</h3>
+<ul>
+<li><strong>Math foundations</strong>: production rules, forward/backward chaining, certainty factors, fuzzy logic, decision tables.</li>
+<li><strong>Core systems</strong>: MYCIN-style inference engines, CLIPS, Drools, Rete algorithm, business rules engines (IBM ODM, Red Hat Decision Manager), expert-system shells.</li>
+<li><strong>Training methods</strong>: rule induction (FOIL, RIPPER), decision tree learning (C4.5), knowledge elicitation from experts.</li>
+<li><strong>Evaluation metrics</strong>: diagnostic accuracy, rule firing consistency, expert agreement (Cohen's kappa).</li>
+<li><strong>Tools</strong>: CLIPS, Drools, OpenRules, custom DSLs; modern descendants are "rules as code" systems and guardrailed LLM agents.</li>
+<li><strong>Limitations</strong>: knowledge acquisition bottleneck (the reason expert systems "failed" commercially in the 1980s–90s); brittleness outside encoded domains; maintenance nightmare as rules interact.</li>
+<li><strong>Risks</strong>: opaque rule interactions in critical systems; legacy systems still embedded in insurance/medical/industrial control.</li>
+<li><strong>Open challenges</strong>: hybrid rule+ML systems; verified rule systems; explainability (rules are inherently more interpretable than NNs — a strength).</li>
+<li><strong>Note</strong>: Expert systems were the first commercial AI boom and bust. Their lesson — <em>narrow, handcrafted knowledge doesn't scale</em> — is the founding motivation for machine learning.</li>
+</ul>
+<hr />
+<h2 id="part-2-machine-learning">PART 2 — MACHINE LEARNING</h2>
+<p>The statistical paradigm that replaced handcrafted knowledge with learned patterns. All of ML shares the same skeleton: data + loss function + optimization → model that generalizes.</p>
+<h3 id="21-supervised-learning">2.1 Supervised Learning</h3>
+<ul>
+<li><strong>Math foundations</strong>: empirical risk minimization, statistical learning theory (VC dimension, Rademacher complexity), maximum likelihood estimation, Bayesian inference, regularization theory.</li>
+<li><strong>Core algorithms</strong>: linear/logistic regression, support vector machines (kernel methods), decision trees, random forests, gradient boosting (XGBoost, LightGBM, CatBoost), k-nearest neighbors, naive Bayes, Gaussian processes.</li>
+<li><strong>Training methods</strong>: closed-form solutions (OLS, ridge), convex optimization (SVM QP, logistic regression), gradient-based training (boosting), ensemble methods.</li>
+<li><strong>Evaluation metrics</strong>: accuracy, precision/recall/F1, ROC-AUC, PR-AUC, log-loss/Brier score, MAE/RMSE/MAPE for regression, calibration metrics.</li>
+<li><strong>Tools</strong>: scikit-learn 1.9.1 (current stable, Nov 2026), XGBoost, LightGBM, CatBoost, statsmodels, PyMC (Bayesian), scikit-survival (survival analysis).</li>
+<li><strong>Limitations</strong>: requires labeled data (expensive); tabular data performance plateaus vs. deep models on images/text; extrapolation beyond training distribution fails badly.</li>
+<li><strong>Risks</strong>: biased training data → biased predictions (hiring, lending, policing); label leakage; automation bias where humans over-trust outputs.</li>
+<li><strong>Open challenges</strong>: learning from fewer labels; distribution shift robustness; causal (not just correlational) prediction; uncertainty quantification.</li>
+</ul>
+<h3 id="22-unsupervised-learning">2.2 Unsupervised Learning</h3>
+<ul>
+<li><strong>Math foundations</strong>: density estimation, mixture models, spectral graph theory, information theory, manifold learning theory.</li>
+<li><strong>Core algorithms</strong>: k-means/k-medoids/k-means++, hierarchical clustering (agglomerative/DBSCAN/HDBSCAN), Gaussian mixture models (EM algorithm), PCA/ICA/NMF, t-SNE/UMAP (visualization), autoencoder-based clustering, isolation forests, one-class SVM.</li>
+<li><strong>Training methods</strong>: EM for latent variable models, SGD for deep clustering, spectral methods.</li>
+<li><strong>Evaluation metrics</strong>: silhouette score, Davies-Bouldin, Calinski-Harabasz (internal); adjusted Rand index, normalized mutual information (external, needs ground truth); downstream task performance.</li>
+<li><strong>Tools</strong>: scikit-learn (clustering module), HDBSCAN, UMAP-learn, FAISS (nearest neighbors at scale), PyOD (anomaly detection).</li>
+<li><strong>Limitations</strong>: cluster "truth" is ambiguous — same data yields different valid clusterings; curse of dimensionality; evaluation is hard without labels.</li>
+<li><strong>Risks</strong>: profiling and surveillance (clustering people by behavior); demographic inference from "anonymous" data.</li>
+<li><strong>Open challenges</strong>: semantically meaningful clusters; clustering under distribution shift; constraint-based clustering (must-link/cannot-link at scale).</li>
+</ul>
+<h3 id="23-semi-supervised-self-supervised-learning">2.3 Semi-Supervised &amp; Self-Supervised Learning</h3>
+<ul>
+<li><strong>Math foundations</strong>: manifold regularization, consistency regularization, information maximization, contrastive learning theory, mutual information maximization.</li>
+<li><strong>Core algorithms</strong>: self-training/pseudo-labeling, label propagation, co-training, FixMatch, Noisy Student, contrastive methods (SimCLR, MoCo, BYOL, DINO), masked autoencoders (MAE), masked language modeling (BERT-style), masked image modeling.</li>
+<li><strong>Training methods</strong>: same gradient descent; key is the pretext task design — predict held-out parts of input.</li>
+<li><strong>Evaluation metrics</strong>: linear probe accuracy, fine-tuning accuracy, k-NN accuracy on frozen representations; few-shot benchmarks.</li>
+<li><strong>Tools</strong>: PyTorch Lightning (self-supervised recipes), VISSL (Facebook/Meta), lightly (SSL library), HuggingFace transformers (pretrained checkpoints).</li>
+<li><strong>Limitations</strong>: SSL learns whatever is statistically predictable — may learn shortcuts not aligned with human concepts; requires large unlabeled corpora; domain transfer not guaranteed.</li>
+<li><strong>Risks</strong>: pretrained representations can encode societal biases present in web-scale data; supply-chain risk of poisoned pretrained weights.</li>
+<li><strong>Open challenges</strong>: designing pretext tasks aligned with downstream utility; SSL for structured/tabular data (still weak); theoretical understanding of why contrastive learning works.</li>
+</ul>
+<h3 id="24-reinforcement-learning-rl">2.4 Reinforcement Learning (RL)</h3>
+<ul>
+<li><strong>Math foundations</strong>: Markov decision processes (MDPs), Bellman equations, value functions, policy gradients, actor-critic theory, exploration-exploitation (UCB, optimism), partial observability (POMDPs), inverse RL, reward design theory.</li>
+<li><strong>Core algorithms</strong>: Q-learning, SARSA, DQN, Double DQN, Dueling DQN, Rainbow, policy gradient (REINFORCE), actor-critic (A2C/A3C, PPO, SAC, TD3), distributional RL (C51, QR-DQN, IQN), model-based RL (MuZero, Dreamer, MBPO), offline RL (CQL, IQL, Decision Transformer).</li>
+<li><strong>Training methods</strong>: online interaction with environment (sim or real); off-policy replay buffers; on-policy rollouts; RLHF/DPO for LLM alignment (treated in §5.6); evolutionary strategies for sparse rewards.</li>
+<li><strong>Evaluation metrics</strong>: episodic return, sample efficiency, asymptotic performance, human-normalized score (Atari), Elo for games, real-world success rate.</li>
+<li><strong>Tools</strong>: Gymnasium (successor to OpenAI Gym), Stable-Baselines3, RLlib (Ray RL), CleanRL (educational implementations), Tianshou, PettingZoo (multi-agent), MuJoCo physics, Isaac Lab, PyBullet.</li>
+<li><strong>Limitations</strong>: sample inefficiency (millions of env steps); reward hacking/specification gaming; credit assignment over long horizons; safety during exploration; sim-to-real gap.</li>
+<li><strong>Risks</strong>: reward hacking producing unintended behavior; deployment of unsafe exploration policies; RLHF can entrench model biases; military autonomous weapons applications.</li>
+<li><strong>Open challenges</strong>: sample-efficient RL; safe exploration; hierarchical RL; causal RL; RL for real-world robotics at scale; theoretical sample-complexity bounds.</li>
+</ul>
+<h3 id="25-transfer-learning-meta-learning-few-shot-learning">2.5 Transfer Learning, Meta-Learning &amp; Few-Shot Learning</h3>
+<ul>
+<li><strong>Math foundations</strong>: domain adaptation theory, PAC-Bayes, representation learning theory, Bayesian meta-learning, gradient-based meta-learning.</li>
+<li><strong>Core algorithms</strong>: fine-tuning pretrained models, adapters (Houlsby adapters, LoRA/QLoRA — parameter-efficient fine-tuning), prompt tuning, prefix tuning, MAML/Reptile (model-agnostic meta-learning), Prototypical Networks, Matching Networks, relation networks, in-context learning (emergent in transformers).</li>
+<li><strong>Training methods</strong>: pretrain → adapt pipeline; meta-training across task distributions; PEFT freezes most weights and trains small adapter matrices.</li>
+<li><strong>Evaluation metrics</strong>: few-shot accuracy (N-way K-shot), domain adaptation benchmarks, catastrophic forgetting measures (per-task accuracy after sequential fine-tuning).</li>
+<li><strong>Tools</strong>: HuggingFace PEFT library, transformers, sentence-transformers, SetFit, pytorch-meta (higher library), Learn2Learn.</li>
+<li><strong>Limitations</strong>: negative transfer when source/target mismatch; catastrophic forgetting in continual learning; in-context learning capabilities are poorly understood theoretically; fine-tuning can degrade safety alignments.</li>
+<li><strong>Risks</strong>: jailbreaks via fine-tuning on malicious data; model collapse when training on synthetic data recursively.</li>
+<li><strong>Open challenges</strong>: continual/lifelong learning without forgetting; principled theory of in-context learning; meta-learning that generalizes beyond narrow task distributions.</li>
+</ul>
+<hr />
+<h2 id="part-3-deep-learning">PART 3 — DEEP LEARNING</h2>
+<p>The dominant paradigm of modern AI. Neural networks as universal function approximators, trained by gradient descent on massive data.</p>
+<h3 id="31-neural-networks-foundations">3.1 Neural Networks — Foundations</h3>
+<ul>
+<li><strong>Math foundations</strong>: universal approximation theorem, gradient descent/stochastic gradient descent, backpropagation (chain rule), automatic differentiation, optimization theory (Adam, AdamW, LAMB, Lion optimizers), loss landscape geometry, lottery ticket hypothesis, grokking.</li>
+<li><strong>Core architectures</strong>: multilayer perceptrons (MLPs), residual networks (ResNet), normalization layers (BatchNorm, LayerNorm, RMSNorm), activation functions (ReLU, GELU, SwiGLU).</li>
+<li><strong>Training methods</strong>: supervised (cross-entropy, MSE, contrastive losses), self-supervised (masked prediction), reinforcement learning from human feedback; distributed training (DDP, FSDP2, tensor/pipeline/expert parallelism); mixed precision (FP16/BF16/FP8); quantization (INT8/INT4/NVFP4).</li>
+<li><strong>Evaluation metrics</strong>: task metrics + training dynamics (loss curves, gradient norms, effective rank, representation similarity).</li>
+<li><strong>Tools</strong>: PyTorch 2.15.0 (current stable, Oct 2026 — rewritten NCCL backend, FSDP2 improvements, FP8/NVFP4 Blackwell support, <code>torch.compile</code>), TensorFlow 2.21.0 (stable; 2.22.0-rc1 pending), JAX 0.12.1 (XLA-compiled, TPU-native; Flax/Equinox/Keras NN libraries), torch.compile, Triton kernels, DeepSpeed, Megatron-LM, torchtitan, Accelerate.</li>
+<li><strong>Limitations</strong>: data-hungry; energy-intensive; uninterpretable internals; brittle to distribution shift; optimization pathologies (vanishing/exploding gradients mitigated but not eliminated).</li>
+<li><strong>Risks</strong>: dual-use of large training infrastructure; model weights as attack surface; environmental cost of training runs.</li>
+<li><strong>Open challenges</strong>: scaling laws (do they hold?); understanding what transformers actually learn; grokking/generalization theory; biologically plausible alternatives to backprop.</li>
+</ul>
+<h3 id="32-convolutional-neural-networks-cnns">3.2 Convolutional Neural Networks (CNNs)</h3>
+<ul>
+<li><strong>Math foundations</strong>: convolution theorem, translational equivariance, signal processing, Fourier analysis of learned filters.</li>
+<li><strong>Core architectures</strong>: LeNet → AlexNet → VGG → GoogLeNet/Inception → ResNet → DenseNet → EfficientNet → ConvNeXt → ViT (transformers displaced pure CNNs for many tasks, but CNNs remain strong for efficiency and dense prediction).</li>
+<li><strong>Training methods</strong>: same as general NNs; data augmentation critical (crop, flip, color jitter, RandAugment, MixUp, CutMix).</li>
+<li><strong>Evaluation metrics</strong>: ImageNet top-1/top-5 accuracy (historical benchmark now saturated), mAP for detection, mIoU for segmentation, FID for generation.</li>
+<li><strong>Tools</strong>: torchvision/torchvision.transforms, timm (PyTorch image models), Keras Applications, Detectron2 (Meta), MMDetection (OpenMMLab), segmentation_models.pytorch.</li>
+<li><strong>Limitations</strong>: translation equivariance ≠ true spatial reasoning; adversarial examples; texture bias over shape bias; compute cost at high resolution.</li>
+<li><strong>Risks</strong>: surveillance systems; deepfake/image manipulation; biased face recognition.</li>
+<li><strong>Open challenges</strong>: resolution/compute scaling; combining CNN inductive biases with transformer expressiveness; efficiency for edge deployment.</li>
+</ul>
+<h3 id="33-recurrent-sequence-models-rnnslstmsgrus">3.3 Recurrent &amp; Sequence Models (RNNs/LSTMs/GRUs)</h3>
+<ul>
+<li><strong>Math foundations</strong>: dynamical systems, state-space models, gated recurrent units, long-range dependency theory.</li>
+<li><strong>Core architectures</strong>: vanilla RNN, LSTM, GRU, bidirectional RNNs, encoder-decoder RNNs, attention-augmented RNNs.</li>
+<li><strong>Training methods</strong>: truncated BPTT, teacher forcing, scheduled sampling; largely displaced by transformers for language but still used in niche sequential domains (state estimation, certain robotics controllers, streaming edge tasks).</li>
+<li><strong>Evaluation metrics</strong>: perplexity (language), BLEU/ROUGE (translation/summarization), task-specific accuracy.</li>
+<li><strong>Tools</strong>: PyTorch nn.RNN/LSTM/GRU modules, Keras recurrent layers.</li>
+<li><strong>Limitations</strong>: sequential computation prevents parallelization → slow training; vanishing gradients over long sequences (LSTMs mitigate but don't solve); transformers dominate where parallelizable data exists.</li>
+<li><strong>Risks</strong>: legacy NLP systems still running RNNs; hallucination issues inherited by successors.</li>
+<li><strong>Open challenges</strong>: state-space model revival (Mamba, S4, RWKV) offering RNN-like efficiency with transformer-like quality — see §3.6.</li>
+</ul>
+<h3 id="34-transformers-large-language-models">3.4 Transformers &amp; Large Language Models</h3>
+<ul>
+<li><strong>Math foundations</strong>: self-attention (scaled dot-product), multi-head attention, positional encoding (sinusoidal, RoPE, ALiBi, YaRN), layer normalization, mixture-of-experts routing, KV caching, flash attention (IO-aware exact attention), information theory of next-token prediction.</li>
+<li><strong>Core architectures</strong>: encoder-only (BERT family), decoder-only (GPT/Llama/Qwen/DeepSeek families), encoder-decoder (T5, BART), multimodal (vision-language models: LLaVA, Qwen-VL, GPT-4o-class), mixture-of-experts (Mixtral, DeepSeek-V3/R1 lineage, Qwen-MoE).</li>
+<li><strong>Training methods</strong>: pretraining on trillions of tokens (next-token prediction, masked modeling for encoders), instruction tuning (SFT), RLHF/DPO/GRPO for alignment, continual pretraining, distillation (teacher→student), speculative decoding for inference.</li>
+<li><strong>Evaluation metrics</strong>: perplexity, benchmark suites (MMLU, HumanEval/MBPP for code, GSM8K/MATH for reasoning, GPQA for science, HLE for frontier difficulty), human preference evals (Chatbot Arena Elo), safety evals (jailbreak, harmfulness benchmarks).</li>
+<li><strong>Tools</strong>: HuggingFace transformers 5.24.1 (current stable, Nov 2026) + tokenizers + datasets + evaluate + PEFT + TRL; vLLM 0.34.0 (high-throughput serving; Model Runner V2 only, extensible KV cache default); SGLang, TensorRT-LLM, llama.cpp, Ollama, LMDeploy, ExLlamaV3; training stacks: DeepSpeed, Megatron-LM, torchtitan, NeMo, verl (RL), OpenRLHF.</li>
+<li><strong>Limitations</strong>: hallucination (confident fabrication); context window limits (long-context retrieval still degrades); reasoning is shallow pattern-completion not verified deduction; knowledge cutoff; energy cost; emergent capabilities appear unpredictably with scale.</li>
+<li><strong>Risks</strong>: misinformation at scale; automated cyber offense; persuasion/manipulation; loss-of-control scenarios if capabilities accelerate; economic displacement; concentration of power in frontier labs; model collapse from synthetic data.</li>
+<li><strong>Open challenges</strong>: reliable reasoning (verification, self-consistency, search-augmented inference); long-horizon agentic tasks; continual learning without catastrophic forgetting; mechanistic interpretability (see §5.7); scaling efficiency; multimodal grounding beyond text.</li>
+</ul>
+<h3 id="35-generative-models">3.5 Generative Models</h3>
+<ul>
+<li><strong>Math foundations</strong>: maximum likelihood, variational inference (ELBO), adversarial training (minimax game theory), score matching, diffusion (stochastic differential equations, DDPM/DDIM), normalizing flows (invertible transformations, change of variables), autoregressive modeling (chain rule factorization), energy-based models.</li>
+<li><strong>Core families</strong>:</li>
+<li><em>Autoregressive</em>: GPT-style LLMs, PixelCNN/PixelSNAIL (images), MusicGen/audio codecs.</li>
+<li><em>VAEs</em>: variational autoencoders, β-VAE, VQ-VAE/VQ-GAN (discrete latent codes).</li>
+<li><em>GANs</em>: DCGAN, StyleGAN family, BigGAN, CycleGAN — image synthesis/editing.</li>
+<li><em>Diffusion</em>: DDPM, DDIM, latent diffusion (Stable Diffusion), flow matching, rectified flow — images, video, audio, 3D, molecules.</li>
+<li><em>Normalizing flows</em>: RealNVP, Glow, continuous normalizing flows — density estimation, sampling.</li>
+<li><strong>Training methods</strong>: MLE for autoregressive; ELBO optimization (reparameterization trick) for VAEs; adversarial minimax for GANs; denoising score matching for diffusion.</li>
+<li><strong>Evaluation metrics</strong>: FID/KID/IS (image quality/diversity), perplexity (text), CLIP score (text-image alignment), human preference (Elo), distributional distances for scientific generation.</li>
+<li><strong>Tools</strong>: diffusers (HuggingFace), PyTorch, JAX/Flax, Stable Diffusion ecosystem, ComfyUI, k-diffusion, kornia, OpenAI/other APIs.</li>
+<li><strong>Limitations</strong>: mode collapse (GANs); blurry VAE outputs; slow iterative sampling (diffusion, mitigated by distillation/consistency models); controllability remains imperfect; generated content can be statistically plausible but factually wrong.</li>
+<li><strong>Risks</strong>: deepfakes and disinformation; IP/copyright issues in training data; dual-use (molecular design, cyber exploits); non-consensual imagery.</li>
+<li><strong>Open challenges</strong>: fast few-step generation; controllable generation; evaluation of factual/physical plausibility; 3D/world-model generation; video generation coherence over time.</li>
+</ul>
+<h3 id="36-specialized-architectures-beyond-the-transformer">3.6 Specialized Architectures (beyond the transformer)</h3>
+<ul>
+<li><strong>Graph Neural Networks (GNNs)</strong>: message passing, spectral GNNs, GraphSAGE, GAT, Graph Transformer. Math: spectral graph theory, Weisfeiler-Lehman expressiveness. Applications: molecules, social networks, chip design, knowledge graphs. Tools: PyTorch Geometric, DGL, Spektral.</li>
+<li><strong>State-Space Models</strong>: S4, S5, Mamba/Mamba-2, RWKV, Hyena. Math: linear dynamical systems, HiPPO theory, selective scan. Goal: transformer-quality with linear-time sequence modeling. Tools: mamba-ssm, causal-conv1d.</li>
+<li><strong>Spiking Neural Networks (SNNs)</strong>: biologically plausible, event-driven, energy-efficient neuromorphic computing. Tools: snnTorch, Norse, Lava (Intel Loihi), Brian2.</li>
+<li><strong>Neural Architecture Search (NAS)</strong>: automated design of architectures via RL, evolution, gradient-based search. Tools: NNI, AutoKeras, Optuna (general HPO), NAS-Bench.</li>
+<li><strong>Mixture of Experts (MoE)</strong>: sparse activation for parameter efficiency at scale. Routing, load balancing, expert parallelism. Now standard in frontier LLMs.</li>
+<li><strong>World Models</strong>: learned simulators predicting environment dynamics (Dreamer, GAIA-1-style video world models, Genie). Frontier research toward agents that plan in imagination.</li>
+<li><strong>Capsule Networks, HDC/VSA</strong>: alternative paradigms — largely academic, limited practical adoption.</li>
+</ul>
+<hr />
+<h2 id="part-4-ai-applications">PART 4 — AI APPLICATIONS</h2>
+<p>Applied fields that compose the architectures above into working systems. Status markers: most are <strong>[EXISTING]</strong> and commercially deployed.</p>
+<h3 id="41-natural-language-processing-nlp">4.1 Natural Language Processing (NLP)</h3>
+<ul>
+<li><strong>Math foundations</strong>: information theory, statistical language modeling, Bayesian NLP, formal semantics.</li>
+<li><strong>Subfields &amp; methods</strong>: tokenization (BPE, SentencePiece, tiktoken); morphological analysis; parsing (dependency, constituency); named entity recognition; coreference resolution; machine translation; summarization; question answering; information extraction; sentiment analysis; dialogue systems; text classification.</li>
+<li><strong>Current architecture paradigm</strong>: transformer LLMs fine-tuned per task or used zero/few-shot; encoder models for classification/embedding; seq2seq for generation.</li>
+<li><strong>Evaluation metrics</strong>: BLEU, ROUGE, METEOR, BERTScore, COMET (translation); F1 for NER/IE; human eval + LLM-as-judge for open-ended generation.</li>
+<li><strong>Tools</strong>: HuggingFace transformers 5.24.1, spaCy, NLTK, Stanza, LangChain/LangGraph (agent frameworks), LlamaIndex (RAG), vLLM 0.34.0, vector DBs (Chroma, FAISS, Qdrant, pgvector, Milvus).</li>
+<li><strong>Capabilities today</strong>: fluent multilingual generation, strong code generation, summarization, extraction, translation rivaling professionals on benchmarks. <strong>Limits</strong>: factual hallucination, arithmetic/reasoning errors, inability to verify own claims, bias.</li>
+<li><strong>Risks</strong>: misinformation, spam/fraud at scale, manipulation, copyright disputes, job displacement in writing/translation.</li>
+<li><strong>Open challenges</strong>: grounded factuality; reliable reasoning chains; efficient long-document understanding; low-resource languages.</li>
+</ul>
+<h3 id="42-computer-vision-cv">4.2 Computer Vision (CV)</h3>
+<ul>
+<li><strong>Math foundations</strong>: projective geometry, Fourier/wavelet analysis, variational methods, Markov random fields, 3D reconstruction geometry.</li>
+<li><strong>Subfields &amp; methods</strong>: image classification; object detection (YOLO family, DETR, RCNN lineage); instance/semantic/panoptic segmentation (SAM, Mask2Former, U-Net lineage); pose estimation (OpenPose, MediaPipe, ViTPose); optical flow; depth estimation (MiDaS, ZoeDepth); image restoration; 3D vision (NeRF, 3D Gaussian Splatting); video understanding; OCR/document AI; face recognition/analysis; anomaly detection in images.</li>
+<li><strong>Training methods</strong>: supervised on labeled datasets (ImageNet, COCO, OpenImages, SA-1B); self-supervised (MAE, DINO, CLIP-style contrastive image-text); RL for detection refinement (limited).</li>
+<li><strong>Evaluation metrics</strong>: top-1 accuracy, mAP@IoU, mIoU, PCK (pose), PSNR/SSIM (restoration), FVD (video), LPIPS (perceptual).</li>
+<li><strong>Tools</strong>: PyTorch 2.15 + torchvision, timm, OpenCV, MMDetection/Ultralytics YOLO, Detectron2, Segment Anything (Meta SAM), MediaPipe, Kornia, depth Anything.</li>
+<li><strong>Capabilities today</strong>: object detection/segmentation near-human on standard benchmarks; zero-shot classification via CLIP lineage; foundation models for images (SAM for segmentation). <strong>Limits</strong>: robustness to distribution shift, adversarial perturbations, counting, fine-grained reasoning, 3D understanding.</li>
+<li><strong>Risks</strong>: surveillance, biometric privacy, deepfakes, biased recognition across demographics, autonomous weapons targeting.</li>
+<li><strong>Open challenges</strong>: out-of-distribution robustness; true 3D scene understanding; neuro-symbolic vision (detect <em>and</em> reason); video temporal reasoning.</li>
+</ul>
+<h3 id="43-speech-audio">4.3 Speech &amp; Audio</h3>
+<ul>
+<li><strong>Math foundations</strong>: signal processing (Fourier, wavelets, spectrograms), hidden Markov models (historical), information theory, psychoacoustics.</li>
+<li><strong>Subfields &amp; methods</strong>: automatic speech recognition (ASR); text-to-speech (TTS); speaker diarization/verification; speech emotion recognition; audio classification; music generation; source separation; speech translation.</li>
+<li><strong>Current paradigm</strong>: end-to-end transformer/conformer ASR (Whisper lineage, wav2vec 2.0, HuBERT); neural codecs + LLMs for TTS (VALL-E lineage); diffusion/flow-matching for audio generation.</li>
+<li><strong>Training methods</strong>: supervised on paired audio-text (massive), self-supervised on unlabeled audio, RLHF for naturalness.</li>
+<li><strong>Evaluation metrics</strong>: WER (word error rate), CER, MOS (mean opinion score for naturalness), speaker similarity, FAD for audio generation.</li>
+<li><strong>Tools</strong>: Whisper (OpenAI), SpeechBrain, ESPnet, NeMo, torchaudio, librosa, Coqui TTS lineage, AudioLDM, MusicGen.</li>
+<li><strong>Capabilities today</strong>: near-human ASR on clean English; multilingual TTS cloning voices from seconds of audio; real-time translation. <strong>Limits</strong>: noisy/accented speech, code-switching, prosody/emotion in TTS, music coherence.</li>
+<li><strong>Risks</strong>: voice cloning fraud, deepfake audio scams, surveillance via always-on listening.</li>
+<li><strong>Open challenges</strong>: robust ASR in noise; emotion-aware synthesis; efficient on-device speech; low-resource languages.</li>
+</ul>
+<h3 id="44-robotics">4.4 Robotics</h3>
+<ul>
+<li><strong>Math foundations</strong>: kinematics/dynamics, control theory (PID, MPC, LQR), state estimation (Kalman filters, particle filters), motion planning (RRT, PRM, CHOMP, TrajOpt), POMDPs.</li>
+<li><strong>Subfields &amp; methods</strong>: manipulation (grasping, dexterous hands); locomotion (quadrupeds, humanoids, legged robots); navigation (SLAM, path planning); robot learning (imitation learning, RL, diffusion policies); VLA models (vision-language-action: RT-2, π0 lineage); human-robot interaction; multi-robot coordination.</li>
+<li><strong>Training methods</strong>: teleoperation data collection, imitation learning (behavior cloning, diffusion policy), RL in simulation (Isaac Lab, MuJoCo) with domain randomization for sim-to-real, RLHF for preference alignment.</li>
+<li><strong>Evaluation metrics</strong>: task success rate, trajectory error, sim-to-real transfer gap, safety incident rates, time-to-task.</li>
+<li><strong>Tools</strong>: ROS 2, NVIDIA Isaac Sim/Lab, MuJoCo, PyBullet, Drake, MoveIt, Open X-Embodiment dataset, LeRobot, HuggingFace LeRobot, Genesis physics engine.</li>
+<li><strong>Capabilities today</strong>: warehouse/logistics robots deployed at scale; humanoid prototypes doing limited tasks; VLA models showing promising generalization in research settings. <strong>Limits</strong>: reliable manipulation in unstructured environments, long-horizon autonomy, safety certification, hardware cost/durability.</li>
+<li><strong>Risks</strong>: physical harm from malfunction; autonomous weapons; labor displacement; surveillance robots.</li>
+<li><strong>Open challenges</strong>: sample-efficient real-world learning; safe exploration near humans; whole-body control; general-purpose manipulation; certified safety guarantees.</li>
+</ul>
+<h3 id="45-autonomous-systems-vehicles-drones-industrial">4.5 Autonomous Systems (vehicles, drones, industrial)</h3>
+<ul>
+<li><strong>Math foundations</strong>: control theory, state estimation, occupancy grid mapping, sensor fusion, decision theory under uncertainty.</li>
+<li><strong>Methods</strong>: modular pipelines (perception → prediction → planning → control); end-to-end learned driving (Tesla-style, Wayve, Comma); occupancy networks; behavior prediction; scenario-based testing.</li>
+<li><strong>Training methods</strong>: imitation learning from human driving logs at massive scale; RL in simulation (CARLA, Waymax); real-world fleet data.</li>
+<li><strong>Evaluation metrics</strong>: disengagement/mile, collision rate, ODD (operational design domain) coverage, simulation scenario pass rates.</li>
+<li><strong>Tools</strong>: CARLA, Waymax, nuScenes/Waymo datasets, ROS/Autoware/Apollo stacks, NVIDIA DRIVE.</li>
+<li><strong>Capabilities today</strong>: Level 2–3 ADAS widely deployed; robotaxis operating in limited geofenced areas (Waymo, Zoox); delivery drones in restricted corridors. <strong>Limits</strong>: long-tail edge cases, sensor degradation (rain/snow/glare), handoff to human fallback, liability/regulatory frameworks.</li>
+<li><strong>Risks</strong>: fatal accidents (documented Tesla Autopilot incidents); weaponization of autonomous platforms; public trust collapse after high-profile failures.</li>
+<li><strong>Open challenges</strong>: corner-case coverage; verifiable safety; sensor-fusion robustness; regulatory certification for learned components.</li>
+</ul>
+<h3 id="46-recommender-systems">4.6 Recommender Systems</h3>
+<ul>
+<li><strong>Math foundations</strong>: collaborative filtering (matrix factorization), information retrieval (BM25, TF-IDF), ranking theory (learning-to-rank: LambdaMART, neural rankers), bandit theory, causal inference for recommendations.</li>
+<li><strong>Core algorithms</strong>: matrix factorization (SVD, ALS), item-item/user-user CF, two-tower models, deep interest networks (DIN/DIEN), graph recommenders (LightGCN), sequence models (SASRec, BERT4Rec), generative recommenders (GPT-style next-item prediction; vLLM-GR announced Nov 2026 for LLM-based recsys inference).</li>
+<li><strong>Training methods</strong>: supervised on implicit/explicit feedback; negative sampling; multi-task learning (CTR/CVR); bandit exploration (epsilon-greedy, Thompson sampling, LinUCB).</li>
+<li><strong>Evaluation metrics</strong>: HR@K/NDCG@K, AUC for CTR, MAP, catalog coverage, diversity/serendipity, business metrics (conversion, watch time).</li>
+<li><strong>Tools</strong>: RecBole, Surprise, implicit (library), LightGBM/XGBoost for rankers, TensorFlow Recommenders, Merlion/Tecton for feature pipelines.</li>
+<li><strong>Capabilities today</strong>: drives majority of consumer internet engagement (YouTube, TikTok, Amazon, Netflix); real-time personalization at billion-user scale. <strong>Limits</strong>: filter bubbles, popularity bias, feedback loops, cold-start problem, evaluation-reality gap (offline metrics ≠ user welfare).</li>
+<li><strong>Risks</strong>: addiction-by-design engagement optimization; radicalization pipelines; market manipulation; discrimination via proxy features.</li>
+<li><strong>Open challenges</strong>: causal recommendation (what would user do if we <em>didn't</em> show item X?); multi-stakeholder fairness; long-term welfare optimization vs. short-term engagement.</li>
+</ul>
+<h3 id="47-predictive-analytics-forecasting-anomaly-detection">4.7 Predictive Analytics, Forecasting &amp; Anomaly Detection</h3>
+<ul>
+<li><strong>Math foundations</strong>: time-series analysis (ARIMA, state-space/Kalman), survival analysis, extreme value theory, Bayesian forecasting, change-point detection, conformal prediction.</li>
+<li><strong>Core methods</strong>: classical (ARIMA, ETS, Prophet); ML (gradient boosting on lagged features, random forests); deep (LSTMs, Temporal Convolutional Networks, Transformers for time series — TimesFM, Chronos foundation models); anomaly detection (isolation forests, autoencoders, statistical process control, conformal anomaly detection).</li>
+<li><strong>Training methods</strong>: supervised on historical series; foundation time-series models pretrained across corpora (zero-shot forecasting).</li>
+<li><strong>Evaluation metrics</strong>: MASE, sMAPE, CRPS (probabilistic forecasts), precision/recall at fixed false-positive rate for anomaly detection.</li>
+<li><strong>Tools</strong>: statsmodels, Prophet, NeuralForecast, GluonTS, sktime, PyOD, river (online ML).</li>
+<li>**Capabilities today: **widely deployed in demand forecasting, fraud detection, predictive maintenance, epidemiology, energy grids. <strong>Limits</strong>: non-stationarity, regime changes, black-swan events; anomaly detection suffers high false-positive rates.</li>
+<li><strong>Risks</strong>: automated decisions on credit/insurance/health based on predictions; feedback loops (predicting arrests→policing→more arrests data); privacy in behavioral prediction.</li>
+<li><strong>Open challenges</strong>: uncertainty calibration under distribution shift; causal forecasting; foundation models for time series; anomaly detection with explanations.</li>
+</ul>
+<hr />
+<h2 id="part-5-advanced-ai">PART 5 — ADVANCED AI</h2>
+<p>Frontier research areas. Tags: most are <strong>[FRONTIER]</strong>; AGI/superintelligence claims are <strong>[HYPOTHETICAL]</strong>.</p>
+<h3 id="51-ai-agents-agentic-ai">5.1 AI Agents &amp; Agentic AI</h3>
+<ul>
+<li><strong>Definition</strong>: systems that perceive, reason, plan, use tools, and act in an environment toward goals — beyond single-turn prediction.</li>
+<li><strong>Math foundations</strong>: MDPs/POMDPs, planning under uncertainty, Bayesian experimental design, utility theory, information theory.</li>
+<li><strong>Core architectures</strong>: ReAct (reason+act interleaved), tool-use/function-calling loops, plan-and-execute agents, reflection/self-critique loops (Reflexion), tree-of-thought/graph-of-thought search over reasoning, code-as-action (program-aided agents), computer-use agents (screenshot→action).</li>
+<li><strong>Training methods</strong>: SFT on agent trajectories, RL for multi-step tasks (RL environments like WebArena, SWE-bench, OSWorld), distillation of successful trajectories, inference-time scaling (longer chains, best-of-n, self-consistency).</li>
+<li><strong>Evaluation metrics</strong>: task success rate on agentic benchmarks (SWE-bench Verified, WebArena, GAIA, OSWorld, τ-bench), steps-to-solution, cost per task, safety violations.</li>
+<li><strong>Tools</strong>: LangGraph, OpenAI Agents SDK, Anthropic Claude Agent SDK, Google ADK, CrewAI, AutoGen (Microsoft), smolagents (HuggingFace), browser/computer-use tools, MCP (Model Context Protocol).</li>
+<li><strong>Capabilities today [EXISTING/FRONTIER]</strong>: real deployed agents handle coding subtasks, customer support, data analysis; benchmark scores rising rapidly but reliability remains far below human for long-horizon tasks (agents fail on ~30–50% of complex multi-step tasks even on best systems).</li>
+<li><strong>Limitations</strong>: compounding errors over steps; poor long-horizon memory; prompt injection via tool outputs; cost/latency; cannot truly plan vs. pattern-match action sequences.</li>
+<li><strong>Risks</strong>: autonomous cyber operations; fraud at scale; loss of human oversight; agent swarms amplifying errors; misaligned goals persisting across tool calls.</li>
+<li><strong>Open challenges</strong>: reliable long-horizon planning; memory architectures; verifiable agent actions; sandboxing/containment; economic viability.</li>
+</ul>
+<h3 id="52-multi-agent-systems-mas">5.2 Multi-Agent Systems (MAS)</h3>
+<ul>
+<li><strong>Math foundations</strong>: game theory (Nash equilibria, mechanism design), distributed systems, consensus protocols, emergent behavior theory.</li>
+<li><strong>Core patterns</strong>: supervisor-worker hierarchies, debate (AI safety via adversarial argument), ensemble/mixture-of-agents, market-based coordination, swarm intelligence (particle swarm, ant colony — classical MAS), generative agent simulations (Stanford Smallville-style).</li>
+<li><strong>Training methods</strong>: independent RL per agent (self-play, MADDPG, QMIX for cooperative MARL), emergent communication learning, centralized training with decentralized execution (CTDE).</li>
+<li><strong>Evaluation metrics</strong>: task completion, communication efficiency, equilibrium quality, emergent behavior analysis.</li>
+<li><strong>Tools</strong>: Ray RLlib (multi-agent), PettingZoo, AutoGen/CrewAI for LLM-agent societies, Mesa (agent-based modeling).</li>
+<li><strong>Capabilities today</strong>: LLM-multi-agent frameworks for software teams, research pipelines, simulations; MARL research systems for games/robotics. <strong>Limits</strong>: coordination overhead, error propagation, no guarantee of coherent collective behavior.</li>
+<li><strong>Risks</strong>: collusion between agents; market manipulation by coordinated bots; uncontrolled emergent dynamics in deployed swarms.</li>
+<li><strong>Open challenges</strong>: scalable coordination; alignment of agent collectives; understanding emergent capabilities/discontents.</li>
+</ul>
+<h3 id="53-agi-research-hypothetical-core">5.3 AGI Research [HYPOTHETICAL core]</h3>
+<ul>
+<li><strong>What it claims</strong>: human-level (or beyond) general intelligence across all cognitive domains — learning, reasoning, creativity, social intelligence.</li>
+<li><strong>Status</strong>: <strong>NO working AGI exists</strong>. Definitions vary widely (Narrow AI → AGI → Superintelligence is a spectrum, not a binary). Current LLMs show impressive breadth but lack: persistent memory, true world models, reliable planning, embodiment, continual learning, verifiable reasoning.</li>
+<li><strong>Research programs</strong>: scaling laws (Chinchilla→current frontier), test-time compute scaling, world models, neurosymbolic integration, embodiment/robotics, memory architectures (MemGPT/Letta lineage, RAG++), continual learning, mechanistic interpretability as path to understanding.</li>
+<li><strong>Evaluation attempts</strong>: AGI benchmarks are contested; ARC-AGI, HLE, GDPval, agentic suites — all have been partially saturated, indicating benchmarks lag capability.</li>
+<li><strong>Timeline claims</strong>: expert estimates range from "already here in narrow senses" to "decades away" — genuinely uncertain. Surveys (AI Impacts, METR time-horizon studies) suggest task-length capability doubling ~every 7 months historically.</li>
+<li><strong>Risks</strong>: if AGI is achieved, the transition could be rapid (intelligence explosion hypothesis — recursive self-improvement); control/alignment problems become existential.</li>
+<li><strong>Open challenges</strong>: defining measurable AGI; bridging narrow competence to general competence; energy/compute constraints; alignment before capability.</li>
+</ul>
+<h3 id="54-cognitive-architectures">5.4 Cognitive Architectures</h3>
+<ul>
+<li><strong>Math foundations</strong>: cognitive psychology models, production systems, Bayesian models of cognition, ACT-R/Soar architecture theory.</li>
+<li><strong>Core systems</strong>: ACT-R (adaptive control of thought—rational), Soar, CLARION (dual-process), LIDA (global workspace), OpenCog (hybrid), modern descendants like CoALA (cognitive architectures for language agents), Generative Agents.</li>
+<li><strong>Distinction from ML</strong>: these are <em>theories of mind</em> — structured, symbolic-ish, psychologically motivated — vs. learned black boxes. Mostly academic/research; limited commercial deployment.</li>
+<li><strong>Tools</strong>: ACT-R tutorials, Soar suite, OpenCog (AGI research platform).</li>
+<li><strong>Limitations</strong>: hand-crafted components don't scale; hard to validate against real cognition; modern LLMs absorb much of the practical goal (flexible general agents).</li>
+<li><strong>Open challenges</strong>: unifying learning + reasoning + memory in one architecture; grounding symbols in perception/action; whether cognitive architectures or scaled NNs better approximate general intelligence.</li>
+</ul>
+<h3 id="55-neuro-symbolic-ai">5.5 Neuro-Symbolic AI</h3>
+<ul>
+<li><strong>Math foundations</strong>: differentiable logic, fuzzy logic, probabilistic logic, category theory (applied to cognition), neural theorem proving.</li>
+<li><strong>Core methods</strong>: Logic Tensor Networks, DeepProbLog, Neural Theorem Provers, ∂ILP (differentiable inductive logic programming), semantic loss functions, neural-symbolic concept learner (NSCL), LLM+solver hybrids (LLM translates NL→formal, solver verifies; AlphaGeometry lineage for olympiad geometry).</li>
+<li><strong>Goal</strong>: combine neural pattern recognition with symbolic reasoning guarantees — best of both: learn from data, reason reliably, explain decisions.</li>
+<li><strong>Tools</strong>: DeepProbLog, ∂ILP, PyReason, LTN, Lean/Coq integration with LLMs, AlphaGeometry/AlphaProof lineage (DeepMind — now producing research-level proofs).</li>
+<li><strong>Capabilities today [FRONTIER]</strong>: strong results on constrained reasoning tasks, math olympiad problems, visual question answering with compositional structure; not yet general-purpose.</li>
+<li><strong>Limitations</strong>: formalization bottleneck (everything must be encoded in logic); most real-world knowledge resists clean formalization; hybrid systems often slower than pure neural approaches.</li>
+<li><strong>Open challenges</strong>: automatic formalization at scale; learning when to trust neural vs. symbolic components; neurosymbolic foundation models.</li>
+</ul>
+<h3 id="56-ai-alignment-safety">5.6 AI Alignment &amp; Safety</h3>
+<ul>
+<li><strong>Math foundations</strong>: decision theory, mechanism design, game theory, information theory (mutual information for oversight), causal inference, robustness theory.</li>
+<li><strong>Core research areas</strong>:</li>
+<li><em>RLHF/DPO/constitutional AI</em>: training models to be helpful, harmless, honest via human/AI feedback.</li>
+<li><em>Interpretability</em>: mechanistic interpretability (circuits, features, sparse autoencoders — Anthropic lineage), probing, activation steering, sparse dictionary learning on model internals.</li>
+<li><em>Scalable oversight</em>: debate, recursive reward modeling, AI-assisted evaluation, weak-to-strong generalization.</li>
+<li><em>Robustness</em>: adversarial training, jailbreak/jailbreak-defense (constitutional classifiers), prompt injection defenses, data poisoning detection.</li>
+<li><em>Control</em>: tripwires, untrusted monitoring, AI control protocols (research agenda for containing potentially misaligned systems).</li>
+<li><em>Corrigibility</em>: shutdownability, interruptibility, off-switch games.</li>
+<li><strong>Training methods</strong>: preference optimization (DPO, IPO, KTO, GRPO for reasoning), adversarial training, red-teaming pipelines, safety fine-tuning.</li>
+<li><em>Evaluation</em>: HarmBench, StrongREJECT, jailbreak suites, dangerous-capability evaluations (bio, cyber, persuasion), situational awareness tests.</li>
+<li><strong>Tools</strong>: Anthropic Constitutional AI stack, OpenAI moderation/evals, HarmBench, garak (LLM vulnerability scanner), PyRIT (Microsoft red-teaming), inspect_ai (UK AISI eval framework), alignment research toolkits.</li>
+<li><strong>Status [FRONTIER]</strong>: alignment techniques work reasonably for current models but degrade under capability jumps; no known solution for superintelligent alignment; interpretability is making real progress (features/sparse autoencoders) but nowhere near complete understanding of frontier models.</li>
+<li><strong>Risks</strong>: the entire field exists because misaligned advanced AI is an existential-risk scenario; near-term risks (jailbreaks, misuse, bias) are already documented.</li>
+<li><strong>Open challenges</strong>: alignment that survives self-improvement; interpretability at scale; verifying alignment properties formally; governance of dual-use capabilities.</li>
+</ul>
+<h3 id="57-explainable-ai-xai">5.7 Explainable AI (XAI)</h3>
+<ul>
+<li><strong>Math foundations</strong>: Shapley values (cooperative game theory), LIME (local surrogate models), information theory (mutual information for explanations), causal inference.</li>
+<li><strong>Core methods</strong>: post-hoc explainers (SHAP, LIME, Integrated Gradients, DeepLIFT, Grad-CAM for vision); inherently interpretable models (decision trees, GAMs, sparse models, rule lists); concept-based explanations (TCAV, concept bottleneck models); mechanistic interpretability (features, circuits — overlaps §5.6); counterfactual explanations; example-based explanations (influence functions, TracIn).</li>
+<li><strong>Training methods</strong>: interpretability is mostly post-hoc; inherently interpretable models trained with sparsity/monotonicity constraints.</li>
+<li><strong>Evaluation metrics</strong>: faithfulness (does explanation predict model behavior?), stability, comprehensibility, user-study trust/calibration.</li>
+<li><strong>Tools</strong>: SHAP, LIME, Captum (PyTorch), Alibi (Netflix), InterpretML, AIX360 (IBM), Lucid (CNN visualization), TransformerLens (mechanistic interp for transformers).</li>
+<li><strong>Limitations</strong>: explanations can be unfaithful (plausible but wrong); post-hoc explanations don't guarantee the model "uses" the cited features; human comprehension of explanations is limited; no consensus on what "good" explanation means.</li>
+<li><strong>Risks</strong>: false sense of understanding; explanations used to justify biased decisions; "explainability washing" in regulated industries.</li>
+<li><strong>Open challenges</strong>: explanations for generative models; causal explanations; standardizing eval of explanations; interpretability for RL/agents.</li>
+</ul>
+<hr />
+<h2 id="part-6-interdisciplinary-fields">PART 6 — INTERDISCIPLINARY FIELDS</h2>
+<p>AI both draws from and contributes to these disciplines.</p>
+<h3 id="61-computational-neuroscience">6.1 Computational Neuroscience</h3>
+<ul>
+<li><strong>What it studies</strong>: how biological brains compute — neural coding, oscillations, attention, memory systems, development.</li>
+<li><strong>Math foundations</strong>: dynamical systems, information theory, Bayesian brain hypothesis, connectomics graph analysis, neural mass models.</li>
+<li><strong>Relevance to AI</strong>: spiking networks, predictive coding theories, attention mechanisms inspired by visual cortex, neuromorphic hardware (Intel Loihi, IBM TrueNorth), reservoir computing, forward-forward algorithm (Hinton's alternative to backprop).</li>
+<li><strong>Tools</strong>: Brian2, NEURON, NEST, PyNN; datasets: Allen Brain Observatory, MICrONS connectome.</li>
+<li><strong>Status</strong>: primarily a source of inspiration, not a direct engineering field. Brain emulation remains <strong>[HYPOTHETICAL]</strong> — whole-brain emulation is a speculative long-term goal requiring connectomics + simulation capability far beyond current reach.</li>
+</ul>
+<h3 id="62-cognitive-science">6.2 Cognitive Science</h3>
+<ul>
+<li><strong>What it studies</strong>: mind and cognition — perception, memory, language, reasoning, decision-making — empirically and computationally.</li>
+<li><strong>Math foundations</strong>: Bayesian models of cognition, rational analysis, ACT-R production systems, Bayesian nonparametrics.</li>
+<li><strong>Relevance to AI</strong>: evaluation paradigms for AI (do models show human-like reasoning biases? — e.g., LLMs reproduce human cognitive biases), developmental robotics, language acquisition theories, concept formation.</li>
+<li><strong>Key insight</strong>: cognitive science provides the <em>benchmarks</em> and <em>theories</em> that AI both tests and implements. LLMs have become tools in cognitive science experiments themselves.</li>
+<li><strong>Open challenges</strong>: whether human-like cognition is the right target for AI; bridging symbolic and connectionist accounts of mind.</li>
+</ul>
+<h3 id="63-artificial-life-alife">6.3 Artificial Life (ALife)</h3>
+<ul>
+<li><strong>What it studies</strong>: life-like processes in artificial media — self-replication, evolution, development, ecologies — bottom-up rather than designed.</li>
+<li><strong>Core approaches</strong>: cellular automata (Conway's Game of Life, Langton's ant), artificial chemistries, evolutionary computation (genetic programming, NEAT, HyperNEAT), swarm robotics, morphological computation, open-ended evolution research.</li>
+<li><strong>Relevance to AI</strong>: evolutionary algorithms as alternative to gradient descent; open-endedness as a path to AGI (some researchers argue current AI lacks the open-ended innovation of biological evolution); artificial ecosystems for testing agent societies.</li>
+<li><strong>Tools</strong>: NetLogo, Avida (digital organisms), NEAT-Python, DEAP.</li>
+<li><strong>Status [FRONTIER]</strong>: active research community; no deployed commercial systems, but ideas (evolutionary search, novelty search) influence AutoML.</li>
+<li><strong>Open challenges</strong>: achieving open-ended innovation; co-evolutionary dynamics; whether ALife insights scale to real intelligence.</li>
+</ul>
+<h3 id="64-computational-biology">6.4 Computational Biology</h3>
+<ul>
+<li><strong>What it studies</strong>: biological systems via computation — genomics, proteomics, structural biology, systems biology, epidemiology.</li>
+<li><strong>Math foundations</strong>: bioinformatics algorithms (sequence alignment, HMMs, phylogenetics), dynamical systems for metabolic networks, graph theory for interactomes, statistical genetics.</li>
+<li><strong>Relevance to AI</strong>: protein structure prediction (AlphaFold — arguably the most impactful AI-for-science result); single-cell analysis; drug discovery; gene regulatory network inference; AI-designed proteins/enzymes (RFdiffusion, ProteinMPNN); genomic foundation models (Enformer, Nucleotide Transformer).</li>
+<li><strong>Tools</strong>: AlphaFold DB, ESM (Meta protein models), PyRosetta, Biopython/Bioconductor, scanpy (single-cell), GROMACS (MD simulation).</li>
+<li><strong>Status</strong>: <strong>[EXISTING]</strong> and rapidly expanding — AlphaFold 3 predicts complexes; AI-designed binders entering clinical trials.</li>
+<li><strong>Open challenges</strong>: predicting dynamics not just structures; whole-cell models; clinical validation of AI-designed molecules.</li>
+</ul>
+<h3 id="65-ai-for-science-ai4science">6.5 AI for Science (AI4Science)</h3>
+<ul>
+<li><strong>What it studies</strong>: using AI to accelerate scientific discovery across physics, chemistry, materials, climate, mathematics.</li>
+<li><strong>Landmark results</strong>: AlphaFold (biology), AlphaGeometry/AlphaProof (math), GNoME (materials — 2.2M new crystals predicted), GraphCast/Pangu-Weather (weather forecasting beating NWP), DeepMind's materials/chemistry models, FunSearch/AlphaEvolve (evolving algorithms), AlphaDev (sorting algorithms for data centers).</li>
+<li><strong>Math foundations</strong>: neural operators (Fourier neural operators for PDEs), physics-informed neural networks (PINNs), equivariant networks (respecting physical symmetries), neural surrogates for simulation.</li>
+<li><strong>Training methods</strong>: physics-informed losses, simulation-generated data, multi-fidelity learning, foundation models for scientific data.</li>
+<li><strong>Evaluation metrics</strong>: physical accuracy vs. ground-truth simulation/experiment, extrapolation to unseen regimes, downstream experimental validation.</li>
+<li><strong>Tools</strong>: NVIDIA Modulus, DeepMind JAX ecosystem, PyTorch, torchdiffeq, DiffTaichi, FourCastNet lineage.</li>
+<li><strong>Status [FRONTIER→EXISTING]</strong>: AI4Science is producing real discoveries, not just predictions — mathematicians credit AlphaProof-derived ideas, materials companies use GNoME outputs experimentally.</li>
+<li><strong>Risks</strong>: AI-generated hypotheses that are plausible but wrong; over-reliance on simulation surrogates; reproducibility of AI-discovered results.</li>
+<li><strong>Open challenges</strong>: AI scientists that generate hypotheses autonomously; integrating AI into the full scientific method (not just prediction); epistemic trust in AI-generated science.</li>
+</ul>
+<hr />
+<h2 id="part-7-cross-cutting-infrastructure">PART 7 — CROSS-CUTTING INFRASTRUCTURE</h2>
+<p>Not a "field" per se, but essential context for everything above.</p>
+<h3 id="71-data-infrastructure">7.1 Data Infrastructure</h3>
+<ul>
+<li><strong>Datasets</strong>: ImageNet (historical), LAION/COYO (image-text), Common Crawl, The Pile/DCLM (text), Open X-Embodiment (robotics), HuggingFace datasets hub (millions of datasets), data marketplaces and synthetic data pipelines.</li>
+<li><strong>Tools</strong>: HuggingFace <code>datasets</code>, <code>evaluate</code>, <code>data-juicer</code> (data processing), streaming datasets, deduplication tools (deduplicate-text-datasets), Datasheets for Datasets documentation standard.</li>
+<li><strong>Key problems</strong>: data quality &gt; quantity; copyright/licensing; contamination (test data leaking into training); bias measurement.</li>
+</ul>
+<h3 id="72-training-infrastructure">7.2 Training Infrastructure</h3>
+<ul>
+<li><strong>Distributed training</strong>: PyTorch FSDP2, DeepSpeed ZeRO, Megatron-LM tensor/pipeline/expert parallelism, torchtitan (PyTorch-native pretraining), JAX pjit/sharding for TPUs.</li>
+<li><strong>Hardware</strong>: NVIDIA H100/B200/GB200/Blackwell generation (NVFP4 support in PyTorch 2.15), AMD MI300/MI355X (ROCm 10 wheels), Google TPUs (JAX native), AWS Trainium, Intel Gaudi, Apple Silicon (MPS backend with FP8 in PyTorch 2.15), neuromorphic chips (Loihi).</li>
+<li><strong>Cloud</strong>: AWS SageMaker, Google Vertex AI, Azure ML, CoreWeave/Lambda GPU clouds, HuggingFace Spaces/Endpoints for deployment.</li>
+</ul>
+<h3 id="73-mlops-deployment">7.3 MLOps &amp; Deployment</h3>
+<ul>
+<li><strong>Experiment tracking</strong>: Weights &amp; Biases, MLflow, TensorBoard, Neptune.</li>
+<li><strong>Model registries/versioning</strong>: MLflow Model Registry, DVC, HuggingFace Hub (dominant for open models).</li>
+<li><strong>Serving</strong>: vLLM 0.34.0 (LLM serving standard; OpenAI-compatible API, PagedAttention, continuous batching, speculative decoding), TensorRT-LLM, Triton Inference Server, TorchServe, ONNX Runtime, llama.cpp/Ollama for edge.</li>
+<li><strong>Orchestration</strong>: Ray 2.60.1 (distributed compute + RLlib + Serve), Kubeflow, Airflow/Prefect for pipelines, BentoML for model-as-service.</li>
+<li><strong>Edge/mobile</strong>: ExecuTorch (PyTorch mobile), ONNX Runtime Mobile, TensorFlow Lite (now part of LiteRT lineage), Core ML.</li>
+</ul>
+<h3 id="74-ai-framework-landscape-summary-versions-as-of-nov-2026">7.4 AI Framework Landscape Summary (versions as of Nov 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Version</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PyTorch</td>
+<td>2.15.0</td>
+<td>Dominant DL research+production framework</td>
+</tr>
+<tr>
+<td>TensorFlow</td>
+<td>2.21.0 (2.22 rc1 pending)</td>
+<td>Google's framework; strong mobile/edge legacy</td>
+</tr>
+<tr>
+<td>JAX</td>
+<td>0.12.1</td>
+<td>XLA-compiled functional ML; TPU-native; research favorite for AI4Science</td>
+</tr>
+<tr>
+<td>scikit-learn</td>
+<td>1.9.1</td>
+<td>Classical ML standard</td>
+</tr>
+<tr>
+<td>HuggingFace transformers</td>
+<td>5.24.1</td>
+<td>Standard model hub + loading library</td>
+</tr>
+<tr>
+<td>vLLM</td>
+<td>0.34.0</td>
+<td>Standard LLM inference/serving engine</td>
+</tr>
+<tr>
+<td>Ray</td>
+<td>2.60.1</td>
+<td>Distributed computing + RLlib</td>
+</tr>
+<tr>
+<td>Stable-Baselines3</td>
+<td>2.x</td>
+<td>RL algorithms standard</td>
+</tr>
+<tr>
+<td>Gymnasium</td>
+<td>1.x</td>
+<td>RL environment API standard</td>
+</tr>
+<tr>
+<td>PEFT/TRL</td>
+<td>current</td>
+<td>Fine-tuning/alignment tooling</td>
+</tr>
+<tr>
+<td>Lean 4</td>
+<td>current (elan)</td>
+<td>Theorem proving + verified code generation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-8-frontier-watchlist-emerging-areas">PART 8 — FRONTIER WATCHLIST &amp; EMERGING AREAS</h2>
+<p>Fields at the bleeding edge as of late 2026. All <strong>[FRONTIER]</strong> unless noted — real research, partial results, no settled capability.</p>
+<h3 id="81-inference-time-scaling-test-time-compute">8.1 Inference-Time Scaling &amp; Test-Time Compute</h3>
+<ul>
+<li><strong>What</strong>: Instead of bigger models, spend more compute at inference — longer chain-of-thought, best-of-n sampling, self-consistency, tree search over reasoning steps, verifier-guided decoding.</li>
+<li><strong>Math</strong>: compute-optimal inference allocation (extending Chinchilla-style scaling laws to test time); verifier models; process reward models (PRMs).</li>
+<li><strong>Status</strong>: demonstrably improves math/reasoning benchmarks; cost-latency tradeoff limits deployment; "overthinking" problem (models reason unnecessarily on easy problems).</li>
+<li><strong>Tools</strong>: vLLM speculative decoding, sglang, custom beam/search harnesses, o1/R1-style reasoning traces in open models (DeepSeek-R1 lineage, Qwen reasoning variants).</li>
+</ul>
+<h3 id="82-world-models-embodied-foundation-models">8.2 World Models &amp; Embodied Foundation Models</h3>
+<ul>
+<li><strong>What</strong>: learned simulators that predict environment dynamics — video-prediction world models (Genie lineage), action-conditioned models, neural physics engines.</li>
+<li><strong>Math</strong>: latent dynamics models, RSSM (recurrent state-space models for imagination), diffusion-based future prediction.</li>
+<li><strong>Status</strong>: research prototypes generate plausible interactive environments minutes long; far from reliable long-horizon simulation; key bet for robot learning (train in imagination) and agent planning.</li>
+<li><strong>Tools</strong>: Genie/GameNGen research code, NVIDIA Cosmos (world foundation model), DreamerV3 lineage.</li>
+</ul>
+<h3 id="83-ai-for-mathematics-formal-verification">8.3 AI for Mathematics &amp; Formal Verification</h3>
+<ul>
+<li><strong>What</strong>: AI systems proving theorems and verifying code — AlphaProof/AlphaGeometry lineage, DeepSeek-Prover, Goedel-Prover, LLM+Lean pipelines, autoformalization.</li>
+<li><strong>Status</strong>: silver-medal-level at IMO 2024/2025 (real result); autoformalizing research mathematics remains unreliable; verified code generation (Lean-verified kernels) emerging in industry.</li>
+<li><strong>Tools</strong>: Lean 4 + Mathlib, Coq, Isabelle, TPTP provers, LeanDojo datasets, harbor/verification harnesses.</li>
+</ul>
+<h3 id="84-energy-based-physical-ai">8.4 Energy-Based &amp; Physical AI</h3>
+<ul>
+<li><strong>What</strong>: physics-informed ML — neural operators for PDEs, PINNs, differentiable simulation (DiffTaichi/MuJoCo MJX), learned physics for robotics/materials.</li>
+<li><strong>Status</strong>: useful as surrogate accelerators (100–1000× faster than classical solvers in some regimes); accuracy degrades outside training distribution; hybrid physics+ML the pragmatic path.</li>
+</ul>
+<h3 id="85-neuromorphic-efficient-ai">8.5 Neuromorphic &amp; Efficient AI</h3>
+<ul>
+<li><strong>What</strong>: brain-inspired hardware/software — spiking neural networks on Loihi-class chips, analog in-memory computing, sub-threshold circuits, event cameras paired with SNNs.</li>
+<li><strong>Status</strong>: orders-of-magnitude energy efficiency claims on narrow tasks; ecosystem immature; transformer inference on conventional GPUs still wins on most benchmarks. Watch for edge-AI breakthroughs.</li>
+</ul>
+<h3 id="86-mechanistic-interpretability-the-microscope-on-models">8.6 Mechanistic Interpretability (the "microscope" on models)</h3>
+<ul>
+<li><strong>What</strong>: reverse-engineering neural networks — sparse autoencoders extracting interpretable features, circuit analysis, probing, activation engineering, model diffing across training.</li>
+<li><strong>Status</strong>: real discoveries (e.g., identifiable feature directions for concepts, induction heads, refusal circuits); nowhere near full explanation of frontier models; Anthropic/OpenAI/DeepMind all investing heavily.</li>
+<li><strong>Tools</strong>: TransformerLens, nnsight, SAELens (sparse autoencoder library), pyvene, Neuronpedia.</li>
+</ul>
+<h3 id="87-synthetic-data-model-collapse">8.7 Synthetic Data &amp; Model Collapse</h3>
+<ul>
+<li><strong>What</strong>: training on AI-generated data — synthetic instruction data, generated images for vision, self-play-generated environments.</li>
+<li><strong>Status</strong>: works when carefully filtered (distillation pipelines); uncontrolled recursive training → "model collapse" (distribution narrowing, tail loss); legal/ethical questions about provenance; detection (watermarking, C2PA) is an arms race.</li>
+</ul>
+<h3 id="88-embodied-ai-humanoid-robotics">8.8 Embodied AI &amp; Humanoid Robotics</h3>
+<ul>
+<li><strong>What</strong>: general-purpose robots with LLM/VLA brains — Figure, Tesla Optimus, Unitree, Agility; VLA models (RT-2, π0, GR00T lineage) mapping vision+language→motor commands.</li>
+<li><strong>Status</strong>: demos impressive (household tasks, parkour); reliable deployment years away; data scarcity (robot trajectories) is the bottleneck; simulation-to-real remains unsolved for dexterity.</li>
+<li><strong>Tools</strong>: LeRobot (HF), Isaac Lab, MuJoCo, Open X-Embodiment dataset, Genesis.</li>
+</ul>
+<hr />
+<h2 id="part-9-evaluation-benchmark-landscape">PART 9 — EVALUATION &amp; BENCHMARK LANDSCAPE</h2>
+<h3 id="91-benchmark-families">9.1 Benchmark families</h3>
+<ul>
+<li><strong>Language/reasoning</strong>: MMLU, GPQA, HLE (Humanity's Last Exam), ARC-AGI, GSM8K/MATH, LiveCodeBench, SWE-bench (Verified/Multimodal), τ-bench, GAIA, OSWorld, Chatbot Arena (Elo).</li>
+<li><strong>Vision</strong>: ImageNet (saturated), COCO, ADE20K, RefCOCO, video benchmarks (Ego4D), medical imaging suites.</li>
+<li><strong>Speech</strong>: LibriSpeech, WER leaderboards, TTS MOS evals.</li>
+<li><strong>Agents</strong>: WebArena, WorkArena, TheAgentCompany, MLAgentBench.</li>
+<li><strong>Safety</strong>: HarmBench, StrongREJECT, JailbreakBench, agentic safety evals (prompt injection, tool misuse), situational-awareness evals.</li>
+<li><strong>Science</strong>: FrontierMath, ProofNet, materials/property prediction suites.</li>
+</ul>
+<h3 id="92-evaluation-methodology-issues">9.2 Evaluation methodology issues</h3>
+<ul>
+<li><strong>Benchmark saturation</strong>: scores hit ceilings → benchmarks rotate faster than science; contamination (test data in training corpora) inflates scores.</li>
+<li><strong>Goodhart's law</strong>: "when a measure becomes a target…" — optimizing for benchmarks degrades real capability; reward hacking in RLHF/RL environments.</li>
+<li><strong>Human eval is expensive and noisy</strong>: LLM-as-judge helps scale but inherits judge biases; arena Elo is gameable by style.</li>
+<li><strong>Distribution shift</strong>: benchmarks measure in-distribution performance; deployment faces OOD inputs.</li>
+<li><strong>Best practice</strong>: holdout evals, red-team continuously, measure calibration + robustness + safety alongside capability, track cost-per-task not just accuracy.</li>
+</ul>
+<hr />
+<h2 id="part-10-field-relationship-map">PART 10 — FIELD RELATIONSHIP MAP</h2>
+<p>How the fields connect (who builds on whom):</p>
+<pre><code>AI Foundations (search, KR, planning, reasoning)
+        │ provides guarantees, formalisms, classical tools
+        ▼
+Machine Learning (supervised/unsupervised/RL/transfer)
+        │ provides the statistical learning paradigm
+        ▼
+Deep Learning (NNs, transformers, generative models)
+        │ provides the dominant architectures
+        ▼
+AI Applications (NLP, CV, speech, robotics, agents, recsys)
+        ▲
+        │ informs &amp; stress-tests
+        │
+Interdisciplinary (neuroscience, cog-sci, ALife, comp-bio, AI4Science)
+        ▲
+        │ safety/alignment/evals cut across ALL of the above
+        │
+Advanced AI (agents, MAS, AGI research, neuro-symbolic, alignment, XAI)
+        │ synthesizes &amp; extends everything; mostly frontier research
+        │
+Cross-Cutting: data infra, training infra, MLOps, hardware
+</code></pre>
+<p>Key dependency insights:
+- Transformers (§3.4) are the substrate for most modern NLP (§4.1), agents (§5.1), and multimodal systems.
+- RL (§2.4) powers agents, robotics, and LLM alignment (§5.6).
+- Search/planning (§1.1/§1.4) is regaining importance inside agents and neuro-symbolic systems — the "old AI" hybridizing with deep learning.
+- Interpretability/safety (§5.6/§5.7) is now a first-class field, not an afterthought.
+- AI4Science (§6.5) is where AI capabilities are most verifiable — physics/math don't lie.</p>
+<hr />
+<h2 id="part-11-glossary">PART 11 — GLOSSARY</h2>
+<ul>
+<li><strong>AGI</strong>: Artificial General Intelligence — human-level competence across domains <strong>[HYPOTHETICAL]</strong>.</li>
+<li><strong>ASI</strong>: Artificial Superintelligence — intelligence exceeding human across all domains <strong>[HYPOTHETICAL]</strong>.</li>
+<li><strong>LLM</strong>: Large Language Model — transformer trained on massive text corpora.</li>
+<li><strong>VLA</strong>: Vision-Language-Action model — robot policy taking images+text→actions.</li>
+<li><strong>RLHF</strong>: Reinforcement Learning from Human Feedback — preference-based alignment.</li>
+<li><strong>DPO</strong>: Direct Preference Optimization — RLHF without explicit reward model.</li>
+<li><strong>RAG</strong>: Retrieval-Augmented Generation — LLM + retrieved documents.</li>
+<li><strong>PEFT/LoRA</strong>: Parameter-Efficient Fine-Tuning / Low-Rank Adaptation.</li>
+<li><strong>MoE</strong>: Mixture of Experts — sparse conditional computation.</li>
+<li><strong>MCTS</strong>: Monte Carlo Tree Search — planning via random rollouts.</li>
+<li><strong>PDDL</strong>: Planning Domain Definition Language — standard for classical planning.</li>
+<li><strong>SNN</strong>: Spiking Neural Network — neuromorphic, event-driven.</li>
+<li><strong>PINN</strong>: Physics-Informed Neural Network.</li>
+<li><strong>OOD</strong>: Out-of-Distribution — inputs unlike training data.</li>
+<li><strong>SOTA</strong>: State of the Art.</li>
+<li><strong>TTFT/TPOT</strong>: Time-to-First-Token / Time-Per-Output-Token (LLM latency metrics).</li>
+<li><strong>KV cache</strong>: stored key/value attention states enabling efficient autoregressive decoding.</li>
+<li><strong>World model</strong>: learned simulator predicting environment dynamics.</li>
+<li><strong>Mechanistic interpretability</strong>: reverse-engineering model internals into human-understandable components.</li>
+</ul>
+<hr />
+<h2 id="part-12-existing-capabilities-vs-hypothetical-future-ai">PART 12 — EXISTING CAPABILITIES vs. HYPOTHETICAL FUTURE AI</h2>
+<h3 id="121-what-exists-today-2026-honest-assessment">12.1 What exists today (2026) — honest assessment</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Status</th>
+<th>Reality check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Human-level image classification</td>
+<td>✅ Existing</td>
+<td>Surpassed on benchmarks; still brittle OOD</td>
+</tr>
+<tr>
+<td>Human-level ASR (clean speech)</td>
+<td>✅ Existing</td>
+<td>WER &lt;5% on clean English; degrades in noise</td>
+</tr>
+<tr>
+<td>Fluent multilingual text generation</td>
+<td>✅ Existing</td>
+<td>LLMs write/persuade/translate at professional level</td>
+</tr>
+<tr>
+<td>Code generation</td>
+<td>✅ Existing (partial)</td>
+<td>SWE-bench ~70%+ on verified subset; still fails complex repos</td>
+</tr>
+<tr>
+<td>Protein structure prediction</td>
+<td>✅ Existing</td>
+<td>AlphaFold-class accuracy; transformative for biology</td>
+</tr>
+<tr>
+<td>Game-playing superhuman (Go/chess/StarCraft)</td>
+<td>✅ Existing</td>
+<td>Narrow superhuman in closed domains</td>
+</tr>
+<tr>
+<td>Real-time machine translation</td>
+<td>✅ Existing</td>
+<td>Near-human on major language pairs</td>
+</tr>
+<tr>
+<td>Autonomous driving</td>
+<td>⚠️ Partial</td>
+<td>Level 2–3 deployed; Level 5 not achieved</td>
+</tr>
+<tr>
+<td>Reliable long-horizon agents</td>
+<td>⚠️ Frontier</td>
+<td>~50-70% success on best benchmarks; unreliable</td>
+</tr>
+<tr>
+<td>Mathematical research assistance</td>
+<td>⚠️ Frontier</td>
+<td>Competition-level proofs; not yet research-level autonomous</td>
+</tr>
+<tr>
+<td>General human-level intelligence</td>
+<td>❌ Does not exist</td>
+<td>No system matches human flexibility across domains</td>
+</tr>
+<tr>
+<td>Consciousness/self-awareness in AI</td>
+<td>❌ Does not exist</td>
+<td>No evidence, no agreed definition, no test</td>
+</tr>
+<tr>
+<td>Recursive self-improving superintelligence</td>
+<td>❌ Hypothetical</td>
+<td>Speculative; no demonstrated pathway</td>
+</tr>
+<tr>
+<td>Whole-brain emulation</td>
+<td>❌ Hypothetical</td>
+<td>Requires technology far beyond current</td>
+</tr>
+</tbody>
+</table>
+<h3 id="122-the-capability-trajectory">12.2 The capability trajectory</h3>
+<ul>
+<li><strong>What is genuinely new (2023–2026)</strong>: LLMs crossing thresholds in reasoning (test-time compute, chain-of-thought), agentic tool use, multimodal integration, AI-for-science breakthroughs (AlphaProof, GNoME), rapid capability gains measured in months not years on some benchmarks.</li>
+<li><strong>What has NOT changed</strong>: systems remain narrow in deployment despite broad surface competence; reliability on long-horizon tasks is the key unsolved problem; no persistent memory/continual learning; no verified internal reasoning; alignment remains imperfect.</li>
+<li><strong>The "jagged frontier"</strong>: current AI is simultaneously superhuman (instant recall, pattern matching at scale) and subhuman (multi-step planning, physical manipulation, sustained coherence, knowing what it doesn't know). Progress is not uniform — some capabilities plateau while others jump.</li>
+</ul>
+<hr />
+<h2 id="part-13-learning-roadmap-field-prioritization">PART 13 — LEARNING ROADMAP &amp; FIELD PRIORITIZATION</h2>
+<h3 id="91-recommended-learning-path-for-building-intelligent-systems">9.1 Recommended learning path (for building intelligent systems)</h3>
+<p><strong>Phase 1 — Foundations (2–4 months)</strong>:
+- Python + NumPy + pandas + matplotlib
+- Linear algebra (essentials: vectors, matrices, SVD, eigenvalues)
+- Probability &amp; statistics (Bayes, distributions, hypothesis testing)
+- Calculus for ML (gradients, chain rule intuition)
+- <strong>Resources</strong>: 3Blue1Brown linear algebra/essence of calculus, StatQuest, "An Introduction to Statistical Learning" (free PDF), fast.ai</p>
+<p><strong>Phase 2 — Classical ML (2–3 months)</strong>:
+- scikit-learn workflows end-to-end
+- Regression/classification/clustering evaluation
+- Feature engineering, cross-validation, hyperparameter tuning (Optuna)
+- <strong>Practice</strong>: Kaggle tabular competitions (Titanic → house prices → more)</p>
+<p><strong>Phase 3 — Deep Learning (3–4 months)</strong>:
+- PyTorch fundamentals (tensors, autograd, nn.Module)
+- CNNs (build LeNet→ResNet from scratch; use timm pretrained)
+- Backprop intuition (implement a small net manually once)
+- <strong>Practice</strong>: train MNIST/CIFAR classifiers; fine-tune a pretrained model with PEFT</p>
+<p><strong>Phase 4 — NLP &amp; Transformers (3–4 months)</strong>:
+- Tokenization, embeddings, attention mechanism (implement scaled dot-product attention manually)
+- HuggingFace transformers: load, fine-tune, evaluate models
+- RAG pipelines (LangChain/LlamaIndex), vector DBs
+- Prompt engineering, function calling, agent basics (LangGraph)
+- <strong>Practice</strong>: build a RAG chatbot; fine-tune a small model (LoRA on a Qwen/Llama-class model)</p>
+<p><strong>Phase 5 — Specialization (choose direction)</strong>:
+- <em>LLM engineering/agents</em>: advanced fine-tuning (SFT/DPO), inference optimization (vLLM, quantization), agentic systems, evals
+- <em>Applied ML</em>: domain-specific (CV, speech, recsys, forecasting) — go deep on one
+- <em>AI research</em>: math (linear algebra, optimization, information theory), a specialization (interpretability, RL, neuro-symbolic), reproduce papers
+- <em>Robotics/autonomous</em>: ROS 2, control theory, RL environments, sim-to-real</p>
+<p><strong>Phase 6 — Frontier awareness (ongoing)</strong>:
+- Read papers (arXiv cs.LG/cs.CL), follow frontier lab releases, track benchmarks
+- Contribute to open-source ML projects
+- Understand safety/alignment literature if working on frontier systems</p>
+<h3 id="92-which-fields-matter-most-for-building-intelligent-systems">9.2 Which fields matter most for building intelligent systems</h3>
+<p><strong>Tier 1 — Essential for any AI practitioner</strong>:
+1. <strong>Deep Learning fundamentals</strong> (NNs, backprop, transformers) — the substrate of everything modern.
+2. <strong>NLP/LLM engineering</strong> — the most commercially and scientifically impactful current field.
+3. <strong>Python software engineering + data pipelines</strong> — the craft layer.
+4. <strong>Statistics/evaluation</strong> — knowing what "good" means; most ML failures are evaluation failures.</p>
+<p><strong>Tier 2 — High value depending on direction</strong>:
+5. <strong>Reinforcement Learning</strong> — for agents, robotics, alignment research.
+6. <strong>Classical ML</strong> (trees/boosting) — still dominant for tabular data; faster and more reliable than deep learning for structured problems.
+7. <strong>Computer Vision</strong> — foundation models (SAM, CLIP) are general-purpose tools.
+8. <strong>MLOps/deployment</strong> — the difference between a notebook and a product.</p>
+<p><strong>Tier 3 — Specialized/niche</strong>:
+9. Search/planning/expert systems — critical for robotics, games, formal methods; less relevant for pure LLM work.
+10. GNNs, SSMs, SNNs — active research areas; SSMs especially if tracking architecture innovation.
+11. Cognitive architectures, ALife — intellectually important, limited industry demand.
+12. Neuroscience/cog-sci — valuable for research and eval design, not for most engineering roles.</p>
+<p><strong>Tier 4 — Frontier/hypothetical</strong>:
+13. AGI research, superintelligence — speculative; pursue only if aligned with specific research programs (frontier labs, academic AGI groups).
+14. Whole-brain emulation, consciousness — speculative long-term research.</p>
+<h3 id="93-the-honest-meta-point">9.3 The honest meta-point</h3>
+<blockquote>
+<p>The map is a map, not the territory. Fields blur (transformers appear in NLP, CV, speech, agents, and AI4Science simultaneously). The most valuable skill is not knowing every field — it is knowing which field solves which class of problem, and having the mathematical depth to go deeper when needed. Current AI is a toolkit of narrow specialists; building "intelligent systems" today means composing these specialists — LLMs for language, CNNs/ViTs for vision, RL for sequential decision-making, search/planning for guarantees, and evaluation infrastructure to keep it all honest.</p>
+</blockquote>
+<hr />
+<h2 id="part-14-frontier-synthesis-2025-2026-state-of-the-art">PART 14 — FRONTIER SYNTHESIS: 2025–2026 STATE OF THE ART</h2>
+<p><em>Everything above is the map; this part is the territory as of late 2026 — who leads, what just broke through, what is genuinely unsolved, and what our own lab measured. Sources: Model Index (Epoch/METR/ARC Prize composite), Noometry Index (Nov 2026), Stanford AI Index 2026, Nature/DeepMind publications, and the NelloGem science corps reports cited inline.</em></p>
+<h3 id="141-the-2025-2026-model-landscape">14.1 The 2025–2026 model landscape</h3>
+<p>The frontier has consolidated into two tiers: <strong>closed flagship models</strong> (GPT, Claude, Gemini) that lead absolute capability, and an <strong>open-weights tier</strong> that trails by roughly six months but is "good enough for serious production" (Hugging Face open-LLM survey, Nov 2025). Reasoning-capable and multimodal are now table stakes, not differentiators.</p>
+<table>
+<thead><tr><th>Model / family</th><th>Developer</th><th>Weights</th><th>Context</th><th>Notes (late 2026)</th></tr></thead>
+<tbody>
+<tr><td>GPT-6 "Astra"</td><td>OpenAI</td><td>Proprietary</td><td>~1.05M</td><td>Top-tier closed model; Noometry Index 71.3 (#2, Nov 2026); GPT-5 lineage merged reasoning + multimodal into one model</td></tr>
+<tr><td>Claude Opus 5 / Fable 5.2</td><td>Anthropic</td><td>Proprietary</td><td>1M</td><td>Leads Noometry Index (73.0, Nov 2026); SWE-bench Verified ~96–97% in independent runs (Vals.ai, Sep 2026); strongest coding/agentic posture</td></tr>
+<tr><td>Gemini 4 (Neon / Carbon)</td><td>Google</td><td>Proprietary</td><td>1M+</td><td>Leads Model Index composite (205 vs GPT-4=100 baseline); native multimodal from the ground up; AIFS weather model operational at ECMWF since Feb 2025</td></tr>
+<tr><td>o-series (o1 → o3 → successors)</td><td>OpenAI</td><td>Proprietary</td><td>—</td><td>Defined the reasoning-model category: test-time compute as a scaling axis (§14.2)</td></tr>
+<tr><td>DeepSeek V4 (Pro / Flash)</td><td>DeepSeek</td><td><span class="pill pill-ok">Open</span></td><td>1M</td><td>Best value API on leaderboards ($0.15/$0.60 per M tok Flash); R1 lineage made RL-only reasoning mainstream</td></tr>
+<tr><td>Kimi K3 / K3.1 Pro</td><td>Moonshot AI</td><td><span class="pill pill-ok">Open</span></td><td>1.05M</td><td>Best open model on Model Index (~6 months behind closed frontier); strong agentic/coding</td></tr>
+<tr><td>GLM-5.x</td><td>Zhipu/Z.ai</td><td><span class="pill pill-ok">Open</span></td><td>—</td><td>Top open agentic/coding contender alongside Kimi</td></tr>
+<tr><td>Qwen3 (incl. 235B-A22B Thinking)</td><td>Alibaba</td><td><span class="pill pill-ok">Open · Apache 2.0</span></td><td>—</td><td>Best clean-license open model; hybrid thinking/non-thinking modes; local-deployment favorite</td></tr>
+<tr><td>Llama 4 (Scout/Maverick)</td><td>Meta</td><td><span class="pill pill-ok">Open</span></td><td>10M (Scout)</td><td>Longest context window in class; native multimodal; 109B total params</td></tr>
+<tr><td>Gemma 4</td><td>Google</td><td><span class="pill pill-ok">Open · Apache 2.0</span></td><td>—</td><td>Best capability-per-hardware for local runs (26B-A4B, 3.8B active params)</td></tr>
+<tr><td>gpt-oss</td><td>OpenAI</td><td><span class="pill pill-ok">Open</span></td><td>—</td><td>OpenAI's open-weight reasoning models; Phi-4 (14B, MIT) the best small local reasoner</td></tr>
+</tbody>
+</table>
+<p><strong>Key structural facts:</strong> (a) the closed/open gap measured by the Model Index is ~6 months of capability — open weights are a real alternative, not a toy; (b) 1M-token context is now standard at the frontier; (c) "thinking" modes (extended reasoning budgets) are universal; (d) prices have collapsed — flagship-class open models run at $0.15–2/M input tokens vs $8–10 for closed flagships.</p>
+<h3 id="142-reasoning-models-test-time-compute">14.2 Reasoning models &amp; test-time compute — the biggest paradigm shift since the transformer</h3>
+<ul>
+<li><strong>What happened</strong>: OpenAI's o1 (Sep 2024) introduced inference-time scaling — let the model "think" longer before answering. DeepSeek-R1 (Jan 2025, <em>Nature</em> 2025, s41586-025-09422-z) proved the recipe transfers: <strong>pure RL (GRPO) on verifiable rewards, no SFT warm-up</strong>, produces emergent reasoning (self-reflection, verification, backtracking) matching o1-class performance — and the distilled 1.5B–70B variants spread the capability to small open models.</li>
+<li><strong>Why it matters mathematically</strong>: Snell, Lee, Xu &amp; Kumar (ICLR 2025, "Scaling Test-Time Compute Optimally…") showed compute-optimal test-time allocation beats best-of-N by &gt;4× on math reasoning, and that <strong>a small model with more test-time compute can outperform a 14× larger model</strong> in FLOPs-matched evaluation. Inference compute is now a third scaling axis alongside parameters and data.</li>
+<li><strong>The cost reality</strong>: RAND notes OpenAI o3's peak ARC-AGI performance required ~10,000 H100s for a 10-minute response on a single task — reasoning is expensive, and "overthinking" (reasoning on easy problems) is an active efficiency problem.</li>
+<li><strong>Training-method lineage</strong>: this is §2.4 RL + §8.1 inference-time scaling made concrete — PRMs, verifiers, search over reasoning traces, and RL on verifiable domains (math, code) are now the standard post-training stack alongside RLHF/DPO.</li>
+</ul>
+<h3 id="143-agentic-ai-scoreboard-2026">14.3 Agentic AI scoreboard — the honest numbers</h3>
+<p>Agents moved from demos to benchmarks that matter. Verified results (Stanford AI Index 2026, OSWorld leaderboard, Vals.ai runs):</p>
+<table>
+<thead><tr><th>Benchmark</th><th>What it tests</th><th>Human baseline</th><th>Best model/agent (late 2026)</th><th>Trajectory</th></tr></thead>
+<tbody>
+<tr><td>SWE-bench Verified</td><td>Real GitHub issues → working patches (tests must pass)</td><td>n/a</td><td><strong>~96–97%</strong> (Claude Opus 5, Vals.ai Sep 2026; ~76.8% as of Feb 2026)</td><td>1.96% (2023) → ~77% (Feb 2026) → ~97% (Sep 2026) — near-saturation, contamination concerns rising</td></tr>
+<tr><td>OSWorld(-Verified)</td><td>369 real desktop/web tasks, mouse+keyboard</td><td>72.36%</td><td><strong>85.96%</strong> (claude-fable-5); best agentic framework 90.19%</td><td>12.24% at paper launch (2024) → humans-level parity crossed 2026</td></tr>
+<tr><td>GAIA / τ-bench / WebArena</td><td>Assistant tasks, tool-use dialogue, web navigation</td><td>varies</td><td>Frontier models cluster high; long-horizon reliability still lags humans on multi-day tasks</td><td>Rising fast; METR time-horizon ~7-month doubling continues</td></tr>
+<tr><td>AgentHarm (110 malicious tasks ×4)</td><td>Will agents comply with harmful multi-step requests?</td><td>n/a</td><td>Concerning: frontier models show surprising baseline compliance; simple universal jailbreaks adapt to agents (Mistral Large 2: 82.2% harm score, 1.1% refusal, <em>pre-jailbreak</em>)</td><td>Safety evaluation now inseparable from capability evaluation (§5.6)</td></tr>
+</tbody>
+</table>
+<p><strong>Synthesis</strong>: benchmark agents now match or beat humans on bounded professional tasks (coding, OS control) but remain unreliable on open-ended, long-horizon, or adversarially-contested work — the "jagged frontier" of §12.2 has advanced, not disappeared. Economic viability (cost per task) is the next gate.</p>
+<h3 id="144-ai-for-science-scoreboard">14.4 AI-for-science scoreboard — where AI is already winning</h3>
+<table>
+<thead><tr><th>Domain</th><th>Result</th><th>Status 2026</th></tr></thead>
+<tbody>
+<tr><td>Protein structure</td><td>AlphaFold: 200M+ structures predicted, 3M+ users, 190+ countries; Nobel Chemistry 2024; AlphaFold 3 extends to complexes/ligands</td><td><span class="pill pill-ok">EXISTING — settled</span></td></tr>
+<tr><td>Weather forecasting</td><td>GraphCast beat ECMWF HRES on ~90% of 1,380 targets; GenCast (diffusion ensembles) on 97.2% of 1,320; ECMWF AIFS operational Feb 2025; Google flood LSTM operational in 80+ countries</td><td><span class="pill pill-ok">IN PRODUCTION</span></td></tr>
+<tr><td>Materials discovery</td><td>GNoME: ~2.2M predicted crystals (~380k stable set); data-flywheel model (AI proposes → DFT labels → retrain) is the durable idea</td><td><span class="pill pill-run">FRONTIER→EXISTING</span></td></tr>
+<tr><td>Algorithm discovery</td><td>AlphaEvolve (Gemini-based) improving math + real systems code; FunSearch for math; AlphaDev sorting routines in production data centers</td><td><span class="pill pill-run">FRONTIER</span></td></tr>
+<tr><td>Mathematics</td><td>AlphaProof/AlphaGeometry: IMO silver-medal level (2024/2025); AI4S 2025 report (Nature/Fudan) documents discipline-wide acceleration</td><td><span class="pill pill-run">FRONTIER</span></td></tr>
+<tr><td>Genomics/biology</td><td>RFdiffusion/ProteinMPNN AI-designed binders in clinical trials; ESM/Nucleotide Transformer genomic foundation models</td><td><span class="pill pill-run">FRONTIER</span></td></tr>
+</tbody>
+</table>
+<p><strong>The meta-lesson</strong>: AI4Science (§6.5) is the only domain where capability claims face hard physical verification — forecasts verify against tomorrow's weather, structures against crystallography. It is where "AI does science" is already measurable, not speculative.</p>
+<h3 id="145-frontier-open-problems-2026">14.5 Frontier &amp; open problems — the honest unsolved list</h3>
+<table>
+<thead><tr><th>Problem</th><th>Why it's unsolved</th><th>Who/what is attacking it</th><th>Significance</th></tr></thead>
+<tbody>
+<tr><td><strong>Continual learning / memory</strong></td><td>Catastrophic forgetting; no production system learns persistently without RAG scaffolding</td><td>MemGPT/Letta lineage, memory-augmented architectures, sleep-time compute</td><td>Blocks true AGI claims; every "agent memory" is a workaround</td></tr>
+<tr><td><strong>Reliable long-horizon planning</strong></td><td>Compounding errors; ~30–70% failure on complex multi-step tasks even on best systems (§5.1)</td><td>MCTS+LLM hybrids, world models (§8.2), verifier-guided search</td><td>The core agentic bottleneck</td></tr>
+<tr><td><strong>Verifiable reasoning</strong></td><td>CoT is not faithful — models can produce right answers for wrong reasons; no access to true computation</td><td>Process reward models, Lean-formalized reasoning, mechanistic interpretability (§8.6)</td><td>Alignment + math both depend on it</td></tr>
+<tr><td><strong>Data wall</strong></td><td>High-quality public text exhausted ~2026 estimates; synthetic data → model collapse risk (§8.7)</td><td>Data-constrained scaling papers, synthetic-data filtering, licensed corpora</td><td>Central scaling-law uncertainty (§14.6)</td></tr>
+<tr><td><strong>Alignment that survives capability jumps</strong></td><td>Techniques degrade as models get smarter; no known superintelligence solution</td><td>Interpretability, scalable oversight, AI control (§5.6)</td><td>Existential-stakes research</td></tr>
+<tr><td><strong>Physical world grounding</strong></td><td>Robots lack data + dexterity; sim-to-real unsolved (§8.8)</td><td>VLA models (π0, GR00T), world models, Open X-Embodiment</td><td>Embodied AGI prerequisite</td></tr>
+<tr><td><strong>Efficient frontier inference</strong></td><td>Reasoning models burn 10³–10⁴× compute per answer</td><td>Speculative decoding, MoE, distillation, early-exit, KV-cache optimization (vLLM/sglang)</td><td>Economic gate on reasoning scaling</td></tr>
+<tr><td><strong>Evaluation integrity</strong></td><td>Benchmark saturation + contamination (SWE-bench Verified warning in its own release paper)</td><td>Live benchmarks, private evals, human-grounded tasks, agentic evals</td><td>Measurement crisis as capability accelerates</td></tr>
+</tbody>
+</table>
+<h3 id="146-the-great-debates">14.6 The great debates (both sides, honestly)</h3>
+<ul>
+<li><strong>Scaling laws: law or curve-fit?</strong> — <em>For</em>: Chinchilla compute-optimal prescriptions survived 2025 perturbation analysis (arXiv 2509.23963) and keep predicting frontier gains; test-time scaling added a third axis that demonstrably works. <em>Against</em>: scaling curves are empirical fits, not theorems; high-quality-data exhaustion, energy grids, and "sub-scaling" from data redundancy (ACL 2025, 400+ model analysis) suggest bends are coming. Consensus: pretraining scaling is slowing; post-training + inference-time compute is where gains now concentrate.</li>
+<li><strong>Bitter lesson vs. structure</strong> — Sutton's bet (scale + search beats hand-crafted knowledge) keeps winning in language, but AI4Science rewards exactly the opposite: physics-informed structure, equivariant nets, symbolic provers. The field's real answer is hybrid (§5.5 neuro-symbolic) — neither pure scaling nor pure symbols suffices.</li>
+<li><strong>AI risk: near-term vs. existential</strong> — near-term risks are documented and engineering-solvable (jailbreaks, misuse, bias, AgentHarm compliance). Existential-risk claims (recursive self-improvement → loss of control) are <strong>[SPECULATIVE]</strong> — serious researchers disagree on timelines from "decades" to "already emerging"; the honest position is that the transition, if it comes, may be fast and the control problem is unsolved <em>in advance</em>.</li>
+<li><strong>Open vs. closed weights</strong> — closed leads by ~6 months and concentrates capability in few labs (security argument); open weights enable auditability, local deployment, and broad research (safety argument), at the cost of removing friction for misuse. DeepSeek-R1's open release arguably did more for global AI capability diffusion than any policy.</li>
+<li><strong>Do benchmarks still measure capability?</strong> — SWE-bench Verified's own authors warned of contamination before release; scores went 77%→97% in seven months, faster than plausible capability growth. Live/private evals and agentic benchmarks are the corrective — but every benchmark eventually leaks.</li>
+</ul>
+<h3 id="147-nellogem-science-corps-results">14.7 NelloGem Science Corps — our own lab results</h3>
+<p><em>Real experiments run on this fleet (WSL Ubuntu, torch 2.15 CPU, 4 cores / 5 GB RAM). These are small-scale, honest numbers — included because measured results beat vibes.</em></p>
+<table>
+<thead><tr><th>Lab</th><th>Experiment</th><th>Key result</th><th>What it teaches</th></tr></thead>
+<tbody>
+<tr><td><code>science_lab/vit</code> (ViT agent)</td><td>ViT-tiny vs CNN vs MLP, Fashion-MNIST + CIFAR-10, 8k-image subsets, 3–6 epochs</td><td>ViT <strong>loses at small scale</strong>: Fashion clean acc MLP 0.829 / CNN 0.745 / ViT 0.563→0.718 (6ep); CIFAR CNN 0.455 vs ViT 0.320. ViT@224 = 4× slower inference for zero accuracy gain; doubling epochs helped more than 4× params did</td><td>ViTs are data-hungry — inductive bias of convnets wins until dataset+epoch budget is large. Matches §3.2's "ViT needs scale" thesis, measured locally</td></tr>
+<tr><td><code>science_lab/vit</code></td><td>FGSM eps=0.3 attack on all trained models (n=1000)</td><td><strong>Every architecture destroyed</strong>: adversarial accuracy ≤6.1% everywhere; best was 6-epoch ViT (0.061) vs MLP (0.001); on CIFAR the CNN was most robust (0.234 vs ViT 0.003)</td><td>No free robustness from attention; single-step FGSM at high eps is a sanity check, not a defense eval (cf. §1.3 PGD being the real ruler)</td></tr>
+<tr><td><code>science_lab/advml</code> (ADVML agent, autopsied)</td><td>PGD attack-defense matrix on MNIST-MLP; PGD sign verified by independent re-implementation</td><td>Baseline clean 0.956 → <strong>PGD-30 crushes to 0.018</strong>; FGSM-AT defense 0.681; strong PGD-AT 0.718; <strong>3-bit quantization defense 0.734 — best of all</strong>, verified under fully adaptive attack</td><td>Defense ranking reproduced to ~1pt by an independent auditor; quantization works because step size (≈0.857 normalized units) ≫ eps=0.3 swallows perturbations; smoothing (5.6%) and weak-inner PGD-AT fail</td></tr>
+<tr><td><code>science_lab/math</code></td><td>32-bit hash birthday collisions + RSA factoring wall</td><td>FNV-1a/djb2-32 collide in 67k–106k ops vs theory ~77k (2¹⁶≈65.5k); RSA-64→128 bits factor in 0.26s→8.7s, RSA-191 falls to ECM in 17.2s at B1=250k, <strong>RSA-256 resists</strong>; Vigenère broken via IOC keylen detection</td><td>"Security = output bits/2 vs birthday" made concrete; the crypto wall is a cliff, not a slope — same lesson as §14.5's scaling debates: smooth curves hide discontinuities</td></tr>
+<tr><td><code>science_lab/ml</code></td><td>ML pipeline lab (<code>lab_ml_pipeline.py</code>, companion to doc 39)</td><td>Runnable exercises for validation splits, feature engineering, regularization, deployment, bias audit</td><td>The unglamorous 80% — every stage has a failure mode; final accuracy is the last thing to check, not the first</td></tr>
+</tbody>
+</table>
+<p><strong>Cross-map note</strong>: the advml results are the local, reproducible instance of §1's entire attack taxonomy — our PGD implementation <em>ascends</em> the loss (verified), our strongest defense is a quantization trick most tutorials never mention, and our audit process (independent re-implementation) is exactly the "adaptive attack" discipline §1.0 demands. Small numbers, correct method.</p>
+<h3 id="148-timeline-of-breakthroughs-2017-2026">14.8 Timeline of breakthroughs (2017 → 2026)</h3>
+<table>
+<thead><tr><th>Year</th><th>Breakthrough</th><th>Why it mattered</th></tr></thead>
+<tbody>
+<tr><td>2017</td><td>"Attention Is All You Need" (Transformer)</td><td>The architecture everything since is built on (§3.4)</td></tr>
+<tr><td>2018</td><td>GPT-1, BERT, AlphaZero, GNN wave</td><td>Pretraining paradigm ignites; RL+search proves superhuman in closed games</td></tr>
+<tr><td>2020</td><td>GPT-3 few-shot (Brown et al.), AlphaFold 2 (Nobel 2024)</td><td>Scale alone produces generalist-ish behavior; protein folding effectively solved</td></tr>
+<tr><td>2022</td><td>ChatGPT (GPT-3.5+RLHF), Stable Diffusion, Chinchilla scaling laws</td><td>LLMs become a product category; diffusion becomes the image paradigm; compute-optimal training codified</td></tr>
+<tr><td>2023</td><td>GPT-4, LLaMA open weights, Claude, Gemini 1.0, GNoME, GraphCast</td><td>Multimodal frontier; open-weights era begins; AI4Science hits production</td></tr>
+<tr><td>2024</td><td>o1 reasoning models, DeepSeek-V3/R1 preview, Claude 3.5/Opus, GPT-4o, AlphaGeometry/AlphaProof IMO, AlphaFold 3</td><td>Test-time compute invented; reasoning becomes a model class; AI wins olympiad silver</td></tr>
+<tr><td>2025</td><td>GPT-5, Claude 4/Opus 4.x, Gemini 2.5/3, DeepSeek-R1 (Nature), Kimi K2, Qwen3, Llama 4; AlphaEvolve; AgentHarm; EchoLeak disclosed</td><td>Reasoning+agentic+open-weights all mature in one year; AI security becomes its own bug class</td></tr>
+<tr><td>2026</td><td>GPT-6 Astra, Claude Opus/Fable 5.x, Gemini 4, SWE-bench ~97%, OSWorld &gt;human, Model/Noometry indices live</td><td>Agents match humans on bounded professional benchmarks; ~6-month closed/open gap; evaluation integrity becomes the bottleneck</td></tr>
+</tbody>
+</table>
+<h3 id="149-key-resources">14.9 Key resources (curated, 2026)</h3>
+<ul>
+<li><strong>Leaderboards/indices</strong>: themodelindex.org (Epoch/METR/ARC Prize composite, closed vs open), noometry.com (Nov 2026 index), Stanford AI Index (annual), Chatbot Arena / LMArena, SWE-bench + OSWorld official leaderboards, METR time-horizon measurements.</li>
+<li><strong>Open-weight ecosystems</strong>: Hugging Face (models + open-LLM guide), vLLM/sglang serving, Unsloth/axolotl fine-tuning, llama.cpp local inference, MLX (Apple Silicon).</li>
+<li><strong>Reasoning/agents</strong>: DeepSeek-R1 &amp; distill docs, Snell et al. ICLR 2025 test-time-compute paper, LangGraph/OpenAI Agents SDK/Claude Agent SDK, MCP spec, GAIA/τ-bench/WebArena/OSWorld harnesses.</li>
+<li><strong>Safety/alignment</strong>: Anthropic interpretability (TransformerLens, SAELens, Neuronpedia), OpenAI evals, UK AISI Inspect, garak + PyRIT red-teaming, AgentHarm, OWASP LLM Top 10, arXiv cs.CL safety feeds.</li>
+<li><strong>AI4Science</strong>: DeepMind Science pages (AlphaFold/AlphaEvolve/GNoME), AI4S.fyi map, Cambridge AI4S field tracker, Nature AI for Science 2025 report, Boltz/Chai open structure models.</li>
+<li><strong>Papers to read first</strong>: Vaswani 2017; Brown 2020 (GPT-3); Hoffmann 2022 (Chinchilla); Ouyang 2022 (InstructGPT/RLHF); DeepSeek-R1 (Nature 2025); Snell 2025 (test-time compute); Kaplan 2020 (original scaling laws — read alongside Chinchilla for the debate).</li>
+</ul>
+<h3 id="1410-sibling-maps-cross-links">14.10 Sibling maps &amp; this library</h3>
+<p>This map is one node in the NelloGem knowledge graph. The fields connect:</p>
+<a class="doc" href="41 - map-cs-it.html">💻 41 — Map: Computer Science &amp; IT <br><small>algorithms, systems, data infrastructure — the substrate agents run on</small></a>
+<a class="doc" href="42 - map-math-logic.html">🧮 42 — Map: Math · Logic · Formal <br><small>scaling-law math, probability, the formal methods behind verification (§14.2, §14.5)</small></a>
+<a class="doc" href="43 - map-natural-sciences.html">🌍 43 — Map: Natural Sciences <br><small>the domains AI4Science (§14.4) is transforming — physics, chemistry, biology</small></a>
+<a class="doc" href="45 - map-cybersecurity.html">🛡️ 45 — Map: Cybersecurity <br><small>adversarial ML in practice, prompt injection, AI-driven attacks (§5.6 ↔ doc 45 §32)</small></a>
+<a class="doc" href="46 - map-knowledge-archive.html">🏛️ 46 — Map: Knowledge Archive <br><small>epistemic tiers and provenance — how this map's claims are sourced</small></a>
+<a class="doc" href="00 - PRIME INDEX.html">⬡ 00 — PRIME INDEX <br><small>the full library index — all 40+ documents</small></a>
+<h3 id="1412-sources-frontier-synthesis">14.11 Sources — frontier synthesis section</h3>
+<ul>
+<li>Model landscape: themodelindex.org (Model Index, Epoch AI/METR/ARC Prize data, accessed late 2026); noometry.com LLM Leaderboard Nov 2026 (Claude Fable 5.2 = 73.0, GPT-6 Astra = 71.3); Hugging Face open-source LLM guide (Nov 13, 2025); zapier.com LLM guide (Oct 2025).</li>
+<li>Reasoning: DeepSeek-R1, <em>Nature</em> s41586-025-09422-z (2025); Snell, Lee, Xu, Kumar, "Scaling LLM Test-Time Compute Optimally…", ICLR 2025; RAND commentary on test-time compute (Mar 2025).</li>
+<li>Agents: Stanford AI Index Report 2026 ch.2; OSWorld leaderboard via benchmarkingagents.com (Nov 18, 2026); SWE-bench results via leaderboard.steel.dev; AgentHarm (arXiv 2410.09024).</li>
+<li>AI4Science: deepmind.google/science; Cambridge AI4S field tracker (Nov 2026); AI4S.fyi map (Sep 2026); Nature Research "AI for Science 2025" report.</li>
+<li>Debates: arXiv 2509.23963 (Chinchilla robustness, Sep 2025); ACL 2025 "Revisiting Scaling Laws… Data Quality" (400+ models); The Conversation on scaling laws; arXiv 2507.19703 (LLM wall).</li>
+<li><strong>Internal (NelloGem science corps)</strong>: <code>/home/neilh/science_lab/vit/REPORT.md</code> (ViT scaling + FGSM results); <code>/home/neilh/science_lab/advml/REPORT.md</code> + <code>/home/neilh/Downloads/AUTOPSY_advml.md</code> (PGD matrix, 3-bit defense, independent verification); <code>/home/neilh/science_lab/ml/</code> pipeline lab; <code>/home/neilh/science_lab/math/REPORT.md</code> (hash collisions, RSA/ECM wall, Vigenère, Dijkstra negative-edge verification).</li>
+</ul>
+<hr />
+<h2 id="part-15-capability-frontier-domain-by-domain">PART 15 — CAPABILITY FRONTIER, DOMAIN BY DOMAIN</h2>
+<p><em>Where each application domain actually stands in late 2026 — what is production-grade, what is demo-grade, and what is still research. Tags per §0.2.</em></p>
+<h3 id="151-language-models-nlp">15.1 Language models / NLP</h3>
+<table>
+<thead><tr><th>Capability</th><th>Status</th><th>Evidence / numbers</th></tr></thead>
+<tbody>
+<tr><td>Translation (major pairs)</td><td><span class="pill pill-ok">EXISTING</span></td><td>Near-human on EN↔major languages; commodity API pricing</td></tr>
+<tr><td>Summarization / extraction / classification at scale</td><td><span class="pill pill-ok">EXISTING</span></td><td>Dominant production use; cost per token fell ~10× 2023→2026</td></tr>
+<tr><td>Long-document reasoning (1M ctx)</td><td><span class="pill pill-ok">EXISTING</span></td><td>1M-token context standard at frontier; effective-use depth still debated (lost-in-the-middle persists)</td></tr>
+<tr><td>Reasoning (math/code/STEM)</td><td><span class="pill pill-run">FRONTIER→EXISTING</span></td><td>o-series/R1 lineage; IMO silver; FrontierMath partial; still fails on genuinely novel problems</td></tr>
+<tr><td>Creative writing quality</td><td><span class="pill pill-ok">EXISTING</span></td><td>Indistinguishable in short form; style/voice control improving</td></tr>
+<tr><td>Factual reliability / hallucination</td><td><span class="pill pill-bad">OPEN PROBLEM</span></td><td>Still confabulates on obscure facts; RAG + verification mitigate, don't solve (§14.5)</td></tr>
+<tr><td>Low-resource languages</td><td><span class="pill pill-run">FRONTIER</span></td><td>Improving via multilingual pretraining; quality gap vs English remains large</td></tr>
+</tbody>
+</table>
+<h3 id="152-computer-vision">15.2 Computer vision</h3>
+<table>
+<thead><tr><th>Capability</th><th>Status</th><th>Evidence / numbers</th></tr></thead>
+<tbody>
+<tr><td>Image classification</td><td><span class="pill pill-ok">EXISTING — saturated</span></td><td>ImageNet-era benchmarks solved; real-world OOD still fails (§9.2)</td></tr>
+<tr><td>Detection / segmentation / tracking</td><td><span class="pill pill-ok">EXISTING</span></td><td>RT-DETR, SAM 2 lineage; production-grade in media/retail/medical-adjacent</td></tr>
+<tr><td>Vision-language models (VLMs)</td><td><span class="pill pill-ok">EXISTING</span></td><td>GPT-4o/Gemini-class describe+reason about images; OCR/document AI solved</td></tr>
+<tr><td>Generative image (diffusion/flow)</td><td><span class="pill pill-ok">EXISTING</span></td><td>FLUX-class open models; photorealism + instruction following production-ready</td></tr>
+<tr><td>Video understanding/generation</td><td><span class="pill pill-run">FRONTIER</span></td><td>Sora/Veo-class generate coherent clips; long-horizon temporal consistency unsolved</td></tr>
+<tr><td>3D / spatial understanding</td><td><span class="pill pill-run">FRONTIER</span></td><td>Gaussian splatting + VLMs emerging; metrically-accurate 3D reasoning not there</td></tr>
+<tr><td><strong>Robustness (adversarial)</strong></td><td><span class="pill pill-bad">OPEN PROBLEM</span></td><td>Our own vit/advml labs confirm: FGSM eps=0.3 destroys all architectures; PGD defenses reach only ~73% under adaptive attack — matches RobustBench reality</td></tr>
+</tbody>
+</table>
+<h3 id="153-speech-audio">15.3 Speech &amp; audio</h3>
+<ul>
+<li><strong>ASR</strong>: near-human WER on clean English; robust to noise/accent far better than 2023; tonal languages improving.</li>
+<li><strong>TTS/voice cloning</strong>: <span class="pill pill-ok">EXISTING</span> — convincing clones from seconds of audio; this is now a <em>fraud enabler</em> (see doc 45 §VI deepfake stats).</li>
+<li><strong>Music/audio generation</strong>: <span class="pill pill-run">FRONTIER</span> — production-quality stems; copyright/provenance unresolved.</li>
+<li><strong>Spoken-dialogue agents</strong>: <span class="pill pill-run">FRONTIER</span> — realtime voice agents deployed (support lines); turn-taking latency and interruption handling still rough.</li>
+</ul>
+<h3 id="154-robotics-embodied">15.4 Robotics &amp; embodied AI</h3>
+<ul>
+<li><strong>Manipulation</strong>: VLA models (π0, GR00T, RT-2 lineage) do household tasks in demos; <span class="pill pill-run">FRONTIER</span> — dexterous, long-horizon, novel-object reliability unsolved; data scarcity is the wall (§8.8).</li>
+<li><strong>Locomotion</strong>: humanoid parkour/dance demos real; <span class="pill pill-run">FRONTIER</span> — fall recovery and unstructured terrain remain research.</li>
+<li><strong>Autonomous driving</strong>: robotaxis operate (Waymo/Pony.ai scale); <span class="pill pill-run">FRONTIER</span> — Level 4 geofenced, Level 5 not achieved; long-tail edge cases + regulatory patchwork.</li>
+<li><strong>Drone delivery/inspection</strong>: <span class="pill pill-ok">EXISTING</span> in narrow corridors (medical, inspection); regulatory-bound.</li>
+</ul>
+<h3 id="155-recommendation-search-personalization">15.5 Recommendation, search &amp; personalization</h3>
+<ul>
+<li><strong>Industrial recommenders</strong>: <span class="pill pill-ok">EXISTING</span> — two-tower/DLRM/sequence models; LLM-augmented retrieval now hybrid.</li>
+<li><strong>LLM search/chat products</strong>: <span class="pill pill-ok">EXISTING</span> — every major engine shipped an answer engine; ads/commerce integration the open business problem.</li>
+<li><strong>Generative UI / agents-in-products</strong>: <span class="pill pill-run">FRONTIER</span> — MCP-based tool ecosystems (§5.1) turning chat into action; security implications in doc 45.</li>
+</ul>
+<h3 id="156-science-math-verification">15.6 Science, math &amp; formal verification</h3>
+<ul>
+<li><strong>Math competition</strong>: <span class="pill pill-run">FRONTIER</span> — IMO silver-level; research-level conjecture still human.</li>
+<li><strong>Formal proof</strong>: <span class="pill pill-run">FRONTIER</span> — DeepSeek-Prover/Goedel-Prover on miniF2F/PutnamBench; autoformalization the bottleneck (§1.3).</li>
+<li><strong>Verified code generation</strong>: <span class="pill pill-run">FRONTIER</span> — Lean-verified kernels emerging in industry; not yet default.</li>
+<li><strong>AI co-scientist loops</strong>: <span class="pill pill-run">FRONTIER</span> — hypothesis-generation agents (FutureHouse-style) producing candidate findings; validation remains the bottleneck.</li>
+</ul>
+<h3 id="157-safety-security-misuse">15.7 Safety, security &amp; misuse surface</h3>
+<ul>
+<li><strong>Jailbreaks/prompt injection</strong>: <span class="pill pill-bad">OPEN PROBLEM</span> — unsolved at frontier; EchoLeak (CVE-2025-32711) showed zero-click exfil from M365 Copilot; see doc 45 §VI.3 for the incident catalog.</li>
+<li><strong>Bioweapon/bio-risk uplift</strong>: <span class="pill pill-run">CONTESTED</span> — evals show capability uplift on known assays; real-world barrier assessment ongoing (RAND/GTG reports).</li>
+<li><strong>Cyber-offense uplift</strong>: <span class="pill pill-run">ACTIVE</span> — LLMs measurably speed vuln discovery/exploit writing (multiple 2025 studies); defensive use still net-positive but asymmetric windows exist.</li>
+<li><strong>Deepfake fraud</strong>: <span class="pill pill-bad">ACTIVE THREAT</span> — voice/video clones drove documented BEC losses (Singapore $500k case, 2025); see doc 45 §VI.1.</li>
+<li><strong>Alignment failures in deployment</strong>: <span class="pill pill-run">ACTIVE</span> — reward hacking, sycophancy, situational-awareness gaps documented in system cards; no silver bullet.</li>
+</ul>
+<h3 id="158-where-the-field-goes-next-2027-watchlist">15.8 Where the field goes next — 2027 watchlist</h3>
+<ol>
+<li><strong>Inference-time compute commoditizes</strong> — reasoning budgets become a dial like temperature; cost per solved problem drops 10×.</li>
+<li><strong>Agents get wallets</strong> — autonomous spend/act with real money forces the security + governance layer doc 45 maps.</li>
+<li><strong>World models mature</strong> — Genie/Cosmos-lineage simulators reach "train-in-imagination" viability for robotics.</li>
+<li><strong>Neuromorphic/edge inference</strong> — SNN/Loihi-class efficiency claims start beating GPU inference on narrow always-on tasks.</li>
+<li><strong>AI-for-science goes autonomous</strong> — end-to-end "AI scientist" loops (hypothesis→experiment→paper) on constrained domains; validation crisis follows.</li>
+<li><strong>The data wall forces new paradigms</strong> — whichever lab cracks data-efficient learning (or proves it doesn't matter) sets the next scaling regime.</li>
+<li><strong>Regulation lands</strong> — EU AI Act enforcement, US state laws, and frontier-lab safety frameworks become binding constraints on release practices.</li>
+</ol>
+<h3 id="159-how-to-track-the-frontier">15.9 How to track the frontier without drowning</h3>
+<ul>
+<li><strong>Weekly</strong>: Model Index / LMArena movement; lab release notes (OpenAI, Anthropic, Google DeepMind, Meta, DeepSeek, Moonshot, Zhipu, Qwen).</li>
+<li><strong>Monthly</strong>: Stanford AI Index chapter drops; arXiv cs.CL/cs.LG/cs.AI trending; METR time-horizon update; epoch.ai data.</li>
+<li><strong>Quarterly</strong>: safety evals (UK AISI, US AISI reports); OWASP LLM Top 10 deltas; major benchmarks' methodology papers.</li>
+<li><strong>Rule of thumb</strong>: trust replicated third-party numbers (Epoch, METR, ARC Prize) over launch blogs; treat every "we're AGI" claim as marketing until it survives an independent eval.</li>
+</ul>
+<hr />
+<h2 id="part-16-reading-this-map-critically">PART 16 — READING THIS MAP CRITICALLY</h2>
+<blockquote>
+<p><strong>On dates and versions:</strong> this document was compiled November 2026. Model names, benchmark scores, and framework versions drift within weeks — the SOURCES section lists where each claim was verified. Numbers in tables are snapshots; the <em>structure</em> (taxonomy, relationships, open problems) ages slowly; the <em>scores</em> age fast.</p>
+<p><strong>On confidence:</strong> capabilities tagged [EXISTING] have production deployments you can use today. [FRONTIER] means real but partial results — demos work, reliability doesn't. [HYPOTHETICAL] means no working system exists and timelines are speculation. When a vendor says "AGI is near," check which tag they'd have to defend.</p>
+<p><strong>On our own results:</strong> the NelloGem science corps numbers (§14.7) are small-scale CPU experiments — statistically honest, not frontier-competitive. They are included because they are <em>ours</em>, they are reproducible, and they teach the same lessons the big labs publish at 10⁶× the scale: data hunger, attack brittleness, and the gap between clean accuracy and robust accuracy.</p>
+</blockquote>
+<hr />
+<h2 id="part-17-the-ai-stack-end-to-end">PART 17 — THE AI STACK, END TO END</h2>
+<p><em>The full production stack as of late 2026 — every layer, the dominant tools, and where the field's center of gravity sits.</em></p>
+<h3 id="171-the-layered-stack">17.1 The layered stack</h3>
+<table>
+<thead><tr><th>Layer</th><th>What lives here</th><th>Dominant tools / players (2026)</th></tr></thead>
+<tbody>
+<tr><td><strong>1. Research &amp; theory</strong></td><td>Scaling laws, optimization, interpretability, alignment theory, learning theory</td><td>arXiv, NeurIPS/ICML/ICLR, DeepMind/Anthropic/OpenAI research pubs, university labs</td></tr>
+<tr><td><strong>2. Data</strong></td><td>Web corpora, licensed data, synthetic data, RL environments, human preference data</td><td>Common Crawl, Hugging Face datasets, Scale AI/Surge labeling, envs: SWE-bench/WebArena/OSWorld</td></tr>
+<tr><td><strong>3. Training frameworks</strong></td><td>Distributed training, parallelism strategies (DP/TP/PP/EP), checkpointing</td><td>PyTorch 2.15 + FSDP2, JAX 0.12, Megatron-LM lineage, torch.compile, CUDA 13.x</td></tr>
+<tr><td><strong>4. Model architectures</strong></td><td>Transformers (dominant), MoE, SSMs (Mamba), diffusion, hybrid neuro-symbolic</td><td>HF transformers v5.x, custom kernels (FlashAttention lineage), Triton</td></tr>
+<tr><td><strong>5. Post-training</strong></td><td>SFT → RLHF/DPO/GRPO → reasoning RL → safety tuning → distillation</td><td>Tulu/OpenRLHF/TRL stacks, vendor post-training pipelines, R1-style GRPO</td></tr>
+<tr><td><strong>6. Inference &amp; serving</strong></td><td>KV-cache management, speculative decoding, quantization, batching, routing</td><td>vLLM 0.34 (Model Runner V2), sglang, TensorRT-LLM, llama.cpp/MLX (local)</td></tr>
+<tr><td><strong>7. Orchestration &amp; agents</strong></td><td>Tool use, planning loops, multi-agent, eval harnesses</td><td>LangGraph, OpenAI Agents SDK, Claude Agent SDK, MCP, Ray</td></tr>
+<tr><td><strong>8. Evals &amp; safety</strong></td><td>Benchmarks, red-teaming, interpretability, compliance</td><td>Inspect AI, garak, PyRIT, HELM, internal eval suites, frontier-lab system cards</td></tr>
+<tr><td><strong>9. Deployment &amp; MLOps</strong></td><td>CI/CD for models, drift monitoring, A/B, cost governance</td><td>Ray, Kubeflow, vendor clouds, feature stores, observability (LangSmith/Braintrust)</td></tr>
+<tr><td><strong>10. Applications</strong></td><td>Copilots, agents, vertical AI, AI4Science pipelines</td><td>The entire Part 4–6 taxonomy above</td></tr>
+</tbody>
+</table>
+<h3 id="172-compute-economics-the-physical-layer">17.2 Compute economics — the physical layer</h3>
+<ul>
+<li><strong>The scaling substrate</strong>: frontier training runs consume 10²¹–10²⁶ FLOP-class budgets on tens of thousands of accelerators; a single o3-class reasoning response can burn ~10,000 H100-minutes (§14.2). Inference, not training, is now the dominant compute consumer for reasoning models.</li>
+<li><strong>Hardware trajectory</strong>: NVIDIA CUDA ecosystem still wins on absolute performance; AMD ROCm 10 matured (PyTorch 2.15 ships ROCm 10 wheels); Apple Silicon + MLX owns the local-inference niche; TPUs (Google) power the largest internal fleets; neuromorphic (Loihi) remains niche (§8.5).</li>
+<li><strong>Energy</strong>: data-center power constraints are becoming a first-order scaling limit — the "energy wall" is a real 2027 watchlist item (§15.8).</li>
+<li><strong>Cost curve</strong>: price per unit capability has fallen ~10×/year for equivalent quality (a GPT-3-class answer now costs fractions of a cent); this deflation is why agents become economically viable.</li>
+</ul>
+<h3 id="173-industry-structure-who-builds-what">17.3 Industry structure — who builds what</h3>
+<table>
+<thead><tr><th>Tier</th><th>Players</th><th>Position</th></tr></thead>
+<tbody>
+<tr><td><strong>Frontier labs</strong></td><td>OpenAI, Anthropic, Google DeepMind, Meta, xAI</td><td>Train the largest models; closed API revenue + safety research</td></tr>
+<tr><td><strong>Open-weight challengers</strong></td><td>DeepSeek, Moonshot (Kimi), Zhipu (GLM), Alibaba (Qwen), Mistral</td><td>~6-month capability lag; commoditize inference; force price competition</td></tr>
+<tr><td><strong>Cloud/inference</strong></td><td>AWS/Azure/GCP, Together, Fireworks, Groq, Cerebras</td><td>Serve models; GPU capacity + routing economics</td></tr>
+<tr><td><strong>Application layer</strong></td><td>Every SaaS company adding "AI features"; vertical agents (coding, legal, science, sales)</td><td>Where most jobs and revenue now are — thin margins on wrapper apps, fat margins on workflow ownership</td></tr>
+<tr><td><strong>Tools/infrastructure</strong></td><td>HF, vLLM, LangChain/LangGraph, MCP ecosystem, eval vendors</td><td>The picks-and-shovels layer; MCP became the USB-C of tool use in 2025</td></tr>
+<tr><td><strong>Safety/governance</strong></td><td>UK AISI, US AISI, EU AI Office, frontier-lab safety teams, red-team vendors</td><td>Becoming a compliance layer with real enforcement (EU AI Act phases through 2026–2027)</td></tr>
+</tbody>
+</table>
+<h3 id="174-societal-footprint-what-ai-is-actually-doing">17.4 Societal footprint — what AI is actually doing</h3>
+<ul>
+<li><strong>Labor</strong>: coding/white-collar cognitive tasks see the fastest measured displacement; MIT/Stanford studies show junior-dev hiring compression at AI-adopting firms; the honest read is augmentation first, substitution in narrow tasks second — but the trend line is steep.</li>
+<li><strong>Education</strong>: LLMs as tutors (Khanmigo lineage) show measurable gains on structured practice; assessment integrity is broken — take-home essays are unverifiable; oral/verified evals are the correction.</li>
+<li><strong>Science</strong>: §14.4 — AI accelerates discovery where ground truth exists (weather, structure, materials); hypothesis-generation remains human-gated.</li>
+<li><strong>Information ecosystem</strong>: synthetic content floods pipelines (C2PA/watermarking imperfect, §8.7); trust infrastructure (provenance, content credentials) is the defensive build-out — doc 45 territory.</li>
+<li><strong>Geopolitics</strong>: export controls on advanced chips; open-weight diffusion blunts containment; AI safety institutes are the new diplomatic layer.</li>
+</ul>
+<h3 id="175-governance-regulation-landscape">17.5 Governance &amp; regulation landscape (late 2026)</h3>
+<ul>
+<li><strong>EU AI Act</strong>: phased enforcement through 2026–2027 — GPAI obligations live, high-risk system rules phasing in; systemic-risk threshold = 10²⁵ FLOP-class training runs.</li>
+<li><strong>US</strong>: no comprehensive federal law; state laws (Colorado AI Act, California frontier-safety bills) + executive orders on federal procurement; voluntary frontier-lab commitments (White House 2023) partially superseded by state action.</li>
+<li><strong>China</strong>: algorithm registry + generative-AI licensing regime; state-aligned lab ecosystem (DeepSeek, Qwen, GLM, Kimi) is the open-weight engine.</li>
+<li><strong>International</strong>: AI Safety Institutes (US/UK/JP/etc.) run pre-release evals; UN AI resolution + International Scientific Panel on AI reporting; export-control regimes on compute.</li>
+<li><strong>What it means for practitioners</strong>: documentation, eval evidence, and provenance are becoming compliance artifacts — build them in from day one, not retroactively.</li>
+</ul>
+<h3 id="176-the-one-paragraph-synthesis">17.6 The one-paragraph synthesis</h3>
+<blockquote>
+<p>In late 2026, AI is a layered industrial stack — research → data → training → post-training → inference → agents → evals → deployment — wrapped around a small number of frontier foundation models that improve along three scaling axes (parameters, data, test-time compute). The open-weights tier trails by ~6 months and keeps prices collapsing; agents have crossed human parity on bounded professional benchmarks while remaining unreliable on open-ended work; AI-for-science is the domain where capability claims face hard physical verification and are already paying off; and the unsolved problems — continual learning, verifiable reasoning, alignment under self-improvement, physical grounding — are exactly the ones that separate "very powerful narrow tools" from anything deserving the name AGI. Our own labs reproduce the same laws at toy scale: ViTs need data, attacks break clean accuracy, and the gap between benchmark and robust is where the real engineering lives.</p>
+</blockquote>
+<hr />
+<h2 id="part-18-hands-on-reproducing-the-frontier-at-small-scale">PART 18 — HANDS-ON: REPRODUCING THE FRONTIER AT SMALL SCALE</h2>
+<p><em>You cannot train GPT-6 on a laptop — but you can reproduce every <em>concept</em> in this map on CPU-sized hardware. This is how the science corps labs (§14.7) connect to the frontier literature: same math, smaller N.</em></p>
+<h3 id="181-the-scaling-law-you-can-feel">18.1 The scaling law you can feel</h3>
+<p>Chinchilla-style scaling says loss ≈ power law in (params, tokens, compute). You can't see the law at 5M params — but you <em>can</em> see its shadow: our ViT lab showed doubling epochs (3→6) moved accuracy more than quadrupling parameters did (§14.7). That is the compute-optimal allocation principle at toy scale: <strong>undertrained big models lose to adequately-trained small ones</strong>. Run the reproduction commands below and watch it happen.</p>
+<h3 id="182-five-exercises-that-teach-the-whole-field">18.2 Five exercises that teach the whole field</h3>
+<table>
+<thead><tr><th>#</th><th>Exercise</th><th>Concept taught</th><th>Where</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Train CNN vs ViT vs MLP on 8k-image subsets; sweep epochs &amp; img_size</td><td>Inductive bias, data hunger, compute-optimal allocation (§3, §14.2)</td><td><code>science_lab/vit/vit_exp.py</code> — commands in vit/REPORT.md</td></tr>
+<tr><td>2</td><td>FGSM → PGD attack your own trained model; then defend with adversarial training vs 3-bit quantization</td><td>Attack/defense arms race, adaptive evaluation (§1, §5.6-adjacent)</td><td><code>science_lab/advml/</code> — autopsied &amp; verified (AUTOPSY_advml.md)</td></tr>
+<tr><td>3</td><td>Fine-tune a small open model (Qwen3-4B / Gemma) with LoRA on a narrow task</td><td>Post-training stack: SFT, PEFT, evals (§2.5, §7)</td><td>Any GPU/Colab; HF transformers + peft + trl</td></tr>
+<tr><td>4</td><td>Build a RAG pipeline: chunk → embed → retrieve → generate → evaluate</td><td>Retrieval augmentation, the dominant production pattern (§4.1, §7)</td><td>LlamaIndex/LangChain + any open embedding model</td></tr>
+<tr><td>5</td><td>Implement scaled dot-product attention from scratch, then add KV-cache</td><td>The transformer internals everything assumes (§3.4, §7 inference)</td><td>~80 lines of NumPy/PyTorch; Karpathy's "Let's build GPT" is the canonical walkthrough</td></tr>
+</tbody>
+</table>
+<h3 id="183-the-honest-hardware-reality">18.3 The honest hardware reality</h3>
+<ul>
+<li><strong>CPU-only (this fleet: 4 cores, 5 GB)</strong>: MLPs, small CNNs, distilled tiny models, all the <em>concepts</em>. Our vit lab trained ViT-tiny on CPU — slowly (10.5 min/3 epochs) but verifiably.</li>
+<li><strong>Single consumer GPU (8–24 GB)</strong>: full fine-tuning of ≤7B models with LoRA/QLoRA, small diffusion, Whisper-small — the realistic indie floor in 2026.</li>
+<li><strong>Multi-GPU / cloud</strong>: real fine-tunes of 70B+, RL post-training, serious evals — rented, not owned, for almost everyone.</li>
+<li><strong>The meta-skill</strong>: knowing which tier a problem lives in. Most "AI engineering" is orchestration + evals + data work, not gradient descent — the map's Part 13 roadmap reflects that.</li>
+</ul>
+<h3 id="184-what-to-build-first-a-30-day-plan">18.4 What to build first — a 30-day plan</h3>
+<ol>
+<li><strong>Days 1–5</strong>: PyTorch tensors + autograd; train MNIST MLP from scratch; read §3.4 attention math.</li>
+<li><strong>Days 6–10</strong>: fine-tune a pretrained ViT/CNN on a custom dataset; learn what frozen features do (§3.1).</li>
+<li><strong>Days 11–15</strong>: build RAG over your own documents; evaluate retrieval quality before generation quality.</li>
+<li><strong>Days 16–20</strong>: add tool-calling to an open model; build one agent that does a real 3-step task; measure its failure modes (§5.1).</li>
+<li><strong>Days 21–25</strong>: attack your own model (FGSM/PGD) then defend it; read our advml autopsy for the verified recipe (§14.7).</li>
+<li><strong>Days 26–30</strong>: pick one frontier area from §15.8 and replicate a published small-scale result; write up what broke.</li>
+</ol>
+<h3 id="185-nellogem-lab-reproduction-commands">18.5 NelloGem lab reproduction commands</h3>
+<pre><code># ViT vs CNN vs MLP scaling experiment (science_lab/vit)
+cd /home/neilh/science_lab/vit
+/home/neilh/venv/bin/python vit_exp.py train --tag fm_vit_tiny_112_b --model vit --dataset fashion --img-size 112 --epochs 6 --ntrain 8000
+/home/neilh/venv/bin/python vit_exp.py attack --tag fm_vit_tiny_112_b --eps 0.3 --n 1000
+/home/neilh/venv/bin/python make_plots.py
+
+# Adversarial defense matrix (science_lab/advml) — PGD ascent verified by autopsy
+# see AUTOPSY_advml.md for eval_strong.py reproduction + independent re-implementation
+
+# Math lab (science_lab/math) — hash collisions, RSA/ECM wall, graph algorithms
+# exp1_primes.py … exp7_gaps.py on the Windows mirror /c/Users/neilh/sciencelab/
+</code></pre>
+<hr />
+<h2 id="part-19-metrics-that-matter-2026">PART 19 — METRICS THAT MATTER (2026 EDITION)</h2>
+<p><em>Accuracy is no longer the headline number. The frontier is measured in cost, reliability, and safety alongside capability.</em></p>
+<table>
+<thead><tr><th>Metric family</th><th>What it measures</th><th>Why it matters now</th><th>Canonical sources</th></tr></thead>
+<tbody>
+<tr><td><strong>Capability</strong></td><td>SWE-bench Verified, GPQA, HLE, ARC-AGI, OSWorld, τ-bench</td><td>Professional-task parity reached; benchmarks saturate in months</td><td>Official leaderboards + Epoch/METR verification</td></tr>
+<tr><td><strong>Cost per solved task</strong></td><td>$ and joules to complete a real task end-to-end (not per-token)</td><td>The economic gate for agents; reasoning models shift cost to inference</td><td>METR economic studies, provider pricing, epoch.ai compute data</td></tr>
+<tr><td><strong>Time horizon</strong></td><td>Longest task humans do in T minutes that models do at 50% success</td><td>METR's ~7-month doubling is the cleanest capability-trajectory metric</td><td>METR time-horizon reports</td></tr>
+<tr><td><strong>Reliability / calibration</strong></td><td>Consistency across seeds, honest "I don't know", error detection</td><td>Agents fail by compounding variance, not mean capability</td><td>Internal evals; calibration literature</td></tr>
+<tr><td><strong>Robustness</strong></td><td>Adversarial, OOD, prompt-injection resistance (AutoAttack/AgentHarm-class)</td><td>Clean accuracy ≠ deployable accuracy — our own labs show 95.6%→1.8% under PGD</td><td>RobustBench, HarmBench, AgentHarm, garak</td></tr>
+<tr><td><strong>Safety propensities</strong></td><td>Refusal calibration, situational awareness, deception evals</td><td>Models now pass capability evals while failing honesty ones</td><td>AISI evaluations, system cards, Apollo/Redwood research</td></tr>
+<tr><td><strong>Efficiency</strong></td><td>Tokens/Joule, latency TTFT/TPOT, throughput tok/s/GPU</td><td>Inference is the dominant compute cost; drives architecture (MoE, distillation)</td><td>MLPerf Inference, provider dashboards, sglang/vLLM benchmarks</td></tr>
+<tr><td><strong>Provenance</strong></td><td>Watermarking, C2PA, dataset/model cards, eval contamination audits</td><td>Synthetic-data flood makes origin tracking a first-class problem (§8.7)</td><td>C2PA spec, HF model cards, dataset datasheets</td></tr>
+</tbody>
+</table>
+<p><strong>The practitioner rule</strong>: report the tuple (capability, cost, robustness, safety) — never capability alone. A model that scores 97% on SWE-bench and gets jailbroken by a one-line indirect injection (doc 45 §VI.3) is not "better" than one at 90% that resists it; it is differently-shaped.</p>
+<hr />
+<h2 id="sources">SOURCES</h2>
+<p>Version numbers verified November 2026 against:</p>
+<ul>
+<li>PyTorch releases: https://github.com/pytorch/pytorch/releases (v2.15.0, Oct 28, 2026 — rewritten NCCL backend, FSDP2, FP8/NVFP4, ROCm 10.0 wheels, CUDA 13.2 default)</li>
+<li>PyPI torch: https://pypi.org/project/torch/ (v2.15.0)</li>
+<li>TensorFlow releases: https://github.com/tensorflow/tensorflow/releases (v2.21.0 stable, v2.22.0-rc1 pending — Python 3.14 support, CUDA 13, TensorBoard decoupled)</li>
+<li>PyPI tensorflow: https://pypi.org/project/tensorflow/ (v2.21.0)</li>
+<li>JAX: https://github.com/google/jax + PyPI jax-v0.12.1 (Nov 18, 2026); version comparison: https://axiomi.si/guides/pytorch-vs-jax</li>
+<li>scikit-learn: https://pypi.org/project/scikit-learn/ (v1.9.1)</li>
+<li>HuggingFace transformers releases: https://github.com/huggingface/transformers/releases (v5.24.1, Nov 24, 2026; v5.24.0 Nov 21)</li>
+<li>vLLM releases: https://github.com/vllm-project/vllm/releases + https://vllm.ai (v0.34.0, Nov 16, 2026 — Model Runner V2 only, extensible KV cache default, 10 new models)</li>
+<li>Ray releases: https://github.com/ray-project/ray/releases (v2.60.1, Nov 23, 2026)</li>
+<li>Framework landscape: https://awesome-alternatives.com/categories/machine-learning-framework/</li>
+<li>PyTorch newsletter: https://pytorch.org/newsletter/november-2026/</li>
+<li>PyTorch 2.15 release notes: https://github.com/pytorch/pytorch/releases/tag/v2.15.0</li>
+<li>What is the latest Transformers: https://whatisthelatest.ai/latest/transformers/</li>
+</ul>
+<p>General field references (canonical knowledge, no version dependency):</p>
+<ul>
+<li>Russell &amp; Norvig, <em>Artificial Intelligence: A Modern Approach</em> (foundations, search, agents)</li>
+<li>Goodfellow, Bengio &amp; Courville, <em>Deep Learning</em> (NN theory, generative models)</li>
+<li>Hastie, Tibshirani &amp; Friedman, <em>The Elements of Statistical Learning</em> (classical ML)</li>
+<li>Sutton &amp; Barto, <em>Reinforcement Learning: An Introduction</em> (RL)</li>
+<li>Jurafsky &amp; Martin, <em>Speech and Language Processing</em> (NLP)</li>
+<li>Szeliski, <em>Computer Vision: Algorithms and Applications</em> (CV)</li>
+<li>Dean &amp; Barroso et al., various MLSys papers (systems)</li>
+<li>Hendrycks et al., "Measuring Massive Multitask Language Understanding" (benchmarks)</li>
+<li>Christiano et al., "Deep Reinforcement Learning from Human Preferences" (RLHF)</li>
+<li>Vaswani et al., "Attention Is All You Need" (transformers)</li>
+<li>Brown et al., "Language Models are Few-Shot Learners" (GPT-3)</li>
+<li>Jumper et al., "Highly accurate protein structure prediction with AlphaFold" (AI4Science)</li>
+<li>METR time-horizon studies (capability measurement)</li>
+<li>AI Impacts expert surveys (AGI timelines)</li>
+</ul>
+<hr />
+<p><em>Document compiled November 2026. All tool versions verified against official release pages at compilation time; versions will drift — always check current releases before installing.</em></p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 44 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

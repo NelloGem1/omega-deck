@@ -1,0 +1,178 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>VeraCrypt Beginner's Guide</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="veracrypt-beginners-guide">VeraCrypt Beginner's Guide</h1>
+<p><strong>Installed version:</strong> 1.26.31 (stable, released November 2, 2026)
+<strong>Install location:</strong> <code>C:\Program Files\VeraCrypt\VeraCrypt.exe</code>
+<strong>Official site:</strong> https://veracrypt.io</p>
+<h2 id="what-is-veracrypt">What is VeraCrypt?</h2>
+<p>VeraCrypt is a free, open-source disk encryption tool (forked from TrueCrypt). It encrypts data using strong algorithms (AES, Serpent, Twofish, or combinations). It can encrypt:</p>
+<ul>
+<li><strong>Encrypted file containers</strong> — a single file that acts like a virtual encrypted drive</li>
+<li><strong>Partitions or whole drives</strong> — encrypt an entire volume (including the system disk)</li>
+<li><strong>Non-system partitions</strong> — encrypt a data partition</li>
+</ul>
+<blockquote>
+<p><strong>Important:</strong> VeraCrypt does NOT encrypt folders "in place" like Windows' built-in folder encryption or tools like our <code>folder_lock.py</code>. Instead, you create an encrypted <em>container file</em>, then <em>mount</em> it as a drive letter. Files are copied into that virtual drive.</p>
+</blockquote>
+<h2 id="core-concepts">Core Concepts</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Container</strong></td>
+<td>A single file (e.g., <code>myvault.vc</code>) that contains an encrypted filesystem</td>
+</tr>
+<tr>
+<td><strong>Mount</strong></td>
+<td>Decrypt the container on-the-fly and assign it a drive letter (e.g., <code>V:</code>)</td>
+</tr>
+<tr>
+<td><strong>Dismount</strong></td>
+<td>Lock the container and remove the drive letter</td>
+</tr>
+<tr>
+<td><strong>Password / PIM</strong></td>
+<td>Your decryption key. PIM = Personal Iterations Multiplier (optional, makes brute-force harder)</td>
+</tr>
+<tr>
+<td><strong>Keyfile</strong></td>
+<td>An extra secret file required to mount — security even if the password leaks</td>
+</tr>
+<tr>
+<td><strong>Hibernation file / pagefile / temp</strong></td>
+<td>While a container is mounted, data is decrypted in RAM — it is only written encrypted to disk inside the container</td>
+</tr>
+</tbody>
+</table>
+<h2 id="creating-an-encrypted-container-step-by-step">Creating an Encrypted Container (step by step)</h2>
+<ol>
+<li>Launch <strong>VeraCrypt.exe</strong>. Click <strong>"Create Volume"</strong>.</li>
+<li>Choose volume type:</li>
+<li><strong>"Create an encrypted file container"</strong> ← pick this for a portable vault</li>
+<li>"Encrypt a non-system partition/drive" or "Encrypt the system partition/drive" for whole-disk encryption</li>
+<li>Click <strong>Next</strong>, then <strong>"Standard VeraCrypt volume"</strong> (hidden volumes are an advanced feature).</li>
+<li>Choose where to save the container file, e.g., <code>D:\vaults\myvault.vc</code>. The file size = the container size.</li>
+<li>Choose encryption algorithm: <strong>AES + SHA-512</strong> is the sensible default. Click <strong>Next</strong>.</li>
+<li>Choose volume size (e.g., 1 GB). Click <strong>Next</strong>.</li>
+<li>Choose a <strong>strong password</strong> (20+ characters recommended). Optionally set a <strong>PIM</strong>. Click <strong>Next</strong>.</li>
+<li>Optional: <strong>"Use keyfiles"</strong> — click "Select Keyfiles" and pick one or more files. The password alone won't mount the volume without them.</li>
+<li>Choose filesystem: <strong>exFAT</strong> (works everywhere) or <strong>NTFS</strong> (better permissions). Leave cluster size default. Click <strong>Next</strong>.</li>
+<li>Move your mouse around the "Random Pool" area until the entropy bar is full — this generates the encryption key from real random data.</li>
+<li>Click <strong>"Format"</strong> and wait. The container is now created and mounted.</li>
+</ol>
+<h2 id="mounting-dismounting-a-container">Mounting / Dismounting a Container</h2>
+<p><strong>Mount:</strong>
+1. In VeraCrypt, click <strong>"Select File"</strong> and pick your <code>.vc</code> container.
+2. Choose an empty drive letter (e.g., <code>V:</code>).
+3. Click <strong>"Mount"</strong>, enter your password (and provide keyfiles if you used them).
+4. The container appears as a normal drive letter — copy files in/out as usual.</p>
+<p><strong>Dismount:</strong>
+- Click <strong>"Dismount"</strong> or <strong>"Dismount All"</strong> in VeraCrypt (or right-click the drive letter in Explorer → VeraCrypt → Dismount).
+- Data on the drive letter becomes unreadable immediately; only the encrypted <code>.vc</code> file remains on disk.</p>
+<p><strong>Auto-mount:</strong> VeraCrypt can mount containers at startup — use <strong>System → Preferences → Auto-Mount Devices</strong> or the built-in task scheduler integration.</p>
+<h2 id="system-encryption-encrypting-windows-itself">System Encryption (encrypting Windows itself)</h2>
+<p>VeraCrypt can encrypt the drive Windows boots from:</p>
+<ol>
+<li>Click <strong>"System" → "Encrypt System Partition/Drive"</strong>.</li>
+<li>Choose "Normal" or "Hidden" system encryption.</li>
+<li>Follow the wizard: it encrypts in place, creates a VeraCrypt Boot Loader, and asks you to burn/print a <strong>VeraCrypt Rescue Disk</strong> — <strong>do this</strong>, it can recover a broken bootloader.</li>
+<li>After encryption, the machine prompts for the VeraCrypt password <strong>before Windows starts</strong>.</li>
+</ol>
+<p>⚠️ System encryption requires a BIOS that supports the needed boot modes; keep the rescue disk safe. Consider enabling it only if you understand the boot-time recovery process.</p>
+<h2 id="keyfiles">Keyfiles</h2>
+<ul>
+<li>A keyfile is just any file whose contents become part of your decryption key.</li>
+<li>Even with the correct password, the container <strong>cannot</strong> be mounted without the keyfile — great "second factor" protection.</li>
+<li>You can combine keyfiles with a password, or use keyfiles <em>instead</em> of a password (not recommended alone — keyfiles are often guessable patterns if weak).</li>
+<li>Best practice: use a file with high entropy (e.g., 1 KB of random data), not a photo or document.</li>
+</ul>
+<h2 id="other-useful-features">Other Useful Features</h2>
+<ul>
+<li><strong>Hidden volumes</strong> — a second encrypted volume hidden inside the outer container (plausible deniability; advanced).</li>
+<li><strong>VeraCrypt Traveler Disk</strong> — run VeraCrypt from a USB stick.</li>
+<li><strong>Command-line tool</strong> (<code>VeraCrypt Format.exe</code>, <code>VeraCrypt.exe /v /l V file.vc</code>) for scripting.</li>
+<li><strong>RAM encryption / secure desktop</strong> — passwords are typed on an isolated secure desktop.</li>
+</ul>
+<h2 id="comparison-veracrypt-containers-vs-our-folder_lockpy">Comparison: VeraCrypt Containers vs. our <code>folder_lock.py</code></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>VeraCrypt</th>
+<th><code>folder_lock.py</code> (in-place lock)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approach</td>
+<td>Encrypted <strong>container file</strong> mounted as a drive</td>
+<td>Encrypts files <strong>in place</strong> inside a real folder</td>
+</tr>
+<tr>
+<td>Folder stays a normal folder?</td>
+<td>No — files live inside a virtual drive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Plausibility</td>
+<td>Anyone can see a <code>.vc</code> file exists</td>
+<td>Original filenames/structure may still be visible</td>
+</tr>
+<tr>
+<td>Cross-platform</td>
+<td>Windows, macOS, Linux</td>
+<td>Depends on script implementation</td>
+</tr>
+<tr>
+<td>Strength</td>
+<td>Battle-tested, audited lineage (TrueCrypt fork), AES</td>
+<td>Depends on implementation quality</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Large private data stores, portable vaults, whole-disk</td>
+<td>Quick lock/unlock of a working folder</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule of thumb:</strong> use VeraCrypt when you want a serious, portable encrypted vault; use <code>folder_lock.py</code> when you just need to quickly hide a folder's contents while keeping normal file paths.</p>
+<h2 id="security-tips">Security Tips</h2>
+<ul>
+<li>Use a long, unique password — VeraCrypt cannot recover a forgotten password (no backdoors).</li>
+<li>Keep containers on encrypted/backup drives and remember the <code>.vc</code> file itself is safe to store anywhere.</li>
+<li>Dismount before sleep/shutdown; VeraCrypt also has auto-dismount hotkeys (Settings → Hot Keys).</li>
+<li>For maximum security on the system drive, combine VeraCrypt system encryption with a strong pre-boot password.</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from veracrypt_guide.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 28 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

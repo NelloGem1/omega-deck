@@ -1,0 +1,148 @@
+[
+ {
+  "name": "NEIL",
+  "callsign": "CUTMASTER",
+  "domain": "video_editing",
+  "xp": 1600,
+  "skills": {
+   "video_editing": 95,
+   "storytelling": 90,
+   "ffmpeg": 85
+  },
+  "tools": [
+   "ffmpeg",
+   "manim",
+   "blender",
+   "after-effects",
+   "premiere"
+  ],
+  "permissions": "FULL \u2014 marshal authority",
+  "last": "rendered THE_LIGHT_KEEPER.mp4",
+  "rank": "FIELD MARSHAL",
+  "level": 17
+ },
+ {
+  "name": "DEVIN",
+  "callsign": "FORGE",
+  "domain": "python_systems",
+  "xp": 410,
+  "skills": {
+   "python": 90,
+   "automation": 88,
+   "debugging": 85
+  },
+  "tools": [
+   "python",
+   "fleet_gateway",
+   "updater",
+   "fix_encoding"
+  ],
+  "permissions": "fleet internals",
+  "last": "installed marshal-utf8 system codec",
+  "rank": "COMMANDER",
+  "level": 5
+ },
+ {
+  "name": "RAVEN",
+  "callsign": "NULLBYTE",
+  "domain": "cybersecurity",
+  "xp": 200,
+  "skills": {
+   "recon": 80,
+   "exploit_dev": 75,
+   "osint": 85
+  },
+  "tools": [
+   "dvwa",
+   "juice_shop",
+   "webgoat",
+   "nmap",
+   "burp"
+  ],
+  "permissions": "lab ranges only",
+  "last": "exploited DVWA SQLi admin bypass",
+  "rank": "SPECIALIST",
+  "level": 3
+ },
+ {
+  "name": "PIXEL",
+  "callsign": "PRISM",
+  "domain": "visual_design",
+  "xp": 155,
+  "skills": {
+   "ui_design": 85,
+   "svg": 80,
+   "color_theory": 75
+  },
+  "tools": [
+   "svg",
+   "css",
+   "canvas",
+   "whiteboard"
+  ],
+  "permissions": "fleet dashboards",
+  "last": "designed FIELD MARSHAL FLEET glass UI",
+  "rank": "SPECIALIST",
+  "level": 2
+ },
+ {
+  "name": "ORACLE",
+  "callsign": "METRIC",
+  "domain": "data_math",
+  "xp": 355,
+  "skills": {
+   "statistics": 88,
+   "proofledger": 82,
+   "modeling": 80
+  },
+  "tools": [
+   "proofledger",
+   "compress_lab",
+   "sqlite"
+  ],
+  "permissions": "verification systems",
+  "last": "verification-weighted proof scoring",
+  "rank": "COMMANDER",
+  "level": 4
+ },
+ {
+  "name": "ECHO",
+  "callsign": "SIGNAL",
+  "domain": "networking",
+  "xp": 95,
+  "skills": {
+   "tcp_ip": 80,
+   "dns": 75,
+   "vpn": 70
+  },
+  "tools": [
+   "wireshark",
+   "nmap",
+   "gateway"
+  ],
+  "permissions": "fleet infra",
+  "last": "mapped all fleet port routes",
+  "rank": "RECRUIT",
+  "level": 1
+ },
+ {
+  "name": "ALPHA",
+  "callsign": "ALPHA",
+  "domain": "ai_ml",
+  "xp": 0,
+  "skills": {
+   "ml_basics": 50,
+   "llm_ops": 50,
+   "evals": 50
+  },
+  "tools": [
+   "python",
+   "fleet_learning",
+   "manim"
+  ],
+  "permissions": "academy modules",
+  "last": "awaiting first deployment",
+  "rank": "RECRUIT",
+  "level": 1
+ }
+]

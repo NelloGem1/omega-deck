@@ -1,0 +1,874 @@
+<!doctype html><html><head><meta charset="utf-8"><title>engineering-medicine-map</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="engineering-medicine-and-applied-technology-comprehensive-classification-map">Engineering, Medicine, and Applied Technology — Comprehensive Classification Map</h1>
+<p><em>A reference map of the applied-science disciplines that turn physics, chemistry, biology, and mathematics into working systems — from bridges and batteries to brains and bioreactors. Each entry covers: scientific foundations, major technologies, applications, engineering methods, risks, limitations, and future developments.</em></p>
+<blockquote><p><strong>2026 SSSSS upgrade:</strong> Parts I–VI (original 2025 map) + Part VII Emerging Frontier Fields + Part VIII market/regulatory data tables + Part IX career &amp; skill maps + Part X controversies + Part XI breakthrough timeline + Part XII key papers &amp; people + Part XIII open problems + Part XIV cross-links.</p></blockquote>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#part-i--engineering-disciplines">Part I — Engineering Disciplines</a></li>
+<li>Electrical Engineering, Computer Engineering, Mechanical Engineering, Civil &amp; Environmental Engineering, Chemical Engineering, Aerospace Engineering, Industrial Engineering, Materials Engineering, Biomedical/BioEngineering, Nuclear Engineering, Control Systems Engineering, Robotics &amp; Mechatronics</li>
+<li><a href="#part-ii--energy--infrastructure">Part II — Energy &amp; Infrastructure</a></li>
+<li><a href="#part-iii--medicine--health-sciences">Part III — Medicine &amp; Health Sciences</a></li>
+<li><a href="#part-iv--agriculture--food-science">Part IV — Agriculture &amp; Food Science</a></li>
+<li><a href="#part-v--advanced-applied-technology">Part V — Advanced Applied Technology</a></li>
+<li><a href="#part-vi--convergence-how-disciplines-combine">Part VI — Convergence: How Disciplines Combine</a></li>
+<li><a href="#part-vii-emerging-frontier-fields">Part VII — Emerging Frontier Fields</a></li>
+<li><a href="#part-viii-data-tables-market-numbers">Part VIII — Data Tables &amp; Market Numbers</a></li>
+<li><a href="#part-ix-career-skill-maps">Part IX — Career &amp; Skill Maps</a></li>
+<li><a href="#part-x-controversies-debates">Part X — Controversies &amp; Debate Areas</a></li>
+<li><a href="#part-xi-timeline-breakthroughs">Part XI — Timeline of Breakthroughs</a></li>
+<li><a href="#part-xii-key-papers-people">Part XII — Key Papers &amp; People</a></li>
+<li><a href="#part-xiii-open-problems">Part XIII — Open Problems</a></li>
+<li><a href="#part-xiv-cross-links">Part XIV — Cross-Links to Sibling Maps</a></li>
+<li><a href="#sources">Sources</a></li>
+</ol>
+<hr />
+<h1 id="part-i-engineering-disciplines">PART I — ENGINEERING DISCIPLINES</h1>
+<h2 id="1-electrical-engineering-ee">1. Electrical Engineering (EE)</h2>
+<p><strong>Scientific foundations:</strong> Maxwell's equations of electromagnetism, Ohm's and Kirchhoff's circuit laws, semiconductor physics (band theory, p-n junctions), signal theory (Fourier/Laplace transforms), and electromagnetics.</p>
+<p><strong>Major technologies:</strong> Integrated circuits, VLSI/VLSI design, RF/microwave systems, power electronics (inverters, converters), photonics, sensors, batteries, wiring grids, embedded systems.</p>
+<p><strong>Applications:</strong> Power generation &amp; distribution, computing hardware, communications, consumer electronics, medical devices (pacemakers, MRI coils), industrial automation.</p>
+<p><strong>Engineering methods:</strong> Circuit analysis &amp; simulation (SPICE), digital design (Verilog/VHDL, RTL), EM field simulation, control theory, thermal analysis, DFMEA, EMC compliance testing.</p>
+<p><strong>Risks &amp; limitations:</strong> High-voltage hazards, EMI interference, chip fabrication complexity, analog design difficulty, supply-chain dependence on fabs (TSMC/Samsung concentration), e-waste.</p>
+<p><strong>Future developments:</strong> Beyond-silicon devices (GaN/SiC wide-bandgap semiconductors), chiplets/heterogeneous integration, neuromorphic computing, quantum electronics, terahertz electronics, self-healing circuits.</p>
+<hr />
+<h2 id="2-computer-engineering-software-engineering-compe">2. Computer Engineering / Software Engineering (CompE)</h2>
+<p><strong>Scientific foundations:</strong> Automata theory, formal logic, algorithms &amp; complexity theory, compiler theory, operating systems, networking protocols, information theory (Shannon), discrete mathematics.</p>
+<p><strong>Major technologies:</strong> CPUs/GPUs/TPUs, operating systems, databases, distributed systems, cloud infrastructure, AI/ML frameworks, cryptography, software engineering toolchains.</p>
+<p><strong>Applications:</strong> Every modern system — finance, medicine (EHR, imaging AI), defense, transport, science computing (HPC).</p>
+<p><strong>Engineering methods:</strong> Agile/devops, version control, testing (unit/integration/fuzzing), formal verification, static analysis, code review, model-driven development.</p>
+<p><strong>Risks &amp; limitations:</strong> Bugs &amp; security vulnerabilities, technical debt, vendor lock-in, algorithmic bias, legacy systems, energy consumption of data centers.</p>
+<p><strong>Future developments:</strong> Formal methods &amp; verified software, AI-generated code review, quantum computing, neuromorphic/chiplet architectures, edge computing, confidential computing.</p>
+<hr />
+<h2 id="3-mechanical-engineering-me">3. Mechanical Engineering (ME)</h2>
+<p><strong>Scientific foundations:</strong> Newtonian mechanics, thermodynamics, fluid dynamics, solid mechanics, kinematics &amp; dynamics, heat transfer, materials science.</p>
+<p><strong>Major technologies:</strong> Engines, turbines, HVAC, robotics actuators, machine tools, vehicles, pumps, compressors, bearings, mechatronic systems.</p>
+<p><strong>Applications:</strong> Automotive/aerospace/industrial machinery, power plants, medical devices (ventilators, prosthetics), HVAC, consumer products.</p>
+<p><strong>Engineering methods:</strong> CAD/CAM, finite element analysis (FEA), computational fluid dynamics (CFD), multibody dynamics, materials testing, design of experiments (DOE), tolerance analysis.</p>
+<p><strong>Risks &amp; limitations:</strong> Fatigue failure, vibration resonance, thermal runaway, precision manufacturing costs, miniaturization limits.</p>
+<p><strong>Future developments:</strong> Additive manufacturing (metal 3D printing), topology optimization, digital twins of machinery, soft robotics, exoskeletons, self-lubricating/smart materials, AI-driven generative design.</p>
+<hr />
+<h2 id="4-civil-environmental-engineering-ceenve">4. Civil &amp; Environmental Engineering (CE/EnvE)</h2>
+<p><strong>Scientific foundations:</strong> Soil mechanics, structural analysis (statics/dynamics), hydrology, geotechnical engineering, materials science (concrete, steel, asphalt), environmental chemistry &amp; biology.</p>
+<p><strong>Major technologies:</strong> Structural design codes, geotechnical instrumentation, water/wastewater treatment (activated sludge, membranes), earthquake engineering (base isolation, dampers), green infrastructure.</p>
+<p><strong>Applications:</strong> Bridges, buildings, dams, tunnels, roads, water treatment plants, flood control, landfill/remediation, air quality management.</p>
+<p><strong>Engineering methods:</strong> Load analysis, finite-element structural modeling, geotechnical site investigation, hydraulic modeling, construction management, environmental impact assessment (EIA), life-cycle assessment (LCA).</p>
+<p><strong>Risks &amp; limitations:</strong> Catastrophic failure modes (bridge collapse), corrosion, soil liquefaction, flooding, embodied carbon of concrete (cement ~8% of global CO₂), aging infrastructure.</p>
+<p><strong>Future developments:</strong> Self-healing concrete (bacteria-based), smart infrastructure with fiber-optic sensors, resilient/climate-adaptive design, mass timber construction, carbon capture concrete, autonomous construction equipment.</p>
+<hr />
+<h2 id="5-chemical-engineering-cheme">5. Chemical Engineering (ChemE)</h2>
+<p><strong>Scientific foundations:</strong> Thermodynamics, reaction kinetics, transport phenomena (mass/momentum/heat), process control, catalysis, polymer science, separation science.</p>
+<p><strong>Major technologies:</strong> Continuous reactors, distillation columns, catalytic converters, polymerization plants, bioreactors, pharmaceutical manufacturing, water purification, battery materials synthesis.</p>
+<p><strong>Applications:</strong> Petrochemicals, pharmaceuticals, fertilizers, plastics, food processing, fuel cells, semiconductor chemicals, cosmetics.</p>
+<p><strong>Engineering methods:</strong> Process simulation (Aspen/HYSYS), pinch analysis for energy integration, hazard &amp; operability studies (HAZOP), P&amp;ID design, safety-instrumented systems (SIS), statistical process control.</p>
+<p><strong>Risks &amp; limitations:</strong> Explosion/toxic release hazards, runaway reactions, environmental discharge, batch-to-batch variability, supply of feedstocks.</p>
+<p><strong>Future developments:</strong> Process intensification, electrified chemical processes, CO₂ utilization (CCU), green hydrogen production, flow chemistry, AI-optimized process control, circular-economy recycling chemistry.</p>
+<hr />
+<h2 id="6-aerospace-engineering">6. Aerospace Engineering</h2>
+<p><strong>Scientific foundations:</strong> Aerodynamics (Navier-Stokes, lift/drag), propulsion thermodynamics, orbital mechanics, materials at extreme temperatures, structural dynamics, avionics.</p>
+<p><strong>Major technologies:</strong> Jet/turbofan engines, rocket propulsion (liquid/solid), composite airframes (carbon fiber), fly-by-wire avionics, GPS, satellite systems, thermal protection systems.</p>
+<p><strong>Applications:</strong> Commercial/military aviation, satellites, launch vehicles, drones, space stations, hypersonics.</p>
+<p><strong>Engineering methods:</strong> Wind-tunnel testing, CFD simulation, structural FEA, systems engineering, mission analysis, reliability engineering, certification testing (FAA/EASA/space agencies).</p>
+<p><strong>Risks &amp; limitations:</strong> Extreme environments, single-point failures, cost per launch, re-entry heating, space debris, long development cycles.</p>
+<p><strong>Future developments:</strong> Reusable launch vehicles, hypersonic transport, electric/hydrogen aviation, in-orbit manufacturing, space-based solar power, autonomous flight systems.</p>
+<hr />
+<h2 id="7-industrial-engineering-operations-research-ie">7. Industrial Engineering / Operations Research (IE)</h2>
+<p><strong>Scientific foundations:</strong> Operations research, queueing theory, statistics, optimization (linear/integer programming), ergonomics, systems engineering, game theory.</p>
+<p><strong>Major technologies:</strong> ERP/MES systems, supply-chain optimization, lean manufacturing, Six Sigma, simulation software (AnyLogic), digital twins of factories, scheduling algorithms.</p>
+<p><strong>Applications:</strong> Manufacturing, logistics, healthcare operations (OR scheduling, bed management), warehousing (Amazon robotics), traffic management, service industries.</p>
+<p><strong>Engineering methods:</strong> Time-and-motion studies, statistical process control, discrete-event simulation, linear programming, constraint programming, human-factors engineering.</p>
+<p><strong>Risks &amp; limitations:</strong> Model-reality gap, data quality dependence, workforce displacement, brittle optimization to wrong objectives.</p>
+<p><strong>Future developments:</strong> AI-driven scheduling, autonomous supply chains, Industry 5.0 (human-centric), reinforcement learning for logistics, quantum optimization.</p>
+<hr />
+<h2 id="8-materials-engineering">8. Materials Engineering</h2>
+<p><strong>Scientific foundations:</strong> Crystallography, phase diagrams, solid-state physics, chemistry of bonding, mechanical properties testing, corrosion science.</p>
+<p><strong>Major technologies:</strong> Metals/alloys, polymers, ceramics, composites, nanomaterials, thin films, 2D materials (graphene), shape-memory alloys, metamaterials.</p>
+<p><strong>Applications:</strong> Aerospace structures, batteries, semiconductors, implants, coatings, textiles, construction, defense.</p>
+<p><strong>Engineering methods:</strong> Materials characterization (XRD, SEM, TEM), mechanical testing, alloy design, surface engineering, computational materials science (DFT, CALPHAD), accelerated life testing.</p>
+<p><strong>Risks &amp; limitations:</strong> Brittleness of ceramics, corrosion, fatigue, rare-earth supply constraints, cost of exotic materials, unknown long-term toxicity of nanomaterials.</p>
+<p><strong>Future developments:</strong> Self-healing materials, programmable matter, metamaterials with negative refractive index, high-entropy alloys, graphene/CNT composites, bio-inspired materials, 3D-printed tailored materials.</p>
+<hr />
+<h2 id="9-biomedical-bioengineering-bme">9. Biomedical / BioEngineering (BME)</h2>
+<p><strong>Scientific foundations:</strong> Physiology &amp; anatomy, cell biology, biomechanics, biomaterials science, signal processing, control systems applied to living systems.</p>
+<p><strong>Major technologies:</strong> Medical devices (pacemakers, insulin pumps, stents), prosthetics &amp; orthotics, implants (orthopedic, dental), medical imaging hardware, surgical robots, lab-on-chip diagnostics, neural interfaces (BCI).</p>
+<p><strong>Applications:</strong> Diagnostics, therapy, rehabilitation, drug delivery, surgical assistance, point-of-care testing, assistive technology.</p>
+<p><strong>Engineering methods:</strong> Biocompatibility testing (ISO 10993), finite-element analysis of implants, signal processing of biosignals, control systems for life support, regulatory affairs (FDA 510(k)/PMA), clinical validation.</p>
+<p><strong>Risks &amp; limitations:</strong> Biocompatibility failures, infection, device recalls, long regulatory timelines, cyber-security of connected devices, animal-to-human translation gaps.</p>
+<p><strong>Future developments:</strong> Closed-loop "artificial pancreas," neural implants for paralysis/depression, bioresorbable implants, organ-on-chip, personalized implants via 3D printing, wireless capsule endoscopy, AI-integrated diagnostics.</p>
+<hr />
+<h2 id="10-nuclear-engineering">10. Nuclear Engineering</h2>
+<p><strong>Scientific foundations:</strong> Nuclear physics (fission/fusion), reactor physics (neutron transport, criticality), radiation shielding, materials under irradiation, thermal hydraulics.</p>
+<p><strong>Major technologies:</strong> Fission reactors (PWR, BWR, SMR), fusion reactors (tokamaks, stellarators), radioisotope production, radiation therapy systems, nuclear medicine imaging.</p>
+<p><strong>Applications:</strong> Baseload electricity, medical isotopes (Tc-99m), cancer radiotherapy, industrial radiography, space propulsion (RTG), food irradiation.</p>
+<p><strong>Engineering methods:</strong> Neutron transport simulation (MCNP/GEANT4), thermal-hydraulic analysis, probabilistic risk assessment (PRA), fuel cycle design, waste management, radiation protection (ALARA).</p>
+<p><strong>Risks &amp; limitations:</strong> Meltdown risk, long-lived radioactive waste, proliferation concerns, high capital cost, decommissioning, public acceptance, fusion still unproven at scale.</p>
+<p><strong>Future developments:</strong> Small modular reactors (SMRs), Gen-IV reactors (molten salt, sodium-cooled, fast breeder), nuclear fusion (ITER, private ventures), advanced fuel cycles, fusion-fission hybrids, space reactors.</p>
+<hr />
+<h2 id="11-control-systems-engineering">11. Control Systems Engineering</h2>
+<p><strong>Scientific foundations:</strong> Linear/nonlinear systems theory, feedback theory, stability analysis (Lyapunov, Routh-Hurwitz), optimal control (LQR, MPC), signal processing.</p>
+<p><strong>Major technologies:</strong> PID controllers, model predictive control (MPC), state-space controllers, adaptive control, robust control (H∞), digital control systems, embedded controllers.</p>
+<p><strong>Applications:</strong> Process industries, robotics, vehicles (ABS, cruise control, autonomous driving), aircraft flight control, power grids, building HVAC, biological systems (glucose control).</p>
+<p><strong>Engineering methods:</strong> Transfer functions, Bode/Nyquist analysis, simulation (Simulink), system identification, hardware-in-the-loop testing, formal verification of safety-critical control.</p>
+<p><strong>Risks &amp; limitations:</strong> Instability, sensor noise, actuator saturation, model uncertainty, cyber-physical security, human-in-the-loop unpredictability.</p>
+<p><strong>Future developments:</strong> AI/ML-based control, reinforcement learning control, event-triggered control, multi-agent/swarm control, control for digital twins, safety-guaranteed learning control.</p>
+<hr />
+<h2 id="12-robotics-mechatronics">12. Robotics &amp; Mechatronics</h2>
+<p><strong>Scientific foundations:</strong> Mechanics &amp; kinematics (forward/inverse), dynamics, electronics &amp; embedded control, computer vision &amp; perception, machine learning, sensor fusion.</p>
+<p><strong>Major technologies:</strong> Industrial robotic arms, mobile robots (AGV/AMR), humanoid robots, surgical robots (da Vinci), drones, soft robots, swarm robotics, exoskeletons.</p>
+<p><strong>Applications:</strong> Manufacturing, surgery, logistics, agriculture, search &amp; rescue, space exploration, rehabilitation, service robots.</p>
+<p><strong>Engineering methods:</strong> ROS/ROS2 frameworks, SLAM, motion planning, impedance control, computer-vision pipelines, simulation-to-real transfer, teleoperation, safety standards (ISO 10218, ISO/TS 15066).</p>
+<p><strong>Risks &amp; limitations:</strong> Mechanical failure, perception errors, autonomy gaps ("AI effect"), cybersecurity, physical safety near humans, cost of dexterity, battery limits.</p>
+<p><strong>Future developments:</strong> Foundation models for robotics (vision-language-action), humanoid generalists, soft/continuum robots, swarm intelligence, telepresence surgery, self-repairing robots, brain-controlled prosthetics.</p>
+<hr />
+<h1 id="part-ii-energy-infrastructure">PART II — ENERGY &amp; INFRASTRUCTURE</h1>
+<h2 id="1-renewable-energy-technologies">1. Renewable Energy Technologies</h2>
+<p><strong>Scientific foundations:</strong> Photovoltaics (semiconductor physics, photon absorption), wind turbine aerodynamics (Betz limit, blade element theory), hydro power (fluid mechanics, potential energy), geothermal (Earth heat flow), tidal/wave energy (fluid-structure interaction).</p>
+<p><strong>Major technologies:</strong> Solar PV (silicon, perovskite, thin-film), concentrated solar power (CSP) with thermal storage, wind turbines (onshore/offshore, HAWT/VAWT), hydroelectric dams &amp; run-of-river, geothermal plants (flash/binary/EGS), bioenergy.</p>
+<p><strong>Applications:</strong> Grid electricity, off-grid rural power, green hydrogen, industrial heat, EV charging, water pumping, desalination.</p>
+<p><strong>Engineering methods:</strong> Resource assessment (solar irradiance, wind maps), system sizing, grid interconnection studies, LCOE modeling, hybrid microgrid design, power electronics integration.</p>
+<p><strong>Risks &amp; limitations:</strong> Intermittency, land use conflicts, materials scarcity (lithium, rare earths, polysilicon), bird/bat mortality, end-of-life recycling, rare-earth dependence of wind generators.</p>
+<p><strong>Future developments:</strong> Perovskite tandem solar cells (&gt;30% efficiency), floating offshore wind, enhanced geothermal systems (EGS), space-based solar power, agrivoltaics, longer-duration storage paired with renewables.</p>
+<hr />
+<h2 id="2-nuclear-power">2. Nuclear Power</h2>
+<p><em>(See also Part I §10.)</em></p>
+<p><strong>Scientific foundations:</strong> Fission chain reactions, neutron moderation, thermal hydraulics, radiation transport.</p>
+<p><strong>Major technologies:</strong> Light-water reactors (PWR/BWR), heavy-water (CANDU), fast reactors, SMRs (NuScale, Rolls-Royce SMR), fusion (ITER, Commonwealth Fusion, Helion), nuclear fuel enrichment (centrifuge), reprocessing.</p>
+<p><strong>Applications:</strong> Baseline low-carbon electricity (~10% of global), district heating, industrial process heat, medical isotopes, desalination.</p>
+<p><strong>Engineering methods:</strong> Core design &amp; criticality analysis, spent-fuel management, probabilistic safety assessment, grid frequency regulation, decommissioning planning.</p>
+<p><strong>Risks &amp; limitations:</strong> Accidents (Chernobyl/Fukushima legacy), waste storage (Yucca Mountain stalled), cost overruns, nonproliferation, public opposition.</p>
+<p><strong>Future developments:</strong> Commercial SMRs (late 2020s–2030s), fusion pilot plants (private sector targeting 2030s), molten-salt reactors, nuclear-powered space travel.</p>
+<hr />
+<h2 id="3-energy-storage">3. Energy Storage</h2>
+<p><strong>Scientific foundations:</strong> Electrochemistry, thermodynamics of phase change, compressed-gas thermodynamics, electrostatics (supercapacitors), superconductivity.</p>
+<p><strong>Major technologies:</strong> Lithium-ion batteries (NMC, LFP), sodium-ion, flow batteries (vanadium), solid-state batteries, pumped hydro, compressed air energy storage (CAES), flywheels, thermal storage (molten salt, phase-change materials), hydrogen storage, supercapacitors.</p>
+<p><strong>Applications:</strong> Grid storage, EVs, consumer electronics, backup power, frequency regulation, seasonal storage, microgrids.</p>
+<p><strong>Engineering methods:</strong> Battery management systems (BMS), degradation modeling, techno-economic analysis, round-trip efficiency testing, grid-scale dispatch optimization, safety testing (thermal runaway propagation).</p>
+<p><strong>Risks &amp; limitations:</strong> Lithium/cobalt supply constraints, thermal runaway fires, degradation over cycles, energy density limits for aviation, mining environmental impacts, recycling infrastructure gaps.</p>
+<p><strong>Future developments:</strong> Sodium-ion commercialization, solid-state EV batteries (~2027–2030 targets), iron-air/flow batteries for long duration, green hydrogen + fuel cells for seasonal storage, battery second-life (EV→grid), direct lithium extraction.</p>
+<hr />
+<h2 id="4-power-systems-smart-grids">4. Power Systems &amp; Smart Grids</h2>
+<p><strong>Scientific foundations:</strong> Circuit theory at scale, three-phase AC systems, power electronics, power system dynamics, optimization, communication networks.</p>
+<p><strong>Major technologies:</strong> Transmission/distribution networks, transformers, HVDC, FACTS devices, smart meters, SCADA systems, distributed energy resources (DERs), microgrids, virtual power plants, grid-forming inverters.</p>
+<p><strong>Applications:</strong> Electricity delivery to homes/industry, renewable integration, EV charging networks, demand response, resilience against outages/cyberattacks.</p>
+<p><strong>Engineering methods:</strong> Load-flow analysis (Newton-Raphson), short-circuit/fault analysis, transient stability studies, protection relay coordination, optimal power flow, state estimation with PMUs.</p>
+<p><strong>Risks &amp; limitations:</strong> Cascading blackouts, cyber vulnerabilities, transformer bottlenecks, aging infrastructure, voltage/frequency instability with high inverter penetration.</p>
+<p><strong>Future developments:</strong> 100% inverter-based grids, AI grid operators, peer-to-peer energy trading (blockchain experiments), vehicle-to-grid (V2G), superconducting transmission, digital twins of grids.</p>
+<hr />
+<h2 id="5-transportation-engineering-systems">5. Transportation Engineering &amp; Systems</h2>
+<p><strong>Scientific foundations:</strong> Vehicle dynamics, traffic flow theory, logistics optimization, human factors, materials, energy systems, urban geography.</p>
+<p><strong>Major technologies:</strong> ICE/electric/hydrogen vehicles, high-speed rail, intelligent transportation systems (ITS), traffic signals optimization, autonomous vehicles (SAE L0–L5), EV charging infrastructure, freight logistics.</p>
+<p><strong>Applications:</strong> Personal mobility, freight, public transit, supply chains, emergency services, last-mile delivery.</p>
+<p><strong>Engineering methods:</strong> Traffic simulation (VISSIM, SUMO), vehicle dynamics modeling, crash testing, route optimization (TSP/VRP solvers), multimodal network design.</p>
+<p><strong>Risks &amp; limitations:</strong> Traffic congestion, accidents, EV charging gaps, battery weight, infrastructure cost, mode-shift challenges, autonomous vehicle edge cases.</p>
+<p><strong>Future developments:</strong> Autonomous trucking corridors, urban air mobility (eVTOL), hyperloop research, battery swapping, freight electrification, shared autonomous fleets, congestion pricing integration.</p>
+<hr />
+<h2 id="6-construction-urban-planning">6. Construction &amp; Urban Planning</h2>
+<p><strong>Scientific foundations:</strong> Structural engineering, geotechnical science, urban economics, environmental science, sociology/demographics, GIS/geospatial analysis.</p>
+<p><strong>Major technologies:</strong> BIM (building information modeling), prefabrication/modular construction, mass timber, green buildings (LEED/BREEAM), smart cities infrastructure, geospatial digital twins.</p>
+<p><strong>Applications:</strong> Buildings, transit systems, housing, water/sewer systems, public spaces, resilient cities.</p>
+<p><strong>Engineering methods:</strong> Site planning, structural design codes, construction sequencing (critical path method), urban simulation, zoning regulation, life-cycle cost analysis.</p>
+<p><strong>Risks &amp; limitations:</strong> Construction accidents, cost overruns, gentrification, urban heat islands, infrastructure decay, disaster vulnerability.</p>
+<p><strong>Future developments:</strong> 3D-printed buildings, robotic construction, self-healing/cement-free concrete, vertical farms, 15-minute cities, climate-resilient urban design, AI-assisted zoning.</p>
+<hr />
+<h1 id="part-iii-medicine-health-sciences">PART III — MEDICINE &amp; HEALTH SCIENCES</h1>
+<p><em>(Note: the health sciences divide into basic medical sciences, clinical specialties, public health, and allied health professions — each with distinct scientific foundations but shared translational pipelines.)</em></p>
+<h2 id="1-anatomy-physiology">1. Anatomy &amp; Physiology</h2>
+<p><strong>Scientific foundations:</strong> Gross anatomy (dissection, imaging), histology (microscopy), cell biology, biochemistry, biomechanics of organs, systems biology (circulatory, respiratory, nervous, endocrine, renal, reproductive).</p>
+<p><strong>Major technologies:</strong> MRI/CT imaging, histological staining, electrophysiology, genomics, metabolomics, organ-on-chip models.</p>
+<p><strong>Applications:</strong> Foundation for all clinical medicine — diagnostics, drug targets, surgical planning, disease mechanism understanding.</p>
+<p><strong>Engineering methods:</strong> Medical imaging reconstruction, signal processing of ECG/EEG, computational physiology modeling (virtual heart, whole-body PBPK models).</p>
+<p><strong>Risks &amp; limitations:</strong> Species differences in animal models, reductionism (systems interact), high variability between individuals.</p>
+<p><strong>Future developments:</strong> Digital human twins for drug testing, multi-omics integration, organoids, real-time physiological monitoring wearables, AI-driven anatomy education.</p>
+<hr />
+<h2 id="2-pathology-laboratory-medicine">2. Pathology &amp; Laboratory Medicine</h2>
+<p><strong>Scientific foundations:</strong> Histopathology, cytology, molecular diagnostics, microbiology, immunology, hematology, clinical chemistry.</p>
+<p><strong>Major technologies:</strong> Microscopy (light, electron, fluorescence), immunohistochemistry, flow cytometry, PCR/NGS sequencing, mass spectrometry, automated analyzers, liquid biopsy.</p>
+<p><strong>Applications:</strong> Cancer diagnosis/grading, infectious disease ID, genetic testing, blood bank, forensic medicine, monitoring disease progression.</p>
+<p><strong>Engineering methods:</strong> Automated slide scanning &amp; digital pathology, assay validation, laboratory information systems (LIS), quality control (CLIA/CAP accreditation), statistical interpretation of test results.</p>
+<p><strong>Risks &amp; limitations:</strong> Diagnostic errors, false positives/negatives, sample contamination, turnaround-time delays, specialist shortage.</p>
+<p><strong>Future developments:</strong> AI pathology (FDA-cleared algorithms), liquid biopsy for early cancer detection, point-of-care molecular diagnostics, spatial transcriptomics, CRISPR-based diagnostics (SHERLOCK/DETECTR).</p>
+<hr />
+<h2 id="3-pharmacology-pharmacy">3. Pharmacology &amp; Pharmacy</h2>
+<p><strong>Scientific foundations:</strong> Biochemistry, molecular biology, pharmacokinetics/dynamics, medicinal chemistry, toxicology, receptor theory.</p>
+<p><strong>Major technologies:</strong> Small-molecule drugs, biologics (antibodies, mRNA, gene therapies), drug delivery systems (nanoparticles, implants), pharmacogenomics, AI drug discovery.</p>
+<p><strong>Applications:</strong> Treatment of virtually all diseases — antibiotics, antivirals, oncology, immunology, CNS, cardiovascular, rare diseases.</p>
+<p><strong>Engineering methods:</strong> High-throughput screening, structure-based drug design, PK/PD modeling, clinical trial design (Phase I–IV), pharmacovigilance, formulation science.</p>
+<p><strong>Risks &amp; limitations:</strong> Drug resistance (antibiotics), adverse effects, high development cost (~$2.6B avg), trial failures, access inequity, counterfeit drugs.</p>
+<p><strong>Future developments:</strong> AI-designed molecules (AlphaFold-enabled), mRNA platform expansion, PROTACs/degraders, personalized dosing via PGx, repurposing via AI, continuous manufacturing.</p>
+<hr />
+<h2 id="4-surgery-surgical-specialties">4. Surgery &amp; Surgical Specialties</h2>
+<p><strong>Scientific foundations:</strong> Anatomy, physiology, wound healing biology, anesthesia pharmacology, surgical biomechanics, imaging.</p>
+<p><strong>Major technologies:</strong> Laparoscopy/robotics (da Vinci), endoscopy, electrosurgery, imaging guidance (MRI/CT/ultrasound fusion), minimally invasive &amp; NOTES techniques, telesurgery.</p>
+<p><strong>Applications:</strong> Cardiac, neurosurgery, orthopedic, transplant, oncologic, trauma, bariatric, robotic general surgery.</p>
+<p><strong>Engineering methods:</strong> Surgical simulation (VR trainers), preoperative 3D planning, intraoperative navigation, fluorescence-guided surgery, outcome registries.</p>
+<p><strong>Risks &amp; limitations:</strong> Surgical complications, infection, blood loss, anesthesia risk, skill-dependent variability, cost of robotics.</p>
+<p><strong>Future developments:</strong> Autonomous surgical subtasks, AI intraoperative guidance, single-port &amp; scarless surgery, augmented-reality navigation, organ transplantation advances (xenotransplantation), surgical digital twins.</p>
+<hr />
+<h2 id="5-public-health-epidemiology">5. Public Health &amp; Epidemiology</h2>
+<p><strong>Scientific foundations:</strong> Biostatistics, epidemiological study design (RCT, cohort, case-control), infectious disease dynamics (SIR models), environmental health, health economics.</p>
+<p><strong>Major technologies:</strong> Surveillance systems, genomic epidemiology, contact tracing apps, wastewater monitoring, health information systems (DHIS2), vaccine logistics.</p>
+<p><strong>Applications:</strong> Disease outbreak response, vaccination programs, maternal/child health, chronic disease prevention, health policy, pandemic preparedness.</p>
+<p><strong>Engineering methods:</strong> Epidemiological modeling, outbreak investigation, geospatial analysis (GIS), cost-effectiveness analysis, community health worker deployment.</p>
+<p><strong>Risks &amp; limitations:</strong> Data quality gaps, political interference, vaccine hesitancy, underfunding, inequitable access, misinformation.</p>
+<p><strong>Future developments:</strong> Real-time genomic surveillance, AI outbreak prediction, digital contact tracing 2.0, One Health frameworks, pandemic treaty governance.</p>
+<hr />
+<h2 id="6-psychiatry-mental-health">6. Psychiatry &amp; Mental Health</h2>
+<p><strong>Scientific foundations:</strong> Neuroscience, neurochemistry, neuroimaging (fMRI, PET), psychology, genetics (GWAS), sleep/circadian biology.</p>
+<p><strong>Major technologies:</strong> Psychopharmacology (SSRIs, antipsychotics), psychotherapy protocols, neurostimulation (TMS, DBS, ECT), digital therapeutics (FDA-cleared apps), telepsychiatry.</p>
+<p><strong>Applications:</strong> Depression, anxiety, schizophrenia, bipolar, PTSD, addiction, neurodevelopmental disorders, suicide prevention.</p>
+<p><strong>Engineering methods:</strong> Clinical trial design, symptom rating scales, neuroimaging biomarkers, digital phenotyping (smartphone data), AI chatbots/triage.</p>
+<p><strong>Risks &amp; limitations:</strong> Stigma, medication side effects, diagnostic subjectivity, access barriers, trial-and-error prescribing, AI therapy risks.</p>
+<p><strong>Future developments:</strong> Psychedelic-assisted therapy (MDMA/psilocybin trials), closed-loop DBS, digital biomarkers, personalized psychiatry via genetics, AI-supported diagnosis, wearables for mood monitoring.</p>
+<hr />
+<h2 id="7-dentistry-oral-medicine">7. Dentistry &amp; Oral Medicine</h2>
+<p><strong>Scientific foundations:</strong> Oral anatomy/histology, dental materials science, microbiology of oral flora, craniofacial biology, imaging (CBCT).</p>
+<p><strong>Major technologies:</strong> Dental implants, orthodontics (aligners), CAD/CAM crowns, lasers, digital scanning, teledentistry.</p>
+<p><strong>Applications:</strong> Caries treatment, periodontics, prosthodontics, orthodontics, oral surgery, pediatric dentistry.</p>
+<p><strong>Engineering methods:</strong> CAD/CAM milling, 3D-printed appliances, digital impressions, occlusal analysis.</p>
+<p><strong>Risks &amp; limitations:</strong> Access disparities, implant failures, radiation exposure (CBCT), material wear.</p>
+<p><strong>Future developments:</strong> Regenerative dentistry (stem-cell pulp), 3D-printed teeth, AI caries detection, antimicrobial materials, teledentistry expansion.</p>
+<hr />
+<h2 id="8-nursing-allied-health">8. Nursing &amp; Allied Health</h2>
+<p><strong>Scientific foundations:</strong> Physiology, pharmacology, patient care science, rehabilitation science, nutrition science, diagnostic imaging physics.</p>
+<p><strong>Major technologies:</strong> Patient monitoring (ICU telemetry), infusion pumps, wound care systems, medical imaging (X-ray, MRI, ultrasound, nuclear medicine), PT/OT modalities.</p>
+<p><strong>Applications:</strong> Direct patient care, ICU/nursing, physiotherapy, occupational therapy, radiography, respiratory therapy, nutrition counseling.</p>
+<p><strong>Engineering methods:</strong> Protocol-driven care, clinical decision support, simulation-based training, evidence-based practice, quality improvement (PDSA cycles).</p>
+<p><strong>Risks &amp; limitations:</strong> Staff shortages, burnout, alarm fatigue, documentation burden, scope-of-practice limits.</p>
+<p><strong>Future developments:</strong> AI nursing assistants, wearable patient monitors, robotic patient lifting, telerobotics for rehab, autonomous IV pumps, ambient clinical documentation.</p>
+<hr />
+<h2 id="9-nutrition-dietetics">9. Nutrition &amp; Dietetics</h2>
+<p><strong>Scientific foundations:</strong> Nutritional biochemistry, metabolism, food science, epidemiology of diet-disease, microbiome science.</p>
+<p><strong>Major technologies:</strong> Nutritional genomics, metabolic testing, food composition databases, supplementation, enteral/parenteral nutrition.</p>
+<p><strong>Applications:</strong> Chronic disease management (diabetes, obesity, CVD), clinical nutrition support, sports nutrition, public health dietary guidelines.</p>
+<p><strong>Engineering methods:</strong> Dietary assessment tools, metabolic ward studies, randomized feeding trials, precision nutrition algorithms.</p>
+<p><strong>Risks &amp; limitations:</strong> Conflicting evidence base, supplement industry regulation gaps, eating disorders, access to healthy food.</p>
+<p><strong>Future developments:</strong> Microbiome-based personalized diets, continuous glucose monitors for non-diabetics, precision nutrition via multi-omics, fortified foods for malnutrition.</p>
+<hr />
+<h2 id="10-medical-imaging-diagnostics">10. Medical Imaging &amp; Diagnostics</h2>
+<p><strong>Scientific foundations:</strong> Physics of radiation/magnetism/acoustics, signal processing, image reconstruction, radiobiology, contrast agent chemistry.</p>
+<p><strong>Major technologies:</strong> X-ray/CT, MRI, ultrasound, PET/SPECT nuclear medicine, digital pathology, molecular imaging, AI image analysis.</p>
+<p><strong>Applications:</strong> Cancer screening, trauma diagnosis, neurological imaging, cardiac imaging, interventional guidance, whole-body screening.</p>
+<p><strong>Engineering methods:</strong> Image reconstruction algorithms, radiomics, CAD (computer-aided diagnosis), radiation dose optimization, PACS systems.</p>
+<p><strong>Risks &amp; limitations:</strong> Radiation exposure (CT), gadolinium retention (MRI), false positives leading to overdiagnosis, cost/access barriers.</p>
+<p><strong>Future developments:</strong> Photon-counting CT, 7T+ MRI, AI radiology (FDA-cleared), portable ultrasound (Butterfly), photoacoustic imaging, theranostics.</p>
+<hr />
+<h2 id="11-rehabilitation-assistive-technology">11. Rehabilitation &amp; Assistive Technology</h2>
+<p><strong>Scientific foundations:</strong> Motor control neuroscience, biomechanics, exercise physiology, neuroplasticity.</p>
+<p><strong>Major technologies:</strong> Prosthetics, exoskeletons, FES (functional electrical stimulation), VR/AR rehab, robotics-assisted therapy, AAC devices.</p>
+<p><strong>Applications:</strong> Stroke recovery, spinal cord injury, amputees, cerebral palsy, elderly mobility, workplace ergonomics.</p>
+<p><strong>Engineering methods:</strong> Gait analysis labs, myoelectric control, outcome measurement (FIM scores), adaptive algorithms.</p>
+<p><strong>Risks &amp; limitations:</strong> High device cost, insurance barriers, technology abandonment rates, limited neural interfacing.</p>
+<p><strong>Future developments:</strong> Brain-computer interfaces for paralysis, regenerative rehabilitation (stem cells), soft exoskeletons, AI-personalized therapy, home-based telerehab.</p>
+<hr />
+<h1 id="part-iv-agriculture-food-science">PART IV — AGRICULTURE &amp; FOOD SCIENCE</h1>
+<h2 id="1-agricultural-engineering">1. Agricultural Engineering</h2>
+<p><strong>Scientific foundations:</strong> Soil mechanics, hydrology, agricultural machinery design, animal/environmental engineering, structures engineering.</p>
+<p><strong>Major technologies:</strong> Tractors/harvesters, irrigation systems (drip, pivot), greenhouses, silos, feed systems, milking machines, poultry/livestock facilities.</p>
+<p><strong>Applications:</strong> Crop production, livestock farming, aquaculture infrastructure, post-harvest handling, rural water supply.</p>
+<p><strong>Engineering methods:</strong> Machinery design &amp; testing, irrigation scheduling models, structural design of ag buildings, precision farming sensor networks.</p>
+<p><strong>Risks &amp; limitations:</strong> Soil compaction, machinery fuel consumption, water overuse, zoonotic disease spread in confined operations.</p>
+<p><strong>Future developments:</strong> Autonomous tractors, electric farm equipment, precision irrigation, vertical farming integration, robotics for harvest/livestock.</p>
+<hr />
+<h2 id="2-food-science-technology">2. Food Science &amp; Technology</h2>
+<p><strong>Scientific foundations:</strong> Food chemistry, microbiology, sensory science, nutrition science, packaging science, unit operations (heat transfer, drying, fermentation).</p>
+<p><strong>Major technologies:</strong> Pasteurization, UHT processing, aseptic packaging, fermentation (dairy, brewing, bioprocessing), food safety testing (PCR, ELISA), smart packaging, food 3D printing.</p>
+<p><strong>Applications:</strong> Shelf-stable foods, dairy/meat processing, beverages, food safety, functional foods, edible coatings, alternative proteins.</p>
+<p><strong>Engineering methods:</strong> Thermal processing calculations, HACCP food safety systems, shelf-life testing, sensory panels, process optimization.</p>
+<p><strong>Risks &amp; limitations:</strong> Pathogen outbreaks (Listeria, Salmonella), allergen control, nutrient degradation, packaging waste, additive concerns.</p>
+<p><strong>Future developments:</strong> Plant/cultured meat scaling, precision fermentation proteins, smart packaging with freshness sensors, edible/active packaging, AI sensory analysis.</p>
+<hr />
+<h2 id="3-soil-science-agronomy">3. Soil Science &amp; Agronomy</h2>
+<p><strong>Scientific foundations:</strong> Pedology, soil chemistry/physics/biology, plant physiology, climate science, nutrient cycling.</p>
+<p><strong>Major technologies:</strong> Soil sensors (moisture, NPK), precision agriculture GPS/GIS, no-till systems, cover crops, biofertilizers, soil carbon sequestration, remote sensing (satellite/drone imagery).</p>
+<p><strong>Applications:</strong> Crop yield optimization, soil health restoration, erosion control, nutrient management, climate-smart agriculture.</p>
+<p><strong>Engineering methods:</strong> Soil sampling grids, variable-rate technology (VRT), yield mapping, soil health indices, erosion modeling (RUSLE).</p>
+<p><strong>Risks &amp; limitations:</strong> Soil degradation, salinization, nutrient runoff eutrophication, pesticide resistance, climate change impacts.</p>
+<p><strong>Future developments:</strong> Regenerative agriculture adoption, soil microbiome engineering, carbon farming credits, digital soil mapping, perennial grain breeding.</p>
+<hr />
+<h2 id="4-food-security-sustainable-agriculture">4. Food Security &amp; Sustainable Agriculture</h2>
+<p><strong>Scientific foundations:</strong> Agricultural economics, ecology, climate science, supply-chain logistics, social science.</p>
+<p><strong>Major technologies:</strong> Vertical farming, hydroponics/aquaponics, controlled-environment agriculture (CEA), drought-resistant crops (CRISPR), food banks logistics, food waste reduction tech.</p>
+<p><strong>Applications:</strong> Urban food production, climate-resilient farming, reducing post-harvest loss (~14% global), emergency food response, malnutrition treatment.</p>
+<p><strong>Engineering methods:</strong> LCA of food systems, supply-chain optimization, cold-chain engineering, food loss/waste quantification.</p>
+<p><strong>Risks &amp; limitations:</strong> High energy costs of vertical farms, input costs for smallholders, land tenure issues, conflict/displacement, price volatility.</p>
+<p><strong>Future developments:</strong> AI-driven farm management, regenerative certification, alternative protein scale-up, cold-chain expansion, satellite crop monitoring for food early-warning.</p>
+<hr />
+<h2 id="5-aquaculture-fisheries">5. Aquaculture &amp; Fisheries</h2>
+<p><strong>Scientific foundations:</strong> Aquatic biology, fish physiology, water quality chemistry, marine ecology, feed science.</p>
+<p><strong>Major technologies:</strong> Recirculating aquaculture systems (RAS), offshore pens, automated feeding, selective breeding, feed formulation, water treatment (biofilters, UV).</p>
+<p><strong>Applications:</strong> Fish/shrimp farming, hatcheries, ornamental fish, seaweed farming, restoration aquaculture.</p>
+<p><strong>Engineering methods:</strong> Water quality monitoring &amp; control, system design for RAS, feed conversion ratio optimization, disease management.</p>
+<p><strong>Risks &amp; limitations:</strong> Disease outbreaks (sea lice), escapes/wild interactions, antibiotic use, feed reliance on wild fishmeal, environmental discharge.</p>
+<p><strong>Future developments:</strong> Cell-cultured seafood, AI fish health monitoring, offshore deep-water farms, algae-based feeds, integrated multi-trophic aquaculture (IMTA).</p>
+<hr />
+<h2 id="6-agricultural-biotechnology">6. Agricultural Biotechnology</h2>
+<p><strong>Scientific foundations:</strong> Genetics, molecular biology, plant breeding, microbiology, synthetic biology.</p>
+<p><strong>Major technologies:</strong> GMOs (Bt crops, Roundup Ready), CRISPR/Cas9 gene editing, marker-assisted selection, tissue culture/micropropagation, biofortification, RNAi crops, biological nitrogen fixation research.</p>
+<p><strong>Applications:</strong> Pest/disease resistance, herbicide tolerance, drought tolerance, nutritional enhancement (Golden Rice), reduced pesticide use, yield gains.</p>
+<p><strong>Engineering methods:</strong> Transformation protocols, genomic selection, field trials, trait stacking, regulatory approval processes (USDA/EPA/FDA).</p>
+<p><strong>Risks &amp; limitations:</strong> Gene flow to wild relatives, pest resistance evolution, regulatory complexity, public opposition, equity of access for smallholders.</p>
+<p><strong>Future developments:</strong> CRISPR-edited (non-transgenic) crops, nitrogen-fixing cereals, de novo domestication, synthetic biology nitrogen fixation, gene drives for pest control.</p>
+<hr />
+<h1 id="part-v-advanced-applied-technology">PART V — ADVANCED APPLIED TECHNOLOGY</h1>
+<h2 id="1-nanotechnology-nanomaterials">1. Nanotechnology &amp; Nanomaterials</h2>
+<p><strong>Scientific foundations:</strong> Quantum mechanics at nanoscale, surface chemistry, colloid science, photonics, molecular biology interfaces.</p>
+<p><strong>Major technologies:</strong> Nanoparticles (Au, Ag, lipid, polymeric), quantum dots, carbon nanotubes, graphene, nanofibers, nanolithography, nanomedicine carriers.</p>
+<p><strong>Applications:</strong> Drug delivery, cancer therapy (photothermal), sensors, catalysis, electronics, sunscreen, water purification, coatings.</p>
+<p><strong>Engineering methods:</strong> Bottom-up synthesis (sol-gel, CVD), top-down fabrication (lithography), characterization (TEM, AFM, DLS), toxicology testing.</p>
+<p><strong>Risks &amp; limitations:</strong> Unknown long-term toxicity, environmental fate, regulatory gaps, scale-up challenges, cost.</p>
+<p><strong>Future developments:</strong> Nanorobots for targeted therapy, nanofactories, self-assembling materials, nanophotonics computing, environmental remediation nanoparticles.</p>
+<hr />
+<h2 id="2-biotechnology-synthetic-biology">2. Biotechnology &amp; Synthetic Biology</h2>
+<p><strong>Scientific foundations:</strong> Molecular biology, genetics, biochemistry, metabolic engineering, systems biology, bioinformatics.</p>
+<p><strong>Major technologies:</strong> Recombinant DNA, CRISPR, DNA synthesis, metabolic engineering, cell-free systems, engineered microbes, biomanufacturing.</p>
+<p><strong>Applications:</strong> Biopharmaceuticals (insulin, antibodies), biofuels, enzymes, food ingredients (precision fermentation), bioremediation, biosensors, biomaterials.</p>
+<p><strong>Engineering methods:</strong> Genetic circuit design, directed evolution, pathway engineering, fermentation optimization, biofoundry automation, AI protein design (AlphaFold/RFdiffusion).</p>
+<p><strong>Risks &amp; limitations:</strong> Biosafety (escape of engineered organisms), biosecurity (dual-use), ethical concerns (germline editing), IP/patent issues.</p>
+<p><strong>Future developments:</strong> De novo genome synthesis, xenobots/biological robots, engineered living materials, programmable cells, AI-designed enzymes, industrial-scale biomanufacturing.</p>
+<hr />
+<h2 id="3-medical-robotics-surgical-automation">3. Medical Robotics &amp; Surgical Automation</h2>
+<p><em>(See Part I §12 for robotics foundations; this entry focuses on clinical deployment.)</em></p>
+<p><strong>Scientific foundations:</strong> Robotics, computer vision, haptics, surgical anatomy, control systems, machine learning.</p>
+<p><strong>Major technologies:</strong> da Vinci surgical system, orthopedic surgical robots (MAKO, ROSA), catheter robots, microsurgical robots, telepresence systems, AI-assisted surgery.</p>
+<p><strong>Applications:</strong> Prostatectomy, joint replacement, neurosurgery, cardiac catheterization, microsurgery, telesurgery.</p>
+<p><strong>Engineering methods:</strong> Surgical planning software, haptic feedback systems, autonomous suturing/knot-tying research, intraoperative imaging fusion, telesurgery latency compensation.</p>
+<p><strong>Risks &amp; limitations:</strong> High cost (~$2M+ per system), learning curve, mechanical failure, lack of force feedback in some systems, reimbursement barriers.</p>
+<p><strong>Future developments:</strong> Autonomous surgical tasks, soft robots for NOTES, nanoscale surgical robots, AI tissue recognition, telesurgery across continents, haptic gloves.</p>
+<hr />
+<h2 id="4-digital-twins">4. Digital Twins</h2>
+<p><strong>Scientific foundations:</strong> Multi-physics simulation, real-time sensor data fusion, machine learning, systems theory, high-performance computing.</p>
+<p><strong>Major technologies:</strong> Physics-based + ML hybrid models, IoT sensor networks, simulation platforms (Ansys, Simulia), cloud computing, AR/VR visualization.</p>
+<p><strong>Applications:</strong> Aircraft engines (GE Predix), manufacturing equipment, buildings, cities, human organs (virtual heart, liver), clinical trials (patient digital twins for placebo arms).</p>
+<p><strong>Engineering methods:</strong> Model calibration against sensor data, uncertainty quantification, real-time synchronization, scenario simulation, reduced-order modeling.</p>
+<p><strong>Risks &amp; limitations:</strong> Model fidelity vs. real world, data quality dependence, computational cost, regulatory acceptance (FDA ISTAND program), cybersecurity.</p>
+<p><strong>Future developments:</strong> Patient-specific organ twins for drug testing, city-scale twins for climate planning, autonomous system twins, real-time clinical decision twins, FAA/EASA certification frameworks.</p>
+<hr />
+<h2 id="5-additive-manufacturing-3d-printing">5. Additive Manufacturing (3D Printing)</h2>
+<p><strong>Scientific foundations:</strong> Materials science, thermal physics, solidification mechanics, CAD, robotics.</p>
+<p><strong>Major technologies:</strong> FDM, SLA/DLP, SLS/SLM (metal), EBM, binder jetting, multi-material printing, bioprinting (cells + scaffolds).</p>
+<p><strong>Applications:</strong> Prototyping, aerospace parts, medical implants, surgical guides, dental prosthetics, food printing, construction (3D-printed homes), tooling.</p>
+<p><strong>Engineering methods:</strong> Topology optimization for AM, build orientation optimization, in-process monitoring, post-processing, qualification testing.</p>
+<p><strong>Risks &amp; limitations:</strong> Surface finish/anisotropy, build size limits, powder handling hazards, slow production rates for mass manufacturing, certification challenges.</p>
+<p><strong>Future developments:</strong> Metal 3D printing at scale, 4D printing (self-transforming), bioprinting organs (still experimental), construction-scale printing, recycled-material feedstocks, AI print monitoring.</p>
+<hr />
+<h2 id="6-space-technology-aerospace-systems">6. Space Technology &amp; Aerospace Systems</h2>
+<p><strong>Scientific foundations:</strong> Orbital mechanics, propulsion, materials in extreme environments, telecommunications, remote sensing, human factors.</p>
+<p><strong>Major technologies:</strong> Launch vehicles (Falcon 9, Starship, SLS), satellites (comms, Earth observation, GPS, weather), space telescopes (JWST), ISS/commercial stations, lunar/Mars missions.</p>
+<p><strong>Applications:</strong> Communications, Earth observation (climate, agriculture, disaster), navigation (GPS/Galileo/BeiDou), scientific research, space tourism, asteroid mining (proposed), planetary defense.</p>
+<p><strong>Engineering methods:</strong> Mission design, systems engineering, launch window analysis, radiation shielding, life-support systems, planetary protection protocols.</p>
+<p><strong>Risks &amp; limitations:</strong> Launch failures, space debris, radiation exposure, microgravity health effects, high cost, long timelines, planetary protection constraints.</p>
+<p><strong>Future developments:</strong> Starship-class heavy lift, lunar base (Artemis), Mars sample return, orbital manufacturing, space solar power, asteroid mining, space-based data centers.</p>
+<hr />
+<h1 id="part-vi-convergence-how-disciplines-combine">PART VI — CONVERGENCE: HOW DISCIPLINES COMBINE</h1>
+<h2 id="1-healthcare-convergence">1. Healthcare Convergence</h2>
+<table>
+<thead>
+<tr><th>Combination</th><th>What it enables</th></tr>
+</thead>
+<tbody>
+<tr><td>Biomedical Eng + AI/ML</td><td>Diagnostic imaging AI, predictive health monitoring, drug discovery acceleration</td></tr>
+<tr><td>Robotics + Surgery</td><td>Minimally invasive robotic surgery, telesurgery, autonomous surgical tasks</td></tr>
+<tr><td>Materials + BME</td><td>Bioresorbable implants, drug-eluting stents, tissue-engineered scaffolds</td></tr>
+<tr><td>Control Systems + Physiology</td><td>Closed-loop insulin delivery (artificial pancreas), DBS for Parkinson's, ECMO control</td></tr>
+<tr><td>Nanotech + Pharmacology</td><td>Targeted drug delivery (liposomes, nanoparticles), theranostics (diagnose+treat)</td></tr>
+<tr><td>Digital Twins + Clinical Trials</td><td>Virtual patients for placebo arms, in silico trials reducing animal/human testing</td></tr>
+<tr><td>Public Health + Data Science</td><td>Real-time outbreak prediction, genomic surveillance, precision public health</td></tr>
+<tr><td>3D Printing + Dentistry/Orthopedics</td><td>Patient-specific implants, surgical guides, custom prosthetics</td></tr>
+</tbody>
+</table>
+<h2 id="2-energy-infrastructure-convergence">2. Energy &amp; Infrastructure Convergence</h2>
+<table>
+<thead>
+<tr><th>Combination</th><th>What it enables</th></tr>
+</thead>
+<tbody>
+<tr><td>Power Systems + Renewables</td><td>Smart grids integrating solar/wind, grid-forming inverters, virtual power plants</td></tr>
+<tr><td>Storage + Grid</td><td>Lithium-ion/flow batteries for peak shaving, pumped hydro for seasonal storage</td></tr>
+<tr><td>Nuclear + Hydrogen</td><td>High-temp reactors for industrial heat + H₂ production</td></tr>
+<tr><td>Materials + Construction</td><td>Self-healing concrete, mass timber, carbon-negative building materials</td></tr>
+<tr><td>IoT + Civil Engineering</td><td>Smart infrastructure sensors, predictive maintenance of bridges/buildings</td></tr>
+<tr><td>Robotics + Construction</td><td>Autonomous construction equipment, 3D-printed buildings</td></tr>
+<tr><td>Urban Planning + Data Science</td><td>Digital twins of cities, 15-minute city planning, congestion optimization</td></tr>
+</tbody>
+</table>
+<h2 id="3-food-agriculture-convergence">3. Food &amp; Agriculture Convergence</h2>
+<table>
+<thead>
+<tr><th>Combination</th><th>What it enables</th></tr>
+</thead>
+<tbody>
+<tr><td>Ag Engineering + IoT</td><td>Precision agriculture (soil sensors, drones, variable-rate application)</td></tr>
+<tr><td>Biotech + Food Science</td><td>GMOs, CRISPR crops, precision fermentation for alternative proteins</td></tr>
+<tr><td>Food Science + Packaging</td><td>Smart packaging with freshness indicators, edible coatings, active packaging</td></tr>
+<tr><td>Aquaculture + Recirculating Systems</td><td>Land-based fish farming, reduced environmental impact</td></tr>
+<tr><td>Supply Chain + AI</td><td>Food waste reduction, demand forecasting, cold-chain optimization</td></tr>
+<tr><td>Soil Science + Carbon Markets</td><td>Regenerative agriculture, soil carbon sequestration credits</td></tr>
+</tbody>
+</table>
+<h2 id="4-cross-cutting-themes">4. Cross-Cutting Themes</h2>
+<ul>
+<li><strong>AI/ML as universal accelerator:</strong> appears in drug discovery, medical imaging, power grid optimization, autonomous vehicles, agriculture, materials design, and scientific research.</li>
+<li><strong>Digital twins as universal modeling tool:</strong> used for aircraft engines, manufacturing lines, buildings, cities, human organs, and clinical trial participants.</li>
+<li><strong>Sustainability as design constraint:</strong> LCA, circular economy, and carbon accounting now embedded across energy, construction, agriculture, and manufacturing.</li>
+<li><strong>Regulatory convergence:</strong> FDA/EMA frameworks for AI/ML medical devices, digital health, and clinical trial digital twins are still evolving (FDA ISTAND program, EU AI Act).</li>
+<li><strong>Human factors as bottleneck:</strong> adoption, training, trust, equity, and ethics increasingly determine whether technologies succeed at scale.</li>
+</ul>
+<hr />
+<h1 id="part-vii-emerging-frontier-fields">PART VII — EMERGING FRONTIER FIELDS</h1>
+<p><em>Disciplines that did not exist (or were niche) a decade ago and are now engineering majors, funding magnets, and hiring pipelines. Each entry follows the same six-axis schema as Parts I–V: foundations → technologies → applications → methods → risks → 2025–2026 frontier.</em></p>
+<h2 id="vii-1-neuroengineering-brain-computer-interfaces">1. Neuroengineering &amp; Brain-Computer Interfaces (BCI)</h2>
+<p><strong>Scientific foundations:</strong> neuroscience (neural circuits, action potentials, oscillations), signal processing (EEG/MEG/ECoG decoding), materials science (biocompatible electrodes), machine learning (neural decoding), psychology of neuroplasticity.</p>
+<p><strong>Major technologies:</strong> non-invasive EEG headsets (Emotiv, OpenBCI), implanted Utah/Neuralink-style electrode arrays, ECoG grids, optical imaging (two-photon, calcium imaging), DBS systems (Medtronic Percept, Boston Scientific Vercise), closed-loop neuromodulation, fNIRS wearables, brain-to-text spellers.</p>
+<p><strong>Applications:</strong> paralysis restoration (cursor/robot control), ALS communication, epilepsy seizure prediction &amp; closed-loop abort, depression/OCD neuromodulation, prosthetic limb control, cognitive neuroscience research, attention/meditation training.</p>
+<p><strong>Engineering methods:</strong> spike sorting, source localization, real-time decoding (Kalman filters, RNNs/transformers on neural data), biocompatibility packaging, stimulation artifact rejection, FDA breakthrough-device pathway submissions.</p>
+<p><strong>Risks &amp; limitations:</strong> electrode drift &amp; gliosis degrading signal over months–years, bandwidth gap (need ~Mbps vs. delivered ~kbps), surgical risk for implants, hype cycle ("mind-reading" claims), regulatory novelty, long-term safety unknown.</p>
+<p><strong>2025–2026 frontier:</strong> Neuralink human trials ongoing (first patient reported typing via implant in 2024–25); Synchron stentrode vascular BCI in clinical trials (less invasive, FDA IDE); University of Pittsburgh/Blackrock arrays in speech decoding (BrainGate2 participants achieving ~60+ wpm); DARPA N3 program pushing high-bandwidth implants; FDA cleared several non-invasive neuromodulation devices. Neuralink competitors Precision Neuroscience and Paradromics raised large rounds in 2025.</p>
+<hr />
+<h2 id="vii-2-photonics-optical-engineering">2. Photonics &amp; Optical Engineering</h2>
+<p><strong>Scientific foundations:</strong> electromagnetism (Maxwell at optical frequencies), quantum optics, semiconductor physics (lasers, photodetectors), nonlinear optics, materials (silicon photonics, InP, SiN, thin films).</p>
+<p><strong>Major technologies:</strong> lasers (fiber, diode, ultrafast), optical fibers &amp; amplifiers (EDFA), silicon photonics transceivers (400G/800G/1.6T pluggables), LiDAR, optical coherence tomography (OCT), free-space optics, integrated photonic circuits, meta-optics/lensless cameras.</p>
+<p><strong>Applications:</strong> datacenter interconnects (photonics replacing copper beyond ~2 m), 5G/6G fronthaul, medical imaging (OCT, endoscopy), LiDAR for autonomy, quantum photonics hardware, AR displays (waveguides), environmental sensing.</p>
+<p><strong>Engineering methods:</strong> optical simulation (Zemax, Lumerical, COMSOL), photonic IC design (GDSII, PDKs), packaging/flip-chip alignment (sub-micron), BER testing, thermal stabilization.</p>
+<p><strong>Risks &amp; limitations:</strong> coupling/alignment fragility, temperature sensitivity, cost of III-V lasers, yield of photonic packaging, eye-safety limits, standardization lag.</p>
+<p><strong>2025–2026 frontier:</strong> 1.6T transceivers entering hyperscaler deployments; co-packaged optics (CPO) moving from lab to product (Broadcom, Ayar Labs, Lightmatter); silicon-nitride quantum photonics platforms; EU Chips Act funding photonics pilot lines; DARPA-funded optical I/O for chiplets.</p>
+<hr />
+<h2 id="vii-3-quantum-engineering-sensing-metrology">3. Quantum Engineering — Sensing &amp; Metrology</h2>
+<p><strong>Scientific foundations:</strong> quantum mechanics (superposition, entanglement, squeezing), atomic physics, precision measurement, laser physics, cryogenics.</p>
+<p><strong>Major technologies:</strong> atomic clocks (optical lattice clocks, GPS/GNSS backups), quantum gravimeters &amp; magnetometers, squeezed-light interferometers (LIGO upgrades), nitrogen-vacancy (NV) diamond magnetometry, quantum random number generators, chip-scale atomic clocks (CSAC), atom interferometers.</p>
+<p><strong>Applications:</strong> navigation without GPS (submarine, denied environments), mineral/underground mapping, medical magnetoencephalography (MEG), gravitational-wave astronomy, financial/randomness beacons, timing for financial networks &amp; 5G/6G.</p>
+<p><strong>Engineering methods:</strong> laser stabilization, vibration isolation, cryogenics, electromagnetic shielding, Allan-deviation characterization, field-portable packaging.</p>
+<p><strong>Risks &amp; limitations:</strong> extreme environmental sensitivity, size/cost vs. classical sensors, TRL still low for most fielded systems, calibration drift, standards absent.</p>
+<p><strong>2025–2026 frontier:</strong> optical atomic clocks achieving 10⁻¹⁸ fractional uncertainty and demonstrating relativistic geodesy (height measurement); NASA/JPL and DARPA quantum sensing programs; UK National Quantum Strategy funding gravity sensors; commercial NV-diamond magnetometers approaching MEG sensitivity.</p>
+<hr />
+<h2 id="vii-4-biomedical-informatics-digital-health">4. Biomedical Informatics &amp; Digital Health Engineering</h2>
+<p><strong>Scientific foundations:</strong> clinical informatics, biostatistics, health data standards (FHIR, HL7, SNOMED-CT, LOINC), interoperability architecture, health economics, implementation science.</p>
+<p><strong>Major technologies:</strong> EHR integration layers (Epic/Cerner FHIR APIs), clinical decision support systems, wearable data pipelines, digital biomarkers, hospital command centers, telehealth platforms, health-data lakes, terminology servers, SMART-on-FHIR apps.</p>
+<p><strong>Applications:</strong> sepsis early-warning models, readmission prediction, medication reconciliation, prior-authorization automation, clinical trial matching, population health surveillance, remote patient monitoring billing (RPM CPT codes).</p>
+<p><strong>Engineering methods:</strong> ETL on messy clinical data, OMOP/OHDSI common data models, de-identification (Safe Harbor, k-anonymity), CDS Hooks, alert-fatigue engineering, usability testing with clinicians, clinical informatics board certification.</p>
+<p><strong>Risks &amp; limitations:</strong> alert fatigue (studies show clinicians override &gt;90% of drug-interaction alerts), interoperability still aspirational, data-quality rot, vendor lock-in, algorithmic bias in risk scores (e.g., Obermeyer 2019 NEJM finding on racial bias in health-cost proxies), clinician burnout from documentation burden.</p>
+<p><strong>2025–2026 frontier:</strong> TEFCA (US Trusted Exchange Framework) pushing nationwide health-data exchange; FHIR R5 ratification; FDA's PCCP (Predetermined Change Control Plan) pathway letting AI SaMD update without new 510(k) per change; ambient clinical documentation (Nuance DAX, Abridge) crossing adoption tipping point; CMS ACCESS model pushing value-based data exchange.</p>
+<hr />
+<h2 id="vii-5-radiopharmaceuticals-theranostics">5. Radiopharmaceuticals &amp; Theranostics Engineering</h2>
+<p><strong>Scientific foundations:</strong> nuclear medicine physics, radiochemistry (radionuclide chelation), molecular biology (target ligands), dosimetry, radiobiology.</p>
+<p><strong>Major technologies:</strong> lutetium-177 PSMA therapy (Pluvicto, FDA-approved 2022), actinium-225 targeted alpha therapy, I-131 mAb radioimmunotherapy (Zevalin legacy), DOTA/TATE peptide radiopharmaceuticals, theranostic pairs (68Ga imaging + 177Lu therapy), cyclotron/GMP radiochemistry facilities, automated synthesis modules.</p>
+<p><strong>Applications:</strong> metastatic prostate cancer (PSMA), neuroendocrine tumors (PRRT), thyroid cancer, lymphoma radioimmunotherapy, expanding to breast/GI/brain tumors via new targets (FAP, HER2).</p>
+<p><strong>Engineering methods:</strong> radiolabeling yield optimization, dosimetry modeling (OLINDA, voxel-level S-value), GMP-compliant synthesis, supply-chain logistics for short half-lives (177Lu ~6.7 d), radiation safety (ALARA).</p>
+<p><strong>Risks &amp; limitations:</strong> supply bottleneck (177Lu global demand vs. limited reactor production; 2024–25 shortages widely reported), reimbursement codes lagging, marrow toxicity, selection-biomarker access (68Ga-PSMA PET availability).</p>
+<p><strong>2025–2026 frontier:</strong> FDA approvals expanding — Pluvicto for pre-taxane mCRPC (2025); Novartis and point-of-care 225Ac-PSMA trials showing early PSA responses; DOE/NNSA funding domestic 177Lu production; interest in alpha-emitter 212Pb/225Ac for resistant disease.</p>
+<hr />
+<h2 id="vii-6-regenerative-medicine-tissue-engineering">6. Regenerative Medicine &amp; Tissue Engineering</h2>
+<p><strong>Scientific foundations:</strong> cell biology (stem cells, differentiation), biomaterials science (scaffolds, hydrogels), developmental biology, immunology of rejection, bioreactor design.</p>
+<p><strong>Major technologies:</strong> autologous/allogeneic cell therapies, iPSC-derived products, decellularized ECM scaffolds, 3D-bioprinted tissues, organoids, bioartificial organs (bioartificial kidney/liver in preclinical), CAR-T manufacturing, exosome therapeutics.</p>
+<p><strong>Applications:</strong> cartilage repair, skin grafts (Apligraf), corneal regeneration, cardiac patches, islet cell encapsulation for diabetes, tracheal/esophageal patches, limbal stem-cell transplantation.</p>
+<p><strong>Engineering methods:</strong> bioreactor perfusion/oxygenation control, scaffold mechanical testing, potency assays for cell products, GMP cleanroom manufacturing, cryopreservation logistics, CMC (chemistry/manufacturing/controls) regulatory science.</p>
+<p><strong>Risks &amp; limitations:</strong> cost per dose (CAR-T ~$373k–$475k list), manufacturing variability, tumorigenicity risk of pluripotent cells, vascularization remains the hard unsolved problem for thick tissues, reimbursement.</p>
+<p><strong>2025–2026 frontier:</strong> First CRISPR-edited cell therapies (exa-cel for sickle cell/β-thalassemia approved 2023–24, Casgevy); iPSC-derived retinal pigment epithelium trials; FDA approvals of tissue-engineered products expanding; organoid intelligence ("organoid-on-chip" drug screening) commercializing; in-vivo CAR-T approaches (Capstan, Cartesian) dosing directly in patients.</p>
+<hr />
+<h2 id="vii-7-synthetic-biology-engineering">7. Synthetic Biology Engineering</h2>
+<p><strong>Scientific foundations:</strong> molecular biology, metabolic engineering, genetic circuit design, directed evolution, systems biology, bioinformatics, DNA synthesis chemistry.</p>
+<p><strong>Major technologies:</strong> CRISPR-Cas systems (base/prime editing), gene drives, DNA data storage, cell-free TX-TL systems, engineered consortia, biosensors (toehold switches), minimal cells (JCVI-syn3.0), metabolic pathway refactoring.</p>
+<p><strong>Applications:</strong> engineered biologics (insulin analogs, antibodies), precision fermentation (dairy proteins, spider silk, resveratrol), bio-based materials (spider-silk fibers, mycelium leather), environmental biosensors, bioremediation, agricultural traits (non-browning mushrooms — first CRISPR food approval 2016, high-GABA tomato 2021), DNA data storage archival.</p>
+<p><strong>Engineering methods:</strong> Biofoundry automation (Echo liquid handlers, robotic cloning), Design-Build-Test-Learn cycles, computational pathway modeling (COBRA, KBase), codon optimization, chassis engineering (E. coli, yeast, CHO), safety: auxotrophy, kill switches, semantic containment.</p>
+<p><strong>Risks &amp; limitations:</strong> escape/biocontainment (engineered organisms in environment), dual-use biosecurity (gain-of-function debate), IP fragmentation on engineered sequences (CRISPR patent wars), ecological unknowns of gene drives, scale-up fermentation economics.</p>
+<p><strong>2025–2026 frontier:</strong> AlphaFold 3 + RFdiffusion enabling de novo protein design for therapeutics; AI-for-biology models accelerating pathway design; DARPA Biostasis/Safe Genes programs; first FDA approval of CRISPR therapy validated the regulatory path; WHO guidance on human genome editing governance (2021, updated 2025); community bio-labs expanding in ~50 countries.</p>
+<hr />
+<h2 id="vii-8-environmental-remediation-climate-engineering">8. Environmental Remediation &amp; Climate Engineering</h2>
+<p><strong>Scientific foundations:</strong> environmental chemistry, geochemistry, hydrology, microbiology, atmospheric physics, life-cycle assessment, ecological risk assessment.</p>
+<p><strong>Major technologies:</strong> permeable reactive barriers (zero-valent iron for chlorinated solvents), bioremediation (mycoremediation, phytoremediation), constructed wetlands, electrochemical remediation, soil washing/stabilization, PFAS destruction (electrochemical oxidation, supercritical water), carbon capture &amp; utilization (direct air capture, mineralization), enhanced weathering, ocean alkalinity enhancement (research stage).</p>
+<p><strong>Applications:</strong> brownfield redevelopment, PFAS "forever chemicals" cleanup (DoD/municipal sites — a major 2024–26 regulatory driver via EPA MCLs), Superfund sites, mine drainage, agricultural runoff, industrial decarbonization, carbon removal credits.</p>
+<p><strong>Engineering methods:</strong> fate &amp; transport modeling (MODFLOW, MT3D), treatability studies, pilot-scale demonstrations, monitoring well networks, techno-economic analysis, regulatory closure criteria (risk-based).</p>
+<p><strong>Risks &amp; limitations:</strong> remediation can take decades; rebound effects; NIMBY opposition; energy cost of DAC; measurement/verification problems for carbon credits; geoengineering governance vacuum.</p>
+<p><strong>2025–2026 frontier:</strong> EPA finalized PFAS drinking-water MCLs (4 ppt PFOA/PFOS, 2024) creating a remediation market; Climeworks/Heirloom DAC plants commissioning; enhanced-weathering trials (UNDO, Project Vesta); DOE Regional DAC Hubs funding ($3.5B program); IPCC AR6 WGIII informing CDR accounting.</p>
+<hr />
+<h2 id="vii-9-soft-robotics-biohybrid">9. Soft Robotics &amp; Biohybrid Systems</h2>
+<p><strong>Scientific foundations:</strong> continuum mechanics, materials science (elastomers, hydrogels, shape-memory polymers, dielectric elastomers), fluidic/pneumatic actuation physics, biomechanics.</p>
+<p><strong>Major technologies:</strong> pneumatic soft actuators (PneuNets), tendon-driven continuum robots, dielectric elastomer actuators (DEAs), liquid crystal elastomers, hydrogel robots, biohybrid muscle actuators, soft grippers, stretchable electronics.</p>
+<p><strong>Applications:</strong> safe human-robot interaction, medical devices (soft endoscopes, assistive gloves, wearable rehab exosuits), food handling (delicate produce), search &amp; rescue in confined spaces, minimally invasive NOTES surgery, haptic display gloves.</p>
+<p><strong>Engineering methods:</strong> finite-element hyperelastic modeling, soft-lithography/3D printing of elastomers, fluidic circuit design, proprioception via embedded strain sensors (soft e-skin), learning-based control (RL for continuum robots).</p>
+<p><strong>Risks &amp; limitations:</strong> modeling difficulty (infinite degrees of freedom), durability/fatigue of elastomers, limited force output, hysteresis/nonlinear control, no mature standards, cost of custom fabrication.</p>
+<p><strong>2025–2026 frontier:</strong> foundation models for soft robot control emerging; soft robotic grippers deployed in food/logistics pilots; biohybrid robots (University of Illinois stingray, NIH biohybrid programs); Harvard Wyss Institute soft exosuits in clinical trials; self-healing elastomer research for durability.</p>
+<hr />
+<h2 id="vii-10-wearable-implantable-electronics">10. Wearable &amp; Implantable Electronics</h2>
+<p><strong>Scientific foundations:</strong> low-power circuit design, flexible/stretchable electronics, biosignal processing, energy harvesting (triboelectric, photovoltaic, RF), biocompatibility, wireless telemetry (MICS band 402–405 MHz, BLE, NFC, UWB).</p>
+<p><strong>Major technologies:</strong> smartwatches/patches (ECG, PPG, SpO₂, temp), continuous glucose monitors (Dexcom G7, Abbott Libre 3), ECG patches (Zio), ingestible sensors, implantable loop recorders (Medtronic LINQ), neuromodulation devices, smart contact lenses (research), electronic skin/tattoos, ingestible camera pills (PillCam).</p>
+<p><strong>Applications:</strong> arrhythmia detection, diabetes management, post-surgical remote monitoring, medication adherence, GI diagnostics, cardiovascular implantable electronic devices (CIEDs) telemetry, athletic/occupational monitoring.</p>
+<p><strong>Engineering methods:</strong> low-power SoC design (sub-µA sleep), ASIC/MCU design, battery vs. energy-harvesting trade-offs, biocompatible encapsulation (parylene, titanium, ceramic), wireless coexistence testing, FDA 510(k)/PMA + IEC 60601-1 safety standards.</p>
+<p><strong>Risks &amp; limitations:</strong> cybersecurity of connected devices (FDA has issued recalls for pacemaker firmware vulnerabilities), battery life vs. miniaturization, skin irritation, signal quality in ambulatory settings, alert false-positives, data privacy (HIPAA for device data).</p>
+<p><strong>2025–2026 frontier:</strong> Apple Watch/ECG features driving atrial-fibrillation screening at population scale; CGM expansion to non-diabetic "metabolic health" market; FDA clearance of several AI-ECG algorithms; batteryless ingestible/implantable prototypes; EU MDR tightening device cybersecurity requirements (Annex I 14.2).</p>
+<hr />
+<h2 id="vii-11-space-medicine-aerospace-physiology">11. Space Medicine &amp; Aerospace Physiology</h2>
+<p><strong>Scientific foundations:</strong> gravitational biology, radiation biology/physics, physiology under microgravity/hypergravity, chronobiology, aerospace medicine, countermeasure engineering.</p>
+<p><strong>Major technologies:</strong> countermeasure exercise devices (ARED on ISS), artificial gravity concepts (short-radius centrifuge), radiation shielding materials (polyethylene, hydrogen-rich), closed-loop life support (ECLSS on ISS), telemedicine systems, spacesuits (EMU/xEMU), parabolic-flight ground analogs.</p>
+<p><strong>Applications:</strong> ISS crew health, Artemis lunar missions, commercial spaceflight (SpaceX Polaris, Axiom), high-altitude/aviation medicine, suborbital tourism, future Mars transit (~2.7 yr round trip), extreme-environment analog research (HI-SEAS, Antarctic stations, submarine medicine).</p>
+<p><strong>Engineering methods:</strong> dosimetry modeling (HZETRN, PHITS), physiological monitoring telemetry, exercise prescription algorithms, medical evacuation logistics (none in deep space — hence autonomous medical AI), habitat environmental control.</p>
+<p><strong>Risks &amp; limitations:</strong> galactic cosmic ray (GCR) exposure — ~1 Sv/year on ISS surface, elevated cancer/CNS risks for Mars missions; bone/muscle loss despite ~2 h/day exercise; vision impairment (SANS) from head-ward fluid shift; psychological isolation; no real-time surgeon for deep space.</p>
+<p><strong>2025–2026 frontier:</strong> NASA Artemis II (crewed lunar flyby) on 2026 timeline; SpaceX Starship test flights enabling lunar lander; commercial LEO stations (Axiom, Orbital Reef) under development; NASA Twins Study follow-ups quantifying telomere/epigenetic changes; radiation-shielding experiments on ISS (Phantom torso); ESA/NASA deep-space medical autonomy research.</p>
+<hr />
+<h2 id="vii-12-exascale-hpc-engineering">12. Exascale Computing &amp; HPC Engineering</h2>
+<p><strong>Scientific foundations:</strong> parallel computing theory, numerical methods, interconnect topology, power/thermal engineering, fault tolerance at scale, scientific domains (climate, fusion, materials, astrophysics).</p>
+<p><strong>Major technologies:</strong> GPU-accelerated supercomputers (Frontier/ORNL ~1.2 exaflops Rmax), CPU+GPU hybrid nodes, Slingshot-11/12 interconnects, parallel filesystems (Lustre, GPFS), job schedulers (Slurm), MPI+OpenMP+CUDA/HIP programming models, containerized HPC (Shifter/Charliecloud).</p>
+<p><strong>Applications:</strong> weather/climate simulation (ECMWF Destination Earth), fusion plasma modeling, drug discovery screening, quantum chemistry, cosmology, AI training at frontier scale, digital twins of earth systems.</p>
+<p><strong>Engineering methods:</strong> performance profiling at petascale, communication-avoiding algorithms, mixed-precision numerics, power capping (Frontier ~22.7 MW), resilience engineering (checkpoint/restart, in-situ analysis), workflow orchestration.</p>
+<p><strong>Risks &amp; limitations:</strong> power consumption (~1–2% of some nations' grids projected), exascale→zettascale efficiency wall (Koomey's law slowing), software-portability crisis (CUDA lock-in → HIP/oneAPI push), diminishing returns of Moore's law pushing specialization.</p>
+<p><strong>2025–2026 frontier:</strong> Aurora (Argonne, Intel+HPE) and El Capitan (LLNL, AMD) reaching exascale in 2024–25; EU's JUPITER (Jülich) and Leonardo systems; DOE AI-for-science push; exascale applications reaching production science (Frontier's early runs on cosmology &amp; Earth system models); quantum-HPC hybrid workflows emerging.</p>
+<hr />
+<h1 id="part-viii-data-tables-market-numbers">PART VIII — DATA TABLES &amp; MARKET NUMBERS</h1>
+<p><em>Quantitative anchors for the map. All figures cite their source inline; treat them as order-of-magnitude reference points, not forecasts.</em></p>
+<h2 id="viii-1-global-engineering-and-applied-tech-markets">1. Global Engineering &amp; Applied-Tech Markets</h2>
+<table>
+<thead>
+<tr><th>Sector</th><th>2025 figure</th><th>Projection</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>Global engineering services</td><td>~$3.58T</td><td>$5.78T by 2033 (6.3% CAGR); Asia-Pacific = 37.1% share</td><td>Grand View Research, 2026 report</td></tr>
+<tr><td>Engineering &amp; R&amp;D services (broad)</td><td>$4.29T</td><td>$6.97T by 2032 (7.1% CAGR)</td><td>360iResearch, Nov 2025</td></tr>
+<tr><td>Global energy storage (installed capacity)</td><td>768.5 GW</td><td>3,735 GW by 2033 (21.9% CAGR); electrochemical = 58% share; utility = 66% share</td><td>Grand View Research, 2026 report</td></tr>
+<tr><td>Private fusion investment (cumulative)</td><td>&gt;$10B</td><td>— (IAEA World Fusion Outlook 2025)</td><td>IAEA, Oct 2025</td></tr>
+<tr><td>FDA-authorized AI-enabled medical devices</td><td>335 authorized in 2025; 1,614 total through Jun 2026</td><td>60.5% of all entries authorized since 2023; radiology = 76.2%; 96.2% via 510(k)</td><td>FDA AI-Enabled Device List; Cureus cross-sectional analysis 2026</td></tr>
+<tr><td>Cement CO₂ share</td><td>~8% of global CO₂ emissions</td><td>—</td><td>GCCA / IEA (see Part I §4)</td></tr>
+<tr><td>Post-harvest food loss (global)</td><td>~14% of food production</td><td>—</td><td>FAO (see Part IV §4)</td></tr>
+<tr><td>Global engineering services industry (IBISWorld definition)</td><td>&gt;$2.0T industry revenue, +2.0% in 2025, 3.2% CAGR to 2026</td><td>—</td><td>IBISWorld Global Engineering Services, Feb 2026</td></tr>
+</tbody>
+</table>
+<h2 id="viii-2-fda-ai-device-authorization-trend">2. FDA AI-Enabled Device Authorizations by Year</h2>
+<table>
+<thead>
+<tr><th>Year</th><th>Authorizations</th><th>YoY note</th></tr>
+</thead>
+<tbody>
+<tr><td>2016</td><td>18</td><td>baseline</td></tr>
+<tr><td>2018</td><td>65</td><td>—</td></tr>
+<tr><td>2020</td><td>114</td><td>COVID-era imaging surge begins</td></tr>
+<tr><td>2022</td><td>162</td><td>—</td></tr>
+<tr><td>2023</td><td>226</td><td>—</td></tr>
+<tr><td>2024</td><td>235</td><td>+4.0% only</td></tr>
+<tr><td>2025</td><td>335</td><td><strong>+42.6% — record year</strong></td></tr>
+</tbody>
+</table>
+<p><small>Source: FDA AI-Enabled Medical Device List (CSV, current to 29 Jun 2026), counted by year of final decision; 1,614 devices total 1995–Jun 2026. ~35.3%/yr estimated growth 2016→2025 (95% CI 27–44%).</small></p>
+<h2 id="viii-3-discipline-level-quick-reference">3. Discipline-Level Quick Reference (2025–26 signals)</h2>
+<table>
+<thead>
+<tr><th>Discipline</th><th>Key 2025–26 signal</th><th>Hot technology</th><th>Maturity</th></tr>
+</thead>
+<tbody>
+<tr><td>EE / VLSI</td><td>Chiplets &amp; 2.5D/3D integration mainstream; backside power delivery (Intel PowerVia)</td><td>advanced packaging, GaN/SiC</td><td><span class="pill pill-ok">mature→reshaping</span></td></tr>
+<tr><td>Power systems</td><td>Grid-scale batteries + multi-hour storage economics improving; LDES pilots</td><td>LFP cost curve, flow batteries</td><td><span class="pill pill-run">accelerating</span></td></tr>
+<tr><td>Nuclear</td><td>SMR first-of-a-kind builds (NuScale UAMPS restart); fusion private &gt;$10B</td><td>SMRs, tokamak/stellarator pilots</td><td><span class="pill pill-run">early commercial</span></td></tr>
+<tr><td>Medical AI</td><td>335 FDA AI authorizations in 2025; PCCP pathway live</td><td>foundation models for imaging, ambient documentation</td><td><span class="pill pill-run">rapid growth</span></td></tr>
+<tr><td>Robotics</td><td>Foundation models entering manipulation; humanoid pilots in factories</td><td>VLA models, dexterous hands</td><td><span class="pill pill-run">emerging</span></td></tr>
+<tr><td>Ag biotech</td><td>CRISPR crops first commercial approvals; gene-edited food on shelves</td><td>CRISPR edits, nitrogen-fixing research</td><td><span class="pill pill-run">early commercial</span></td></tr>
+<tr><td>Photonics</td><td>1.6T transceivers; co-packaged optics entering datacenters</td><td>CPO, silicon photonics</td><td><span class="pill pill-run">commercial ramp</span></td></tr>
+<tr><td>Quantum sensing</td><td>Optical clocks at 10⁻¹⁸; quantum gravimeters fielded</td><td>NV magnetometry, atom interferometry</td><td><span class="pill pill-bad">pre-commercial</span></td></tr>
+<tr><td>Regenerative med</td><td>First CRISPR cell therapies approved (Casgevy)</td><td>iPSC products, in-vivo CAR-T</td><td><span class="pill pill-run">clinical→commercial</span></td></tr>
+<tr><td>Exascale HPC</td><td>Frontier/El Capitan/Aurora in production science</td><td>GPU-accelerated, AI-for-science</td><td><span class="pill pill-ok">production</span></td></tr>
+<tr><td>Fusion energy</td><td>ITER assembly ongoing; CFS/SPARC net-energy targets mid-2020s</td><td>HTS magnets, stellarators</td><td><span class="pill pill-bad">demo-stage</span></td></tr>
+</tbody>
+</table>
+<h2 id="viii-4-regulatory-milestones-table">4. Regulatory Milestones That Reshape the Map</h2>
+<table>
+<thead>
+<tr><th>Year</th><th>Milestone</th><th>Impact</th></tr>
+</thead>
+<tbody>
+<tr><td>2022</td><td>FDA approves first CRISPR therapy (Casgevy)</td><td>Gene editing becomes a regulated product class, not just a research tool</td></tr>
+<tr><td>2023</td><td>FDA establishes PCCP pathway for AI devices</td><td>"Predetermined Change Control Plan" lets AI devices update within pre-specified bounds</td></tr>
+<tr><td>2024</td><td>EU AI Act enters force (phased 2025–27)</td><td>AI medical devices face conformity assessment + post-market monitoring regimes</td></tr>
+<tr><td>2024</td><td>EPA finalizes PFAS drinking-water MCLs (4 ppt for PFOA/PFOS)</td><td>Creates a multi-billion-dollar remediation engineering market</td></tr>
+<tr><td>2025</td><td>FDA AI device authorizations hit record 335</td><td>AI SaMD becomes routine rather than exceptional</td></tr>
+<tr><td>2025–26</td><td>WHO human genome editing governance updated; national policies diverge (US permissive, EU restrictive, China state-guided)</td><td>Germline editing remains banned in most jurisdictions; somatic editing expands</td></tr>
+</tbody>
+</table>
+<hr />
+<h1 id="part-ix-career-skill-maps">PART IX — CAREER &amp; SKILL MAPS</h1>
+<p><em>Where each discipline leads professionally. Salary bands are US approximate ranges (BLS/Levels.fyi-style, 2025); treat as directional. Companion skill depth for software careers is in <code>41 - map-cs-it.html</code>.</em></p>
+<h2 id="ix-1-engineering-career-paths">1. Engineering Career Paths</h2>
+<table>
+<thead>
+<tr><th>Field</th><th>Entry credentials</th><th>Mid-career depth</th><th>Typical employers</th><th>2025–26 demand signal</th></tr>
+</thead>
+<tbody>
+<tr><td>Electrical / VLSI</td><td>BSEE + fundamentals (circuits, EM, signals)</td><td>RTL design, physical design, timing closure, advanced packaging</td><td>TSMC/Samsung/Intel/AMD, NVIDIA, Qualcomm, startups</td><td>Chip Act-funded fabs; AI accelerator talent shortage</td></tr>
+<tr><td>Software / CompE</td><td>BSCS/SE + one strong language + CS fundamentals</td><td>distributed systems, performance, security, domain specialization</td><td>FAANG-tier, fintech, healthtech, defense</td><td>AI-augmented coding tools reshaping junior pipelines (see doc 41)</td></tr>
+<tr><td>Mechanical</td><td>BSME + CAD/FEA fluency</td><td>multibody dynamics, additive mfg, generative design, thermal</td><td>Aerospace, automotive, medtech, industrial</td><td>EV/humanoid supply chain driving demand</td></tr>
+<tr><td>Civil / Environmental</td><td>BSCivil/EnvE + PE licensure path</td><td>structural health monitoring, PFAS remediation, climate adaptation</td><td>Engineering firms, DOTs, consultancies, remediation contractors</td><td>Infrastructure bills + PFAS MCL market creation</td></tr>
+<tr><td>Chemical</td><td>BSChemE + thermo/transport fundamentals</td><td>process intensification, catalysis, continuous mfg, CCU</td><td>Pharma, specialty chemicals, energy, food</td><td>Electrification of chemicals; battery materials boom</td></tr>
+<tr><td>Aerospace</td><td>BSAero + structures/propulsion; security clearance often required</td><td>systems engineering, certification, autonomy</td><td>Boeing/Lockheed/Northrop, SpaceX, Blue Origin, NASA contractors</td><td>Launch cadence growth; defense budgets rising</td></tr>
+<tr><td>Industrial / OR</td><td>IE/OR + statistics + optimization</td><td>ML for scheduling, simulation, digital twins</td><td>Amazon/logistics, hospitals, manufacturing, airlines</td><td>AI scheduling adoption accelerating</td></tr>
+<tr><td>Materials</td><td>BSMSE + characterization (XRD/SEM) + thermodynamics</td><td>computational materials (CALPHAD/DFT/machine-learned potentials)</td><td>Semiconductor, battery, aerospace, coatings</td><td>Battery &amp; chip materials pull; critical-minerals constraints</td></tr>
+<tr><td>Biomedical / BME</td><td>BSBME + circuits + anatomy/physiology</td><td>regulatory affairs (RA), imaging AI, device clinical translation</td><td>Medtech (Medtronic, Boston Scientific), startups, FDA/CROs</td><td>AI device authorizations +42.6% in 2025</td></tr>
+<tr><td>Nuclear</td><td>BSNuE + reactor physics; PE + reactor-operator pathways</td><td>SMR licensing, fusion systems, fuel cycles</td><td>Westinghouse, NuScale, national labs, utilities</td><td>SMR first-of-kind builds; fusion private funding &gt;$10B</td></tr>
+<tr><td>Control / Robotics</td><td>BSE + control theory + embedded programming</td><td>RL control, sim-to-real, safety certification (ISO 26262/13849)</td><td>Auto, robotics, process industry, aerospace</td><td>Humanoid/autonomy pilots; ISO TS 15066 adoption</td></tr>
+<tr><td>Photonics (new track)</td><td>Optics/EE + EM + semiconductor fundamentals</td><td>silicon photonics PDKs, packaging, co-packaged optics</td><td>Ayar Labs, Lightmatter, Cisco/Arista optics groups, foundries</td><td>1.6T transceiver ramp; CPO deployments</td></tr>
+</tbody>
+</table>
+<h2 id="ix-2-healthcare-career-paths">2. Healthcare Career Paths</h2>
+<table>
+<thead>
+<tr><th>Path</th><th>Credentials</th><th>Distinctive skills</th><th>Demand signal</th></tr>
+</thead>
+<tbody>
+<tr><td>Physician (MD/DO)</td><td>4-yr med school + residency (3–7 yr)</td><td>clinical reasoning, procedures, board certification</td><td>specialty-dependent shortages; AI scribes reducing documentation load</td></tr>
+<tr><td>Nurse practitioner / physician assistant</td><td>MSN/MPAS + licensure</td><td>primary care, chronic disease mgmt</td><td>scope expansion laws; primary-care access gaps</td></tr>
+<tr><td>Clinical informaticist</td><td>clinical degree + AMIA fellowship or graduate cert</td><td>FHIR, CDS design, workflow analysis, data standards</td><td>TEFCA implementation; EHR optimization demand</td></tr>
+<tr><td>Medical physicist</td><td>MS/PhD + ABR/ABRMP certification</td><td>dose calculation, imaging physics, radiation safety</td><td>radiotherapy &amp; imaging equipment growth</td></tr>
+<tr><td>Regulatory affairs specialist</td><td>B.S. + RAC certification</td><td>FDA pathways (510(k)/PMA/De Novo/PCCP), EU MDR/IVDR</td><td>AI device volume +42.6% YoY → RA demand up</td></tr>
+<tr><td>Clinical research coordinator / CRA</td><td>B.S./RN + GCP certification</td><td>protocol execution, IRB compliance, data integrity</td><td>cell/gene therapy trial growth</td></tr>
+<tr><td>Genetic counselor</td><td>MS Genetic Counseling + board cert</td><td>variant interpretation, family counseling</td><td>expanded carrier screening + DTC genomics</td></tr>
+<tr><td>Biomedical data scientist</td><td>BS/MS + biostatistics + Python/R</td><td>multi-omics, imaging AI, real-world evidence</td><td>AI-in-medicine hiring surge</td></tr>
+<tr><td>Pharmacovigilist</td><td>B.S. pharmacy/life sci + RMP cert</td><td>adverse-event signal detection, regulatory reporting</td><td>post-market AI device surveillance expanding</td></tr>
+</tbody>
+</table>
+<h2 id="ix-3-agriculture-food-career-paths">3. Agriculture &amp; Food Career Paths</h2>
+<table>
+<thead>
+<tr><th>Path</th><th>Credentials</th><th>Distinctive skills</th><th>Demand signal</th></tr>
+</thead>
+<tbody>
+<tr><td>Agronomist / crop scientist</td><td>BS Agronomy + (often) Certified Crop Adviser</td><td>soil fertility, IPM, yield physiology, field trials</td><td>climate adaptation + precision ag adoption</td></tr>
+<tr><td>Precision agriculture technician</td><td>AS/BS + GIS/GPS + agronomy</td><td>drone imagery analysis, variable-rate prescriptions, IoT sensors</td><td>satellite/drone ag growing fast</td></tr>
+<tr><td>Food scientist / technologist</td><td>BS Food Science (IFT member)</td><td>HACCP, thermal processing, sensory panels, packaging</td><td>alt-protein &amp; cultured-meat scale-up hiring</td></tr>
+<tr><td>Plant breeder / biotech scientist</td><td>BS/MS plant science + molecular genetics</td><td>CRISPR protocols, genomic selection, field trial design</td><td>gene-edited crops commercialization</td></tr>
+<tr><td>Aquaculture engineer</td><td>BS + RAS design experience</td><td>RAS biofilter design, water chemistry, fish health</td><td>land-based aquaculture expansion (US/Europe)</td></tr>
+<tr><td>Food safety auditor / QA</td><td>B.S. + PCQI/HACCP certs</td><td>FSMA compliance, environmental monitoring, allergen control</td><td>FSMA enforcement tightening; PFAS in food supply monitoring</td></tr>
+</tbody>
+</table>
+<h2 id="ix-4-skill-stack-by-discipline">4. Skill-Stack Cheat Sheet</h2>
+<table>
+<thead>
+<tr><th>Goal</th><th>Must-know</th><th>Strongly recommended</th><th>Nice to have</th></tr>
+</thead>
+<tbody>
+<tr><td>Work on AI medical devices</td><td>Python/PyTorch, DICOM/HL7/FHIR, clinical validation design</td><td>FDA 510(k)/De Novo pathway literacy, IEC 62304</td><td>PCCP authoring, imaging physics</td></tr>
+<tr><td>Design implants/devices</td><td>SolidWorks/FEA, ISO 10993 biocompatibility, CAD/CAM</td><td>DfM for machining/printing, regulatory affairs basics</td><td>FEA fatigue analysis</td></tr>
+<tr><td>Power-grid work</td><td>Power flow analysis, protection relays, PSS/E or DIgSILENT</td><td>DER interconnection standards (IEEE 1547), SCADA/EMS</td><td>Power-electronics control (grid-forming)</td></tr>
+<tr><td>Nuclear engineering</td><td>Neutron transport (MCNP), thermal hydraulics, reactor physics</td><td>10 CFR 50/52 regulatory literacy, PRA methods</td><td>Fusion plasma physics (for fusion track)</td></tr>
+<tr><td>Climate/energy systems</td><td>Energy-system modeling (PyPSA, TIMES), LCA software (SimaPro/GaBi)</td><td>Grid integration studies, storage dispatch economics</td><td>Carbon accounting (GHG Protocol)</td></tr>
+<tr><td>Ag biotech R&amp;D</td><td>Molecular cloning, CRISPR, tissue culture, stats for field trials</td><td>Bioinformatics (BLAST, genome browsers), regulatory (USDA APHIS, EPA)</td><td>High-throughput phenotyping / drone analytics</td></tr>
+</tbody>
+</table>
+<hr />
+<h1 id="part-x-controversies-debates">PART X — CONTROVERSIES &amp; DEBATE AREAS</h1>
+<p><em>Where reasonable experts disagree — knowing the debate is part of the map.</em></p>
+<h2 id="x-1-ai-in-medicine-the-510k-loophole-debate">1. AI in Medicine: The 510(k) Loophole Debate</h2>
+<ul>
+<li><strong>The issue:</strong> 96.2% of FDA-authorized AI devices went through 510(k) "substantially equivalent" clearance rather than rigorous PMA trials. Critics argue AI models that learn from data behave unlike the predicate device they claim equivalence to — especially after real-world drift.</li>
+<li><strong>FDA response:</strong> PCCP (Predetermined Change Control Plan) guidance lets manufacturers pre-specify algorithm updates, converting uncontrolled drift into a regulated pathway.</li>
+<li><strong>Live question:</strong> Does software-as-a-medical-device need drug-like post-market surveillance? Several radiology-AI studies showed performance gaps between trial and deployment populations.</li>
+</ul>
+<h2 id="x-2-gene-editing-human-boundaries">2. Gene Editing: Human Boundary Controversy</h2>
+<ul>
+<li><strong>Somatic editing (allowed, expanding):</strong> Casgevy for sickle-cell/β-thalassemia — ex vivo, patient-specific cells. Base/prime editors in trials for ATTR amyloidosis, hypercholesterolemia.</li>
+<li><strong>Germline editing (prohibited nearly everywhere):</strong> He Jiankui's 2018 CCR5-edited babies remain the cautionary tale; WHO recommends a registry and moratorium framework; UK legalized mitochondrial donation (2015) but not nuclear germline editing.</li>
+<li><strong>Debate axis:</strong> where to draw "therapy vs. enhancement"; disability-rights critiques of eliminating conditions; patent/enforcement gaps for DIY biohacking (FDA has warned against unapproved CRISPR kits).</li>
+</ul>
+<h2 id="x-3-nuclear-vs-renewables-storage">3. Nuclear Revival vs. Renewables+Storage</h2>
+<ul>
+<li><strong>Nuclear case:</strong> firm low-carbon power; SMRs promise factory-built modularity; fusion private investment &gt;$10B (IAEA 2025); existing fleet provides ~10% of global electricity and majority of US clean power.</li>
+<li><strong>Skeptic case:</strong> SMR economics unproven (NuScale's UAMPS project cancelled 2023 then restructured 2024); cost overruns on recent Western builds (Hinkley Point C, Vogtle); waste and proliferation unsolved; LCOE of solar+multi-hour storage now undercuts new nuclear in most markets.</li>
+<li><strong>Emerging synthesis:</strong> advanced reactors paired with industrial heat / hydrogen (high-temperature reactors); fusion-fission hybrids; small reactors for remote mining/AI data centers (Microsoft Three Mile Island restart deal, 2024).</li>
+</ul>
+<h2 id="x-4-digital-twins-hype-vs-reality">4. Digital Twins: Hype vs. Reality</h2>
+<ul>
+<li><strong>Vendor claim:</strong> real-time mirrored systems enable predictive maintenance, in-silico trials, autonomous operation.</li>
+<li><strong>Skeptic data:</strong> Citeline (Sep 2025) reports adoption hampered by unclear ROI, data-integration costs, and model-fidelity gaps; most deployments remain descriptive (dashboards) rather than predictive/simulational.</li>
+<li><strong>FDA angle:</strong> ISTAND pilot program explores regulatory use of computational modeling, but no cleared "digital twin as a device" precedent broadly.</li>
+<li><strong>Verdict forming:</strong> narrow domains (jet engines, semiconductor fabs) work; general-purpose "twin of everything" remains marketing.</li>
+</ul>
+<h2 id="x-5-autonomous-vehicles-the-l5-debate">5. Autonomous Vehicles: The L5 Debate</h2>
+<ul>
+<li><strong>Optimists:</strong> Waymo robotaxi operations expanded to multiple US cities in 2024–25 with declining intervention rates; Tesla FSD supervised deployments large-scale.</li>
+<li><strong>Skeptics:</strong> SAE L5 (fully driverless, all conditions) still undemonstrated anywhere; long-tail edge cases (construction zones, emergency vehicles, unprotected lefts) persist; regulatory patchwork; insurance/liability frameworks immature.</li>
+<li><strong>Consensus forming:</strong> L4 geofenced robotaxis viable in favorable metros; L5 for consumer vehicles remains a research horizon problem, not an engineering-tuning problem.</li>
+</ul>
+<h2 id="x-6-gm-food-vs-organic-regenerative">6. GM/CRISPR Food vs. Organic/Regenerative Movement</h2>
+<ul>
+<li><strong>Biotech case:</strong> fewer pesticides, drought tolerance, biofortification (Golden Rice), gene-edited crops often escape transgenic regulation (USDA "not regulated" letters).</li>
+<li><strong>Critics' case:</strong> gene-flow/ecological unknowns, corporate concentration, labeling battles (US "bioengineered" label vs. EU mandatory GMO labeling for gene-edited food), organic sector's market differentiation threatened.</li>
+<li><strong>Practical middle:</strong> CRISPR edits indistinguishable-from-conventional varieties are entering commerce in Japan (high-GABA tomato) and the US; coexistence frameworks are being litigated, not designed.</li>
+</ul>
+<h2 id="x-7-concrete-decarbonization-vs-alternatives">7. Concrete Decarbonization: Capture vs. Substitute</h2>
+<ul>
+<li><strong>Path A:</strong> carbon capture on cement plants + CCUS; slower, keeps incumbent infrastructure.</li>
+<li><strong>Path B:</strong> supplementary cementitious materials (slag, fly ash, calcined clay LC3), mass timber, geopolymer binders — disrupts the Portland-cement paradigm.</li>
+<li><strong>Tension:</strong> fly ash/slag supplies declining as coal plants close; LC3 needs supply-chain build-out; green-premium cost pass-through contested in public procurement.</li>
+</ul>
+<h2 id="x-8-space-mining-legality">8. Space Mining &amp; Orbital Property</h2>
+<ul>
+<li><strong>Legal vacuum:</strong> Outer Space Treaty (1967) prohibits sovereignty claims; US 2015 SPACE Act and Luxembourg laws grant private extraction rights to US/Luxembourg entities — untested in practice, contested by spacefaring rivals and some scholars.</li>
+<li><strong>Economic reality:</strong> no commercial asteroid mining has occurred; launch costs and autonomous in-situ resource utilization (ISRU) remain prohibitive; near-term credible markets are lunar water/helium-3 research and satellite servicing, not mining.</li>
+</ul>
+<hr />
+<h1 id="part-xi-timeline-breakthroughs">PART XI — TIMELINE OF BREAKTHROUGHS</h1>
+<table>
+<thead>
+<tr><th>Year</th><th>Breakthrough</th><th>Field(s)</th></tr>
+</thead>
+<tbody>
+<tr><td>1903</td><td>Wright Flyer — powered flight</td><td>Aerospace</td></tr>
+<tr><td>1947</td><td>Transistor invented (Bell Labs)</td><td>EE</td></tr>
+<tr><td>1953</td><td>Watson-Crick DNA structure</td><td>Medicine/Biotech</td></tr>
+<tr><td>1957</td><td>First nuclear power (Shippingport); Sputnik launch</td><td>Nuclear/Aerospace</td></tr>
+<tr><td>1960</td><td>FDA Kefauver-Harris amendments modernize drug regulation</td><td>Medicine</td></tr>
+<tr><td>1969</td><td>ARPANET first message; Apollo 11</td><td>CS/Aerospace</td></tr>
+<tr><td>1970</td><td>First practical solar cell (~14%, Bell); Green Revolution peak</td><td>Energy/Agri</td></tr>
+<tr><td>1973</td><td>First recombinant DNA; oil crisis spurs efficiency engineering</td><td>Biotech/Energy</td></tr>
+<tr><td>1982</td><td>First commercial insulin via recombinant DNA (Humulin)</td><td>Biotech/Pharma</td></tr>
+<tr><td>1990</td><td>World Wide Web public; Human Genome Project launched</td><td>CS/Medicine</td></tr>
+<tr><td>1996</td><td>Dolly the sheep — somatic-cell nuclear transfer</td><td>Biotech</td></tr>
+<tr><td>1997</td><td>Deep Blue beats Kasparov; first humanoid robot demos</td><td>CS/Robotics</td></tr>
+<tr><td>2001</td><td>Human Genome draft published; iPod; wind power mainstream</td><td>Medicine/CS/Energy</td></tr>
+<tr><td>2007</td><td>iPhone; Tesla Roadster; first utility-scale PV plants</td><td>CS/Energy</td></tr>
+<tr><td>2009</td><td>CRISPR-Cas9 system characterized (Doudna/Charpentier)</td><td>Biotech</td></tr>
+<tr><td>2011</td><td>First iPSC-derived cells; Fukushima reshapes nuclear policy</td><td>Biotech/Nuclear</td></tr>
+<tr><td>2015</td><td>Paris Agreement; AlphaGo beats Lee Sedol; first CRISPR mammal editing</td><td>Climate/AI/Biotech</td></tr>
+<tr><td>2017</td><td>Transformer architecture ("Attention Is All You Need"); first CAR-T approvals</td><td>AI/Medicine</td></tr>
+<tr><td>2019</td><td>LIGO Nobel; genome-wide association studies at scale</td><td>Physics/Medicine</td></tr>
+<tr><td>2020</td><td>mRNA COVID vaccines; first commercial crew Dragon; AlphaFold 2 solves protein folding</td><td>Medicine/Aerospace/AI</td></tr>
+<tr><td>2021</td><td>First exascale systems commissioned; high-GABA CRISPR tomato approved (Japan)</td><td>HPC/Ag biotech</td></tr>
+<tr><td>2022</td><td>AlphaFold DB opens; ChatGPT launch; first CRISPR therapy approval (Casgevy); NIF ignition net-energy gain</td><td>AI/Biotech/Energy</td></tr>
+<tr><td>2023</td><td>FDA PCCP guidance; Artemis I uncrewed lunar orbit; first humanoid robot deployments</td><td>Regulatory/Aerospace/Robotics</td></tr>
+<tr><td>2024</td><td>EU AI Act enters force; Google Willow quantum error-correction milestone; Pluvicto PSMA expansion</td><td>Regulatory/Quantum/Medicine</td></tr>
+<tr><td>2025</td><td>FDA AI devices hit record 335; private fusion funding &gt;$10B; Starship test flights; 1.6T optics ramp</td><td>Medicine/Energy/Aerospace/EE</td></tr>
+<tr><td>2026</td><td>Artemis II crewed lunar flyby (planned); quantum sensing clocks reach 10⁻¹⁸ field demos; AI-device authorization trend maturing under PCCP</td><td>Space/Quantum/Medicine</td></tr>
+</tbody>
+</table>
+<hr />
+<h1 id="part-xii-key-papers-people">PART XII — KEY PAPERS &amp; PEOPLE</h1>
+<h2 id="xii-1-landmark-papers">1. Landmark Papers (foundational reads)</h2>
+<table>
+<thead>
+<tr><th>Paper / result</th><th>Year</th><th>Why it matters</th></tr>
+</thead>
+<tbody>
+<tr><td>Shannon, "A Mathematical Theory of Communication"</td><td>1948</td><td>Information theory — foundation for all data/comms engineering</td></tr>
+<tr><td>Watson &amp; Crick, DNA structure (Nature)</td><td>1953</td><td>Molecular biology foundation</td></tr>
+<tr><td>Cohen-Boyer recombinant DNA</td><td>1973</td><td>Genetic engineering birth</td></tr>
+<tr><td>Sanger sequencing method</td><td>1977</td><td>Enabled genome era</td></tr>
+<tr><td>Venter et al., first synthetic-genome cell (JCVI-syn1.0)</td><td>2010</td><td>Synthetic biology proof-of-concept</td></tr>
+<tr><td>Jinek et al., CRISPR-Cas9 programmable nuclease (Science)</td><td>2012</td><td>CRISPR revolution paper</td></tr>
+<tr><td>Vaswani et al., "Attention Is All You Need"</td><td>2017</td><td>Transformer architecture — basis of modern AI</td></tr>
+<tr><td>Jumper et al., AlphaFold 2 (Nature)</td><td>2021</td><td>Protein-structure prediction at scale</td></tr>
+<tr><td>Obermeyer et al., "Dissecting racial bias in an algorithm used to manage health populations" (Science)</td><td>2019</td><td>Canonical algorithmic-bias case study in medicine</td></tr>
+<tr><td>NIST post-quantum cryptography standards (FIPS 203/204/205)</td><td>2024</td><td>First PQC standards — cryptographic transition begins</td></tr>
+<tr><td>Google Quantum AI, Willow error-correction below threshold</td><td>2024</td><td>First evidence of exponential error suppression in QC</td></tr>
+<tr><td>Goodfellow et al., GANs (NIPS)</td><td>2014</td><td>Generative models era</td></tr>
+<tr><td>Feynman, "There's Plenty of Room at the Bottom"</td><td>1959</td><td>Nanotechnology founding vision</td></tr>
+</tbody>
+</table>
+<h2 id="xii-2-key-people-eras">2. Key People by Era</h2>
+<table>
+<thead>
+<tr><th>Era</th><th>Figures</th><th>Contribution</th></tr>
+</thead>
+<tbody>
+<tr><td>Founding era (1900–50)</td><td>Maxwell, Tesla, Edison, Wright brothers, Fleming</td><td>EM theory, power systems, flight, electronics</td></tr>
+<tr><td>Atomic/nuclear era</td><td>Fermi, Oppenheimer, Szilard, Teller</td><td>Fission chain reaction, reactor physics, H-bomb</td></tr>
+<tr><td>Molecular biology era</td><td>Watson, Crick, Franklin, Sanger, Nirenberg</td><td>DNA structure, sequencing, genetic code</td></tr>
+<tr><td>Information/CS era</td><td>Shannon, Turing, von Neumann, Knuth, Dijkstra, Codd</td><td>Information theory, computing theory, algorithms, relational DBs</td></tr>
+<tr><td>Genomics era</td><td>Venter, Collins, Lander, Doudna, Charpentier</td><td>Human genome, gene editing, functional genomics</td></tr>
+<tr><td>AI/ML era</td><td>Hinton, LeCun, Bengio, Hassabis, Karpathy</td><td>Deep learning, AlphaFold, LLMs</td></tr>
+<tr><td>Regenerative/frontier era</td><td>Yamanaka (iPSC Nobel 2012), Collins (synbio), Musk (Neuralink), Deisseroth (optogenetics)</td><td>Stem cells, synthetic biology, BCI, neural control</td></tr>
+</tbody>
+</table>
+<hr />
+<h1 id="part-xiii-open-problems">PART XIII — OPEN PROBLEMS</h1>
+<p><em>Unsolved problems that define the next decade of engineering &amp; medicine.</em></p>
+<h2 id="xiii-1-hard-engineering-problems">1. Hard Engineering Problems</h2>
+<ul>
+<li><strong>Grid-scale storage beyond lithium:</strong> multi-day/week storage at competitive cost — iron-air, flow, thermal, hydrogen all unproven at scale.</li>
+<li><strong>Fusion net-energy at commercial scale:</strong> net-gain demonstrated (NIF ignition 2022; CFS/SPARC targets 2025–26), but electricity production, materials under 14 MeV neutron flux, and tritium breeding remain unsolved.</li>
+<li><strong>Interconnect bottleneck:</strong> power delivery to AI data centers — grid queues measured in years; advanced reactors + on-site generation becoming a proposed fix.</li>
+<li><strong>Carbon-negative cement/concrete:</strong> no drop-in solution at gigatonne scale; LC3 and CCUS both face supply/logistics constraints.</li>
+<li><strong>Long-duration autonomous systems:</strong> robots/ships/aircraft operating for months without human intervention — perception edge cases + energy + maintainability.</li>
+<li><strong>Extreme-environment computing:</strong> radiation-hardened electronics for Jupiter/Europa-class missions; fault-tolerant computing for deep space.</li>
+</ul>
+<h2 id="xiii-2-hard-medicine-problems">2. Hard Medicine Problems</h2>
+<ul>
+<li><strong>Organ replacement:</strong> thick, vascularized organs remain out of reach; organoids + bioprinting closing the gap slowly; xenotransplantation (pig kidney/heart transplants 2022–24) is a bridge, not an endpoint.</li>
+<li><strong>CNS repair:</strong> spinal cord regeneration, neurodegenerative disease modification (Alzheimer's disease-modifying antibodies show modest effects at best), consciousness-level BCI bandwidth.</li>
+<li><strong>Cancer as a systems problem:</strong> metastasis, tumor heterogeneity, resistance evolution; early detection (multi-cancer early detection blood tests) promising but unproven mortality benefit.</li>
+<li><strong>Antimicrobial resistance:</strong> post-antibiotic era risk; new modalities (phages, CRISPR antimicrobials, antibodies) all pre-scale.</li>
+<li><strong>Clinical-trial economics:</strong> ~$2.6B average drug development cost (DiMasi 2016 estimate; critiques suggest higher); AI is expected to compress timelines but evidence is early.</li>
+<li><strong>Regulatory science for AI devices:</strong> how to validate continuously-learning systems; drift monitoring; real-world evidence frameworks still maturing.</li>
+</ul>
+<h2 id="xiii-3-hard-agriculture-problems">3. Hard Agriculture Problems</h2>
+<ul>
+<li><strong>Yield ceiling:</strong> conventional breeding approaching genetic-potential limits; climate volatility outpacing adaptation in many regions.</li>
+<li><strong>Protein transition:</strong> alternative proteins at cost/scale parity with commodity meat — precision fermentation still energy- and capex-intensive.</li>
+<li><strong>Soil carbon measurement:</strong> MRV (measurement, reporting, verification) for carbon credits unreliable at field scale; credits risk being non-additional.</li>
+<li><strong>Water scarcity:</strong> agriculture ≈ 70% of global freshwater withdrawals; drip/micro irrigation adoption uneven; desalination energy cost.</li>
+<li><strong>Pollinator &amp; biodiversity collapse:</strong> monoculture + pesticide pressure; engineering solutions (robot pollinators) still research-stage.</li>
+</ul>
+<h2 id="xiii-4-open-theory-and-methods-problems">4. Open Theory &amp; Methods Problems</h2>
+<ul>
+<li><strong>Materials-by-design:</strong> inverse design works for narrow property spaces; general-purpose discovery still needs human intuition.</li>
+<li><strong>Digital-twin fidelity:</strong> quantifying and bounding model error for safety-relevant twins (FDA is piloting via ISTAND but no general framework).</li>
+<li><strong>Standardization debt:</strong> every frontier field lacks interoperability standards — FHIR adoption uneven, photonics packaging non-standard, BCI decoding algorithms incompatible across devices.</li>
+<li><strong>Workforce translation:</strong> engineering advances outpace the trained workforce; PE licensure, clinical credentialing, and safety-certification pipelines are the hidden bottleneck.</li>
+</ul>
+<hr />
+<h1 id="part-xiv-cross-links">PART XIV — CROSS-LINKS TO SIBLING MAPS</h1>
+<p><em>This map is one node in the PRIME knowledge network. Follow the links for depth in adjacent domains.</em></p>
+<a class="doc" href="39 - ml-data-pipeline.html">📊 39 — ML Data Pipeline <small>· the data side of every AI-enabled field above</small></a>
+<a class="doc" href="41 - map-cs-it.html">💻 41 — CS &amp; IT Master Map <small>· software, systems, algorithms underlying all engineering computation</small></a>
+<a class="doc" href="42 - map-math-logic.html">📐 42 — Math &amp; Logic Map <small>· the formal substrate: statistics, optimization, linear algebra used everywhere here</small></a>
+<a class="doc" href="43 - map-natural-sciences.html">🔬 43 — Natural Sciences Map <small>· physics, chemistry, biology foundations of Parts I–V</small></a>
+<a class="doc" href="44 - map-ai-ml.html">🤖 44 — AI &amp; ML Map <small>· the AI layer accelerating medicine, engineering, agriculture (see Part VII AI-enabled fields)</small></a>
+<a class="doc" href="45 - map-cybersecurity.html">🛡️ 45 — Cybersecurity Map <small>· medical-device security, grid cyber-physical risk, biosecurity</small></a>
+<a class="doc" href="46 - map-knowledge-archive.html">🗄️ 46 — Knowledge Archive <small>· how this corpus is organized and retrieved</small></a>
+<a class="doc" href="47 - map-humanities-society.html">🌍 47 — Humanities &amp; Society Map <small>· ethics, policy, economics governing Parts X–XIII debates</small></a>
+<a class="doc" href="00 - PRIME INDEX.html">⬡ 00 — PRIME INDEX <small>· master navigation for the full knowledge base</small></a>
+<hr />
+<h1 id="sources">SOURCES</h1>
+<h2 id="primary-regulatory">Primary &amp; Regulatory</h2>
+<ul>
+<li><a href="https://www.fda.gov/medical-devices/digital-health-center-excellence/artificial-intelligence-enabled-medical-devices">FDA — Artificial Intelligence-Enabled Medical Devices</a></li>
+<li><a href="https://www.fda.gov/medical-devices/artificial-intelligence-enabled-medical-devices/good-machine-learning-practice-medical-device-development-guiding-principles">FDA — Good Machine Learning Practice for Medical Device Development</a></li>
+<li><a href="https://insights.citeline.com/in-vivo/innovation/digital-twins-grow-up-but-adoption-hurdles-remain-JG6MZI4PARFADGXZH7ZIO3U6TY/">Citeline Insights — Digital Twins Grow Up But Adoption Hurdles Remain (Sep 2025)</a></li>
+<li><a href="https://hlc.com/en/publications/fdas-evolving-regulatory-framework-for-ai-use-in-drug-device-clinical-trials-and-research">Hogan Lovells — FDA's evolving regulatory framework for AI in clinical trials (Jan 2025)</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13733602/">Cureus — Growth and Regulatory Pathways of AI-Enabled Medical Devices 1995–2026 (cross-sectional analysis)</a></li>
+<li><a href="https://www.iaea.org/newscenter/news/fusion-energy-in-2025-six-global-trends-to-watch">IAEA — Fusion Energy in 2025: Six Global Trends (Oct 2025)</a></li>
+<li><a href="https://www.grandviewresearch.com/industry-analysis/engineering-services-market-report">Grand View Research — Engineering Services Market 2026–2033</a></li>
+<li><a href="https://www.grandviewresearch.com/industry-analysis/energy-storage-systems-market">Grand View Research — Energy Storage Systems Market 2026–2033</a></li>
+<li><a href="https://www.ibisworld.com/global/industry/global-engineering-services/1990/">IBISWorld — Global Engineering Services Industry Analysis, Feb 2026</a></li>
+<li><a href="https://www.researchandmarkets.com/reports/6136908/engineering-and-randd-services-market-global">360iResearch — Engineering &amp; R&amp;D Services Market Forecast 2025–2032</a></li>
+</ul>
+<h2 id="reference-classification">Reference &amp; Classification</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/List_of_engineering_branches">Wikipedia — List of engineering branches</a></li>
+<li><a href="https://www.mtu.edu/engineering/about/types/">Michigan Tech — Types of Engineering Fields</a></li>
+<li><a href="https://www.ccsu.edu/sites/default/files/document/Engineering_Disciplines.pdf">CCSU — Engineering Disciplines overview PDF</a></li>
+<li><a href="https://education.trustopen.org/CAT-05/index.html">TrustOpen Education — CAT-05 Engineering and Technology</a></li>
+<li><a href="https://ieeexplore.ieee.org/">IEEE Xplore — primary venue for engineering frontier results</a></li>
+<li><a href="https://dl.acm.org/">ACM Digital Library — computing/engineering crossover research</a></li>
+</ul>
+<p><em>Compiled: December 2025; upgraded to SSSSS depth January 2026. This document is a classification and synthesis map, not a substitute for peer-reviewed literature or regulatory guidance.</em></p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 40 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

@@ -1,0 +1,100 @@
+{
+ "agents": {
+  "NEIL": {
+   "field": "VIDEO EDITING & FILM",
+   "rank": "FIELD MARSHAL",
+   "score": 75,
+   "tools": [
+    "ffmpeg",
+    "PIL",
+    "moviepy",
+    "color-grading",
+    "captions",
+    "storyboarding"
+   ],
+   "commander": "self"
+  },
+  "PYTHON": {
+   "field": "PYTHON ENGINEERING",
+   "rank": "MARSHAL",
+   "score": 50,
+   "tools": [
+    "exec",
+    "python3",
+    "pip",
+    "debugging",
+    "refactoring",
+    "testing"
+   ],
+   "commander": "NEIL"
+  },
+  "SENTINEL": {
+   "field": "CYBERSECURITY",
+   "rank": "COMMANDER",
+   "score": 20,
+   "tools": [
+    "curl",
+    "nmap",
+    "docker-labs",
+    "DVWA",
+    "JuiceShop",
+    "WebGoat",
+    "payload-crafting"
+   ],
+   "commander": "NEIL"
+  },
+  "FORGE": {
+   "field": "SYSTEMS & DEVOPS",
+   "rank": "COMMANDER",
+   "score": 20,
+   "tools": [
+    "gateway",
+    "autostart",
+    "services",
+    "ports",
+    "wsl",
+    "windows",
+    "uptime"
+   ],
+   "commander": "NEIL"
+  },
+  "SCROLL": {
+   "field": "KNOWLEDGE & DOCS",
+   "rank": "SPECIALIST",
+   "score": 15,
+   "tools": [
+    "os-catalog",
+    "cyber-knowledge",
+    "proofledger",
+    "summaries",
+    "vault-sync"
+   ],
+   "commander": "NEIL"
+  },
+  "WAVE": {
+   "field": "AUDIO & MUSIC",
+   "rank": "RECRUIT",
+   "score": 5,
+   "tools": [
+    "edge-tts",
+    "ffmpeg-audio",
+    "ambient-synthesis"
+   ],
+   "commander": "NEIL"
+  },
+  "PIXEL": {
+   "field": "DESIGN & WHITEBOARD",
+   "rank": "MARSHAL",
+   "score": 35,
+   "tools": [
+    "canvas",
+    "svg",
+    "shape-engine",
+    "animation",
+    "live-whiteboard"
+   ],
+   "commander": "NEIL"
+  }
+ },
+ "updated": 1795687229.5253975
+}

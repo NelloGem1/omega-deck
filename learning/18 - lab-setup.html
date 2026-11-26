@@ -1,0 +1,176 @@
+<!doctype html><html><head><meta charset="utf-8"><title>setup</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="websec-lab-setup-guide-nellogem">WebSec Lab — Setup Guide (NelloGem)</h1>
+<p>Practice environment for learning web security / ethical hacking on
+Windows 11 + WSL Ubuntu. All apps run <strong>inside WSL Ubuntu</strong>.</p>
+<p>Last verified: 2026-11-25</p>
+<hr />
+<h2 id="1-whats-installed">1. What's installed</h2>
+<p>Docker Engine is running <strong>natively inside WSL</strong> (<code>dockerd</code> + <code>containerd</code>,
+socket <code>/var/run/docker.sock</code>). The <code>docker</code> CLI is at <code>/usr/bin/docker</code>
+and user <code>neilh</code> is in the <code>docker</code> group.</p>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>URL</th>
+<th>Port</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OWASP Juice Shop (<code>bkimminich/juice-shop</code>)</td>
+<td>http://localhost:3000</td>
+<td>3000</td>
+<td>✅ HTTP 200</td>
+</tr>
+<tr>
+<td>OWASP WebGoat (<code>webgoat/webgoat</code>)</td>
+<td>http://localhost:18080/WebGoat</td>
+<td>18080</td>
+<td>✅ HTTP 302→login</td>
+</tr>
+<tr>
+<td>WebWolf (WebGoat companion, <code>webgoat/webgoat</code>)</td>
+<td>http://localhost:19090</td>
+<td>19090</td>
+<td>✅ running</td>
+</tr>
+<tr>
+<td>DVWA (<code>vulnerables/web-dvwa</code>)</td>
+<td>http://localhost:4280</td>
+<td>4280</td>
+<td>✅ HTTP 302→login</td>
+</tr>
+<tr>
+<td>NelloGem SubLab (Flask app, manual)</td>
+<td>http://localhost:5000</td>
+<td>5000</td>
+<td>✅ verified HTTP 200</td>
+</tr>
+</tbody>
+</table>
+<p>Container names: <code>juice-shop</code>, <code>webgoat</code>, <code>dvwa</code> (all <code>docker ps</code> visible,
+restart policy enabled — they come back with Docker/WSL).</p>
+<blockquote>
+<p>Note: the <code>webgoat</code> container shows Docker status "unhealthy" — that's
+only because the image's healthcheck calls <code>curl</code>, which isn't installed
+in the container. The app itself works fine (verified HTTP 302).</p>
+</blockquote>
+<hr />
+<h2 id="2-docker-commands">2. Docker commands</h2>
+<pre><code class="language-bash">docker ps                 # list running apps
+docker ps -a              # include stopped
+docker logs -f juice-shop # follow logs
+docker restart dvwa       # restart one
+docker stop webgoat       # stop one
+docker start juice-shop   # start one
+</code></pre>
+<p>If <code>docker</code> ever says "permission denied", run <code>newgrp docker</code> or open a
+new WSL shell (group membership was just added).</p>
+<hr />
+<h2 id="3-app-details-credentials">3. App details &amp; credentials</h2>
+<h3 id="juice-shop-httplocalhost3000">Juice Shop — http://localhost:3000</h3>
+<ul>
+<li>No signup needed; open and start the tutorial or score board
+  (<code>/#/score-board</code>)</li>
+<li>Admin login: <code>admin@juice-sh.op</code> / <code>admin123</code></li>
+<li>~100 challenges across all major vuln classes</li>
+</ul>
+<h3 id="webgoat-httplocalhost18080webgoat">WebGoat — http://localhost:18080/WebGoat</h3>
+<ul>
+<li>Self-register any username/password on first visit</li>
+<li>WebWolf (the "attacker" mailbox app): http://localhost:19090
+  (login with the same credentials you register in WebGoat)</li>
+</ul>
+<h3 id="dvwa-httplocalhost4280">DVWA — http://localhost:4280</h3>
+<ul>
+<li>Login: <code>admin</code> / <code>password</code></li>
+<li>Security level is set on the "DVWA Security" page after login
+  (start at <em>low</em> / <em>medium</em> for learning)</li>
+<li>Database setup: click "Create / Reset Database" on the home page
+  if you see DB errors</li>
+</ul>
+<hr />
+<h2 id="4-nellogem-sublab-your-audit-target">4. NelloGem SubLab — your audit target</h2>
+<ul>
+<li><strong>Location:</strong> <code>/home/neilh/websec_lab/app/</code></li>
+<li><strong>Files:</strong> <code>app.py</code> (secured version), <code>app_vulnerable.py</code>
+  (original, every bug marked <code># VULN:</code>), <code>schema.sql</code>,
+  <code>requirements.txt</code>, <code>README.md</code>, <code>tests/</code></li>
+<li><strong>Python:</strong> <code>/home/neilh/venv</code> (Flask 3.1.3)</li>
+</ul>
+<h3 id="run-it">Run it</h3>
+<pre><code class="language-bash">cd /home/neilh/websec_lab/app
+/home/neilh/venv/bin/python app.py        # secured version → :5000
+/home/neilh/venv/bin/python app_vulnerable.py   # vulnerable version
+</code></pre>
+<blockquote>
+<p><code>app.py</code> and <code>app_vulnerable.py</code> both try to bind :5000 — run ONE at a
+time, or edit the <code>port=</code> in <code>app.run(...)</code> to use e.g. 5001 for the
+vulnerable copy so you can compare them side by side.</p>
+</blockquote>
+<p>Demo account (auto-seeded): <code>demo</code> / <code>demo123</code></p>
+<h3 id="intentional-weaknesses-in-app_vulnerablepy">Intentional weaknesses (in <code>app_vulnerable.py</code>)</h3>
+<ul>
+<li>SQL injection in <code>/register</code> and <code>/login</code></li>
+<li>Plaintext password storage</li>
+<li>Weak hardcoded Flask <code>secret_key</code></li>
+<li>Client-side "payment" — POST <code>payment_success=1</code> to <code>/upgrade</code></li>
+<li><code>/premium</code> trusts a session flag, not the DB</li>
+<li>Debug mode + verbose errors, no CSRF protection</li>
+</ul>
+<p><code>app.py</code> is the "fixed" version — diff the two files to see what each
+<code># VULN:</code> maps to.</p>
+<hr />
+<h2 id="5-cheat-sheet">5. Cheat sheet</h2>
+<pre><code class="language-bash"># Health check everything
+for p in 3000 18080 19090 4280; do
+  curl -s -o /dev/null -w &quot;port $p -&gt; %{http_code}\n&quot; http://localhost:$p
+done
+
+# Python deps live in ~/venv:
+/home/neilh/venv/bin/python ...
+/home/neilh/venv/bin/pip ...
+</code></pre>
+<h2 id="6-layout-on-disk">6. Layout on disk</h2>
+<pre><code>/home/neilh/websec_lab/
+├── SETUP.md            ← this file
+├── app/                ← your Flask subscription app (+ tests/)
+└── tools/
+    ├── juice-shop.tgz            (installer archive, can be deleted)
+    ├── juice-shop_20.4.0-SNAPSHOT/ (manual install — unused, docker is canonical)
+    ├── jre/                      (Temurin JRE 21 — unused, docker is canonical)
+    └── webgoat/webgoat-2023.8.jar (manual install — unused, docker is canonical)
+</code></pre>
+<p>The <code>tools/</code> manual installs (~1 GB total) are kept as offline backups;
+the Docker containers are what you should actually use. Safe to delete
+<code>tools/</code> if you need disk space.</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 18 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

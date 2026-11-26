@@ -1,0 +1,235 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>KeePassXC — Beginner's Guide</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="keepassxc-beginners-guide">KeePassXC — Beginner's Guide</h1>
+<p><strong>Version installed:</strong> 2.8.0 (winget package <code>KeePassXCTeam.KeePassXC</code>, MSI)
+<strong>Install path:</strong> <code>C:\Program Files\KeePassXC\KeePassXC.exe</code>
+<strong>Website:</strong> https://keepassxc.org</p>
+<p>KeePassXC is a free, open-source password manager. All passwords live in a single encrypted <strong>vault file</strong> (<code>.kdbx</code>) that only you can unlock. There is no cloud account required — your data stays on your machine unless you choose to sync it yourself.</p>
+<hr />
+<h2 id="1-how-the-vault-encryption-works">1. How the Vault Encryption Works</h2>
+<p>When you create a vault, KeePassXC encrypts the entire database with:</p>
+<ul>
+<li><strong>Cipher:</strong> AES-256 (default) or ChaCha20 — both are industry-standard, audited algorithms. AES-256 is the recommended default.</li>
+<li><strong>Key Derivation Function (KDF):</strong> Argon2id by default. It deliberately consumes memory and CPU to make brute-force password guessing extremely slow. You can tune memory/time/parallelism in Database Settings → Encryption; the defaults are safe — only lower them if unlocking feels slow on a weak machine.</li>
+<li><strong>Composite key:</strong> your vault is protected by whatever combination you choose at creation:</li>
+<li><strong>Master password</strong> — the main factor. Make it a long passphrase (4+ random words or 20+ characters). This is the ONLY thing standing between an attacker and your passwords.</li>
+<li><strong>Key file</strong> — an optional extra secret file. Adds a second factor: an attacker needs BOTH the password and the file.</li>
+<li><strong>Windows Hello / system authentication</strong> — optional quick-unlock via PIN/biometrics (convenience layer; the master password still protects the vault at rest).</li>
+</ul>
+<p><strong>Key fact:</strong> if you forget the master password AND have no key file, the vault is unrecoverable. KeePassXC cannot reset it — there is no backdoor.</p>
+<hr />
+<h2 id="2-creating-your-first-vault">2. Creating Your First Vault</h2>
+<ol>
+<li>Launch KeePassXC → <strong>Databases → New Database</strong>.</li>
+<li><strong>Encryption settings:</strong> accept defaults (AES-256 + Argon2). Optionally enable "Decrypt database after every lock" is NOT needed — leave defaults.</li>
+<li><strong>General tab:</strong> give it a name (e.g., "Personal") and optionally a color/icon.</li>
+<li><strong>Credentials tab — choose your protection:</strong></li>
+<li>Enter a strong <strong>master password</strong> (twice).</li>
+<li>Click <strong>Add key file</strong> to also require a key file. Save it somewhere safe (USB drive, password manager of a <em>different</em> account, printed backup). <strong>Do not store it next to the vault file</strong> — that defeats the purpose.</li>
+<li>Optionally enable <strong>Windows Hello</strong> for faster unlocks.</li>
+<li>Click <strong>Save As</strong> and choose a location, e.g. <code>Documents\KeePassXC\Personal.kdbx</code>.</li>
+<li>Test: lock the database (<strong>Ctrl+L</strong>) and unlock it with your password.</li>
+</ol>
+<hr />
+<h2 id="3-saving-logins-entries">3. Saving Logins &amp; Entries</h2>
+<ul>
+<li>Right-click a group (e.g., "General") → <strong>Add New → Add new login</strong>.</li>
+<li>Fill in <strong>Title</strong> (recognizable name), <strong>Username</strong>, <strong>Password</strong>.</li>
+<li>Click the <strong>dices icon</strong> next to the password field to generate a strong one (adjust length, character sets; a 20+ char random password is ideal).</li>
+<li><strong>URL:</strong> paste the site's login URL. This enables browser integration matching and Auto-Type website detection.</li>
+<li><strong>Notes/TOTP:</strong> see section 5 for two-factor codes.</li>
+<li><strong>Ctrl+S</strong> or auto-saves on lock/close.</li>
+</ul>
+<p>Organize entries into <strong>groups</strong> (right-click → Add New → Add New Group) like folders — e.g., "Work", "Banking", "Shopping".</p>
+<hr />
+<h2 id="4-unlocking-locking-and-auto-type">4. Unlocking, Locking, and Auto-Type</h2>
+<ul>
+<li><strong>Lock:</strong> Ctrl+L or the lock icon. The vault re-encrypts and stays safe even if the app crashes.</li>
+<li><strong>Inactivity lock:</strong> Database Settings → Security → "Lock database after X seconds" (default 900s since 2.7.11).</li>
+<li><strong>Auto-Type</strong> (type credentials into the focused window without clipboard exposure):</li>
+<li>Edit an entry → <strong>Auto-Type</strong> tab.</li>
+<li>Set <strong>Auto-Type sequence</strong>, e.g. <code>{USERNAME}{TAB}{PASSWORD}{ENTER}</code>.</li>
+<li>On the login page, focus the username field and press <strong>Ctrl+Shift+V</strong> (default) or right-click entry → <strong>Perform Auto-Type</strong>.</li>
+<li>If multiple windows are open, a selection dialog appears — pick the right one.</li>
+</ul>
+<hr />
+<h2 id="5-two-factor-codes-totp-inside-keepassxc">5. Two-Factor Codes (TOTP) Inside KeePassXC</h2>
+<p>KeePassXC can generate TOTP codes (Google Authenticator-style) so you don't need a separate 2FA app:</p>
+<ol>
+<li>On the website's 2FA setup page, choose "can't scan QR? / enter manually" and copy the <strong>secret key</strong>.</li>
+<li>Edit the entry → <strong>TOTP</strong> tab → paste the secret → <strong>Add</strong>.</li>
+<li>The entry now shows a time-based code that refreshes every 30s. Click the clock icon to copy it.</li>
+</ol>
+<p>KeePassXC 2.8.0 also supports <strong>passkeys</strong> — store WebAuthn credentials in entries for phishing-resistant login.</p>
+<hr />
+<h2 id="6-browser-extension-keepassxc-browser">6. Browser Extension (KeePassXC-Browser)</h2>
+<p>Official extension for Chrome, Firefox, Edge, Brave, etc.:</p>
+<ol>
+<li>Install the extension from your browser's store (search "KeePassXC-Browser").</li>
+<li>In KeePassXC: <strong>Tools → Settings → Browser Integration</strong> → enable your browser(s).</li>
+<li>First time you visit a login page, KeePassXC pops an <strong>access request</strong> — approve it (optionally limit to specific sites/groups).</li>
+<li>The extension can autofill logins and offer to save new ones. KeePassXC must be <strong>running with the database unlocked</strong> — the extension talks to the local app over a secure local connection (no cloud involved).</li>
+<li>Use <strong>Ctrl+Shift+V / the extension icon</strong> to fill; passwords are never stored by the browser extension itself.</li>
+</ol>
+<hr />
+<h2 id="7-export-warnings-read-this">7. Export Warnings — READ THIS</h2>
+<ul>
+<li><strong>File → Export</strong> writes all passwords as <strong>plain CSV or XML — completely unencrypted</strong>.</li>
+<li>Only export when necessary (e.g., migrating to another manager), then <strong>securely delete the file immediately</strong> (Shift+Delete won't fully erase it — use a tool like Eraser or cipher /w, or move it to an encrypted container).</li>
+<li>Never email, cloud-sync, or leave an export file on disk.</li>
+<li>If you must share, prefer KeePassXC's built-in sharing or an encrypted channel.</li>
+</ul>
+<hr />
+<h2 id="8-backup-strategy">8. Backup Strategy</h2>
+<ul>
+<li><strong>The <code>.kdbx</code> file IS the backup.</strong> Copy it regularly to:</li>
+<li>An external USB drive (kept offline — protects against ransomware).</li>
+<li>An encrypted cloud folder (e.g., a VeraCrypt container or encrypted sync).</li>
+<li>A second physical location.</li>
+<li><strong>Never back up only to the same disk/folder as the original.</strong> 3-2-1 rule: 3 copies, 2 media types, 1 offsite.</li>
+<li>Test restores: occasionally copy the backup to a test machine and unlock it — an untested backup may be corrupt.</li>
+<li>KeePassXC has <strong>Database → Database Settings → Backup Database</strong> to snapshot before risky changes.</li>
+<li>If using a <strong>key file</strong>, back it up separately and securely — without it, newer backups are useless.</li>
+<li><strong>KeeShare</strong> can sync vaults across devices (Tools → Settings → Sync, or via a shared network folder/WebDAV). Treat synced copies like any other backup.</li>
+</ul>
+<hr />
+<h2 id="9-comparison-keepassxc-vault-vs-folder_lockpy">9. Comparison: KeePassXC Vault vs. <code>folder_lock.py</code></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>KeePassXC vault</th>
+<th><code>folder_lock.py</code> (folder encryption script)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope</td>
+<td>All credentials in one portable <code>.kdbx</code></td>
+<td>One folder/directory tree</td>
+</tr>
+<tr>
+<td>Encryption</td>
+<td>AES-256/ChaCha20 + Argon2id, whole DB</td>
+<td>Depends on script implementation</td>
+</tr>
+<tr>
+<td>Access pattern</td>
+<td>Unlock once → browse/fill/copy</td>
+<td>Unlock per session/use</td>
+</tr>
+<tr>
+<td>Password generation</td>
+<td>Built-in strong generator</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>2FA / TOTP / passkeys</td>
+<td>Built-in</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Browser autofill</td>
+<td>Official extension</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Auto-Type</td>
+<td>Built-in (Ctrl+Shift+V)</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Mobile sync</td>
+<td>KeeShare / manual file copy</td>
+<td>Copy encrypted folder</td>
+</tr>
+<tr>
+<td>Risk if master password lost</td>
+<td>Vault unrecoverable</td>
+<td>Folder unrecoverable (same)</td>
+</tr>
+<tr>
+<td>Auditability</td>
+<td>Open source, ANSSI security-certified (2.7.9)</td>
+<td>Depends on script quality</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Takeaway:</strong> use KeePassXC as the primary credential store. If <code>folder_lock.py</code> protects arbitrary files (documents, keys), keep it for that — but don't store passwords in plain files inside a locked folder when a proper vault exists.</p>
+<hr />
+<h2 id="10-quick-reference">10. Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Shortcut / Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New database</td>
+<td>Databases → New Database</td>
+</tr>
+<tr>
+<td>New login</td>
+<td>Right-click group → Add New → Add new login</td>
+</tr>
+<tr>
+<td>Generate password</td>
+<td>Dices icon in entry editor</td>
+</tr>
+<tr>
+<td>Lock database</td>
+<td>Ctrl+L</td>
+</tr>
+<tr>
+<td>Auto-Type</td>
+<td>Ctrl+Shift+V (focus field first)</td>
+</tr>
+<tr>
+<td>Copy TOTP</td>
+<td>Clock icon on entry</td>
+</tr>
+<tr>
+<td>Database settings</td>
+<td>Database → Database Settings</td>
+</tr>
+<tr>
+<td>Browser integration</td>
+<td>Tools → Settings → Browser Integration</td>
+</tr>
+<tr>
+<td>Export (dangerous)</td>
+<td>File → Export</td>
+</tr>
+</tbody>
+</table>
+<p><em>Stay safe: one strong master password + offline backups + never export to plaintext.</em></p>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from keepassxc_guide.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 30 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

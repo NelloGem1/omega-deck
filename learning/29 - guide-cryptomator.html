@@ -1,0 +1,148 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Cryptomator — Beginner's Guide</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="cryptomator-beginners-guide">Cryptomator — Beginner's Guide</h1>
+<blockquote>
+<p>Install date: installed via winget — <strong>Cryptomator 1.19.7</strong>
+Location: <code>C:\Program Files\Cryptomator\Cryptomator.exe</code>
+Java: <strong>bundled</strong> (Java 26 + JavaFX runtime in <code>C:\Program Files\Cryptomator\runtime</code> — no separate JRE needed)
+WinFsp 2.2 installed as the virtual filesystem driver (enables real drive-letter mounting; without it Cryptomator falls back to slower WebDAV).</p>
+</blockquote>
+<h2 id="what-cryptomator-does">What Cryptomator Does</h2>
+<p>Cryptomator creates an <strong>encrypted vault</strong> — a folder of ciphertext files that you place <em>inside</em> an existing cloud-synced folder (Dropbox, Google Drive, OneDrive, etc.). The cloud syncs the encrypted files; only you can decrypt them. Unlike VeraCrypt, there is <strong>no giant container file</strong> — each vault file is individually encrypted, so cloud sync and backup tools work file-by-file and there's no single-point-of-failure container to corrupt.</p>
+<h2 id="how-the-encryption-works-simple-version">How the Encryption Works (simple version)</h2>
+<ul>
+<li><strong>File contents</strong>: AES-GCM encryption, split into ~32 KiB chunks, each with a random nonce. A random file-content key per file is stored in an encrypted file header.</li>
+<li><strong>File names &amp; metadata</strong>: AES-SIV (RFC 5297) — directory and file names are encrypted deterministically, so the cloud sees opaque ciphertext names. Because SIV is deterministic, identical filenames produce identical ciphertext (a known, accepted trade-off).</li>
+<li><strong>Keys</strong>: derived from your vault password using <strong>scrypt</strong> (memory-hard KDF). The master key unlocks everything.</li>
+<li><strong>Vault format</strong>: version 8, <code>vault.cryptomator</code> config file (a JWT) at the vault root stores format version and algorithm metadata — it contains <em>no secrets</em>.</li>
+<li>This is <strong>client-side encryption</strong>: the cloud provider only ever sees ciphertext. Even if their servers are breached, your files are safe as long as your password is strong.</li>
+</ul>
+<h2 id="creating-a-vault">Creating a Vault</h2>
+<ol>
+<li>Open <code>Cryptomator.exe</code> (Windows Start menu → Cryptomator).</li>
+<li>Click <strong>"Create a vault"</strong>.</li>
+<li><strong>Vault location</strong>: browse into your synced folder, e.g. <code>C:\Users\&lt;you&gt;\Dropbox\</code> or <code>...\Google Drive\</code>. Give the vault a name (e.g. <code>private</code>). Cryptomator creates a folder with that name inside your cloud folder.</li>
+<li><strong>Vault password</strong>: choose a strong, unique password (this is the <em>only</em> thing protecting your files). Re-enter to confirm. Optionally tick <strong>"Use recovery key"</strong> — Cryptomator will show a one-time recovery key (a list of words). <strong>Write it down and store it somewhere safe</strong>; it can unlock the vault if you forget the password. You can also choose <em>"I will store the password in my password manager"</em> for convenience.</li>
+<li>Click <strong>Create Vault</strong>. The vault appears in the Cryptomator window.</li>
+</ol>
+<h2 id="unlocking-and-mounting">Unlocking and Mounting</h2>
+<ol>
+<li>In the Cryptomator window, select your vault and click <strong>Unlock</strong>.</li>
+<li>Enter your password (or unlock with the recovery key).</li>
+<li>Cryptomator mounts a <strong>virtual drive</strong> — with WinFsp installed this appears as a real drive letter (e.g. <code>X:\</code>). You can then open, edit, add, and delete files like any normal folder; everything is transparently encrypted/decrypted on the fly.</li>
+<li>To lock: click the lock icon / <strong>Lock</strong> button, or just close Cryptomator. Files in the cloud folder remain encrypted at rest.</li>
+<li>The vault folder itself (in your cloud directory) contains files like <code>d/</code> (directory metadata) and <code>C/</code> (encrypted contents) plus <code>vault.cryptomator</code> — all ciphertext.</li>
+</ol>
+<blockquote>
+<p>Tip: Windows may prompt to install the <strong>WinFsp</strong> driver certificate on first mount — accept it (it's already installed via winget).</p>
+</blockquote>
+<h2 id="what-the-cloud-sees">What the Cloud Sees</h2>
+<ul>
+<li>File <strong>contents</strong>: fully encrypted (AES-GCM).</li>
+<li>File and folder <strong>names</strong>: encrypted (AES-SIV) — filenames, directory structure, and sizes leak almost nothing. (File <em>sizes</em> can slightly leak through ciphertext length — a known limitation of any sync-friendly encryption.)</li>
+<li>The cloud sees only opaque blobs like <code>1/XXXX/XXXXXXXX.vault</code> being created/changed.</li>
+</ul>
+<h2 id="mobile-companion-app">Mobile Companion App</h2>
+<p>Cryptomator also has apps for <strong>iOS</strong> and <strong>Android</strong> (App Store / Google Play, free/donationware). To access the same vault on mobile:</p>
+<ol>
+<li>In the desktop app, select the vault → click the <strong>hub/sync icon</strong> or use <strong>"Unlock &amp; reveal vault location"</strong> — mobile apps can open a vault directly from a synced folder (e.g. open Cryptomator mobile → "Add vault" → pick the vault folder inside your cloud drive app).</li>
+<li>Alternatively, use <strong>Cryptomator Hub</strong> to share vaults between devices via a share link/QR code.</li>
+<li>Mobile app also offers camera-based features like viewing encrypted images/PDFs and <strong>WebDAV/WebRTC streaming</strong> (protected media playback).</li>
+</ol>
+<h2 id="cryptomator-vs-veracrypt-vs-folder_lockpy">Cryptomator vs. VeraCrypt vs. folder_lock.py</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Cryptomator</strong></th>
+<th><strong>VeraCrypt</strong></th>
+<th><strong>folder_lock.py</strong> (script)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Per-file encryption inside a cloud-synced folder</td>
+<td>Single encrypted container file</td>
+<td>Encrypts files in-place inside a folder</td>
+</tr>
+<tr>
+<td>Cloud sync friendly</td>
+<td>✅ Excellent — files sync individually</td>
+<td>⚠️ Poor — container is one huge file; syncing mid-write corrupts it, and the container itself is a suspicious giant blob</td>
+<td>⚠️ Okay if sync paused during locking; risk of partial sync</td>
+</tr>
+<tr>
+<td>Mounting</td>
+<td>Virtual drive letter (WinFsp) or WebDAV</td>
+<td>Drive letter / partition</td>
+<td>Usually manual decrypt step</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>"My cloud folder should only ever hold ciphertext"</td>
+<td>Encrypting a whole disk/partition or a portable container you carry around</td>
+<td>Quick local folder obfuscation without installing an app</td>
+</tr>
+<tr>
+<td>Strengths</td>
+<td>Metadata hiding, seamless sync, cross-platform, mobile app</td>
+<td>Mature, very strong, can do full-disk</td>
+<td>Zero dependencies beyond Python</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to use which:</strong>
+- Files that live in Dropbox/Google Drive/OneDrive → <strong>Cryptomator</strong> (designed exactly for this).
+- A portable encrypted volume you carry on USB, or full-disk encryption → <strong>VeraCrypt</strong>.
+- A quick, ad-hoc encrypted folder on a single machine with no install → <strong>folder_lock.py</strong>.</p>
+<h2 id="tips-best-practices">Tips &amp; Best Practices</h2>
+<ul>
+<li><strong>Strong vault password</strong> — it is the <em>only</em> key. Use a password manager or the built-in recovery key.</li>
+<li>Keep the <code>vault.cryptomator</code> file and directory structure intact; deleting ciphertext files deletes your data.</li>
+<li>The vault folder can sit <em>inside</em> any synced folder — subfolders of the cloud root work too.</li>
+<li>Lock the vault when not in use; closing the app auto-locks.</li>
+<li>Keep local backups of critical files too — encryption protects confidentiality, not against deletion.</li>
+<li>Updates: Cryptomator auto-checks; reinstall via <code>winget upgrade Cryptomator.Cryptomator</code>.</li>
+</ul>
+<h2 id="useful-commands">Useful Commands</h2>
+<pre><code class="language-powershell"># Reinstall / upgrade
+winget upgrade Cryptomator.Cryptomator
+
+# Launch
+&amp; &quot;C:\Program Files\Cryptomator\Cryptomator.exe&quot;
+</code></pre>
+<h2 id="references">References</h2>
+<ul>
+<li>Docs: https://docs.cryptomator.org/ (vault cryptography, architecture)</li>
+<li>Releases: https://github.com/cryptomator/cryptomator/releases</li>
+<li>WinFsp: https://winfsp.dev/</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from cryptomator_guide.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 29 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

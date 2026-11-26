@@ -1,0 +1,156 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>age — Beginner's Guide to Modern File Encryption</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="age-beginners-guide-to-modern-file-encryption">age — Beginner's Guide to Modern File Encryption</h1>
+<p><strong>age</strong> is a simple, modern file-encryption tool created by Filippo Valsorda.
+It has small explicit keys, no config options, and UNIX-style composability
+(it reads stdin, writes stdout, works in pipes).</p>
+<ul>
+<li>Installed version: <strong>v1.3.2</strong> (via <code>winget install FiloSottile.age</code>)</li>
+<li>Binaries: <code>age.exe</code>, <code>age-keygen.exe</code>, <code>age-inspect.exe</code>, plus plugins
+  (<code>age-plugin-pq.exe</code>, <code>age-plugin-tag.exe</code>, <code>age-plugin-tagpq.exe</code>,
+  <code>age-plugin-batchpass.exe</code>) in
+  <code>C:\Users\neilh\AppData\Local\Microsoft\WinGet\Packages\FiloSottile.age_Microsoft.Winget.Source_8wekyb3d8bbwe\age\</code></li>
+<li>Winget also added <code>age</code>, <code>age-keygen</code>, <code>age-inspect</code> command-line aliases —
+  they should work in any <strong>new</strong> terminal (restart your shell if not).</li>
+<li>Spec: https://age-encryption.org/v1</li>
+<li>Alternative Rust implementation: <strong>rage</strong> (interoperable — same format, same files).</li>
+</ul>
+<h2 id="two-encryption-modes">Two encryption modes</h2>
+<p>age supports two ways to encrypt:</p>
+<ol>
+<li><strong>Recipient mode (asymmetric, recommended)</strong> — the encrypted file can only be
+   decrypted by whoever holds the matching secret key (identity). Anyone with
+   the <em>public</em> key can encrypt, but cannot decrypt. Good for sending files to
+   someone else or encrypting to "future you".</li>
+<li><strong>Passphrase mode (<code>-p</code>)</strong> — symmetric encryption protected by a passphrase
+   you choose. Anyone with the passphrase can decrypt. Simple, but the
+   passphrase is the only secret — use a long, unique one (a password manager
+   passphrase is ideal).</li>
+</ol>
+<h2 id="step-1-generate-a-keypair">Step 1: Generate a keypair</h2>
+<pre><code class="language-powershell">age-keygen -o C:\Users\neilh\age\key.txt
+</code></pre>
+<p>Output looks like:</p>
+<pre><code>Public key: age1e6r9et947y3g09f8w9thjmwfejn007n7hal576qzdpwmsau5p4xswftc6a
+# created: 2026-11-25T12:57:07+08:00
+# public key: age1e6r9et947y3g09f8w9thjmwfejn007n7hal576qzdpwmsau5p4xswftc6a
+AGE-SECRET-KEY-1KTT5Y9G8DXFV4GPJY3FKM7KT792G6KPJGTTUSR6RQSE3ZR3Q022QG0JN29
+</code></pre>
+<ul>
+<li>The file <code>key.txt</code> contains your <strong>secret key</strong> (<code>AGE-SECRET-KEY-1...</code>).
+  Guard it like a password — anyone with it can decrypt everything encrypted
+  to the matching public key. Back it up safely (offline/encrypted storage).</li>
+<li>The <strong>public key</strong> (<code>age1...</code>) is safe to share. Encrypt to it.</li>
+</ul>
+<blockquote>
+<p>Tip: v1.3.0+ supports post-quantum keys: <code>age-keygen -pq</code>.</p>
+</blockquote>
+<h2 id="step-2a-encrypt-to-a-recipient-public-key">Step 2a: Encrypt to a recipient (public key)</h2>
+<pre><code class="language-powershell"># Encrypt a file to your public key (or anyone else's)
+age -r age1e6r9et947y3g09f8w9thjmwfejn007n7hal576qzdpwmsau5p4xswftc6a -o secret.txt.age secret.txt
+
+# Encrypt a whole directory's tarball, streaming
+age -r age1... &lt; backup.tar &gt; backup.tar.age
+
+# Encrypt ASCII-armored output (safe to paste into email/chat)
+age -r age1... -a -o secret.txt.age secret.txt
+</code></pre>
+<p>Multiple recipients can be added with repeated <code>-r</code> flags — anyone of them can decrypt.
+You can also store recipients in a file (<code>-R recipients.txt</code>, one per line).</p>
+<h2 id="step-2b-encrypt-with-a-passphrase">Step 2b: Encrypt with a passphrase</h2>
+<pre><code class="language-powershell">age -p -o secret.txt.age secret.txt
+# prompts for passphrase twice
+
+# or pipe stdin -&gt; stdout
+Get-Content secret.txt | age -p &gt; secret.txt.age
+</code></pre>
+<p>No key file needed — just remember the passphrase.</p>
+<h2 id="step-3-decrypt">Step 3: Decrypt</h2>
+<pre><code class="language-powershell"># Decrypt with your secret key file
+age -d -i C:\Users\neilh\age\key.txt -o secret.txt secret.txt.age
+
+# Decrypt a passphrase-encrypted file (prompts for passphrase)
+age -d -o secret.txt secret.txt.age
+
+# Inspect a .age file without decrypting (header info)
+age-inspect secret.txt.age
+</code></pre>
+<h2 id="comparison-age-vs-folder_lockpy-enc-files">Comparison: <code>.age</code> vs <code>folder_lock.py</code> <code>.enc</code> files</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>age <code>.age</code> files</strong></th>
+<th><strong><code>folder_lock.py</code> <code>.enc</code> files</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Format</td>
+<td><strong>Open standard</strong> (<a href="https://age-encryption.org/v1">age-encryption.org/v1</a>) — spec is public, anyone can implement a decryptor</td>
+<td><strong>Custom/proprietary</strong> — only <code>folder_lock.py</code> can read them</td>
+</tr>
+<tr>
+<td>Interoperability</td>
+<td>Decryptable by age, rage (Rust), Typage (TypeScript/browser), plugins, many OS integrations</td>
+<td>Locked to that one script; if it's lost or broken, data may be unrecoverable</td>
+</tr>
+<tr>
+<td>Keys</td>
+<td>Real keypairs (<code>age1...</code> public / <code>AGE-SECRET-KEY-1...</code> secret), passphrase mode, post-quantum option</td>
+<td>Whatever the script implements</td>
+</tr>
+<tr>
+<td>Auditability</td>
+<td>Format and crypto (X25519/ChaCha20-Poly5, post-quantum ML-KEM in v1.3) are reviewed by the community</td>
+<td>You must trust the script's implementation</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>Sharing files with others, long-term archives, anything that must outlive the tool</td>
+<td>Quick local obfuscation/encryption of a folder on one machine</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bottom line:</strong> <code>.age</code> files are a portable, standardized format that any
+conforming tool can open. Custom <code>.enc</code> files from <code>folder_lock.py</code> only work
+with that script — fine for casual local use, risky as your only copy of data.
+If you want maximum safety, prefer age (or keep <code>folder_lock.py</code> <em>and</em> a
+standard-format copy).</p>
+<h2 id="practical-tips">Practical tips</h2>
+<ul>
+<li><code>age</code> works in pipes: <code>type bigfile.zip | age -r age1... &gt; bigfile.zip.age</code></li>
+<li>Armored (<code>-a</code>) output is base64-like text — good for email/chat, slightly larger.</li>
+<li>Decrypted output goes to stdout by default; use <code>-o</code> to write a file.</li>
+<li>Keep <code>key.txt</code> offline/backed-up. Losing the secret key = losing the data.</li>
+<li>Verify integrity: age uses authenticated encryption (ChaCha20-Poly1305), so
+  tampering is detected on decrypt.</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from age_guide.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 26 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

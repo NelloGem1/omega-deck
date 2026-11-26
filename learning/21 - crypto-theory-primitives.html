@@ -1,0 +1,409 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Cryptographic Primitives & Theory — Research Report</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="cryptographic-primitives-theory-research-report">Cryptographic Primitives &amp; Theory — Research Report</h1>
+<p><em>A structured reference on modern cryptographic primitives: symmetric and asymmetric algorithms, hash functions, digital signatures, key exchange, the role of prime numbers, security-level equivalences, and the historical milestones that shaped the field.</em></p>
+<hr />
+<h2 id="1-symmetric-cryptography">1. Symmetric Cryptography</h2>
+<p>Symmetric ciphers use a <strong>single shared secret key</strong> for both encryption and decryption. They are extremely fast — the workhorses of real-world systems — but the key must be shared securely beforehand, which is where asymmetric crypto comes in (see §5).</p>
+<h3 id="11-aes-advanced-encryption-standard">1.1 AES (Advanced Encryption Standard)</h3>
+<ul>
+<li><strong>Approved in 2001</strong> as <strong>FIPS 197</strong> by the U.S. National Institute of Standards and Technology (NIST), selected from the open AES competition (1997–2000) of 15 candidates. The winning algorithm, designed by Belgian cryptographers <strong>Joan Daemen and Vincent Rijmen</strong>, was originally named <strong>Rijndael</strong> (a portmanteau of the two surnames).</li>
+<li>AES is a <strong>block cipher</strong>: it operates on fixed-size <strong>128-bit blocks</strong> in <strong>10, 12, or 14 rounds</strong>, depending on key size. (Counterintuitively, the 192-bit key gets 12 rounds and 256-bit gets 14.)</li>
+<li><strong>Key sizes:</strong> AES-128, AES-192, AES-256. Only 128- and 256-bit are widely standardized in protocols (TLS 1.3 allows all three).</li>
+<li><strong>Why AES won:</strong> it beat a strong field (including Serpent, Twofish, RC6, and Mars) on security <em>and</em> performance. On modern CPUs it gets hardware acceleration through the <strong>AES-NI</strong> instruction set (introduced by Intel in 2010), delivering on the order of <strong>~1–2 GB/s per core</strong> for AES-CTR/GCM workloads. In constant-time software form it runs near memory bandwidth on mobile devices.</li>
+<li><strong>Security margins:</strong> AES has no known practical attack against any of the three key sizes. Academic "related-key" attacks on AES-192/256 (Biclique attacks by Biryukov, Khovratovich, and Rechberger, 2011) reduce the <em>effective</em> key space only marginally (e.g., AES-256 attacks to ~2^254 rather than 2^256) and are not practical.</li>
+<li><strong>Brute-force cost estimates:</strong> AES-128 is completely beyond classical reach; even with every GPU on Earth running flat out for billions of years it would not be searched.</li>
+</ul>
+<h3 id="12-chacha20-xchacha20">1.2 ChaCha20 / XChaCha20</h3>
+<ul>
+<li>Designed by <strong>Daniel J. Bernstein</strong> in 2008 (published as part of his SNOW stream cipher lineage). "ChaCha" = "Chacha Cha Cha" stream cipher; "20" = 20 rounds (8 quarter-rounds per double-round × 10).</li>
+<li>A <strong>stream cipher</strong>: generates a keystream and XORs it with plaintext. No padding needed; any length is handled natively.</li>
+<li><strong>Key size:</strong> fixed <strong>256-bit</strong> key + 96-bit nonce (12-byte) in standard ChaCha20; XChaCha20 extends the nonce to 192 bits for safe random nonces.</li>
+<li><strong>Why it matters:</strong> ChaCha20 is built entirely from <strong>32-bit additions, rotations, and XORs</strong> — no table lookups — making it <strong>constant-time by construction</strong> and immune to the cache-timing attacks that plagued AES implementations. It is the default cipher in <strong>TLS 1.3 alongside AES-GCM</strong>, in OpenSSH, WireGuard (uses ChaCha20-Poly1305), and most modern mobile/edge stacks. Roughly comparable in speed to AES-NI hardware; sometimes faster on ARM/mobile without AES-NI.</li>
+<li>Modern standardized form: <strong>ChaCha20-Poly1305</strong> (RFC 8439) — an authenticated encryption construction.</li>
+</ul>
+<h3 id="13-block-ciphers-vs-stream-ciphers">1.3 Block ciphers vs. stream ciphers</h3>
+<ul>
+<li><strong>Block ciphers</strong> (AES, DES, 3DES): permute fixed-size blocks. Reused directly on repetitive plaintext they leak patterns (ECB mode problem). Need a <strong>mode of operation</strong> to be safe.</li>
+<li><strong>Stream ciphers</strong> (ChaCha20, RC4): XOR a key-dependent keystream with arbitrary-length plaintext. Stateless and naturally counter-based variants are common today.</li>
+<li>Historically important, now broken/deprecated: <strong>DES</strong> (56-bit key, broken by brute force via EFF's Deep Crack in ~3 days in 1998) and <strong>RC4</strong> (broken by multiple practical attacks; banned from TLS by RFC 7465).</li>
+</ul>
+<h3 id="14-modes-of-operation">1.4 Modes of operation</h3>
+<p>A bare block cipher only encrypts one block. Modes chain blocks:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Properties</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ECB</strong></td>
+<td>Deterministic, leaks patterns</td>
+<td>Never use for real data (famous "ECB penguin" image attack)</td>
+</tr>
+<tr>
+<td><strong>CBC</strong></td>
+<td>Deterministic per-position, needs random IV, padding oracles possible</td>
+<td>Legacy; still used in disk encryption contexts</td>
+</tr>
+<tr>
+<td><strong>CTR</strong></td>
+<td>Turns block cipher into stream cipher; counter nonce</td>
+<td>Secure, widely used (TLS 1.2)</td>
+</tr>
+<tr>
+<td><strong>GCM</strong></td>
+<td>CTR + GHASH authentication (AEAD); nonce reuse catastrophic</td>
+<td><strong>The standard</strong>: TLS 1.3 default, IPsec, disk encryption</td>
+</tr>
+<tr>
+<td><strong>CCM, OCB</strong></td>
+<td>Other AEAD modes</td>
+<td>Used in specific niches</td>
+</tr>
+</tbody>
+</table>
+<p><strong>AEAD (Authenticated Encryption with Associated Data)</strong> modes like GCM and ChaCha20-Poly1305 provide <strong>confidentiality + integrity + authentication</strong> in one pass — they are the correct way to use symmetric crypto today. Raw CBC/CTR without MACs is considered an anti-pattern.</p>
+<hr />
+<h2 id="2-asymmetric-cryptography">2. Asymmetric Cryptography</h2>
+<p>Asymmetric (public-key) crypto uses a <strong>key pair</strong>: a public key anyone can use to encrypt or verify, and a private key only the owner holds to decrypt or sign. The security rests on mathematical problems believed hard to invert — factoring and discrete logarithms.</p>
+<h3 id="21-rsa-rivestshamiradleman-1977">2.1 RSA (Rivest–Shamir–Adleman, 1977)</h3>
+<ul>
+<li>Published in <strong>1977</strong> in <em>"A Method for Obtaining Digital Signatures and Public-Key Cryptosystems"</em> (CACM 21(2), pp. 120–126). Invented by Ron Rivest, Adi Shamir, Leonard Adleman at MIT.</li>
+<li><strong>How it works:</strong> security relies on the difficulty of <strong>factoring large semiprimes</strong> <code>n = p × q</code>. The public key is <code>(n, e)</code> with <code>e</code> typically 65,537; the private key is <code>d</code>, the modular inverse of <code>e</code> mod <code>λ(n)</code>. Decryption is <code>m = c^d mod n</code>.</li>
+<li><strong>Key-size evolution:</strong></li>
+<li><strong>512-bit</strong> RSA factored in 1999 (3 months, CADO-NFS); <strong>768-bit</strong> factored in 2009 (two years, hundreds of machines) — RSA-512 fell in days on modern hardware.</li>
+<li><strong>1024-bit:</strong> now considered <strong>broken for high-security use</strong> (~80-bit security); still used in legacy systems.</li>
+<li><strong>2048-bit:</strong> the minimum widely accepted today; NIST SP 800-131A says it's acceptable for protection through <strong>2030</strong> (~112-bit security).</li>
+<li><strong>3072-bit:</strong> ~128-bit security; required if data must remain secure past 2030.</li>
+<li><strong>4096-bit:</strong> ~152-bit security; popular for signing/root CAs.</li>
+<li><strong>7680-bit</strong> reaches ~192-bit security; <strong>15360-bit</strong> reaches ~256-bit (NIST SP 800-57 Table 2).</li>
+<li><strong>Cost:</strong> RSA operations are ~1000× slower than AES and keys/ciphertexts are large (2048-bit = 256 bytes). RSA is therefore reserved for key establishment and signatures, never bulk data.</li>
+<li><strong>Quantum vulnerability:</strong> Shor's algorithm (1994) breaks RSA in polynomial time on a quantum computer.</li>
+</ul>
+<h3 id="22-diffiehellman-key-exchange-1976">2.2 Diffie–Hellman Key Exchange (1976)</h3>
+<ul>
+<li>Invented by <strong>Whitfield Diffie and Martin Hellman</strong> (Stanford, 1976) — "New Directions in Cryptography." Independently reinvented by <strong>Ralph Merkle</strong> in 1974 (secret-key distribution, his "Merkle's puzzles").</li>
+<li><strong>How it works:</strong> two parties publicly agree on prime <code>p</code> and generator <code>g</code>. Alice sends <code>g^a mod p</code>, Bob sends <code>g^b mod p</code>; both compute the shared secret <code>g^(ab) mod p</code>. An eavesdropper sees only the public values.</li>
+<li>Security = difficulty of the <strong>discrete logarithm problem</strong> (DLP) in a prime-order group. Plain finite-field DH with 1024-bit <code>p</code> is now weak; 2048-bit minimum, 3072-bit preferred.</li>
+<li><strong>Ephemeral DH (DHE/ECDHE)</strong> with fresh keys per session gives <strong>forward secrecy</strong>: compromising a long-term key doesn't reveal past sessions.</li>
+</ul>
+<h3 id="23-elliptic-curve-cryptography-ecc-1985">2.3 Elliptic Curve Cryptography (ECC, 1985)</h3>
+<ul>
+<li>Independently proposed by <strong>Neal Koblitz</strong> ("Elliptic Curve Cryptosystems," 1985) and <strong>Victor Miller</strong> ("Use of Elliptic Curves in Cryptography," 1985).</li>
+<li>Works over the group of points on an elliptic curve <code>y² = x³ + ax + b</code> over a finite field. The security problem is the <strong>elliptic-curve discrete logarithm problem (ECDLP)</strong>, which has <strong>no known sub-exponential algorithm</strong> — unlike factoring, which has the Number Field Sieve. Therefore ECC gives the same security with <em>much</em> smaller keys:</li>
+<li>RSA-1024 ≈ ECC-160 (80-bit)</li>
+<li>RSA-2048 ≈ <strong>ECC-224</strong> (112-bit)</li>
+<li>RSA-3072 ≈ <strong>ECC-256</strong> (128-bit)</li>
+<li>RSA-7680 ≈ ECC-384 (192-bit)</li>
+<li>RSA-15360 ≈ ECC-521 (256-bit)</li>
+<li><strong>Smaller keys = smaller signatures and faster operations.</strong> A 256-bit ECC private key does what a 3072-bit RSA key does.</li>
+<li><strong>Named curves:</strong> NIST P-256, P-384, P-521 (widely standardized); <strong>Curve25519</strong> (by Daniel Bernstein, 2005/2006) — chosen for its design, speed, and resistance to implementation pitfalls.</li>
+</ul>
+<h3 id="24-curve25519-ed25519-x25519">2.4 Curve25519, Ed25519, X25519</h3>
+<ul>
+<li><strong>Curve25519</strong>: a Montgomery curve (<code>y² = x³ + 486662x² + x</code>) over GF(2²⁵⁵−19). Uses the <strong>Montgomery ladder</strong> for fast, constant-time scalar multiplication.</li>
+<li><strong>X25519</strong>: the Diffie-Hellman analogue (key exchange). Default in OpenSSH, WireGuard, TLS 1.3, Noise protocols, Signal.</li>
+<li><strong>Ed25519</strong>: signatures on the birationally-equivalent <strong>Edwards curve</strong> (by Bernstein et al., 2011–2012, a deterministic Schnorr-style scheme). ~128-bit security, ~64-byte signatures, microsecond signing, no RNG needed (deterministic nonces). Now the most widely used signature scheme outside the certificate ecosystem.</li>
+<li><strong>Why Curve25519 exists:</strong> designed with explicit criteria — fast on all platforms (no timing side channels), no points of small order, no special cases, clean constant-time implementations. It avoids the subtle failures that plagued NIST curve implementations.</li>
+</ul>
+<h3 id="25-elgamal-1985">2.5 ElGamal (1985)</h3>
+<ul>
+<li><strong>Taher ElGamal</strong>, "A Public Key Cryptosystem and a Signature Scheme Based on Discrete Logarithms" (1985).</li>
+<li>An encryption/signature scheme generalizing DH to encryption: ciphertext <code>(c1, c2) = (g^k, m·h^k)</code> where <code>h = g^x</code>. Also the basis for <strong>DSA</strong> (Digital Signature Algorithm, NIST FIPS 186, 1994) and <strong>ECDSA</strong> ( elliptic-curve variant, 1999).</li>
+<li>Properties: probabilistic encryption (needs a fresh random <code>k</code> per message — nonce reuse leaks the key), malleable ciphertexts (fixed by using it only inside authenticated constructions).</li>
+</ul>
+<hr />
+<h2 id="3-hash-functions">3. Hash Functions</h2>
+<p>Hash functions map arbitrary-length input to a <strong>fixed-size digest</strong> (e.g., 256 bits). They are <strong>one-way</strong> (preimage resistance), <strong>collision-resistant</strong> (can't find two inputs with the same hash), and <strong>second-preimage resistant</strong>. Crucially, <strong>hashes are NOT encryption</strong> — you cannot recover the input from the digest; they provide <strong>integrity and commitment</strong>, not confidentiality.</p>
+<h3 id="31-sha-family-nist">3.1 SHA family (NIST)</h3>
+<ul>
+<li><strong>SHA-1</strong> (1995, 160-bit): <strong>broken</strong> — practical collision found by Google/CWI in 2017 ("SHAttered," ~$110k of GPU compute). Deprecated everywhere.</li>
+<li><strong>SHA-256 / SHA-512</strong> (2001, part of SHA-2): the current workhorses. SHA-256 = 64 rounds over 32-bit words; SHA-512 uses 64-bit words. Used in TLS 1.3, blockchains, Git, TLS certificates, MACs (HMAC-SHA256), etc.</li>
+<li><strong>SHA-3 / Keccak</strong> (2015, FIPS 202): a different design (sponge construction) chosen in 2012 from 64 candidates after the SHA-3 competition. Provides a hedge against attacks on SHA-2's Merkle–Damgård design. Still niche in practice.</li>
+<li><strong>SHAKE128/256</strong>: extendable-output functions from SHA-3, used in some PQC schemes.</li>
+</ul>
+<h3 id="32-blake-family-non-nist-widely-used">3.2 BLAKE family (non-NIST, widely used)</h3>
+<ul>
+<li><strong>BLAKE2</strong> (2012/2013, Jean-Philippe Aumasson et al.): faster than SHA-2/SHA-3, tree hashing modes, used in <strong>libsodium</strong>, WireGuard-adjacent tooling, <code>blake2b</code> in Python. BLAKE2b-256 is used in many modern stacks.</li>
+<li><strong>BLAKE3</strong> (2020, Jack O'Connor et al.): extreme parallelism, SIMD-optimized, ~10× faster than SHA-256 on large data, used in IPFS, rsync alternatives, ZFS checksums, <code>b3sum</code>. Tree-hash structure; standardized-ish via the BLAKE3 spec (not a NIST FIPS).</li>
+<li><strong>What hashes are for:</strong> file integrity checks, password hashing (with salt + KDF — never raw SHA-256), digital signatures (signing <code>H(m)</code> not <code>m</code>), checksums, blockchain linking, MACs via HMAC, random number derivation, commitment schemes.</li>
+</ul>
+<hr />
+<h2 id="4-digital-signatures">4. Digital Signatures</h2>
+<p>Signatures prove <strong>authenticity, integrity, and non-repudiation</strong>: only the holder of the private key could have produced the signature, the message is unaltered, and the signer cannot later deny it.</p>
+<table>
+<thead>
+<tr>
+<th>Scheme</th>
+<th>Basis</th>
+<th>Signature size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RSA signature</strong></td>
+<td>Factoring</td>
+<td>key-size-dependent (256 B for RSA-2048)</td>
+<td>Encrypts <code>H(m)</code> with private key; verify with public. Still dominant in X.509 certificates.</td>
+</tr>
+<tr>
+<td><strong>DSA</strong></td>
+<td>Finite-field DLP</td>
+<td>~320 bits</td>
+<td>NIST 1994; essentially legacy.</td>
+</tr>
+<tr>
+<td><strong>ECDSA</strong></td>
+<td>Elliptic-curve DLP</td>
+<td>~64–72 bytes</td>
+<td>Dominant in TLS certs, Bitcoin. Requires careful nonce generation — bad RNG = key recovery (the <strong>PS3 fail0verflow / Sony ECDSA nonce reuse</strong> scandal).</td>
+</tr>
+<tr>
+<td><strong>Ed25519</strong></td>
+<td>Edwards-curve Schnorr</td>
+<td>64 bytes</td>
+<td>Deterministic, fast, constant-time, no RNG needed. Standard in SSH, age encryption, minisign, WireGuard-adjacent tooling. Used by libsodium/Signal ecosystem.</td>
+</tr>
+<tr>
+<td><strong>Ed448</strong></td>
+<td>Curve448</td>
+<td>114 bytes</td>
+<td>Higher-security variant.</td>
+</tr>
+</tbody>
+</table>
+<p>Post-quantum signatures (NIST 2024): <strong>ML-DSA</strong> (Dilithium-derived, FIPS 204) and <strong>SLH-DSA</strong> (SPHINCS+ hash-based, FIPS 205). See §8.</p>
+<hr />
+<h2 id="5-key-exchange-in-practice-the-hybrid-pattern">5. Key Exchange in Practice — The Hybrid Pattern</h2>
+<p>Real-world cryptography (TLS 1.3, SSH, WireGuard, Signal) uses a <strong>hybrid</strong> construction:</p>
+<pre><code>        ┌─────────────────────────────────────────────┐
+        │  Asymmetric crypto  (slow, expensive)        │
+        │  • Key exchange: X25519 ECDH / ECDHE          │
+        │  • Authentication: Ed25519 / RSA / ECDSA sig  │
+        │  Purpose: agree on a shared secret + prove    │
+        │           identity                             │
+        └──────────────────┬──────────────────────────┘
+                           ▼
+              Shared secret (e.g., 256-bit key)
+                           ▼
+        ┌─────────────────────────────────────────────┐
+        │  Symmetric crypto  (fast, cheap)             │
+        │  • AEAD: AES-256-GCM or ChaCha20-Poly1305    │
+        │  Purpose: encrypt all actual data            │
+        └─────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Why hybrid:</strong> asymmetric ops cost ~1000× more than symmetric ones and produce large ciphertexts. So you use asymmetric crypto <em>only</em> to establish a shared secret once (or per session for forward secrecy), then derive session keys with a KDF (HKDF) and encrypt gigabytes with AES/ChaCha.</p>
+<p><strong>TLS 1.3 handshake example (ECDHE + Ed25519/RSA cert + AES-GCM):</strong>
+1. Client sends <code>ClientHello</code> with supported cipher suites + a fresh ephemeral X25519 public key.
+2. Server picks one, sends its ephemeral X25519 public key + its certificate (containing a long-term Ed25519/RSA signature key) + signature over the handshake.
+3. Both sides compute the shared ECDH secret; a KDF derives AES-256-GCM traffic keys.
+4. All subsequent application data flows through AES-256-GCM or ChaCha20-Poly1305.
+5. With <strong>ECDHE</strong>, even if the server's long-term key is later stolen, past sessions stay secure (<strong>forward secrecy</strong>). TLS 1.3 removed static RSA key transport entirely for this reason.</p>
+<hr />
+<h2 id="6-primes-role-in-cryptography">6. Primes' Role in Cryptography</h2>
+<p>Prime numbers are the bedrock of both RSA and ECC:</p>
+<h3 id="61-rsa-needs-large-primes">6.1 RSA needs large primes</h3>
+<ul>
+<li><code>n = p × q</code> where p, q are two random ~1024-bit primes. The security is that factoring <code>n</code> (a ~2048-bit semiprime) is computationally infeasible.</li>
+<li><strong>Key generation pipeline:</strong> generate a random odd candidate → small-prime sieve (reject candidates divisible by small primes 3, 5, 7, …) → <strong>Miller–Rabin primality test</strong> (probabilistic: run k rounds of modular exponentiation; each round is a "witness" test) → when Miller–Rabin passes, you have a <em>probable prime</em>. For extra certainty, <strong>Lucas probable prime tests</strong> or deterministic variants are used. OpenSSL/BoringSSL generate RSA primes with hundreds of Miller–Rabin rounds; generation takes ~seconds for 2048-bit keys.</li>
+<li><strong>Last-digit filters:</strong> since primes &gt; 5 must end in 1, 3, 7, or 9, candidates are generated only in those residue classes; small-prime trial division quickly eliminates most composites before Miller–Rabin.</li>
+</ul>
+<h3 id="62-ecc-needs-points-on-curves">6.2 ECC needs points on curves</h3>
+<ul>
+<li>Curve operations require solving point additions/doublings in a finite field <code>GF(p)</code> (prime field) or <code>GF(2^m)</code> (binary field). For prime-field curves, the field size <code>p</code> itself is prime (e.g., Curve25519 uses p = 2²⁵⁵ − 19, a prime chosen because 2²⁵⁵ − 19 has efficient reduction: <code>19</code> is small, enabling fast modular reduction without division).</li>
+<li>Curve order (number of points) must be prime or have a large prime factor for security — e.g., Curve25519's group has order <code>8 × L</code> where <code>L</code> is a 252-bit prime; X25519 clamps scalars to kill the cofactor.</li>
+</ul>
+<h3 id="63-primality-testing-sieving">6.3 Primality testing &amp; sieving</h3>
+<ul>
+<li><strong>Miller–Rabin:</strong> for random odd <code>n</code>, pick random base <code>a</code>, check <code>a^(n−1) ≡ 1 (mod n)</code> and related conditions. No known composite passes many random rounds — the probability of a false positive is ≤ 4^(-k). It is the standard "probable prime" test used in key generation.</li>
+<li><strong>Lucas test / BPSW:</strong> a combined Miller–Rabin + Lucas test is considered deterministic-enough for practical use (no known counterexamples).</li>
+<li><strong>Sieving:</strong> the <strong>General Number Field Sieve (GNFS)</strong> and <strong>Special Number Field Sieve (SNFS)</strong> are the algorithms that <em>break</em> RSA — they find the factors of <code>n</code> in sub-exponential time. The "sieving" step finds smooth relations among numbers; this is exactly the machinery an attacker uses, which is why prime size matters.</li>
+<li><strong>Where this connects:</strong> RSA-2048's ~112-bit security means factoring requires ~2^112 work — beyond any classical computer but (critically) within reach of a large quantum computer running <strong>Shor's algorithm</strong>, which factors in polynomial time. Hence the urgent PQC transition (§8).</li>
+</ul>
+<hr />
+<h2 id="7-security-levels-comparable-key-sizes">7. Security Levels — Comparable Key Sizes</h2>
+<p>From <strong>NIST SP 800-57 Part 1 Rev. 5 (May 2020), Table 2</strong> — bits of security vs. required key sizes:</p>
+<table>
+<thead>
+<tr>
+<th>Security strength</th>
+<th>Symmetric (AES)</th>
+<th>RSA / DH / DSA</th>
+<th>ECC (field size)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~80 bits</td>
+<td>AES-80*</td>
+<td>1024</td>
+<td>160–223</td>
+</tr>
+<tr>
+<td><strong>112 bits</strong></td>
+<td>AES-128</td>
+<td><strong>2048</strong></td>
+<td><strong>224–255</strong></td>
+</tr>
+<tr>
+<td><strong>128 bits</strong></td>
+<td>AES-128</td>
+<td><strong>3072</strong></td>
+<td><strong>256–383</strong></td>
+</tr>
+<tr>
+<td>192 bits</td>
+<td>AES-192/256</td>
+<td><strong>7680</strong></td>
+<td><strong>384–511</strong></td>
+</tr>
+<tr>
+<td><strong>256 bits</strong></td>
+<td><strong>AES-256</strong></td>
+<td><strong>15360</strong></td>
+<td><strong>512–571</strong></td>
+</tr>
+</tbody>
+</table>
+<p>*NIST allows AES-80 historically but AES-128 is the minimum today. *</p>
+<p>Key takeaways:
+- <strong>AES-128 ≈ RSA-3072 ≈ ECC-256</strong> (all ~128-bit security).
+- <strong>AES-256 ≈ RSA-15360 ≈ ECC-521</strong> (~256-bit).
+- ECC keys are ~10× smaller than RSA keys for the same strength.
+- NIST SP 800-131A: 112-bit (RSA-2048/ECC-224) acceptable for protection through <strong>2030</strong>; migrate to 128-bit before then.</p>
+<hr />
+<h2 id="8-historical-milestones">8. Historical Milestones</h2>
+<table>
+<thead>
+<tr>
+<th>Year</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1943</strong></td>
+<td><strong>ENIGMA broken</strong> at Bletchley Park (Turing et al.) — the first large-scale demonstration that "unbreakable" ciphers fall to systematic cryptanalysis.</td>
+</tr>
+<tr>
+<td><strong>1976</strong></td>
+<td><strong>Diffie–Hellman</strong> key exchange published — the conceptual birth of public-key crypto. Independently, Merkle's puzzles (1974) solved key distribution.</td>
+</tr>
+<tr>
+<td><strong>1977</strong></td>
+<td><strong>RSA</strong> published (Rivest, Shamir, Adleman). First practical public-key encryption + signatures.</td>
+</tr>
+<tr>
+<td><strong>1985</strong></td>
+<td><strong>ECC</strong> proposed independently by Koblitz and Miller. ElGamal published.</td>
+</tr>
+<tr>
+<td><strong>1991</strong></td>
+<td><strong>PGP</strong> released by Phil Zimmermann — brings asymmetric + symmetric crypto to the masses.</td>
+</tr>
+<tr>
+<td><strong>1994</strong></td>
+<td><strong>Shor's algorithm</strong> published — proves a quantum computer can factor integers and solve discrete logs in polynomial time, breaking RSA, DH, ECDSA, and ECDH.</td>
+</tr>
+<tr>
+<td><strong>1997–2000</strong></td>
+<td><strong>AES competition</strong>: NIST runs an open, international contest; Rijndael (Daemen &amp; Rijmen) wins; standardized as FIPS 197 in <strong>2001</strong>. Replaces DES/3DES.</td>
+</tr>
+<tr>
+<td><strong>1998</strong></td>
+<td>DES broken by brute force (EFF Deep Crack, ~3 days / $250k). 3DES deprecated.</td>
+</tr>
+<tr>
+<td><strong>1999</strong></td>
+<td><strong>ECDSA</strong> standardized (FIPS 186-2); ECC gains traction in constrained devices.</td>
+</tr>
+<tr>
+<td><strong>2005/2006</strong></td>
+<td><strong>Curve25519</strong> designed by Bernstein; later Ed25519 signatures (2012).</td>
+</tr>
+<tr>
+<td><strong>2011–2012</strong></td>
+<td>First practical <strong>quantum annealing / factoring demos</strong>; NSA begins PQC planning. Academic lattice crypto (Regev's LWE, 2005) provides the foundation.</td>
+</tr>
+<tr>
+<td><strong>2012</strong></td>
+<td><strong>SHA-3 competition</strong> launched; Keccak wins (2015, FIPS 202).</td>
+</tr>
+<tr>
+<td><strong>2015</strong></td>
+<td><strong>NIST PQC standardization</strong> begins: 82 submissions from 25 countries.</td>
+</tr>
+<tr>
+<td><strong>2017</strong></td>
+<td><strong>SHA-1 collision</strong> demonstrated (SHAttered) — SHA-1 fully deprecated.</td>
+</tr>
+<tr>
+<td><strong>2020</strong></td>
+<td><strong>BLAKE3</strong> released.</td>
+</tr>
+<tr>
+<td><strong>2022</strong></td>
+<td>NIST selects finalists: <strong>CRYSTALS-Kyber</strong> (KEM), <strong>CRYSTALS-Dilithium</strong> (signatures), <strong>SPHINCS+</strong> (hash-based signatures), <strong>FALCON</strong>.</td>
+</tr>
+<tr>
+<td><strong>Aug 13, 2024</strong></td>
+<td>NIST publishes final PQC standards: <strong>FIPS 203 (ML-KEM, from Kyber), FIPS 204 (ML-DSA, from Dilithium), FIPS 205 (SLH-DSA, from SPHINCS+)</strong>. First quantum-resistant cryptographic standards.</td>
+</tr>
+<tr>
+<td><strong>2024–2035</strong></td>
+<td>NIST IR 8547 migration timeline: deprecate quantum-vulnerable algorithms, with high-risk systems transitioning first; full transition targeted by ~2035.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why RSA (and ECDSA/ECDH) will fall:</strong> Shor's algorithm solves factoring and discrete logarithms in polynomial time on a quantum computer. A sufficiently large fault-tolerant quantum computer could break RSA-2048/ECC-256 in hours. Current estimates suggest such machines may exist within 10–30 years. Symmetric crypto (AES) survives — Grover's algorithm only halves the effective key length (AES-256 remains ~128-bit quantum-safe). This is why NIST spent 2015–2024 standardizing lattice-based (ML-KEM, ML-DSA) and hash-based (SLH-DSA) replacements.</p>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>NIST FIPS 197 (AES), FIPS 202 (SHA-3), FIPS 186 (DSA/ECDSA), FIPS 203/204/205 (PQC): https://csrc.nist.gov/</li>
+<li>NIST SP 800-57 Part 1 Rev. 5 — Recommendation for Key Management (security-strength equivalences): https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf</li>
+<li>NIST SP 800-131A Rev. 2 — Transitioning the Use of Cryptographic Algorithms: https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-131ar2.pdf</li>
+<li>NIST PQC announcement (Aug 13, 2024): https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards</li>
+<li>NIST IR 8547 — Transition to Post-Quantum Cryptography Standards: https://csrc.nist.gov/pubs/ir/8547/ipd</li>
+<li>Rivest, Shamir, Adleman (1977), "A Method for Obtaining Digital Signatures and Public-Key Cryptosystems," CACM 21(2):120–126.</li>
+<li>Diffie &amp; Hellman (1976), "New Directions in Cryptography," IEEE Trans. Info. Theory 22(6):644–654.</li>
+<li>Koblitz (1985), "Elliptic Curve Cryptosystems," J. Cryptology 1:203–209; Miller (1985), "Use of Elliptic Curves in Cryptography," CRYPTO '85.</li>
+<li>Bernstein, "Curve25519: new Diffie-Hellman speed records" (2006); Bernstein et al., "Ed25519" (2012).</li>
+<li>Daemen &amp; Rijmen, "The Design of Rijndael" (AES proposal): https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/aes-development</li>
+<li>"SHAttered" SHA-1 collision (Google/CWI, 2017): https://shattered.io/</li>
+<li>RFC 8446 — TLS 1.3: https://www.rfc-editor.org/rfc/rfc8446.html</li>
+<li>RFC 8439 — ChaCha20-Poly1305: https://www.rfc-editor.org/rfc/rfc8439.html</li>
+<li>NIST SP 800-56A/B/C — key establishment/derivation recommendations.</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from theory_primitives.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 21 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

@@ -1,0 +1,192 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Beginner's Guide to Gpg4win, Kleopatra, and OpenPGP</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="beginners-guide-to-gpg4win-kleopatra-and-openpgp">Beginner's Guide to Gpg4win, Kleopatra, and OpenPGP</h1>
+<h2 id="what-is-gpg4win">What is Gpg4win?</h2>
+<p><strong>Gpg4win</strong> is a Windows bundle that brings the GnuPG (GNU Privacy Guard) tools to
+Windows in a friendly way. The most important parts are:</p>
+<ul>
+<li><strong>GnuPG (gpg.exe)</strong> — the command-line engine that actually does the crypto.</li>
+<li><strong>Kleopatra</strong> — the graphical user interface (GUI) for managing keys and
+  encrypting/decrypting files. This is what most beginners should use.</li>
+<li><strong>GpgOL</strong> — optional Outlook plugin for encrypting email.</li>
+<li><strong>Okular</strong> — PDF viewer that can verify signed/decrypted PDFs.</li>
+<li><strong>GpgEX</strong> — Explorer shell extension (right-click menu support for files).</li>
+</ul>
+<p>Installed here: <strong>Gpg4win 5.1.2</strong> (contains GnuPG 2.5.24, Kleopatra 5.1.0).
+Binaries live at <code>C:\Program Files\GnuPG\bin\</code> (e.g. <code>gpg.exe</code>, <code>kleopatra.exe</code>).</p>
+<h2 id="what-is-openpgp">What is OpenPGP?</h2>
+<p>OpenPGP (RFC 4880, now maintained by the openpgp working group) is an open,
+public standard for:</p>
+<ul>
+<li><strong>Encryption</strong> — scrambles data so only the intended recipient can read it.</li>
+<li><strong>Decryption</strong> — the inverse operation.</li>
+<li><strong>Digital signatures</strong> — proves a message/file came from you and wasn't tampered with.</li>
+</ul>
+<p>It is built on <strong>public-key cryptography</strong>. Each person has a <em>keypair</em>:</p>
+<ul>
+<li>A <strong>public key</strong> — safe to share with anyone. Used to encrypt things <em>to</em> you,
+  and to verify signatures <em>from</em> you.</li>
+<li>A <strong>private key</strong> — secret, never shared. Used to decrypt things <em>for</em> you
+  and to create signatures.</li>
+</ul>
+<p>A keypair also has a <strong>fingerprint</strong> (a long hex string, e.g.
+<code>C466 CF70 3436 258C F6EB 87EF 7264 2FA7 B31A 1F05</code>) which uniquely identifies
+the key. You verify fingerprints out-of-band (in person, on a website, via
+another channel) before trusting a key.</p>
+<h2 id="step-1-generate-a-keypair-in-kleopatra">Step 1 — Generate a keypair in Kleopatra</h2>
+<ol>
+<li>Open <strong>Kleopatra</strong> (Start Menu → "Kleopatra", or <code>C:\Program Files\Gpg4win\bin\kleopatra.exe</code>).</li>
+<li>Click <strong>File → New Key Pair</strong> (or the green "+" button on the toolbar).</li>
+<li>Choose <strong>Personal OpenPGP key pair</strong> → Next.</li>
+<li>Fill in:</li>
+<li><strong>Name</strong> (real name)</li>
+<li><strong>Email address</strong> — this links your key to an identity.</li>
+<li><strong>Advanced settings</strong> (optional): key type. Defaults are fine
+     (RSA 2048+ or Curve25519). Set an <strong>expiry date</strong> if you like ("never"
+     is common for personal keys).</li>
+<li>Click <strong>Next</strong>, then <strong>Create Key</strong>.</li>
+<li>Kleopatra will ask for a <strong>passphrase</strong> — this protects your private key.
+   Choose a strong one and remember it; you can't decrypt anything without it.</li>
+<li>Kleopatra generates a <strong>revocation certificate</strong>. Save/print it somewhere safe —
+   it's the "kill switch" if your key is ever compromised or you lose your passphrase.</li>
+</ol>
+<p>Your public key can now be found under <strong>Certificates → All Certificates</strong> (tab
+"Secret Keys" shows private keys). Export your public key with
+<strong>File → Export Certificates</strong> and share it with people who want to send you
+encrypted files or verify your signatures.</p>
+<h2 id="step-2-encrypt-and-decrypt-files">Step 2 — Encrypt and decrypt files</h2>
+<h3 id="from-kleopatra-gui">From Kleopatra (GUI)</h3>
+<ol>
+<li>In the main window, click the <strong>Encrypt</strong> tab.</li>
+<li>Drag files onto the big box (or click <strong>Add Recipient</strong> / choose files).</li>
+<li>In the recipient list, click <strong>Add Recipient</strong> and type the recipient's
+   email or paste their public key.</li>
+<li>To encrypt <strong>to yourself</strong> (e.g. to store files securely), add your own key.</li>
+<li>Choose output mode:</li>
+<li><strong>Binary OpenPGP message</strong> → <code>.gpg</code> file (compact, binary).</li>
+<li><strong>ASCII-armored OpenPGP message</strong> → <code>.asc</code> file (text-safe, good for email/paste).</li>
+<li>Check "Sign with my key" if you also want a signature proving authorship.</li>
+<li>Click <strong>Encrypt</strong> and enter your passphrase if signing.</li>
+<li>Save the <code>.gpg</code>/<code>.asc</code> file and send it. The recipient decrypts it with
+   <strong>Decrypt</strong> tab (choose file → Decrypt → enter <em>their</em> passphrase).</li>
+</ol>
+<h3 id="from-the-command-line-gpgexe">From the command line (gpg.exe)</h3>
+<pre><code class="language-powershell"># Encrypt a file to someone (creates file.gpg)
+gpg --recipient &quot;their@email.com&quot; --encrypt file.txt
+
+# Encrypt to yourself for private storage
+gpg --recipient &quot;me@email.com&quot; --encrypt file.txt
+
+# Decrypt
+gpg --decrypt file.txt.gpg
+
+# Decrypt and write to a specific file
+gpg --decrypt --output out.txt file.txt.gpg
+
+# Sign + encrypt (signing proves it was you)
+gpg --recipient &quot;them@email.com&quot; --sign --encrypt file.txt
+</code></pre>
+<p>Or use Explorer right-click (GpgEX): select file → right-click →
+<strong>Encrypt</strong> / <strong>Sign and Encrypt</strong>.</p>
+<h2 id="file-formats-you-will-see">File formats you will see</h2>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.gpg</code></td>
+<td>Binary OpenPGP message (encrypted and/or signed data)</td>
+</tr>
+<tr>
+<td><code>.asc</code></td>
+<td>ASCII-armored OpenPGP message — same data, Base64-encoded with <code>-----BEGIN PGP MESSAGE-----</code> header so it survives email/text channels</td>
+</tr>
+<tr>
+<td><code>.sig</code> / <code>.asc</code> sig</td>
+<td>Detached signature file proving integrity/authorship</td>
+</tr>
+<tr>
+<td><code>.key</code> / <code>.asc</code> key export</td>
+<td>Your public key in ASCII armor (<code>-----BEGIN PGP PUBLIC KEY BLOCK-----</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>An <code>.asc</code> file looks like plain text you could paste into an email; a <code>.gpg</code>
+file is binary (still fine as an email attachment).</p>
+<h2 id="email-encryption-openpgp-vs-smime">Email encryption: OpenPGP vs S/MIME</h2>
+<ul>
+<li><strong>OpenPGP</strong> (what Gpg4win does) encrypts the <em>message content</em> using your
+  PGP keys. Keys are self-issued and distributed manually (web of trust).
+  Works in any mail client via copy/paste or plugins (e.g. Enigmail in
+  Thunderbird, GpgOL for Outlook).</li>
+<li><strong>S/MIME</strong> encrypts using <strong>X.509 certificates</strong> issued by a Certificate
+  Authority (like a website HTTPS cert), integrated into many mail clients.</li>
+</ul>
+<p>OpenPGP pros: free, no CA needed, you control your identity. Cons: key
+exchange is manual and users often find key management confusing.
+S/MIME pros: easier for enterprise, certs auto-distributed. Cons: needs a CA,
+costs money, corporate-centric.</p>
+<p>Gpg4win includes <strong>GpgOL</strong> which can add OpenPGP signing/encryption buttons
+directly into Outlook.</p>
+<h2 id="how-does-this-compare-to-folder_lockpy-and-age">How does this compare to <code>folder_lock.py</code> and <code>age</code>?</h2>
+<ul>
+<li><strong>folder_lock.py (typical password-based folder encryption)</strong> — symmetric:
+  one shared secret/password encrypts everything. Anyone with the password can
+  read it; sharing requires sending the password through another channel. Simple
+  but the "key" is the weak link and there's no sender authentication.</li>
+<li><strong>OpenPGP/Gpg4win</strong> — asymmetric public-key: no secret is ever shared, anyone
+  can encrypt <em>to</em> you with your public key, only you can decrypt with your
+  private key. Also gives signatures. Heavier setup (key generation, key
+  exchange, web of trust) but the gold standard for interoperable encryption.</li>
+<li><strong>age</strong> — modern, simple file encryption tool by the same author as
+  minisign. Much simpler CLI than GPG: one-line encrypt/decrypt with either a
+  passphrase (scrypt) or an SSH-style public key (X25519). Less feature-rich
+  (no signatures in the classic sense, no email ecosystem), but far easier for
+  casual "encrypt this file for someone" use. Good choice for scripts/automation
+  where GPG's complexity and config quirks get in the way.</li>
+</ul>
+<p><strong>Rule of thumb:</strong> need email encryption, signatures, or maximum
+compatibility/interop → OpenPGP/Gpg4win. Need quick, modern, scriptable file
+encryption → <code>age</code>. Quick-and-dirty local folder locking → password tool or
+BitLocker/VeraCrypt.</p>
+<h2 id="quick-reference">Quick reference</h2>
+<ul>
+<li>Kleopatra GUI: Start Menu → Kleopatra (or <code>C:\Program Files\Gpg4win\bin\kleopatra.exe</code>)</li>
+<li>gpg CLI: <code>C:\Program Files\GnuPG\bin\gpg.exe</code></li>
+<li>Your keys folder: <code>%APPDATA%\gnupg</code></li>
+<li>Verify a download/signature, manage keys, revoke: all inside Kleopatra.</li>
+<li>Never share your <strong>private</strong> key or forget your <strong>passphrase</strong> — keep the
+  revocation certificate somewhere safe.</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from gpg_guide.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 27 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

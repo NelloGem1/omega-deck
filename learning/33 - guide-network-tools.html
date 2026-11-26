@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Network Tools Guide — Wireshark + Nmap</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="network-tools-guide-wireshark-nmap">Network Tools Guide — Wireshark + Nmap</h1>
+<h2 id="wireshark-4610-see-every-packet-on-your-network">Wireshark 4.6.10 — see every packet on your network</h2>
+<p><strong>What it does:</strong> captures and displays network traffic in real time — every packet your computer sends/receives, decoded into readable protocols (HTTP, DNS, TLS...)</p>
+<h3 id="quick-start">Quick start</h3>
+<ol>
+<li>Open <strong>Wireshark</strong> (Start Menu)</li>
+<li>Pick your active network interface (usually "Wireshark Loopback" or your Wi-Fi/Ethernet adapter — the one with traffic moving)</li>
+<li>Click the <strong>blue shark fin</strong> to start capturing</li>
+<li>Browse a website → packets flood in</li>
+<li>Click any packet → 3 panes: packet list / protocol details / raw bytes</li>
+</ol>
+<h3 id="useful-filters-type-in-the-filter-bar">Useful filters (type in the filter bar)</h3>
+<ul>
+<li><code>http</code> — only web traffic</li>
+<li><code>dns</code> — only domain lookups</li>
+<li><code>tls</code> — encrypted connections (you'll see SNI = which sites)</li>
+<li><code>ip.addr == 192.168.1.5</code> — traffic to/from one device</li>
+<li><code>tcp.port == 443</code> — HTTPS only</li>
+</ul>
+<h3 id="cli-version-no-gui-needed">CLI version (no GUI needed)</h3>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\Wireshark\tshark.exe&quot; -i 1 -c 20
+</code></pre>
+<h2 id="nmap-780-scan-your-own-network">Nmap 7.80 — scan your own network</h2>
+<p><strong>What it does:</strong> discovers devices and open ports on a network.</p>
+<h3 id="safe-beginner-scans-your-network-only">Safe beginner scans (YOUR network only!)</h3>
+<pre><code class="language-powershell">nmap localhost                    # scan your own PC
+nmap -sn 192.168.1.0/24           # find all devices on your Wi-Fi (no port scan)
+nmap 192.168.1.1                  # scan your router
+</code></pre>
+<h3 id="reading-output">Reading output</h3>
+<ul>
+<li><code>Nmap scan report</code> = device found</li>
+<li><code>PORT STATE SERVICE</code> = open doors — e.g. <code>22/tcp open ssh</code></li>
+</ul>
+<h3 id="legal-note">Legal note</h3>
+<p>Only scan networks/devices <strong>you own or have permission to test</strong>. Scanning networks you don't own is illegal in most countries.</p>
+<h2 id="wireshark-vs-nmap">Wireshark vs Nmap</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Sees</th>
+<th>Question it answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wireshark</td>
+<td>packet contents</td>
+<td>"What is being said?"</td>
+</tr>
+<tr>
+<td>Nmap</td>
+<td>open ports/services</td>
+<td>"What doors exist?"</td>
+</tr>
+</tbody>
+</table>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from network_tools_guide.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 33 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

@@ -1,0 +1,576 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Payment and Subscription Bypass Vulnerabilities</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="payment-and-subscription-bypass-vulnerabilities">Payment and Subscription Bypass Vulnerabilities</h1>
+<p><strong>Purpose:</strong> defensive research for a self-owned Flask application. Reproduce these tests only against your own app, local environment, or explicitly authorized target.
+<strong>Core rule:</strong> the browser, JavaScript, hidden fields, URL parameters, JWT claims, redirect query strings, API bodies, and webhook payloads are attacker-controlled input. Subscription state must be decided server-side from authenticated identity, database state, verified gateway events, and policy.</p>
+<hr />
+<h2 id="1-client-side-payment-verification">1. Client-side payment verification</h2>
+<h3 id="root-cause">Root cause</h3>
+<p>The app asks the client whether payment succeeded, or trusts client-editable values such as <code>price</code>, <code>plan</code>, <code>total</code>, <code>paid</code>, <code>user_type</code>, <code>quantity</code>, or <code>payment_status</code>. JavaScript gates are cosmetic if the API behind them does not enforce entitlement.</p>
+<h3 id="exploit-examples">Exploit examples</h3>
+<p>Tamper checkout input:</p>
+<pre><code class="language-http">POST /api/checkout HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;plan_id&quot;:&quot;pro&quot;,&quot;price&quot;:0.00}
+</code></pre>
+<p>If the backend charges <code>price</code> from the request, the user pays nothing. Response tampering is also common: intercept <code>{"paid":false,"plan":"pro"}</code> and forward <code>{"paid":true,"plan":"pro"}</code>. If <code>/premium/report</code> then succeeds, only the UI was protected:</p>
+<pre><code class="language-http">GET /premium/report HTTP/1.1
+Cookie: session=alice
+</code></pre>
+<p>Hidden fields and success redirects behave the same way: <code>payment_status=success</code>, <code>plan=enterprise</code>, <code>isPremium=true</code>, or <code>userType=paid</code> must never grant access by themselves.</p>
+<h3 id="detection">Detection</h3>
+<ul>
+<li>Intercept checkout and inspect every price, plan, quantity, coupon, currency, total, status, and ID field.</li>
+<li>Replay successful-looking requests without paying; remove cookies/localStorage flags and retry premium endpoints.</li>
+<li>Change HTTP methods and route variants (<code>GET</code>↔<code>POST</code>, <code>/api/v1</code>, <code>/api/internal</code>).</li>
+<li>Search JS bundles/source maps for <code>paid=true</code>, <code>isPremium</code>, <code>plan=pro</code>, mock URLs, or debug switches.</li>
+</ul>
+<h3 id="fix">Fix</h3>
+<ul>
+<li>Keep plans/prices in a server-side catalog keyed by opaque <code>plan_id</code>; never accept amount from the client.</li>
+<li>Create the order/payment intent server-side, then verify gateway state before granting entitlement.</li>
+<li>Enforce subscription checks on every premium API/static resource; return minimal data and no internal plan fields.</li>
+</ul>
+<hr />
+<h2 id="2-idor-bola-on-subscriptions">2. IDOR / BOLA on subscriptions</h2>
+<h3 id="root-cause_1">Root cause</h3>
+<p>Broken Object Level Authorization occurs when the user is authenticated but the server does not verify ownership of the object ID. OWASP API1:2023 specifically covers APIs that accept object IDs in paths, queries, headers, or bodies.
+Subscription objects include <code>subscription_id</code>, <code>invoice_id</code>, <code>payment_id</code>, <code>order_id</code>, <code>customer_id</code>, <code>plan_id</code>, and <code>user_id</code>.</p>
+<h3 id="exploit-examples_1">Exploit examples</h3>
+<p>Alice owns <code>sub_1001</code>; Bob owns <code>sub_1002</code>.</p>
+<pre><code class="language-http">GET /api/subscriptions/1002 HTTP/1.1
+Cookie: session=alice
+</code></pre>
+<p>If Bob's subscription is returned, object authorization failed. Writes are worse:</p>
+<pre><code class="language-http">POST /api/subscriptions/1002/cancel HTTP/1.1
+Cookie: session=alice
+</code></pre>
+<pre><code class="language-http">POST /api/subscriptions HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;user_id&quot;:1002,&quot;plan&quot;:&quot;enterprise&quot;,&quot;status&quot;:&quot;active&quot;}
+</code></pre>
+<p>Payment binding can also be abused:</p>
+<pre><code class="language-http">POST /api/payments/confirm HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;payment_id&quot;:&quot;pay_999&quot;,&quot;subscription_id&quot;:&quot;sub_1002&quot;}
+</code></pre>
+<h3 id="detection_1">Detection</h3>
+<ul>
+<li>Create two test accounts and objects for each; swap numeric IDs, UUIDs, and payment IDs.</li>
+<li>Test IDs in path, query, body, headers, and GraphQL variables.</li>
+<li>Exercise read and write operations: view invoice, cancel, change plan, update payment method, download receipt.</li>
+<li>Look for sequential IDs and predictable public identifiers.</li>
+</ul>
+<h3 id="fix_1">Fix</h3>
+<ul>
+<li>Derive <code>user_id</code>/tenant from the authenticated session, not request input.</li>
+<li>Enforce object-level authorization in a shared service/decorator on every object access.</li>
+<li>Use unguessable IDs as defense in depth, never as the authorization mechanism.</li>
+<li>Log denied object access and alert on enumeration.</li>
+</ul>
+<hr />
+<h2 id="3-broken-authorization-and-privilege-escalation">3. Broken authorization and privilege escalation</h2>
+<h3 id="root-cause_2">Root cause</h3>
+<p>Authentication is confused with authorization. Roles/plans may be trusted from JWTs, request fields, cookies, or hidden UI state. Admin endpoints may rely on obscurity. Mass assignment can let clients write <code>role</code>, <code>plan</code>, <code>is_admin</code>, <code>subscription_status</code>, or <code>balance</code>.</p>
+<h3 id="exploit-examples_2">Exploit examples</h3>
+<p>Decode a JWT and inspect claims:</p>
+<pre><code class="language-json">{&quot;sub&quot;:&quot;user_1001&quot;,&quot;role&quot;:&quot;free&quot;,&quot;plan&quot;:&quot;free&quot;}
+</code></pre>
+<p>If weak secrets, <code>alg:none</code>, or key-type confusion are accepted, try a modified token claiming <code>"role":"admin"</code> or <code>"plan":"enterprise"</code>. OWASP JWT guidance warns against unsecured JWTs, key-type confusion, trusting token-header key material, issuer/audience confusion, and cross-token type confusion.
+Mass assignment:</p>
+<pre><code class="language-http">PATCH /api/me HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;display_name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;,&quot;plan&quot;:&quot;enterprise&quot;,&quot;balance&quot;:99999}
+</code></pre>
+<p>Function-level authorization bypass (OWASP API5):</p>
+<pre><code class="language-http">POST /api/admin/grant-subscription HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;user_id&quot;:&quot;user_1001&quot;,&quot;plan&quot;:&quot;enterprise&quot;}
+</code></pre>
+<h3 id="detection_2">Detection</h3>
+<ul>
+<li>Decode JWTs; inspect <code>alg</code>, <code>kid</code>, issuer, audience, expiry, and claims.</li>
+<li>In a test environment, try <code>alg:none</code>, weak-secret HS256, expired tokens, and tokens from another service.</li>
+<li>Send extra fields in registration/profile/order/subscription payloads.</li>
+<li>Guess admin/internal paths and try <code>GET</code>/<code>POST</code>/<code>PUT</code>/<code>DELETE</code> variants.</li>
+<li>Compare free, paid, and admin sessions on the same endpoints.</li>
+</ul>
+<h3 id="fix_2">Fix</h3>
+<ul>
+<li>Keep authoritative role/plan state in the database or policy service; deny by default.</li>
+<li>Use allowlisted DTOs/serializers, never bind request JSON directly to ORM models.</li>
+<li>Pin JWT algorithms, validate issuer/audience/expiry, use strong rotating keys.</li>
+<li>Check function-level authorization consistently on every sensitive route.</li>
+</ul>
+<hr />
+<h2 id="4-insecure-api-endpoints">4. Insecure API endpoints</h2>
+<h3 id="root-cause_3">Root cause</h3>
+<p>Debug, test, admin, internal, legacy, or undocumented endpoints remain reachable. OWASP API9 warns that APIs expose more endpoints than traditional web apps and that stale/debug endpoints are common; API6 covers sensitive business flows exposed without abuse protection.</p>
+<h3 id="exploit-examples_3">Exploit examples</h3>
+<pre><code class="language-http">GET /api/premium/content/42 HTTP/1.1
+</code></pre>
+<pre><code class="language-http">POST /debug/grant-premium HTTP/1.1
+Content-Type: application/json
+{&quot;user_id&quot;:&quot;user_1001&quot;,&quot;plan&quot;:&quot;enterprise&quot;}
+</code></pre>
+<p>GraphQL introspection:</p>
+<pre><code class="language-http">POST /graphql HTTP/1.1
+Content-Type: application/json
+{&quot;query&quot;:&quot;{ __schema { queryType { fields { name } } mutationType { fields { name } } } }&quot;}
+</code></pre>
+<p>A discovered mutation may allow:</p>
+<pre><code class="language-graphql">mutation { activateSubscription(userId:&quot;user_1001&quot;, plan:&quot;enterprise&quot;) { status } }
+</code></pre>
+<p>Probe paths such as <code>/api/test-payment</code>, <code>/api/mock-checkout</code>, <code>/swagger.json</code>, <code>/openapi.json</code>, <code>/actuator</code>, <code>/debug/vars</code>, <code>/metrics</code>, <code>/healthz</code>, <code>/api/v0/...</code>.</p>
+<h3 id="detection_3">Detection</h3>
+<ul>
+<li>Enumerate routes from JS bundles, source maps, OpenAPI docs, errors, and common wordlists.</li>
+<li>Test every endpoint unauthenticated, as free user, and as admin.</li>
+<li>Run GraphQL introspection, field suggestions, batching, and persisted-query checks.</li>
+<li>Compare 401/403/404 responses for hidden functionality.</li>
+</ul>
+<h3 id="fix_3">Fix</h3>
+<ul>
+<li>Maintain an API inventory; remove or protect debug/test/internal endpoints.</li>
+<li>Apply authn/authz middleware globally rather than per route ad hoc.</li>
+<li>Disable GraphQL introspection and verbose errors in production.</li>
+<li>Put internal APIs behind service auth/network isolation and monitor access.</li>
+</ul>
+<hr />
+<h2 id="5-webhook-and-payment-gateway-flaws">5. Webhook and payment-gateway flaws</h2>
+<h3 id="root-cause_4">Root cause</h3>
+<p>The app trusts a callback because it reached the webhook URL, or trusts fields in it without verifying authenticity. Dangerous patterns include missing signature checks, empty secrets, OR-logic checks, accepting truncated signatures, replaying old events, trusting redirect parameters, and letting payload values override authoritative gateway API values.</p>
+<h3 id="exploit-examples_4">Exploit examples</h3>
+<p>Forged Stripe-style event:</p>
+<pre><code class="language-http">POST /webhooks/stripe HTTP/1.1
+Content-Type: application/json
+{&quot;id&quot;:&quot;evt_forged&quot;,&quot;type&quot;:&quot;checkout.session.completed&quot;,&quot;data&quot;:{&quot;object&quot;:{&quot;id&quot;:&quot;cs_test_123&quot;,&quot;payment_status&quot;:&quot;paid&quot;,&quot;client_reference_id&quot;:&quot;user_1001&quot;,&quot;metadata&quot;:{&quot;plan&quot;:&quot;enterprise&quot;}}}}
+</code></pre>
+<p>If signature verification is absent, this can activate premium. A redirect callback is not proof either:</p>
+<pre><code class="language-http">GET /payment/return?status=success&amp;session_id=cs_test_123 HTTP/1.1
+</code></pre>
+<p>Replay a previously valid webhook body/signature pair; it should not grant credit twice.</p>
+<h3 id="detection_4">Detection</h3>
+<ul>
+<li>Send forged webhook JSON with missing, empty, wrong, truncated, or altered signatures.</li>
+<li>Replay a real captured test webhook multiple times.</li>
+<li>Tamper one byte in the body and confirm rejection.</li>
+<li>Test missing secrets, alternate encodings, old timestamps, and wrong event/object IDs.</li>
+<li>Confirm the app ignores browser redirect <code>status=success</code> as payment proof.</li>
+</ul>
+<h3 id="fix_4">Fix</h3>
+<p>Stripe requires verifying the signature using the <strong>raw request body</strong>, <code>Stripe-Signature</code> header, and endpoint secret. Parsed/re-serialized JSON can break verification, so capture raw bytes first. Stripe also recommends duplicate-event guards.</p>
+<pre><code class="language-python">raw_body = request.get_data()
+sig = request.headers.get(&quot;Stripe-Signature&quot;)
+try:
+    event = stripe.Webhook.construct_event(raw_body, sig, STRIPE_WEBHOOK_SECRET)
+except Exception:
+    return &quot;bad signature&quot;, 400
+if WebhookEvent.objects.filter(gateway_event_id=event[&quot;id&quot;]).exists():
+    return &quot;&quot;, 200
+</code></pre>
+<h2 id="then-validate-event-type-ordersession-id-amount-currency-customer-mapping-and-optionally-retrieve-authoritative-gateway-state-fail-closed-if-secrets-are-missing-use-constant-time-comparison-and-timestamp-tolerance-where-supported-deduplicate-by-event-and-payment-ids">Then validate event type, order/session ID, amount, currency, customer mapping, and optionally retrieve authoritative gateway state. Fail closed if secrets are missing; use constant-time comparison and timestamp tolerance where supported; deduplicate by event and payment IDs.</h2>
+<h2 id="6-business-logic-flaws">6. Business-logic flaws</h2>
+<h3 id="root-cause_5">Root cause</h3>
+<p>The code performs arithmetic or workflow transitions without business rules. Prices, quantities, currencies, discounts, refunds, trials, and coupons are security-sensitive.</p>
+<h3 id="exploit-examples_5">Exploit examples</h3>
+<p>Negative quantity:</p>
+<pre><code class="language-http">POST /api/orders HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;items&quot;:[{&quot;sku&quot;:&quot;pro-month&quot;,&quot;quantity&quot;:-1}]}
+</code></pre>
+<p>If total becomes negative, the app may credit the user.
+Currency confusion:</p>
+<pre><code class="language-http">POST /api/checkout HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;plan_id&quot;:&quot;pro&quot;,&quot;currency&quot;:&quot;JPY&quot;,&quot;amount&quot;:2999}
+</code></pre>
+<p>If <code>2999 JPY</code> is treated as <code>2999 USD</code>, totals are manipulated.
+Coupon stacking/refund abuse/trial reset:</p>
+<pre><code class="language-http">POST /api/coupons/redeem HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;code&quot;:&quot;SAVE90&quot;}
+</code></pre>
+<p>Repeat with multiple or same coupon; test <code>SAVE90+WELCOME100</code>. For refunds, replay <code>POST /api/refunds</code> with the same <code>order_id</code>; check cumulative refund limits. For trials, create aliases or reset device/account identifiers only on your own test accounts.</p>
+<h3 id="detection_5">Detection</h3>
+<ul>
+<li>Boundary-test quantity <code>-1</code>, <code>0</code>, <code>1</code>, large values, floats, strings, arrays, duplicates.</li>
+<li>Change currency, plan, coupon combinations, discount order, and refund count.</li>
+<li>Test partial/full refunds, refund-after-refund, and refund destination changes.</li>
+<li>Cancel/restart trials and check identity rules.</li>
+</ul>
+<h3 id="fix_5">Fix</h3>
+<ul>
+<li>Validate business meaning: positive integer quantities, allowed currencies, max discounts, plan eligibility.</li>
+<li>Recalculate totals server-side from catalog data.</li>
+<li>Make coupon redemption atomic/single-use; store immutable refund ledger entries and enforce cumulative limits.</li>
+<li>Enforce trial eligibility using stable server-side identity/payment policy.</li>
+</ul>
+<hr />
+<h2 id="7-subscription-state-bugs">7. Subscription-state bugs</h2>
+<h3 id="root-cause_6">Root cause</h3>
+<p>Subscription lifecycle is treated as a boolean or client-visible flag rather than a server-side state machine. Expiry may be checked only in JS, cancel may not revoke access, downgrade may leave premium fields intact, failed payments may still grant access, or client clocks/tokens may be trusted.</p>
+<h3 id="exploit-examples_6">Exploit examples</h3>
+<p>Expired session replay:</p>
+<pre><code class="language-http">GET /api/premium/report HTTP/1.1
+Cookie: session=old_paid_session
+</code></pre>
+<p>Cancel without revoke:</p>
+<pre><code class="language-http">POST /api/subscriptions/current/cancel HTTP/1.1
+Cookie: session=alice
+</code></pre>
+<p>If response says canceled but <code>/api/premium/report</code> still works, state was not updated. Arbitrary transition:</p>
+<pre><code class="language-http">POST /api/subscriptions/current/transition HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;to&quot;:&quot;active&quot;}
+</code></pre>
+<h3 id="detection_6">Detection</h3>
+<ul>
+<li>Expire a test subscription or manipulate dev DB time; replay old sessions/tokens/signed URLs.</li>
+<li>Cancel, fail payment, downgrade, refund, and charge back; verify access at each step.</li>
+<li>Try direct <code>status</code>, <code>plan</code>, <code>premium_until</code>, or <code>features</code> fields in requests.</li>
+<li>Test webhook ordering such as <code>invoice.payment_failed</code> followed by <code>customer.subscription.deleted</code>.</li>
+</ul>
+<h3 id="fix_6">Fix</h3>
+<ul>
+<li>Model states explicitly: <code>trialing -&gt; active -&gt; past_due -&gt; canceled</code>, <code>active -&gt; cancel_at_period_end -&gt; canceled</code>, <code>paid -&gt; refunded -&gt; revoked</code>.</li>
+<li>Store <code>status</code>, <code>plan_id</code>, <code>current_period_end</code>, <code>cancel_at_period_end</code>, and gateway IDs server-side.</li>
+<li>Enforce entitlement on every sensitive request using server time.</li>
+<li>Only verified gateway events or authorized admin actions may transition state.</li>
+<li>Define cancel/downgrade/refund semantics precisely and revoke at the correct boundary.</li>
+</ul>
+<hr />
+<h2 id="8-race-conditions">8. Race conditions</h2>
+<h3 id="root-cause_7">Root cause</h3>
+<p>Check-then-act (TOCTOU) gaps let concurrent requests pass validation before state updates. PortSwigger describes limit overrun races where requests enter a temporary state before either completes the write. Payment examples: coupon reuse, credit double-spend, gift-card redemption, trial activation, refund duplication, parallel checkout completion.</p>
+<h3 id="exploit-example">Exploit example</h3>
+<p>Two parallel requests redeem one coupon:</p>
+<pre><code class="language-http">POST /api/coupons/redeem HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;code&quot;:&quot;SAVE50&quot;}
+</code></pre>
+<p>If code checks <code>CouponUse.exists()</code> then creates it without a transaction/unique constraint, both requests can pass. Credit double-spend works similarly: two <code>POST /api/wallet/pay</code> requests see the same balance and both succeed.</p>
+<h3 id="detection_7">Detection</h3>
+<ul>
+<li>Target single-use resources: coupons, credits, gift cards, trials, refunds, invites, seats.</li>
+<li>Send 2, then 10–30 synchronized requests.</li>
+<li>Check for duplicate successes, negative balances, repeated discounts, duplicate ledger entries.</li>
+<li>Verify locks are inside transactions; <code>SELECT ... FOR UPDATE</code> outside a transaction may not lock.</li>
+</ul>
+<h3 id="fix_7">Fix</h3>
+<ul>
+<li>Put check and mutation in one transaction.</li>
+<li>Use unique constraints (<code>user_id,coupon_id</code>, <code>payment_event_id</code>, <code>idempotency_key</code>).</li>
+<li>Use atomic conditional updates, e.g. <code>UPDATE credits SET balance=balance-? WHERE user_id=? AND balance&gt;=?</code>.</li>
+<li>Use row locks inside transactions or appropriate isolation; make webhook/event processing idempotent.</li>
+<li>Rate-limit and alert on suspicious parallel successes.</li>
+</ul>
+<hr />
+<h2 id="9-mock-payment-and-dev-mode-issues">9. Mock-payment and dev-mode issues</h2>
+<h3 id="root-cause_8">Root cause</h3>
+<p>Development conveniences leak into production: mock gateways, unsigned callbacks, debug flags, hardcoded success, test cards accepted, <code>PAYMENT_MODE=mock</code>, or client-side bypass switches.</p>
+<h3 id="exploit-examples_7">Exploit examples</h3>
+<pre><code class="language-http">POST /api/mock-payment/complete HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;order_id&quot;:&quot;ord_1001&quot;}
+</code></pre>
+<pre><code class="language-http">POST /api/webhooks/mock HTTP/1.1
+Content-Type: application/json
+{&quot;status&quot;:&quot;success&quot;,&quot;user_id&quot;:&quot;user_1001&quot;,&quot;plan&quot;:&quot;enterprise&quot;}
+</code></pre>
+<pre><code class="language-http">POST /api/checkout HTTP/1.1
+Cookie: session=alice
+Content-Type: application/json
+{&quot;plan_id&quot;:&quot;pro&quot;,&quot;dev_mode&quot;:true,&quot;force_success&quot;:true}
+</code></pre>
+<p>Config leakage such as <code>PAYMENT_PROVIDER=mock</code>, <code>MOCK_WEBHOOK_SECRET=</code>, <code>ALLOW_TEST_CARDS=true</code>, or <code>DEBUG_GRANT_PREMIUM=true</code> is equally dangerous.</p>
+<h3 id="detection_8">Detection</h3>
+<ul>
+<li>Search routes/config for <code>mock</code>, <code>test</code>, <code>dev</code>, <code>sandbox</code>, <code>fake</code>, <code>bypass</code>, <code>force</code>, <code>debug</code>.</li>
+<li>Try test cards and sandbox behavior only on your own app.</li>
+<li>Check whether production accepts unsigned/trivially signed callbacks.</li>
+<li>Look for feature flags in bodies, headers, cookies, and accidentally deployed env files.</li>
+</ul>
+<h3 id="fix_8">Fix</h3>
+<ul>
+<li>Separate dev/staging/prod config and secrets; compile out or disable mock endpoints in production.</li>
+<li>Require signed webhook verification even for sandbox/test gateways.</li>
+<li>Never accept client-controlled <code>dev_mode</code>, <code>force_success</code>, <code>test</code>, or <code>mock</code> flags for entitlement.</li>
+<li>Add deployment checks that fail if mock provider/debug routes are enabled in prod.</li>
+</ul>
+<hr />
+<h2 id="10-payment-flow-architecture-done-right">10. Payment flow architecture done right</h2>
+<h3 id="recommended-design">Recommended design</h3>
+<ol>
+<li>Catalog: plans, prices, currencies, and features live server-side.</li>
+<li>Order creation: authenticated user selects <code>plan_id</code>; server creates <code>Order(status=pending)</code> and calculates amount.</li>
+<li>Payment intent: server creates gateway checkout/payment session and stores <code>gateway_session_id</code> plus <code>idempotency_key</code>.</li>
+<li>User payment: user pays on gateway-hosted page; browser never supplies authoritative price/status.</li>
+<li>Return URL: redirect is UX only; it may say “processing,” not “paid.”</li>
+<li>Webhook: verify raw-body signature, timestamp, event ID, object IDs, amount, currency, and customer mapping.</li>
+<li>Deduplicate: store processed event/payment IDs; repeated events return success without repeated side effects.</li>
+<li>State machine: <code>pending -&gt; paid -&gt; active -&gt; past_due -&gt; canceled</code>; invalid transitions rejected.</li>
+<li>Entitlement: derive premium access from current subscription state and <code>current_period_end</code>.</li>
+<li>Audit: log order creation, checkout intent, webhook verification, transitions, entitlement changes, refunds, and admin actions.</li>
+</ol>
+<h3 id="flask-style-pseudocode">Flask-style pseudocode</h3>
+<pre><code class="language-python">@app.post(&quot;/api/checkout&quot;)
+@login_required
+def checkout():
+    plan = PLAN_CATALOG.get(request.json.get(&quot;plan_id&quot;))
+    if not plan:
+        abort(400)
+    order = Order.create(user_id=current_user.id, plan_id=plan.id,
+                         amount=plan.price, currency=plan.currency,
+                         status=&quot;pending&quot;, idempotency_key=uuid4())
+    session_obj = stripe.checkout.Session.create(
+        line_items=[...], client_reference_id=str(order.id),
+        metadata={&quot;order_id&quot;: str(order.id)},
+        idempotency_key=str(order.idempotency_key))
+    order.gateway_session_id = session_obj.id
+    order.save()
+    return {&quot;checkout_url&quot;: session_obj.url}
+</code></pre>
+<pre><code class="language-python">@app.post(&quot;/webhooks/stripe&quot;)
+def stripe_webhook():
+    raw_body = request.get_data()
+    try:
+        event = stripe.Webhook.construct_event(
+            raw_body, request.headers.get(&quot;Stripe-Signature&quot;), STRIPE_WEBHOOK_SECRET)
+    except Exception:
+        return &quot;bad signature&quot;, 400
+    if WebhookEvent.objects.filter(gateway_event_id=event[&quot;id&quot;]).exists():
+        return &quot;&quot;, 200
+    obj = event[&quot;data&quot;][&quot;object&quot;]
+    order = Order.objects.select_for_update().get(gateway_session_id=obj[&quot;id&quot;])
+    # Verify type, payment_status, amount, currency, and customer mapping.
+    # Optionally retrieve authoritative session/object state from Stripe.
+    if event[&quot;type&quot;] == &quot;checkout.session.completed&quot; and obj.get(&quot;payment_status&quot;) == &quot;paid&quot;:
+        order.status = &quot;paid&quot;
+        Subscription.activate(order.user, order.plan, order.current_period_end)
+        WebhookEvent.create(gateway_event_id=event[&quot;id&quot;], order=order)
+    return &quot;&quot;, 200
+</code></pre>
+<hr />
+<h2 id="11-public-real-world-examples-and-labs">11. Public real-world examples and labs</h2>
+<p>Public disclosures/advisories and hands-on labs for pattern recognition. They are not authorization to test those systems.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Class demonstrated</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CVE-2008-7310, Spree</td>
+<td>Mass assignment let client set order state and bypass payment</td>
+<td><a href="https://nvd.nist.gov/vuln/detail/CVE-2008-7310">NVD</a></td>
+</tr>
+<tr>
+<td>CVE-2024-45300, alf.io</td>
+<td>Race condition reused limited promo codes</td>
+<td><a href="https://github.com/alfio-event/alf.io/security/advisories/GHSA-67jg-m6f3-473g">GitHub advisory</a></td>
+</tr>
+<tr>
+<td>CVE-2026-55219, Paymenter</td>
+<td>Lock outside transaction enabled credit double-spend</td>
+<td><a href="https://github.com/Paymenter/Paymenter/security/advisories/GHSA-pgcq-8grm-5rx9">GitHub advisory</a></td>
+</tr>
+<tr>
+<td>CVE-2025-11564, Tutor LMS</td>
+<td>Forged webhook marked orders paid</td>
+<td><a href="https://nvd.nist.gov/vuln/detail/CVE-2025-11564">NVD</a></td>
+</tr>
+<tr>
+<td>CVE-2026-0656, iPaymu WooCommerce</td>
+<td>Missing webhook authentication marked orders paid</td>
+<td><a href="https://nvd.nist.gov/vuln/detail/CVE-2026-0656">NVD</a></td>
+</tr>
+<tr>
+<td>CVE-2026-1305, Japanized/WooCommerce Paidy</td>
+<td>Omitted signature header passed permission check</td>
+<td><a href="https://nvd.nist.gov/vuln/detail/CVE-2026-1305">NVD</a></td>
+</tr>
+<tr>
+<td>CVE-2026-33731, AVideo Authorize.Net</td>
+<td>Signature OR-logic plus payload-over-API values enabled premium fraud</td>
+<td><a href="https://github.com/WWBN/AVideo/security/advisories/GHSA-95jh-7r58-xmxw">GitHub advisory</a></td>
+</tr>
+<tr>
+<td>CVE-2024-21491, Svix webhooks</td>
+<td>Different-length signature comparison allowed bypass</td>
+<td><a href="https://rustsec.org/advisories/RUSTSEC-2024-0010.html">RustSec</a></td>
+</tr>
+<tr>
+<td>CVE-2024-1666, Lunary</td>
+<td>Free-account restriction enforced only in web UI</td>
+<td><a href="https://nvd.nist.gov/vuln/detail/CVE-2024-1666">NVD</a></td>
+</tr>
+<tr>
+<td>Payment Bypass Techniques Lab</td>
+<td>Price modification, direct path access, permission bypass</td>
+<td><a href="https://github.com/zack0x01/Payment-bypass-bug-lab">GitHub lab</a></td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-safe-testing-methodology-on-your-own-app">12. Safe testing methodology on your own app</h2>
+<h3 id="setup">Setup</h3>
+<ul>
+<li>Run Flask locally or in disposable staging; use test accounts only: free, paid, admin.</li>
+<li>Use Stripe test mode (<code>sk_test_</code>, <code>whsec_</code>) or a mock gateway you control.</li>
+<li>Never send forged webhooks or race traffic to production or third-party endpoints.</li>
+</ul>
+<h3 id="burp-suite-workflow">Burp Suite workflow</h3>
+<ol>
+<li>Browse checkout normally and identify requests in Proxy/HTTP history.</li>
+<li>Send interesting requests to Repeater and baseline each one.</li>
+<li>Change one variable at a time: plan, price, quantity, currency, coupon, user/subscription/payment IDs.</li>
+<li>For state tests, replay cancel/downgrade/refund/return endpoints and inspect DB state.</li>
+<li>For webhooks, send forged JSON to your local route; bad signatures should return 4xx and not mutate state.</li>
+<li>For authorization, keep free and paid/admin Repeater tabs; compare object IDs and endpoints.</li>
+</ol>
+<h3 id="race-condition-testing">Race-condition testing</h3>
+<p>PortSwigger Repeater can send request groups in parallel. HTTP/1 uses last-byte synchronization; HTTP/2 can use the single-packet attack to reduce network jitter. Turbo Intruder helps with custom concurrency and gates:</p>
+<pre><code class="language-python">engine = RequestEngine(endpoint=target_url, concurrentConnections=10,
+                       requestsPerConnection=1, pipeline=False)
+gate = Gate()
+for i in range(20):
+    engine.queue(target_request, gate=gate)
+gate.open()
+while engine.has_requests():
+    engine.next_response()
+</code></pre>
+<p>Check DB/logs afterward: exactly one coupon redemption, credit debit, subscription activation, or refund.</p>
+<h3 id="test-matrix">Test matrix</h3>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Tests</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client trust</td>
+<td>Tamper price, plan, paid flag, hidden fields, success redirect</td>
+</tr>
+<tr>
+<td>BOLA</td>
+<td>Swap subscription/invoice/payment/user IDs across accounts</td>
+</tr>
+<tr>
+<td>AuthZ</td>
+<td>Call admin/debug/premium functions as free user; test JWT edge cases locally</td>
+</tr>
+<tr>
+<td>API surface</td>
+<td>Enumerate endpoints/methods, GraphQL introspection, debug routes</td>
+</tr>
+<tr>
+<td>Webhooks</td>
+<td>Forged body, bad signature, replay, duplicate event, wrong amount/currency</td>
+</tr>
+<tr>
+<td>Business logic</td>
+<td>Negative qty, currency switch, coupon stacking, refund repeat, trial reset</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Expired access, cancel/downgrade/refund transitions, old session replay</td>
+</tr>
+<tr>
+<td>Race</td>
+<td>Parallel coupon redeem, credit spend, checkout completion, refund</td>
+</tr>
+<tr>
+<td>Mock mode</td>
+<td>Mock endpoints, dev flags, test gateway behavior in prod-like config</td>
+</tr>
+<tr>
+<td>### Secure outcome</td>
+<td></td>
+</tr>
+<tr>
+<td>- Tampered prices ignored; server catalog determines amount.</td>
+<td></td>
+</tr>
+<tr>
+<td>- Cross-account IDs return consistent <code>403</code>/<code>404</code>.</td>
+<td></td>
+</tr>
+<tr>
+<td>- Forged/replayed webhooks do not change subscription state.</td>
+<td></td>
+</tr>
+<tr>
+<td>- Parallel single-use operations produce exactly one success.</td>
+<td></td>
+</tr>
+<tr>
+<td>- Expired/canceled subscriptions lose access at the correct server-side boundary.</td>
+<td></td>
+</tr>
+<tr>
+<td>- Audit logs show who/what/when for every entitlement change.</td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>OWASP API Security Top 10 2023: API1 BOLA, API3 Broken Object Property Level Authorization, API5 Broken Function Level Authorization, API6 Unrestricted Access to Sensitive Business Flows, API9 Improper Inventory Management.</li>
+<li>OWASP Authorization, JSON Web Token, Business Logic Security, Third Party Payment Gateway Integration, and Webhook Security Cheat Sheets.</li>
+<li>Stripe Docs: webhook signature verification/event handling and idempotent requests.</li>
+<li>PortSwigger Web Security Academy: race conditions, limit overruns, and single-packet attack methodology.</li>
+<li>NVD, GitHub Security Advisories, and RustSec records listed in Section 11.</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from payment_bypass.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 04 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

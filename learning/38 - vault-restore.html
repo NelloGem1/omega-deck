@@ -1,0 +1,106 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>🔄 RESTORE GUIDE — rebuild everything from this repo</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="restore-guide-rebuild-everything-from-this-repo">🔄 RESTORE GUIDE — rebuild everything from this repo</h1>
+<h2 id="step-0-prerequisites">Step 0 — prerequisites</h2>
+<ul>
+<li>Windows 11 + WSL Ubuntu (or any Linux)</li>
+<li><code>winget</code> for tool installs · Python 3.12+ · <code>uv</code> or standard pip</li>
+<li>Lean 4 via elan: <code>curl https://elan.lean-lang.org/elan-init.sh -sSf | sh</code></li>
+</ul>
+<h2 id="step-1-clone">Step 1 — clone</h2>
+<pre><code class="language-powershell">git clone https://github.com/NelloGem1/experiment-vault.git
+cd experiment-vault
+</code></pre>
+<h2 id="step-2-restore-by-folder">Step 2 — restore by folder</h2>
+<h3 id="lean_lab-the-proofs">lean_lab/ (the proofs)</h3>
+<pre><code class="language-bash">mkdir -p ~/lean_lab &amp;&amp; cp -r lean_lab/* ~/lean_lab/
+cd ~/lean_lab &amp;&amp; lake exe cache get   # fetch Mathlib deps (~13GB)
+lake build                           # verify all 8 theorems
+</code></pre>
+<p>Expected: <code>prime_coprime_210</code>, <code>prime_mod30</code>, <code>prime_gt_five_last_digit</code>, <code>infinite_primes_ours</code> all VERIFIED, axioms <code>[propext, Classical.choice, Quot.sound]</code>.</p>
+<h3 id="crypto_research-just-read-the-md-files-nothing-to-install">crypto_research/ — just read the .md files. Nothing to install.</h3>
+<h3 id="prime_video-video-pipeline">prime_video/ (video pipeline)</h3>
+<pre><code class="language-bash">pip install pillow edge-tts   # TTS + slides
+# ffmpeg required for assembly: sudo apt install ffmpeg
+# regenerate slides: python scripts/gen_fixes.py  (edit OUT path first)
+# TTS per segment: edge-tts --voice en-US-ChristopherNeural --file audio/seg_NN.txt --write-media audio/seg_NN.mp3
+# assemble: ffmpeg -f concat -safe 0 -i concat.txt -c copy prime_discovery.mp4
+</code></pre>
+<h3 id="scripts-copy-needed-pysh-to-and-run-with-python3">scripts/ — copy needed .py/.sh to ~/ and run with python3</h3>
+<ul>
+<li><code>folder_lock.py</code> needs <code>pip install cryptography</code></li>
+<li><code>upload_prime.py</code> needs YouTube OAuth token (NOT in repo — re-auth via client_secret)</li>
+</ul>
+<h3 id="youtube_tool_scripts-the-automation-code-re-auth-needed">youtube_tool_scripts/ — the automation code. Re-auth needed:</h3>
+<ul>
+<li>Place your OWN <code>client_secret.json</code> + run auth flow → creates <code>token.json</code></li>
+<li>NEVER commit those files.</li>
+</ul>
+<h3 id="guides-copy-md-anywhere-read-in-notepadbrowser">guides/ — copy *.md anywhere, read in Notepad/browser.</h3>
+<h2 id="step-3-reinstall-tools-one-winget-line-each">Step 3 — reinstall tools (one winget line each)</h2>
+<pre><code class="language-powershell">winget install FiloSottile.age GnuPG.Gpg4win IDRIX.VeraCrypt Cryptomator.Cryptomator KeePassXCTeam.KeePassXC Bitwarden.Bitwarden WiresharkFoundation.Wireshark Insecure.Nmap FiloSottile.mkcert hashcat.hashcat TorProject.TorBrowser
+</code></pre>
+<p>(folder_lock.py: <code>pip install cryptography</code> · age key at <code>C:\Users\neilh\age\key.txt</code> is LOCAL only)</p>
+<h2 id="step-4-the-secrets-you-must-back-up-manually-not-in-repo">Step 4 — the secrets you must back up MANUALLY (not in repo)</h2>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Location</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>folder_lock_priv.pem</code></td>
+<td><code>C:\Users\neilh\RSA-Keys\</code> + <code>/home/neilh/secure/vault/</code></td>
+<td>unlocks sealed vault</td>
+</tr>
+<tr>
+<td><code>token.json</code> / <code>client_secret*.json</code></td>
+<td><code>~/youtube-tool/</code></td>
+<td>YouTube API access</td>
+</tr>
+<tr>
+<td>age <code>key.txt</code></td>
+<td><code>C:\Users\neilh\age\</code></td>
+<td>age decryption</td>
+</tr>
+<tr>
+<td>KeePassXC/Bitwarden vaults</td>
+<td>wherever you save them</td>
+<td>passwords</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Store these on a USB drive or encrypted backup — this repo has ZERO secrets by design.</p>
+</blockquote>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from RESTORE.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 38 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

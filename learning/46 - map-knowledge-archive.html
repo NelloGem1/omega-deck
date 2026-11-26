@@ -1,0 +1,2479 @@
+<!doctype html><html><head><meta charset="utf-8"><title>knowledge-archive</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="global-human-knowledge-and-experience-archive">⬡ GLOBAL HUMAN KNOWLEDGE AND EXPERIENCE ARCHIVE</h1>
+<h2 id="design-specification-knowledge_archivemd">Design Specification — knowledge_archive.md</h2>
+<p><em>Version 1.0 · Synthesizes the parallel classification maps (<code>math_logic_map.md</code>, <code>ml_pipeline_guide.md</code>, et al.) into one unified architecture.</em></p>
+<blockquote>
+<p><strong>Mission statement.</strong> This is not a Wikipedia clone and not a vector store.
+It is the <strong>institutional memory of human civilization</strong>: a permanently maintained,
+verifiably sourced, cross-disciplinary record of <em>everything humanity has
+discovered, proved, designed, built, tried, and failed</em> — designed so that the
+next person (or next civilization) does not repeat the mistakes of the last.</p>
+</blockquote>
+<hr />
+<h2 id="0-design-philosophy-why-this-must-exist">0. DESIGN PHILOSOPHY — why this must exist</h2>
+<h3 id="01-the-problem-today">0.1 The problem today</h3>
+<p>Human knowledge is currently scattered, decaying, locked, and unreliable:</p>
+<table>
+<thead>
+<tr>
+<th>Failure mode</th>
+<th>Real example</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Knowledge trapped in heads / proprietary systems</td>
+<td>Proprietary trade secrets, unpublished lab notebooks</td>
+<td>Re-derivation of known results; duplicated research</td>
+</tr>
+<tr>
+<td>Knowledge lost to media decay</td>
+<td>War losses, burned libraries (Alexandria, House of Wisdom), endangered oral traditions</td>
+<td>Entire fields have to be rediscovered</td>
+</tr>
+<tr>
+<td>Knowledge frozen in languages few read</td>
+<td>Science in inaccessible journals, patents in dead formats</td>
+<td>Global south excluded from frontier knowledge</td>
+</tr>
+<tr>
+<td>Knowledge fragmented across silos</td>
+<td>Physics on arXiv, medicine on PubMed, history in archives — no cross-links</td>
+<td>Disciplinary blind spots; slow cross-pollination</td>
+</tr>
+<tr>
+<td>Failed knowledge deleted</td>
+<td>Negative results unpublished, failed experiments forgotten</td>
+<td><strong>Science itself repeats mistakes</strong> — the single biggest waste</td>
+</tr>
+<tr>
+<td>Knowledge with no provenance</td>
+<td>Wikipedia citations rot, AI hallucinations fabricate sources</td>
+<td>Trust collapse</td>
+</tr>
+</tbody>
+</table>
+<h3 id="02-what-experience-means-here">0.2 What "experience" means here</h3>
+<p>An archive of <em>discoveries</em> without <em>experiences</em> is a museum of answers.
+The archive must preserve the <strong>process</strong>: the context, the assumptions that
+turned out wrong, the resources that failed, the errors that cost lives,
+the partial successes, the lessons distilled. The <strong>failed experiment is
+first-class knowledge</strong> — arguably the most valuable knowledge, because it
+is the knowledge that prevents the next failure.</p>
+<p>A surgeon who knows <em>why</em> the Thalidomide disaster happened will not repeat
+it. A chemist who knows <em>which</em> esterifications polymerized catastrophically
+will avoid them. The archive is a <strong>negative-knowledge engine</strong> as much as
+a positive-knowledge engine.</p>
+<h3 id="03-design-principles-the-prime-ladder-foundations-first">0.3 Design principles (the PRIME ladder — foundations first)</h3>
+<pre><code>1 · 3 · 7 · 9
+</code></pre>
+<ul>
+<li><strong>1 · Provenance first.</strong> Every claim carries its source chain. No orphan
+  knowledge enters the canonical layer.</li>
+<li><strong>3 · Three pillars.</strong> Knowledge content + Knowledge graph + Experience
+  records. All three required; the graph alone is a diagram, the text alone
+  is a pile, the experience alone is a diary.</li>
+<li><strong>7 · Seven verification tiers</strong> (Section 3). Every node labeled.</li>
+<li><strong>9 · Nine imperatives:</strong> completeness · verifiability · multilingual ·
+  offline-capable · open · uncapturable · auditable · evolving · free.</li>
+</ul>
+<hr />
+<h2 id="1-core-mission">1. CORE MISSION</h2>
+<h3 id="11-preserve-the-seven-knowledge-classes">1.1 Preserve (the seven knowledge classes)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Class</th>
+<th>Examples</th>
+<th>Why preserved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Discoveries</strong></td>
+<td>laws of physics, new species, historical finds</td>
+<td>The frontier of the known</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Mathematics</strong></td>
+<td>proofs, theorems, algorithms, formal systems</td>
+<td>The language of reasoning itself</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Experiences</strong></td>
+<td>lived histories, oral traditions, field notes</td>
+<td>Context that papers strip out</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>History</strong></td>
+<td>events, causality chains, failed states</td>
+<td>Pattern memory of societies</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Inventions</strong></td>
+<td>patents, designs, prototypes, trade secrets (with consent)</td>
+<td>Applied capability</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Experiments</strong></td>
+<td>methods, results, <em>and failures</em>, negative results</td>
+<td>The scientific method's full record</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Solutions</strong></td>
+<td>engineering fixes, medical protocols, legal precedents</td>
+<td>Reusable resolution patterns</td>
+</tr>
+</tbody>
+</table>
+<p>Plus, continuously: <strong>culture</strong> (art, religion, language, myth), <strong>lessons</strong>
+(distilled warnings), <strong>designs</strong> (architecture, UI, systems).</p>
+<h3 id="12-the-anti-repeat-mistake-guarantee">1.2 The Anti-Repeat-Mistake guarantee</h3>
+<p>The archive must answer, for any domain, the question: <em>"What has been tried
+before, and how did it fail?"</em> This requires:</p>
+<ol>
+<li><strong>Failure records are mandatory</strong> for experiment-type nodes (Section 5).</li>
+<li><strong>Failure nodes are cross-linked</strong> to the methods they invalidate — a
+   graph edge <code>INVALIDATES(method → prior_result)</code>.</li>
+<li><strong>Lessons are first-class nodes</strong> linked to every failure they distill.</li>
+<li><strong>Retrieval must surface failures</strong> alongside successes — a search for
+   "fusion reactor design" returns the failed tokamaks with their failure
+   modes <em>before</em> the proposed design (Section 4.6).</li>
+</ol>
+<h3 id="13-non-goals">1.3 Non-goals</h3>
+<ul>
+<li>Not a replacement for the live literature — an <em>index and memory layer</em> over it.</li>
+<li>Not an opinion platform — claims require evidence (Section 3).</li>
+<li>Not a single centralized corporate product — governance is federated (Section 7).</li>
+</ul>
+<hr />
+<h2 id="2-knowledge-hierarchy-classification-framework">2. KNOWLEDGE HIERARCHY &amp; CLASSIFICATION FRAMEWORK</h2>
+<h3 id="21-the-canonical-spine">2.1 The canonical spine</h3>
+<pre><code>DOMAIN → DISCIPLINE → SUBDISCIPLINE → FIELD → CONCEPT → PRINCIPLE →
+METHOD → EXPERIMENT → EVIDENCE → APPLICATION → OUTCOME
+</code></pre>
+<p>This is a <strong>containment + derivation</strong> hierarchy, not just a taxonomy.
+Each level has a defined semantics:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Definition</th>
+<th>Example (energy domain)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Top-level human-knowledge area</td>
+<td><code>Domain: Natural Sciences</code></td>
+</tr>
+<tr>
+<td><strong>Discipline</strong></td>
+<td>Recognized academic/professional field</td>
+<td><code>Discipline: Physics</code></td>
+</tr>
+<tr>
+<td><strong>Subdiscipline</strong></td>
+<td>Major branch</td>
+<td><code>Subdiscipline: Plasma Physics</code></td>
+</tr>
+<tr>
+<td><strong>Field</strong></td>
+<td>Specific research/practice area</td>
+<td><code>Field: Magnetic Confinement Fusion</code></td>
+</tr>
+<tr>
+<td><strong>Concept</strong></td>
+<td>Atomic idea/entity</td>
+<td><code>Concept: Tokamak</code></td>
+</tr>
+<tr>
+<td><strong>Principle</strong></td>
+<td>Generalized law/pattern</td>
+<td><code>Principle: Lawson Criterion</code></td>
+</tr>
+<tr>
+<td><strong>Method</strong></td>
+<td>Reproducible procedure</td>
+<td><code>Method: Neutral Beam Injection</code></td>
+</tr>
+<tr>
+<td><strong>Experiment</strong></td>
+<td>A specific attempt with context</td>
+<td><code>Experiment: JET D-T campaign 1997</code></td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Observation/datum supporting a claim</td>
+<td><code>Evidence: JET achieved 16 MW fusion power</code></td>
+</tr>
+<tr>
+<td><strong>Application</strong></td>
+<td>Deployed use</td>
+<td><code>Application: ITER design basis</code></td>
+</tr>
+<tr>
+<td><strong>Outcome</strong></td>
+<td>Measured result / status</td>
+<td><code>Outcome: Q=0.67 achieved; gain not yet &gt;1</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-cross-cutting-axes-orthogonal-to-the-spine">2.2 Cross-cutting axes (orthogonal to the spine)</h3>
+<p>The spine is one axis. Every node also carries:</p>
+<ul>
+<li><strong>Epistemic tier</strong> (Section 3) — how confident we are.</li>
+<li><strong>Knowledge class</strong> (Section 1.1) — what <em>kind</em> of knowledge it is.</li>
+<li><strong>Time axis</strong> — <code>discovered_at</code>, <code>superseded_by</code>, <code>valid_from/until</code>.</li>
+<li><strong>Space/culture axis</strong> — region, tradition, language of origin.</li>
+<li><strong>Confidence &amp; controversy flags</strong> — disputed, consensus, fringe.</li>
+</ul>
+<h3 id="23-the-classification-maps-unify-here">2.3 The classification maps unify here</h3>
+<p>The parallel maps (<code>math_logic_map.md</code> covers math/logic; <code>ml_pipeline_guide.md</code>
+covers ML pipelines) plug into this spine at specific levels:</p>
+<ul>
+<li><strong>math_logic_map</strong> → <code>Domain: Formal Sciences → Discipline: Mathematics /
+  Logic / Computer Science → ... → Concept: e.g. Gödel Incompleteness →
+  Principle: ... → Method: proof technique → Experiment: formal verification</code>.</li>
+<li><strong>ml_pipeline_guide</strong> → <code>Domain: Applied Sciences → Discipline:
+  Computer Science → Subdiscipline: Machine Learning → Field: e.g. RAG
+  pipelines → Concept: embedding → Principle: ... → Method: fine-tuning →
+  Experiment: eval run → Evidence: benchmark scores → Application: deployed
+  model → Outcome: measured quality</code>.</li>
+</ul>
+<p>New maps (biology, history, medicine, law, arts) slot in identically.
+<strong>The spine is domain-agnostic by design.</strong></p>
+<h3 id="24-knowledge-graph-schema">2.4 Knowledge graph schema</h3>
+<p><strong>Node types</strong> (prefix <code>n:</code>):</p>
+<pre><code>n:Domain        n:Discipline     n:Subdiscipline  n:Field
+n:Concept       n:Principle      n:Method         n:Experiment
+n:Evidence      n:Application    n:Outcome        n:Person
+n:Organization  n:Place          n:Event          n:Artifact
+n:Document      n:Dataset        n:Formula        n:Theorem
+n:Algorithm     n:Protocol       n:Failure        n:Lesson
+n:Language      n:Tradition      n:Myth           n:Question  (open problems)
+n:Controversy   n:Hypothesis     n:Prediction     n:Tool
+</code></pre>
+<p><strong>Edge types</strong> (prefix <code>e:</code>), grouped:</p>
+<p><em>Containment / derivation:</em></p>
+<pre><code>PART_OF          (child → parent, up the spine)
+PART_OF_FIELD    (cross-cutting membership)
+DERIVED_FROM     (downstream node ← upstream basis)
+SUPERSEDES       (newer node replaces older)
+INSTANCE_OF      (specific → general type)
+</code></pre>
+<p><em>Causal / evidential:</em></p>
+<pre><code>EVIDENCES        (evidence → claim it supports)
+CONTRADICTS      (evidence vs. claim, or node vs. node)
+SUPPORTS         (weak/partial support)
+INVALIDATES      (failure → method/principle it rules out)
+CAUSED_BY        (outcome ← cause)
+ENABLES          (capability dependency)
+DEPENDS_ON       (prerequisite)
+</code></pre>
+<p><em>Temporal / provenance:</em></p>
+<pre><code>PUBLISHED_IN     (document → venue/journal)
+AUTHORED_BY      (node → person/org)
+OBSERVED_AT      (evidence → place/time)
+CONDUCTED_BY     (experiment → team/org)
+USES             (experiment → method/tool/dataset)
+CITES            (document → document)
+TRANSLATED_FROM  (node → source-language version)
+</code></pre>
+<p><em>Social / cultural:</em></p>
+<pre><code>INFLUENCED_BY    (person/node ← person/node)
+TEACHES          (person → concept/lesson)
+PRACTICED_IN     (tradition → region)
+RELATED_TO       (weak semantic link, high fan-out — used sparingly)
+</code></pre>
+<p>Every edge carries: <code>weight</code> (confidence 0..1), <code>source</code> (which evidence
+chain justifies the edge), <code>valid_from</code>, <code>valid_until</code>, <code>created_by</code>,
+<code>verification_tier</code>.</p>
+<h3 id="25-open-questions-as-nodes">2.5 Open questions as nodes</h3>
+<p>Unsolved problems are <code>n:Question</code> nodes — <em>"What is dark matter?"</em>,
+<em>"P vs NP?"</em>, <em>"How did the Indus script work?"</em>. They link <code>OPEN</code> edges to
+<code>n:Hypothesis</code> nodes (candidate answers) and <code>BLOCKED_BY</code> edges to
+<code>n:Failure</code>/<code>n:Limitation</code> nodes. <strong>Gap detection</strong> (Section 4.7) is partly
+the automated discovery of under-connected <code>n:Question</code> nodes.</p>
+<hr />
+<h2 id="3-verification-framework">3. VERIFICATION FRAMEWORK</h2>
+<h3 id="31-the-nine-epistemic-tiers">3.1 The nine epistemic tiers</h3>
+<p>Every claim node carries exactly one <code>epistemic_tier</code>. Ordered strongest → weakest:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Name</th>
+<th>Definition</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1</td>
+<td><strong>Verified Fact</strong></td>
+<td>Independently reproduced, consensus, no credible dispute</td>
+<td>Water boils at 100°C at 1 atm</td>
+</tr>
+<tr>
+<td>T2</td>
+<td><strong>Math Proof</strong></td>
+<td>Formal proof, machine-checkable (Lean/Coq) or accepted</td>
+<td>√2 is irrational</td>
+</tr>
+<tr>
+<td>T3</td>
+<td><strong>Theory</strong></td>
+<td>Well-supported explanatory framework, not directly observable</td>
+<td>Evolution by natural selection</td>
+</tr>
+<tr>
+<td>T4</td>
+<td><strong>Observation</strong></td>
+<td>Direct measurement/observation, possibly unrepeated</td>
+<td>A supernova sighting</td>
+</tr>
+<tr>
+<td>T5</td>
+<td><strong>Expert Opinion</strong></td>
+<td>Credible authority's judgment, no formal proof</td>
+<td>A surgeon's protocol recommendation</td>
+</tr>
+<tr>
+<td>T6</td>
+<td><strong>Personal Experience</strong></td>
+<td>First-hand account, unverifiable by others</td>
+<td>"This bridge design failed in my project"</td>
+</tr>
+<tr>
+<td>T7</td>
+<td><strong>Hypothesis</strong></td>
+<td>Testable conjecture, awaiting evidence</td>
+<td>A proposed dark-matter candidate</td>
+</tr>
+<tr>
+<td>T8</td>
+<td><strong>Unverified</strong></td>
+<td>Claim with weak/absent provenance</td>
+<td>Forum post, hearsay</td>
+</tr>
+<tr>
+<td>T9</td>
+<td><strong>Speculation</strong></td>
+<td>Opinion/philosophy without empirical anchor</td>
+<td>"AI will solve climate change"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules:</strong>
+- Tiers are <em>per-claim</em>, not per-document. A paper can contain T2 math and
+  T8 speculation; each proposition gets its own node.
+- Tiers can be <strong>promoted</strong> (T7 → T3 after evidence accumulates) or
+  <strong>demoted</strong> (T3 → T7 if contradicted). Promotion/demotion is logged.
+- T6 (personal experience) is <strong>never deleted</strong> but is visually and
+  algorithmically separated from T1–T5 in retrieval — a search can request
+  "only verified" or "include experiences."</p>
+<h3 id="32-source-verification-pipeline">3.2 Source verification pipeline</h3>
+<p>Every ingested source passes through:</p>
+<pre><code>INGEST → AUTHORSHIP CHECK → PROVENANCE CHAIN → EVIDENCE EVAL →
+TIER ASSIGNMENT → CROSS-CHECK → CANONICAL INDEX
+</code></pre>
+<ul>
+<li><strong>Authorship check:</strong> is the claimed author real? (ORCID, institutional
+  affiliation, publication record). Detects impersonation and sockpuppetry.</li>
+<li><strong>Provenance chain:</strong> document → raw data → experimental apparatus →
+  raw observations → processed results → published claim. Broken chain =
+  tier capped at T8.</li>
+<li><strong>Evidence evaluation:</strong> for each <code>n:Evidence</code> node, record
+  <code>replication_count</code>, <code>independent_replications</code>, <code>retraction_status</code>,
+  <code>funding_conflicts</code>, <code>sample_size</code>, <code>methodology_rigor_score</code>.</li>
+</ul>
+<h3 id="33-contradiction-detection">3.3 Contradiction detection</h3>
+<p>Contradictions are <strong>features, not bugs</strong>. The archive stores them:</p>
+<ul>
+<li><code>CONTRADICTS</code> edges link incompatible claims.</li>
+<li><strong>Contradiction clusters</strong> are <code>n:Controversy</code> nodes that aggregate
+  mutually-contradicting claims (e.g., "climate sensitivity range").</li>
+<li>Each controversy node has a <code>resolution_status</code>: <code>open</code>, <code>resolved_for_X</code>,
+  <code>unresolved</code>, <code>resolved_by_consensus</code>, <code>resolved_by_experiment</code>.</li>
+<li>Contradictions are surfaced in retrieval: a query about a contested topic
+  returns <em>both sides</em> plus the controversy node, never silently picks one.</li>
+</ul>
+<h3 id="34-outdated-knowledge-correction">3.4 Outdated-knowledge correction</h3>
+<p>Knowledge decays. The archive handles it via:</p>
+<ul>
+<li><strong>Temporal validity:</strong> <code>valid_from</code>/<code>valid_until</code> on claims.</li>
+<li><strong>Supersession chains:</strong> <code>SUPERSEDES</code> edges; the old node is never deleted
+  but is marked <code>superseded_by</code> and demoted.</li>
+<li><strong>Deprecation events:</strong> when a field overturns (e.g., a drug recalled, a
+  cosmology model revised), a <code>DeprecationEvent</code> cascades: demote all
+  dependent claims by one tier, flag for re-review.</li>
+<li><strong>Re-verification schedule:</strong> high-impact claims (medical, safety,
+  structural) get periodic re-verification triggers. Stale claims decay in
+  ranking.</li>
+</ul>
+<h3 id="35-uncertainty-representation">3.5 Uncertainty representation</h3>
+<p>Every node carries a structured <code>uncertainty</code> object:</p>
+<pre><code class="language-yaml">uncertainty:
+  epistemic_tier: T4
+  confidence: 0.72            # 0..1 aggregate
+  known_unknowns:             # what we don't know
+    - &quot;exact replication count beyond 3&quot;
+  contested_by: [n:Controversy#climate-sensitivity]
+  last_verified: 2024-06-01
+  decay_half_life_days: 1825  # how fast this claim ages
+</code></pre>
+<p>The AI engine (Section 4) <strong>must surface uncertainty</strong> in every answer —
+an answer without an uncertainty statement is a bug, not a feature.</p>
+<hr />
+<h2 id="4-ai-knowledge-engine">4. AI KNOWLEDGE ENGINE</h2>
+<h3 id="41-capabilities-the-ten">4.1 Capabilities (the ten)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Capability</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Semantic search</strong></td>
+<td>Dense vector retrieval over chunked nodes + BM25 hybrid</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Graph reasoning</strong></td>
+<td>Cypher/GQL traversals over the knowledge graph</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>RAG (Retrieval-Augmented Generation)</strong></td>
+<td>Graph-grounded retrieval → LLM synthesis with citations</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>NLU (Natural Language Understanding)</strong></td>
+<td>Entity/relation extraction from text into graph nodes</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Cross-disciplinary discovery</strong></td>
+<td>Graph paths connecting distant domains (Section 4.5)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Pattern recognition</strong></td>
+<td>Graph motif detection, embedding clustering</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Hypothesis generation</strong></td>
+<td>LLM + graph completion: propose edges/nodes filling gaps</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Gap detection</strong></td>
+<td>Under-connected questions, missing evidence, contradictions</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Outcome learning</strong></td>
+<td>Track which retrieved answers were useful/correct → rerank</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Provenance tracing</strong></td>
+<td>Every AI answer cites node IDs → full evidence chain</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-retrieval-architecture-hybrid-four-channels">4.2 Retrieval architecture (hybrid, four channels)</h3>
+<pre><code>Query
+ ├─→ [C1] Dense vector search      (semantic similarity, pgvector/Qdrant/LanceDB)
+ ├─→ [C2] Sparse BM25               (keyword, Postgres FTS / Elasticsearch)
+ ├─→ [C3] Graph traversal           (Cypher: expand from seed entities)
+ └─→ [C4] Structured filter         (epistemic_tier, domain, date, language)
+        │
+        ▼
+   Reciprocal Rank Fusion (RRF)
+        │
+        ▼
+   Cross-encoder reranker (optional, for high-stakes queries)
+        │
+        ▼
+   Context assembly → LLM synthesis → answer + citations + uncertainty
+</code></pre>
+<h3 id="43-graph-rag-pattern-the-key-innovation">4.3 Graph-RAG pattern (the key innovation)</h3>
+<p>Standard RAG retrieves text chunks. <strong>Graph-RAG</strong> retrieves <em>structured
+knowledge neighborhoods</em>:</p>
+<ol>
+<li>Extract entities from the query ("tokamak", "fusion gain").</li>
+<li>Find seed nodes in the graph.</li>
+<li>Traverse <code>k</code> hops collecting: the node, its <code>n:Evidence</code>, its
+   <code>n:Experiment</code>s, its <code>n:Failure</code>s, its <code>n:Lesson</code>s, its
+   <code>SUPERSEDES</code>/<code>CONTRADICTS</code> neighbors.</li>
+<li>Serialize the subgraph into a prompt with node IDs as citation anchors.</li>
+<li>LLM answers grounded in the subgraph, citing node IDs.</li>
+</ol>
+<p>This is the difference between "what does the internet say about tokamaks"
+and "here are the 7 documented tokamak failure modes, each with its
+experiment ID and lesson node."</p>
+<h3 id="44-anti-hallucination-contract-mandatory">4.4 Anti-hallucination contract (mandatory)</h3>
+<p><strong>Every AI-generated answer must satisfy:</strong></p>
+<ol>
+<li><strong>Citation requirement:</strong> every factual claim in the answer maps to ≥1
+   node ID that exists in the graph and is retrievable. Uncited claims are
+   stripped or marked <code>[UNSOURCED]</code>.</li>
+<li><strong>Evidence floor:</strong> answers to empirical questions must cite <code>n:Evidence</code>
+   nodes; pure-LLM generation is forbidden for empirical claims.</li>
+<li><strong>Uncertainty disclosure:</strong> every answer ends with the aggregate
+   uncertainty of its cited nodes (lowest tier wins).</li>
+<li><strong>Tier respect:</strong> the engine never presents T6/T8/T9 material as T1–T3.
+   Experience reports are labeled "personal account — not independently verified."</li>
+<li><strong>Refusal:</strong> if retrieval returns no supporting nodes, the engine says
+   "the archive does not contain verified knowledge on this" — it does not
+   confabulate.</li>
+<li><strong>Adversarial check:</strong> generated answers are re-verified against the
+   source nodes before display (a second pass checking that citations
+   actually support the claims).</li>
+</ol>
+<h3 id="45-cross-disciplinary-discovery">4.5 Cross-disciplinary discovery</h3>
+<p>The graph enables <strong>serendipitous retrieval</strong>: paths between distant domains.</p>
+<p>Example mechanism — <strong>analogical bridge search</strong>:
+- Query: "how to improve battery thermal management"
+- Graph finds <code>n:Concept:Phase-Change Material</code> in <code>Domain: Materials Science</code>
+- Finds <code>n:Concept:Regenerative Cooling</code> in <code>Domain: Aerospace Engineering</code>
+- Finds shared <code>n:Principle:Latent Heat Absorption</code>
+- Surfaces the aerospace method as a candidate for batteries →
+  generates a <code>n:Hypothesis</code> node for human review.</p>
+<p>Implementation: weighted shortest-path / random-walk-with-restart over the
+graph, seeded from query entities, filtered by <code>epistemic_tier ≤ T5</code>,
+scored by path novelty (penalize paths within same discipline).</p>
+<h3 id="46-failure-first-retrieval-the-killer-feature">4.6 Failure-first retrieval (the killer feature)</h3>
+<p>For any <code>n:Method</code> or <code>n:Experiment</code> query, retrieval <strong>always includes</strong>:
+- All <code>n:Failure</code> nodes connected via <code>INVALIDATES</code> or sharing the method.
+- All <code>n:Lesson</code> nodes distilled from those failures.
+- A "known failure modes" summary block at the top of the answer.</p>
+<p>A user designing a bridge gets the collapse records <em>first</em>. This is the
+archive's reason to exist.</p>
+<h3 id="47-gap-detection">4.7 Gap detection</h3>
+<p>Automated processes that find holes in human knowledge:</p>
+<ul>
+<li><strong>Under-connected questions:</strong> <code>n:Question</code> nodes with no <code>n:Hypothesis</code>
+  children, or hypotheses with no <code>n:Experiment</code> children.</li>
+<li><strong>Evidence deserts:</strong> <code>n:Principle</code> nodes with claims but zero <code>n:Evidence</code>.</li>
+<li><strong>Contradiction clusters</strong> with no active <code>n:Experiment</code> attempting
+  resolution.</li>
+<li><strong>Temporal gaps:</strong> fields with no new evidence in &gt;N years.</li>
+<li><strong>Cross-domain gaps:</strong> principles proven in domain A with no attempted
+  application in analogous domain B.</li>
+</ul>
+<p>Gap reports are published as <code>n:Report</code> nodes — a continuously updated
+<strong>map of what humanity doesn't know</strong>, which is itself valuable knowledge.</p>
+<h3 id="48-outcome-learning">4.8 Outcome learning</h3>
+<p>Every AI answer interaction is logged (privacy-preserving, Section 7):
+- Was the answer useful? (thumbs, follow-up query, citation click-through)
+- Was a cited node later found wrong? (feeds back to demotion)
+- Did the user act on a <code>n:Lesson</code> and avoid a failure? (the holy grail —
+  tracked via optional "I used this" reports)</p>
+<p>This closes the loop: the archive learns which knowledge <em>prevents harm</em>.</p>
+<hr />
+<h2 id="5-experience-record-schema">5. EXPERIENCE RECORD SCHEMA</h2>
+<h3 id="51-the-canonical-record">5.1 The canonical record</h3>
+<p>Every significant human experience — a failed experiment, a field deployment,
+a medical case, a historical event witnessed, a design iteration — is stored
+as an <strong>Experience Record</strong> with this mandatory structure:</p>
+<pre><code class="language-yaml">experience_record:
+  id: exp:uuid
+  title: &quot;J-TEXT-0042: Li-S battery thermal runaway in pouch cells&quot;
+  epistemic_tier: T6              # personal experience — never auto-promoted
+  class: experiment_failure      # one of the 7 classes + experience subtypes
+
+  # --- the spine ---
+  problem: &quot;Pouch-cell Li-S batteries overheated during fast-charge cycling&quot;
+  context:
+    when: &quot;2023-2024&quot;
+    where: &quot;lab, Shanghai&quot;
+    conditions: &quot;25°C ambient, 2C charge rate, 80% SOC window&quot;
+    participants: [person:uuid, org:uuid]
+    prior_state: &quot;cells rated for 500 cycles&quot;
+  objective: &quot;Achieve 1000 cycles at 2C without capacity fade &gt;20%&quot;
+
+  # --- the attempt ---
+  assumptions:
+    - &quot;Electrolyte stable to 60°C&quot;
+    - &quot;Separator prevents dendrite propagation&quot;
+    - &quot;BMS cutoff at 55°C sufficient&quot;
+  actions:
+    - step: 1
+      action: &quot;Charged 20 cells at 2C to 80% SOC&quot;
+      tool: &quot;Neware BTS4000 cycler&quot;
+      resource_cost: &quot;480 cell-hours&quot;
+    - step: 2
+      action: &quot;Accelerated aging at 45°C&quot;
+      tool: &quot;thermal chamber&quot;
+      resource_cost: &quot;720 cell-hours&quot;
+  resources:
+    materials: [&quot;Li-S pouch cells ×20&quot;, &quot;LiTFSI electrolyte&quot;]
+    equipment: [&quot;BTS4000&quot;, &quot;thermal chamber&quot;, &quot;EIS analyzer&quot;]
+    funding: &quot;internal R&amp;D&quot;
+    personnel_hours: 340
+
+  # --- the outcome ---
+  results:
+    quantitative:
+      - metric: &quot;cycle life&quot;
+        expected: &quot;&gt;1000 cycles&quot;
+        actual: &quot;mean 312 cycles, σ=47&quot;
+      - metric: &quot;failure mode&quot;
+        actual: &quot;thermal runaway at cycle ~300, venting + ignition&quot;
+    qualitative: &quot;cells swelled after cycle 250; EIS showed SEI growth&quot;
+  failures:
+    - what_failed: &quot;SEI layer grew exponentially above 40°C&quot;
+      when_detected: &quot;cycle 180 (post-mortem EIS)&quot;
+      root_cause_hypothesis: &quot;electrolyte oxidation at high temp + high rate&quot;
+      could_have_been_predicted_by: [&quot;accelerated aging test at higher temp earlier&quot;]
+  solutions_attempted:
+    - &quot;reduced charge rate to 1C → extended life to 480 cycles (still insufficient)&quot;
+    - &quot;added ceramic separator → delayed but did not prevent runaway&quot;
+  solutions_that_worked: []        # empty = unresolved
+  evidence:
+    - type: &quot;raw_data&quot;
+      location: &quot;dataset:uuid (cyclers logs, EIS spectra)&quot;
+      reproducible: true
+    - type: &quot;images&quot;
+      location: &quot;artifact:uuid (post-mortem photos)&quot;
+    - type: &quot;third_party&quot;
+      location: &quot;paper:uuid (confirms similar failure in literature)&quot;
+  lessons:
+    - &quot;Li-S pouch cells need active cooling above 1C charge rates&quot;
+    - &quot;SEI growth is the leading indicator — monitor EIS from cycle 50&quot;
+    - &quot;Accelerated aging at 45°C predicts 25°C failure ~3x faster&quot;
+  knowledge_links:
+    methods_used: [method:uuid]
+    principles_violated: [principle:lawson-criterion-analogue]
+    related_failures: [exp:uuid (similar Li-ion thermal events)]
+    contradicts: []
+    supports: [hypothesis:uuid]
+
+  # --- provenance ---
+  author: person:uuid
+  organization: org:uuid
+  recorded_at: 2024-11-25
+  verification:
+    independently_replicated: false
+    replication_status: &quot;single-lab&quot;
+    peer_reviewed: false
+    raw_data_available: true
+</code></pre>
+<h3 id="52-experience-subtypes">5.2 Experience subtypes</h3>
+<table>
+<thead>
+<tr>
+<th>Subtype</th>
+<th>Example</th>
+<th>Tier cap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lab_experiment</code></td>
+<td>Failed synthesis, unexpected result</td>
+<td>T6</td>
+</tr>
+<tr>
+<td><code>field_deployment</code></td>
+<td>Bridge inspection finding, mine collapse</td>
+<td>T6</td>
+</tr>
+<tr>
+<td><code>clinical_case</code></td>
+<td>Patient outcome, adverse event</td>
+<td>T6 (anonymized)</td>
+</tr>
+<tr>
+<td><code>engineering_incident</code></td>
+<td>Factory failure, software outage postmortem</td>
+<td>T6</td>
+</tr>
+<tr>
+<td><code>historical_witness</code></td>
+<td>Oral history, eyewitness account</td>
+<td>T6</td>
+</tr>
+<tr>
+<td><code>indigenous_knowledge</code></td>
+<td>Traditional ecological knowledge, craft technique</td>
+<td>T6 (with consent framework)</td>
+</tr>
+<tr>
+<td><code>negative_result</code></td>
+<td>"We tried X, it didn't work, here's the data"</td>
+<td>T6→can promote to T4 if replicated</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-failed-experiments-as-first-class-citizens">5.3 Failed experiments as first-class citizens</h3>
+<p>The schema <strong>requires</strong> the <code>failures:</code> block for any <code>class: experiment*</code>
+record. A failure record with empty <code>failures</code> is rejected at ingestion —
+this is the archive's core invariant.</p>
+<p>Failed experiments get <strong>special retrieval treatment</strong>: they are indexed
+under their <code>root_cause</code> and <code>lessons</code>, not just their <code>objective</code>, so a
+search for "thermal runaway causes" finds them even if the user never
+searched for "battery cycling."</p>
+<h3 id="54-promotion-path-for-experiences">5.4 Promotion path for experiences</h3>
+<p>A personal experience can gain epistemic weight:</p>
+<pre><code>T6 (personal) → T4 (observation) → T3 (theory) → T1 (verified fact)
+     │                │                │              │
+     │                │                │              └─ consensus + replication
+     │                │                └─ pattern across many experiences
+     │                └─ independently replicated experiment
+     └─ initial recording (always T6 or lower)
+</code></pre>
+<p>Promotion requires: independent replication, peer review, or convergence
+with existing verified knowledge. <strong>Never automatic.</strong></p>
+<hr />
+<h2 id="6-technical-architecture">6. TECHNICAL ARCHITECTURE</h2>
+<h3 id="61-the-stack-layered">6.1 The stack (layered)</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│ L6 · PRESENTATION   Web app, mobile, API, offline PWA        │
+├─────────────────────────────────────────────────────────────┤
+│ L5 · AI ENGINE      RAG orchestrator, graph reasoner, NLU    │
+├─────────────────────────────────────────────────────────────┤
+│ L4 · KNOWLEDGE      Graph DB + Vector DB + Search + Relational│
+├─────────────────────────────────────────────────────────────┤
+│ L3 · PIPELINES      Ingestion, verification, translation,     │
+│                     extraction, embedding, contradiction scan │
+├─────────────────────────────────────────────────────────────┤
+│ L2 · STORAGE        Distributed object store + graph shards   │
+│                     + vector shards + cryptographic ledger    │
+├─────────────────────────────────────────────────────────────┤
+│ L1 · IDENTITY       DID/VC, signatures, reputation, access    │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3 id="62-technology-selection-existing-vs-near-term-vs-speculative">6.2 Technology selection — existing vs near-term vs speculative</h3>
+<p><strong>Legend:</strong> <code>[EXISTS]</code> production-ready today · <code>[NEAR]</code> stable but maturing ·
+<code>[SPEC]</code> research / not yet practical.</p>
+<h4 id="storage-databases">Storage &amp; databases</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Choice</th>
+<th>Status</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Relational (metadata, users, transactions)</td>
+<td><strong>PostgreSQL 16+</strong> + <code>pgvector</code></td>
+<td><code>[EXISTS]</code></td>
+<td>One DB for relational + vector; ACID; mature</td>
+</tr>
+<tr>
+<td>Property graph (knowledge graph)</td>
+<td><strong>Neo4j Community/Enterprise</strong> OR <strong>FalkorDB</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Neo4j: mature, Cypher, huge ecosystem. FalkorDB: Redis-based, fast traversals, GraphBLAS — better for read-heavy graph analytics. <strong>Avoid Kuzu</strong> — archived Oct 2025.</td>
+</tr>
+<tr>
+<td>Vector search (dedicated, scale-out)</td>
+<td><strong>Qdrant</strong> (server) or <strong>LanceDB</strong> (embedded)</td>
+<td><code>[EXISTS]</code></td>
+<td>Qdrant for production service; LanceDB for edge/offline/prototype</td>
+</tr>
+<tr>
+<td>Full-text / BM25</td>
+<td><strong>PostgreSQL FTS</strong> or <strong>Elasticsearch/OpenSearch</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Postgres FTS suffices for prototype; OpenSearch at scale</td>
+</tr>
+<tr>
+<td>Object storage (documents, datasets, media)</td>
+<td><strong>S3-compatible</strong> (MinIO self-hosted or cloud)</td>
+<td><code>[EXISTS]</code></td>
+<td>Content-addressed blobs, versioning</td>
+</tr>
+<tr>
+<td>Distributed file system (global scale)</td>
+<td><strong>IPFS</strong> or <strong>Filecoin</strong></td>
+<td><code>[EXISTS]</code>/<code>[NEAR]</code></td>
+<td>Content-addressing = built-in integrity; IPFS for public knowledge, Filecoin for persistence incentives</td>
+</tr>
+<tr>
+<td>Immutable audit ledger</td>
+<td><strong>Hash-chained append-only log</strong> (custom) or <strong>Apache Kafka + cryptographic chaining</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Every write to the archive is a signed, chained record — tamper-evident</td>
+</tr>
+<tr>
+<td>Time-series (access logs, metrics)</td>
+<td><strong>TimescaleDB</strong> or <strong>VictoriaMetrics</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Usage analytics, outcome learning</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ai-ml">AI / ML</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Choice</th>
+<th>Status</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Embeddings</td>
+<td><strong>Open-source models</strong>: BGE-M3, E5, GTE (multilingual)</td>
+<td><code>[EXISTS]</code></td>
+<td>Multilingual, self-hostable, no API dependency</td>
+</tr>
+<tr>
+<td>LLM (synthesis, extraction)</td>
+<td><strong>Llama 3.x / Qwen 2.5 / Mistral</strong> (self-hosted) + optional API (Claude/GPT)</td>
+<td><code>[EXISTS]</code></td>
+<td>Self-hosted for sovereignty; API for quality ceiling</td>
+</tr>
+<tr>
+<td>RAG orchestration</td>
+<td><strong>LlamaIndex</strong> or <strong>LangGraph</strong> (custom)</td>
+<td><code>[EXISTS]</code></td>
+<td>LlamaIndex for retrieval pipelines; LangGraph for stateful agents</td>
+</tr>
+<tr>
+<td>GraphRAG</td>
+<td><strong>LightRAG</strong> or <strong>Microsoft GraphRAG</strong> (reference) + custom graph layer</td>
+<td><code>[EXISTS]</code>/<code>[NEAR]</code></td>
+<td>LightRAG: lightweight, incremental updates. MS GraphRAG: community detection (maintenance mode). We'll build custom on our own graph.</td>
+</tr>
+<tr>
+<td>NLU / entity extraction</td>
+<td><strong>spaCy + LLM-assisted extraction</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>spaCy for speed; LLM for complex relation extraction</td>
+</tr>
+<tr>
+<td>Translation</td>
+<td><strong>NLLB-200</strong> (Meta, 200 languages) + <strong>MADLAD-400</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Open, covers low-resource languages</td>
+</tr>
+<tr>
+<td>OCR / document parsing</td>
+<td><strong>Docling</strong> (IBM), <strong>MinerU</strong>, <strong>Marker</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Parse PDFs, scans, formulas into structured text</td>
+</tr>
+<tr>
+<td>Re-ranking</td>
+<td><strong>bge-reranker</strong>, <strong>Cohere rerank API</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Cross-encoder for precision on high-stakes queries</td>
+</tr>
+<tr>
+<td>Formal verification (math)</td>
+<td><strong>Lean 4</strong></td>
+<td><code>[EXISTS]</code></td>
+<td>Machine-checkable proofs → T2 tier</td>
+</tr>
+<tr>
+<td>Speech / oral history</td>
+<td><strong>Whisper</strong> (OpenAI, self-hostable)</td>
+<td><code>[EXISTS]</code></td>
+<td>Transcribe oral histories, indigenous knowledge</td>
+</tr>
+</tbody>
+</table>
+<h4 id="infrastructure">Infrastructure</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Choice</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API framework</td>
+<td><strong>FastAPI</strong> (Python)</td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td><strong>SvelteKit / Next.js</strong> + <strong>Tailwind</strong></td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Search UI</td>
+<td><strong>Typesense</strong> or <strong>Meilisearch</strong></td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Message queue</td>
+<td><strong>Redis + Celery</strong> or <strong>RabbitMQ</strong></td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Orchestration</td>
+<td><strong>Airflow / Prefect</strong> for pipelines</td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td><strong>Prometheus + Grafana</strong></td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td><strong>Keycloak</strong> (OIDC) or <strong>Authentik</strong></td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Crypto</td>
+<td><strong>age / GPG</strong> for at-rest; <strong>Ed25519</strong> signatures; <strong>IPFS CID</strong> content addressing</td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>Containerization</td>
+<td><strong>Docker + Kubernetes</strong> (or Docker Compose for small scale)</td>
+<td><code>[EXISTS]</code></td>
+</tr>
+<tr>
+<td>CDN / edge</td>
+<td><strong>Cloudflare</strong> or self-hosted <strong>Varnish</strong></td>
+<td><code>[EXISTS]</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="speculative-research-horizon">Speculative (research horizon)</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Status</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Neural-symbolic integration</strong> — LLM proposes, symbolic engine verifies</td>
+<td><code>[SPEC]</code></td>
+<td>The holy grail for anti-hallucination; early research</td>
+</tr>
+<tr>
+<td><strong>Knowledge compilation</strong> — compile graph into differentiable model</td>
+<td><code>[SPEC]</code></td>
+<td>Would enable gradient-based reasoning over knowledge</td>
+</tr>
+<tr>
+<td><strong>Decentralized knowledge consensus</strong> — Byzantine-fault-tolerant graph</td>
+<td><code>[SPEC]</code></td>
+<td>Needed for truly uncapturable global archive</td>
+</tr>
+<tr>
+<td><strong>Zero-knowledge proofs of knowledge provenance</strong></td>
+<td><code>[SPEC]</code></td>
+<td>Prove a claim's source chain without revealing sources</td>
+</tr>
+<tr>
+<td><strong>Continual learning without catastrophic forgetting</strong></td>
+<td><code>[SPEC]</code></td>
+<td>Archive updates must not erase prior knowledge</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-database-schemas">6.3 Database schemas</h3>
+<h4 id="631-postgresql-canonical-metadata-store">6.3.1 PostgreSQL — canonical metadata store</h4>
+<pre><code class="language-sql">-- Users &amp; identity
+CREATE TABLE users (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  did           TEXT UNIQUE,                -- decentralized identifier
+  display_name  TEXT,
+  public_key    BYTEA,                      -- Ed25519 for signing contributions
+  reputation    NUMERIC(5,2) DEFAULT 0,     -- Section 7
+  created_at    TIMESTAMPTZ DEFAULT now(),
+  status        TEXT DEFAULT 'active'       -- active/suspended/banned
+);
+
+-- Nodes (every knowledge node has a row here)
+CREATE TABLE nodes (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  node_type       TEXT NOT NULL,            -- Domain/Discipline/.../Lesson
+  slug            TEXT UNIQUE NOT NULL,     -- URL-safe identifier
+  title           TEXT NOT NULL,
+  content_md      TEXT,                     -- markdown body
+  content_hash    BYTEA NOT NULL,           -- SHA-256 of content (integrity)
+  epistemic_tier  SMALLINT NOT NULL CHECK (epistemic_tier BETWEEN 1 AND 9),
+  knowledge_class TEXT NOT NULL,            -- discovery/math/experience/...
+  domain          TEXT,                     -- denormalized for fast filter
+  discipline      TEXT,
+  language        TEXT DEFAULT 'en',
+  confidence      NUMERIC(4,3),
+  uncertainty     JSONB DEFAULT '{}',
+  valid_from      TIMESTAMPTZ,
+  valid_until     TIMESTAMPTZ,
+  superseded_by   UUID REFERENCES nodes(id),
+  created_by      UUID REFERENCES users(id),
+  created_at      TIMESTAMPTZ DEFAULT now(),
+  updated_at      TIMESTAMPTZ DEFAULT now(),
+  version         INT DEFAULT 1,
+  ipfs_cid        TEXT                      -- content-addressed blob pointer
+);
+CREATE INDEX idx_nodes_tier ON nodes(epistemic_tier);
+CREATE INDEX idx_nodes_type ON nodes(node_type);
+CREATE INDEX idx_nodes_domain ON nodes(domain, discipline);
+CREATE INDEX idx_nodes_content_hash ON nodes(content_hash);
+
+-- Edges (knowledge graph relationships — mirrored in graph DB)
+CREATE TABLE edges (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  src_node      UUID NOT NULL REFERENCES nodes(id),
+  dst_node      UUID NOT NULL REFERENCES nodes(id),
+  edge_type     TEXT NOT NULL,              -- PART_OF/EVIDENCES/...
+  weight        NUMERIC(4,3) DEFAULT 1.0,
+  source        TEXT,                       -- justification for the edge
+  valid_from    TIMESTAMPTZ,
+  valid_until   TIMESTAMPTZ,
+  created_by    UUID REFERENCES users(id),
+  created_at    TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(src_node, dst_node, edge_type)
+);
+CREATE INDEX idx_edges_src ON edges(src_node, edge_type);
+CREATE INDEX idx_edges_dst ON edges(dst_node, edge_type);
+
+-- Experience records (the Section 5 schema, as JSONB + indexed fields)
+CREATE TABLE experience_records (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  node_id         UUID REFERENCES nodes(id),  -- the n: node for this record
+  record          JSONB NOT NULL,              -- full Section 5 schema
+  epistemic_tier  SMALLINT NOT NULL,
+  experience_type TEXT NOT NULL,               -- lab_experiment/field_deployment/...
+  failure_flag    BOOLEAN DEFAULT false,       -- has non-empty failures block
+  lessons         TEXT[],                      -- extracted lesson strings
+  searchable_tsv  tsvector,                    -- full-text index
+  created_at      TIMESTAMPTZ DEFAULT now()
+);
+
+-- Evidence records
+CREATE TABLE evidence (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  node_id         UUID REFERENCES nodes(id),
+  evidence_type   TEXT NOT NULL,               -- raw_data/images/third_party/...
+  location        TEXT NOT NULL,               -- dataset/artifact/paper pointer
+  reproducible    BOOLEAN DEFAULT false,
+  replication_count INT DEFAULT 0,
+  independent_replications INT DEFAULT 0,
+  retraction_status TEXT DEFAULT 'none',       -- none/retracted/under_review
+  methodology_rigor NUMERIC(3,2),
+  funding_conflicts JSONB DEFAULT '[]',
+  created_at      TIMESTAMPTZ DEFAULT now()
+);
+
+-- Provenance / audit chain (hash-linked, tamper-evident)
+CREATE TABLE audit_log (
+  seq             BIGSERIAL PRIMARY KEY,
+  prev_hash       BYTEA NOT NULL,              -- hash of previous record
+  record_hash     BYTEA NOT NULL,              -- hash of this record
+  actor           UUID REFERENCES users(id),
+  action          TEXT NOT NULL,               -- create/update/delete/verify/demote
+  target_type     TEXT NOT NULL,               -- node/edge/evidence/user
+  target_id       UUID NOT NULL,
+  payload         JSONB,
+  signature       BYTEA NOT NULL,              -- Ed25519 signature
+  timestamp       TIMESTAMPTZ DEFAULT now()
+);
+
+-- Contradictions &amp; controversies
+CREATE TABLE controversies (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  node_id         UUID REFERENCES nodes(id),
+  title           TEXT NOT NULL,
+  description     TEXT,
+  resolution_status TEXT DEFAULT 'open',       -- open/resolved_*/unresolved
+  resolution_evidence JSONB DEFAULT '[]',
+  created_at      TIMESTAMPTZ DEFAULT now()
+);
+
+-- Verification events (tier promotions/demotions)
+CREATE TABLE verification_events (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  node_id         UUID NOT NULL REFERENCES nodes(id),
+  from_tier       SMALLINT NOT NULL,
+  to_tier         SMALLINT NOT NULL,
+  reason          TEXT NOT NULL,
+  evidence_refs   UUID[],
+  verifier        UUID REFERENCES users(id),
+  verified_at     TIMESTAMPTZ DEFAULT now()
+);
+
+-- Translations
+CREATE TABLE translations (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  node_id         UUID NOT NULL REFERENCES nodes(id),
+  language        TEXT NOT NULL,
+  title           TEXT NOT NULL,
+  content_md      TEXT NOT NULL,
+  translator      UUID REFERENCES users(id),
+  machine_translated BOOLEAN DEFAULT false,
+  verified        BOOLEAN DEFAULT false,
+  created_at      TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(node_id, language)
+);
+</code></pre>
+<h4 id="632-graph-db-schema-neo4j-cypher">6.3.2 Graph DB schema (Neo4j Cypher)</h4>
+<pre><code class="language-cypher">// Node labels mirror node_type; properties mirror critical fields
+CREATE (d:Domain {slug:'natural-sciences', title:'Natural Sciences',
+                  epistemic_tier:1, language:'en'})
+CREATE (disc:Discipline {slug:'physics', title:'Physics',
+                  epistemic_tier:1, domain:'natural-sciences'})
+CREATE (sub:Subdiscipline {slug:'plasma-physics', title:'Plasma Physics',
+                  epistemic_tier:1, discipline:'physics'})
+CREATE (f:Field {slug:'magnetic-confinement-fusion', title:'Magnetic Confinement Fusion',
+                  epistemic_tier:3, subdiscipline:'plasma-physics'})
+CREATE (c:Concept {slug:'tokamak', title:'Tokamak',
+                  epistemic_tier:1, field:'magnetic-confinement-fusion'})
+
+// Edges
+CREATE (c)-[:PART_OF {weight:1.0, source:'canonical-map'}]-&gt;(f)
+CREATE (f)-[:PART_OF {weight:1.0}]-&gt;(sub)
+CREATE (sub)-[:PART_OF {weight:1.0}]-&gt;(disc)
+CREATE (disc)-[:PART_OF {weight:1.0}]-&gt;(d)
+
+// Evidence edge
+CREATE (e:Evidence {slug:'jet-dt-1997', replication_count:14,
+                    independent_replications:9, epistemic_tier:1})
+CREATE (e)-[:EVIDENCES {weight:0.95, source:'JET-NF-1998'}]-&gt;(c)
+
+// Failure edge — the killer feature
+CREATE (fail:Failure {slug:'jet-disruption-damage',
+                      root_cause:'disruption-induced EM forces',
+                      epistemic_tier:4})
+CREATE (fail)-[:INVALIDATES {weight:0.9}]-&gt;(m:Method {slug:'high-beta-operation'})
+CREATE (lesson:Lesson {slug:'disruption-mitigation-required'})
+CREATE (fail)-[:YIELDS_LESSON]-&gt;(lesson)
+CREATE (lesson)-[:TEACHES]-&gt;(c)
+</code></pre>
+<p><strong>Graph DB is the query engine; PostgreSQL is the source of truth.</strong>
+Nodes/edges are written to Postgres first (ACID, audit log), then
+asynchronously projected into the graph DB for traversal queries. The
+graph DB is rebuildable from Postgres at any time.</p>
+<h4 id="633-vector-db-schema-pgvector-qdrant-lancedb">6.3.3 Vector DB schema (pgvector / Qdrant / LanceDB)</h4>
+<pre><code class="language-sql">-- pgvector (if using Postgres extension)
+CREATE EXTENSION vector;
+
+CREATE TABLE node_embeddings (
+  node_id       UUID PRIMARY KEY REFERENCES nodes(id),
+  chunk_idx     INT NOT NULL,               -- for long documents
+  content       TEXT NOT NULL,              -- the chunk text
+  embedding     vector(1024) NOT NULL,      -- BGE-M3 / E5 dimension
+  metadata      JSONB DEFAULT '{}',         -- tier, domain, language, node_type
+  created_at    TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(node_id, chunk_idx)
+);
+CREATE INDEX idx_embeddings_hnsw
+  ON node_embeddings USING hnsw (embedding vector_cosine_ops);
+
+-- Hybrid search: combine with tsvector
+ALTER TABLE node_embeddings ADD COLUMN tsv tsvector
+  GENERATED ALWAYS AS (to_tsvector('english', content)) STORED;
+CREATE INDEX idx_embeddings_tsv ON node_embeddings USING gin(tsv);
+</code></pre>
+<p>For Qdrant (production scale):</p>
+<pre><code class="language-python"># Collection config
+client.create_collection(
+    collection_name=&quot;knowledge_chunks&quot;,
+    vectors_config={
+        &quot;dense&quot;: VectorParams(size=1024, distance=Distance.COSINE),
+        &quot;sparse&quot;: SparseVectorParams()
+    },
+    on_disk_payload=True   # for large payloads
+)
+# Payload: {node_id, chunk_idx, epistemic_tier, domain, language, node_type}
+</code></pre>
+<h3 id="64-api-design">6.4 API design</h3>
+<p>REST + GraphQL for the knowledge graph. Base: <code>/api/v1</code></p>
+<h4 id="core-endpoints">Core endpoints</h4>
+<pre><code># Search (hybrid: semantic + keyword + graph + filters)
+POST /api/v1/search
+  body: {query, mode: 'hybrid'|'semantic'|'keyword'|'graph',
+         filters: {domain, discipline, epistemic_tier_max, language,
+                   include_failures: true, date_range},
+         limit: 20, offset: 0}
+  → {results: [{node_id, title, snippet, tier, score, citations}],
+     uncertainty: {...}, graph_context: {...}}
+
+# Node retrieval
+GET  /api/v1/nodes/{slug}
+  → full node + edges (k-hop configurable) + evidence + experience record
+
+GET  /api/v1/nodes/{slug}/neighborhood?depth=2&amp;edge_types=PART_OF,EVIDENCES,INVALIDATES
+  → subgraph for graph-RAG context assembly
+
+# Graph queries (power users / AI engine)
+POST /api/v1/graph/query
+  body: {cypher: &quot;MATCH (n:Concept)...&quot;, params: {...}}
+  → {nodes, edges, truncation_info}
+
+# Experience records
+POST /api/v1/experiences          # submit (requires auth + DID signature)
+GET  /api/v1/experiences/{id}
+GET  /api/v1/experiences?type=lab_experiment&amp;has_failures=true&amp;domain=...
+
+# Verification
+POST /api/v1/nodes/{id}/verify    # submit verification evidence → tier review
+GET  /api/v1/nodes/{id}/verification-history
+POST /api/v1/nodes/{id}/dispute   # flag contradiction → creates controversy node
+
+# AI assistant
+POST /api/v1/ask
+  body: {query, include_experiences: true, citation_depth: 3}
+  → {answer, citations: [{node_id, claim, tier}], uncertainty, failure_modes}
+
+# Gap reports
+GET  /api/v1/gaps                 # under-connected questions, evidence deserts
+GET  /api/v1/gaps/{id}
+
+# Translation
+GET  /api/v1/nodes/{id}?lang=sw   # returns translated version if available
+POST /api/v1/nodes/{id}/translate # request/submit translation
+
+# Bulk / export
+GET  /api/v1/export?format=jsonl|parquet&amp;domain=...
+GET  /api/v1/sync?since=timestamp # offline/edge sync protocol
+</code></pre>
+<h4 id="auth-contribution">Auth &amp; contribution</h4>
+<pre><code>POST /api/v1/auth/register        # DID creation, key generation
+POST /api/v1/auth/login           # challenge-response with Ed25519 key
+POST /api/v1/contributions        # submit new node/edge/evidence/experience
+POST /api/v1/contributions/{id}/endorse   # peer endorsement (+reputation)
+POST /api/v1/contributions/{id}/dispute   # challenge (-reputation)
+</code></pre>
+<p>All write endpoints require: DID signature, rate limiting, automated
+screening (Section 7), and entry into the <code>staging</code> tier until verified
+(T8 by default — promotion requires review/endorsement/replication).</p>
+<h3 id="65-ai-retrieval-pipeline-detailed">6.5 AI retrieval pipeline (detailed)</h3>
+<pre><code>User query
+   │
+   ▼
+[1] QUERY UNDERSTANDING (LLM)
+    - intent classification (search/ask/explore/verify)
+    - entity extraction → candidate node slugs
+    - epistemic intent: &quot;what is verified about X&quot; vs &quot;what have people
+      experienced with X&quot; vs &quot;what failed with X&quot;
+   │
+   ▼
+[2] MULTI-CHANNEL RETRIEVAL (parallel)
+    ├─ dense vector: top-50 chunks (BGE-M3 embeddings)
+    ├─ BM25: top-50 keyword matches
+    ├─ graph: seed entities → 2-hop neighborhood
+    │         (PART_OF up, EVIDENCES/INVALIDATES down)
+    └─ structured: filters on tier/domain/date/language
+   │
+   ▼
+[3] FUSION &amp; RERANK
+    - Reciprocal Rank Fusion across channels
+    - cross-encoder rerank top-100 → top-20
+    - epistemic tier boost: T1-T3 boosted for factual queries;
+      T6 boosted for &quot;experience&quot; queries
+   │
+   ▼
+[4] SUBGRAPH ASSEMBLY (graph-RAG)
+    - collect evidence nodes, failure nodes, lesson nodes,
+      controversy nodes for each result
+    - serialize to prompt with node-ID citation anchors
+   │
+   ▼
+[5] SYNTHESIS (LLM)
+    - generate answer grounded in assembled context
+    - mandatory citation format: [node:slug#chunk]
+    - uncertainty block from aggregate tier of cited nodes
+   │
+   ▼
+[6] VERIFICATION PASS
+    - check every citation resolves to a real node
+    - check cited node tier matches claim strength
+    - strip or flag uncited claims
+    - check contradiction nodes are surfaced if relevant
+   │
+   ▼
+[7] RESPONSE
+    {answer, citations[], uncertainty{},
+     failure_modes[] (if applicable),
+     controversies[] (if applicable),
+     gaps_suggested[] (related open questions)}
+</code></pre>
+<h3 id="66-distributed-storage-strategy">6.6 Distributed storage strategy</h3>
+<p><strong>Phase 1 (prototype):</strong> single Postgres + Qdrant + Neo4j on one machine.
+<strong>Phase 2 (national/regional):</strong> PostgreSQL read replicas, Qdrant cluster,
+Neo4j causal cluster, S3 object storage, CDN.
+<strong>Phase 3 (global):</strong></p>
+<ul>
+<li><strong>Sharding by domain:</strong> each discipline cluster owns its subgraph;
+  cross-domain links via a federated query layer.</li>
+<li><strong>IPFS/Filecoin</strong> for immutable document storage — content-addressed,
+  no single point of failure, censorship-resistant.</li>
+<li><strong>Byzantine fault-tolerant replication</strong> of the audit log <code>[SPEC]</code>.</li>
+<li><strong>Merkle-tree integrity:</strong> every node's content hash chains into a
+  global Merkle root, periodically anchored to a public blockchain
+  (or a public transparency log like Certificate Transparency) for
+  tamper-evident timestamps <code>[EXISTS: CT logs; SPEC: full BFT consensus]</code>.</li>
+</ul>
+<h3 id="67-crypto-integrity-model">6.7 Crypto integrity model</h3>
+<pre><code>Every node:
+  content_hash = SHA-256(canonical_serialization(node))
+  signature   = Ed25519_sign(content_hash, author_private_key)
+
+Every edge:
+  edge_hash   = SHA-256(src_id + dst_id + edge_type + weight + timestamp)
+
+Audit log:
+  record_hash = SHA-256(prev_hash + payload + timestamp + signature)
+  → tamper-evident chain; any modification breaks all subsequent hashes
+
+Global state:
+  merkle_root = Merkle(root of all node_hashes)
+  → anchored externally (blockchain / transparency log) every N hours
+  → anyone can verify any node's inclusion without trusting the archive
+</code></pre>
+<p>This gives <strong>verifiable integrity without trusting the operator</strong> —
+the archive can prove "this claim existed on date X with this content"
+even if the operator is compromised.</p>
+<h3 id="68-implementation-roadmap">6.8 Implementation roadmap</h3>
+<h4 id="phase-0-beginner-prototype-weeks-18-start-here">Phase 0 — Beginner Prototype (Weeks 1–8) — <strong>START HERE</strong></h4>
+<p><em>Goal: prove the concept with one domain, manual curation.</em></p>
+<p><strong>Tech:</strong> Python + SQLite (or single Postgres) + LanceDB (embedded vectors)
++ markdown files + simple web UI. <strong>No graph DB yet</strong> — edges in SQLite.
+<strong>Domain:</strong> pick ONE narrow domain (e.g., "battery failure modes" or
+"lean theorem proving"). Manually seed 50–200 nodes.</p>
+<p>Deliverables:
+- <code>nodes</code> + <code>edges</code> + <code>experience_records</code> tables (SQLite)
+- Markdown ingestion script → node extraction (regex/LLM-assisted)
+- LanceDB vector index for semantic search
+- Simple FastAPI <code>/search</code> and <code>/ask</code> endpoints
+- Single-page web UI (search + node view + experience record view)
+- Manual verification workflow (admin promotes T8→T6→T4)</p>
+<p><strong>Success criterion:</strong> can answer "what has failed with X and why" for
+the seed domain, with citations and failure records visible.</p>
+<h4 id="phase-1-mvp-months-24">Phase 1 — MVP (Months 2–4)</h4>
+<ul>
+<li>Migrate to PostgreSQL + pgvector (keep LanceDB for edge)</li>
+<li>Add Neo4j Community for graph queries</li>
+<li>Implement hybrid retrieval (vector + BM25 + graph traversal)</li>
+<li>LLM integration (self-hosted Llama 3.1 8B or API)</li>
+<li>Experience record submission form + review queue</li>
+<li>Basic verification workflow (endorse/dispute)</li>
+<li>Simple auth (email + API key; DID later)</li>
+<li>3 domains seeded, ~1000 nodes</li>
+</ul>
+<h4 id="phase-2-multi-domain-months-59">Phase 2 — Multi-domain (Months 5–9)</h4>
+<ul>
+<li>NLLB-200 translation pipeline (EN↔ES↔ZH↔AR↔HI first)</li>
+<li>Whisper transcription for oral histories</li>
+<li>Docling/MinerU for PDF ingestion</li>
+<li>Contradiction detection (automated CONTRADICTS edge suggestion)</li>
+<li>Gap detection reports (weekly auto-generated)</li>
+<li>Reputation system v1 (endorsements, contribution quality)</li>
+<li>Mobile PWA + offline mode (LanceDB sync)</li>
+<li>10 domains, ~10k nodes</li>
+</ul>
+<h4 id="phase-3-scale-months-1018">Phase 3 — Scale (Months 10–18)</h4>
+<ul>
+<li>Qdrant cluster for vector search at scale</li>
+<li>Neo4j Enterprise or FalkorDB for graph analytics</li>
+<li>IPFS integration for document storage</li>
+<li>Merkle-tree integrity + transparency log anchoring</li>
+<li>DID/VC identity (did:key, did:web)</li>
+<li>Multi-region deployment, CDN</li>
+<li>Graph-RAG with community detection (LightRAG patterns)</li>
+<li>Outcome learning pipeline (feedback → reranking)</li>
+<li>50+ domains, ~100k nodes</li>
+</ul>
+<h4 id="phase-4-global-year-2">Phase 4 — Global (Year 2+)</h4>
+<ul>
+<li>Federated architecture: domain clusters with cross-cluster query layer</li>
+<li>Byzantine fault tolerance for audit log <code>[SPEC]</code></li>
+<li>Zero-knowledge provenance <code>[SPEC]</code></li>
+<li>Neural-symbolic verification for math/physics <code>[SPEC]</code></li>
+<li>Integration with existing archives (arXiv, PubMed, museum databases,
+  oral history projects) via adapters</li>
+<li>Governance transition to multi-stakeholder foundation</li>
+</ul>
+<hr />
+<h2 id="7-security-governance">7. SECURITY &amp; GOVERNANCE</h2>
+<h3 id="71-threat-model">7.1 Threat model</h3>
+<table>
+<thead>
+<tr>
+<th>Threat</th>
+<th>Attack vector</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Poisoning</strong></td>
+<td>Submit false claims, fake evidence, sockpuppet endorsements</td>
+<td>Tier gating (all submissions start T8), reputation-weighted endorsement, automated fact-checking, cryptographic attribution</td>
+</tr>
+<tr>
+<td><strong>Manipulation</strong></td>
+<td>Edit history, gaslighting contributors, edit wars</td>
+<td>Immutable audit log (hash-chained), signed contributions, dispute resolution protocol, version history always preserved</td>
+</tr>
+<tr>
+<td><strong>Cyberattack</strong></td>
+<td>DDoS, injection, data exfiltration, supply chain</td>
+<td>Standard hardening (OWASP Top 10), rate limiting, WAF, dependency scanning, bug bounty, least-privilege access</td>
+</tr>
+<tr>
+<td><strong>Capture/monopoly</strong></td>
+<td>Single entity controls the archive, censors inconvenient knowledge</td>
+<td>Federated architecture, IPFS content addressing, open-source code, multi-stakeholder governance, no single point of control</td>
+</tr>
+<tr>
+<td><strong>Censorship</strong></td>
+<td>Government/corporate demands to remove content</td>
+<td>Content-addressed storage (can't delete from IPFS), jurisdictional diversity, legal defense fund, transparency reports</td>
+</tr>
+<tr>
+<td><strong>Misinformation</strong></td>
+<td>AI-generated fake nodes, deepfake evidence, LLM slop at scale</td>
+<td>Provenance requirements, evidence floor, anti-AI-detection screening, human review for high-impact claims, source diversity requirements</td>
+</tr>
+<tr>
+<td><strong>Privacy violation</strong></td>
+<td>Exposure of personal experiences, indigenous knowledge without consent</td>
+<td>Differential privacy for aggregate queries, consent framework for T6 records, right-to-be-forgotten with cryptographic erasure, jurisdictional compliance (GDPR etc.)</td>
+</tr>
+<tr>
+<td><strong>Sybil attack</strong></td>
+<td>One actor creates many fake identities to game reputation</td>
+<td>DID-based identity, proof-of-personhood (optional), reputation decay, contribution quality scoring, community moderation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-access-control-model">7.2 Access control model</h3>
+<pre><code>PUBLIC          — read all T1-T5 knowledge, search, ask AI
+REGISTERED      — + submit contributions (T8 staging), endorse, comment
+VERIFIED        — + T6 experience records, peer review, dispute resolution
+EDITOR          — + promote/demote tiers, edit canonical nodes, merge duplicates
+MODERATOR       — + remove spam/vandalism, suspend bad actors
+GOVERNANCE      — + protocol changes, policy amendments, key rotation
+</code></pre>
+<p>Access is granted by reputation + community endorsement, not by payment.
+<strong>No pay-to-edit. No pay-to-verify.</strong></p>
+<h3 id="73-reputation-system">7.3 Reputation system</h3>
+<ul>
+<li>Every contribution starts with <code>reputation_delta = 0</code>.</li>
+<li>Endorsements from VERIFIED users: <code>+1</code> to <code>+5</code> (weighted by endorser reputation).</li>
+<li>Successful verification of your contribution: <code>+10</code>.</li>
+<li>Contribution later found wrong/retracted: <code>-20</code>.</li>
+<li>Vandalism/spam: <code>-50</code> + suspension.</li>
+<li>Reputation decays over time (half-life ~180 days) to prevent entrenchment.</li>
+<li>Reputation gates access tiers but <strong>never overrides epistemic tier</strong> —
+  a high-reputation user can still only submit T8 claims that must be verified.</li>
+</ul>
+<h3 id="74-transparency-auditability">7.4 Transparency &amp; auditability</h3>
+<ul>
+<li><strong>All writes are logged</strong> in the hash-chained audit log.</li>
+<li><strong>All tier changes are logged</strong> with reason and evidence.</li>
+<li><strong>All AI answers are logged</strong> (privacy-preserving: query hash, not raw query,
+  unless user opts in) for outcome learning and abuse detection.</li>
+<li><strong>Public audit endpoint:</strong> anyone can verify the Merkle root and check
+  inclusion proofs for any node.</li>
+<li><strong>Open governance meetings:</strong> protocol changes proposed as <code>n:Proposal</code>
+  nodes, debated publicly, ratified by stakeholder vote.</li>
+</ul>
+<h3 id="75-correction-protocol">7.5 Correction protocol</h3>
+<p>When an error is found:</p>
+<pre><code>1. Anyone can file a Dispute (POST /dispute) with evidence.
+2. Dispute creates a n:Controversy node linking the disputed claim
+   and the counter-evidence.
+3. Affected claim is demoted one tier pending review.
+4. Reviewers (VERIFIED+) examine evidence, may:
+   a. Uphold original → controversy resolved, tier restored
+   b. Accept correction → node updated, SUPERSEDES edge created,
+      old version preserved in history
+   c. Escalate → GOVERNANCE-level review
+5. All steps are in the audit log. The correction itself is a knowledge
+   node — &quot;we were wrong about X, here's how we found out.&quot;
+</code></pre>
+<p><strong>Corrections are celebrated, not hidden.</strong> A correction is proof the
+system works. The archive's credibility depends on visible self-correction.</p>
+<h3 id="76-privacy-model">7.6 Privacy model</h3>
+<table>
+<thead>
+<tr>
+<th>Data type</th>
+<th>Protection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Public knowledge (T1-T5)</td>
+<td>Fully public, no privacy concern</td>
+</tr>
+<tr>
+<td>Personal experiences (T6)</td>
+<td>Contributor chooses: public / pseudonymous / private / embargoed</td>
+</tr>
+<tr>
+<td>Sensitive experiences (medical, legal, indigenous)</td>
+<td>Consent framework, cultural protocols, jurisdictional compliance</td>
+</tr>
+<tr>
+<td>User identity</td>
+<td>DID-based, minimal PII, pseudonymous by default</td>
+</tr>
+<tr>
+<td>Query logs</td>
+<td>Hashed for analytics; raw queries only with explicit opt-in</td>
+</tr>
+<tr>
+<td>Aggregate statistics</td>
+<td>Differential privacy (ε ≤ 1.0) for any public statistics</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Right to be forgotten:</strong> contributors can request removal of their T6
+records. The node is tombstoned (content replaced with hash + "removed at
+contributor request") — the audit trail remains but the content is gone.
+For truly sensitive data, cryptographic erasure (encrypt with key, destroy
+key) is available.</p>
+<hr />
+<h2 id="8-global-accessibility">8. GLOBAL ACCESSIBILITY</h2>
+<h3 id="81-multilingual-architecture">8.1 Multilingual architecture</h3>
+<pre><code>Canonical layer:  knowledge stored in original language + English pivot
+Translation layer: NLLB-200 / MADLAD-400 for 200-400 languages
+Human layer:      community translations verified by native speakers
+</code></pre>
+<ul>
+<li><strong>English is the pivot</strong>, not the only language. Every node can exist in
+  multiple languages simultaneously.</li>
+<li><strong>Machine translation is labeled</strong> — <code>machine_translated: true</code> until a
+  human verifies it.</li>
+<li><strong>Low-resource languages get priority</strong> — translation effort weighted
+  toward languages with least existing digital knowledge.</li>
+<li><strong>Oral languages:</strong> Whisper transcription + community validation.</li>
+<li><strong>Indigenous knowledge:</strong> recorded in native language, translated with
+  community consent, cultural protocols respected.</li>
+</ul>
+<h3 id="82-offline-low-bandwidth-access">8.2 Offline &amp; low-bandwidth access</h3>
+<ul>
+<li><strong>PWA with offline cache</strong> — core knowledge available offline.</li>
+<li><strong>LanceDB embedded</strong> on edge devices — local vector search without server.</li>
+<li><strong>Delta sync protocol</strong> — <code>GET /api/v1/sync?since=timestamp</code> returns only
+  changed nodes since last sync. Bandwidth-efficient.</li>
+<li><strong>Compressed knowledge packs</strong> — domain-specific bundles for offline
+  education (e.g., "entire biology curriculum" as a 50MB download).</li>
+<li><strong>SMS/USSD fallback</strong> for ultra-low-bandwidth regions <code>[SPEC: not yet
+  practical for full archive, but feasible for Q&amp;A interface]</code>.</li>
+</ul>
+<h3 id="83-free-education-mandate">8.3 Free education mandate</h3>
+<ul>
+<li><strong>All T1-T3 knowledge is free to access, forever.</strong> No paywall.</li>
+<li><strong>Structured learning paths</strong> — the knowledge hierarchy (Section 2)
+  maps directly to curricula. A student can follow <code>Domain → Discipline →
+  ... → Outcome</code> as a structured course.</li>
+<li><strong>Open educational resources (OER) integration</strong> — link to and ingest
+  existing OER (Khan Academy, MIT OCW, etc.).</li>
+<li><strong>Multilingual curricula</strong> — the same learning path in 200+ languages.</li>
+<li><strong>Accessibility</strong> — WCAG 2.2 compliant, screen-reader optimized,
+  low-bandwidth mode, text-only mode.</li>
+</ul>
+<h3 id="84-community-contribution-model">8.4 Community contribution model</h3>
+<ul>
+<li><strong>Anyone can contribute</strong> — no gatekeeping for submission.</li>
+<li><strong>Contribution types:</strong> new nodes, corrections, translations, experience
+  records, endorsements, reviews, code (for the platform itself).</li>
+<li><strong>Contributor rights:</strong></li>
+<li>Attribution: every contribution carries author DID.</li>
+<li>Portability: export your contributions at any time.</li>
+<li>Governance: contribute to protocol discussions, vote on proposals.</li>
+<li>Revenue share: if the archive ever generates revenue (donations,
+    grants, premium services), contributors to canonical knowledge
+    share in it via a transparent formula.</li>
+<li><strong>Community moderation:</strong> distributed moderation with reputation-weighted
+  voting, appeals process, and GOVERNANCE-level override for edge cases.</li>
+</ul>
+<h3 id="85-anti-capture-measures">8.5 Anti-capture measures</h3>
+<p>The archive must be <strong>structurally uncapturable</strong>:</p>
+<ol>
+<li><strong>Open-source everything</strong> — code, schemas, protocols, governance docs.</li>
+<li><strong>Federated storage</strong> — no single database holds all knowledge.
+   IPFS content addressing means even if one node is seized, the content
+   persists elsewhere.</li>
+<li><strong>Multi-jurisdictional</strong> — nodes operated in multiple legal jurisdictions
+   so no single government can shut it down.</li>
+<li><strong>Constitutional governance</strong> — the protocol (not any operator) defines
+   the rules. Operators are replaceable; the protocol is not.</li>
+<li><strong>No surveillance</strong> — the archive does not track users beyond what's
+   needed for abuse prevention. No behavioral advertising. No data sale.</li>
+<li><strong>Transparent funding</strong> — all funding sources disclosed; no anonymous
+   majority funders; no government that censors as majority funder.</li>
+</ol>
+<hr />
+<h2 id="9-deliverables-summary">9. DELIVERABLES SUMMARY</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Deliverable</th>
+<th>Section</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Core mission &amp; 7 knowledge classes</td>
+<td>§1</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Knowledge hierarchy (11 levels) + graph schema</td>
+<td>§2</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Verification framework (9 tiers) + contradiction detection + correction</td>
+<td>§3</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AI knowledge engine (10 capabilities + anti-hallucination)</td>
+<td>§4</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Experience record schema (12-field canonical)</td>
+<td>§5</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Technical architecture (stack, schemas, APIs, pipelines)</td>
+<td>§6</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Security &amp; governance (threat model, access control, reputation)</td>
+<td>§7</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Global accessibility (multilingual, offline, free education)</td>
+<td>§8</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Beginner roadmap + prototype spec + expansion plan</td>
+<td>§6.8</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Technology selection: existing / near-term / speculative</td>
+<td>§6.2</td>
+<td>Design complete</td>
+</tr>
+<tr>
+<td>11</td>
+<td>SSSSS evidence layer: local implementation ledger, knowledge-type taxonomy, forgetting-curve science, IR metrics, digitization cases, PKM frontier, blueprints, resilience, and source index</td>
+<td>§11</td>
+<td>Evidence-backed expansion</td>
+</tr>
+</tbody>
+</table>
+<h3 id="91-what-exists-today-vs-what-we-build">9.1 What exists today vs what we build</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Exists today</th>
+<th>We build</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Storage</td>
+<td>PostgreSQL, Neo4j, Qdrant, LanceDB, IPFS, S3</td>
+<td>Schema design, federation layer, Merkle integrity</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>LlamaIndex, LangGraph, LightRAG, LLMs, embeddings, Whisper, NLLB</td>
+<td>Graph-RAG orchestration, anti-hallucination contract, failure-first retrieval, gap detection</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>Keycloak, OIDC, DID specs</td>
+<td>Reputation system, contribution workflow, governance protocol</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>React/Svelte, Tailwind, PWA</td>
+<td>Knowledge visualization, graph explorer, learning paths</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>—</td>
+<td>Entire multi-stakeholder governance model</td>
+</tr>
+<tr>
+<td>Content</td>
+<td>arXiv, PubMed, Wikipedia, oral history archives, OER</td>
+<td>Ingestion adapters, unification layer, experience record schema</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-the-one-paragraph-pitch">9.2 The one-paragraph pitch</h3>
+<blockquote>
+<p>The Global Human Knowledge and Experience Archive is a federated,
+cryptographically-verifiable, AI-powered knowledge graph that preserves
+everything humanity has discovered, proved, designed, built, tried, and
+failed — with mandatory provenance, tiered verification, failure-first
+retrieval, and governance designed to be structurally uncapturable.
+It begins as a single-domain prototype in SQLite and LanceDB, and
+scales to a planetary institution. Its core innovation is not any single
+technology but the <strong>integration</strong>: experience records with failure
+schemas, a knowledge hierarchy that spans math to mythology, an AI engine
+that refuses to answer without sources, and a governance model that
+makes capture harder than preservation.</p>
+</blockquote>
+<hr />
+<h2 id="10-open-questions-for-the-next-design-iteration">10. OPEN QUESTIONS FOR THE NEXT DESIGN ITERATION</h2>
+<ol>
+<li><strong>Optimal graph DB at planetary scale</strong> — Neo4j vs FalkorDB vs custom
+   sharded property graph? Benchmark needed at &gt;1B edges.</li>
+<li><strong>Proof-of-personhood</strong> — how to prevent Sybil attacks without
+   excluding the privacy-conscious or the unbanked?</li>
+<li><strong>Indigenous knowledge sovereignty</strong> — how to let communities control
+   their own knowledge without fragmenting the graph?</li>
+<li><strong>AI authorship</strong> — when an AI contributes to the archive (e.g.,
+   auto-generated summaries), how is it attributed? Does AI-generated
+   content get a different epistemic tier by default?</li>
+<li><strong>The ontology problem</strong> — who decides that "tokamak" is a Concept and
+   not a Field? Need a governance process for ontology disputes.</li>
+<li><strong>Economic sustainability</strong> — how to fund planetary-scale infrastructure
+   without compromising independence?</li>
+<li><strong>The dark matter of knowledge</strong> — how to ingest and verify knowledge
+   that exists only orally, in dead languages, or in physical artifacts
+   not yet digitized?</li>
+<li><strong>Cross-lingual equivalence</strong> — when a concept doesn't exist in a
+   language, do we borrow the term, coin a new one, or describe it?
+   (Sapir-Whorf meets knowledge engineering.)</li>
+</ol>
+<h2 id="11-ssssss-implemented-evidence-and-2025-26-frontier">11. SSSSS — IMPLEMENTED EVIDENCE &amp; 2025–26 FRONTIER</h2>
+<p><strong>Evidence standard for this section.</strong> Sections 0–10 define the target
+institution. Section 11 records what has already been <em>built, measured, audited,
+or recovered</em> in the local NelloGem/PRIME corpus, then maps those observations to
+the 2025–2026 research frontier. Local fleet artifacts are treated as <strong>T6
+evidence</strong> (first-hand implementation records) unless independently replicated;
+they are not promoted to T1 merely because they are precise. External sources are
+listed in §11.11 and are used for frontier claims, not for local counts.</p>
+<blockquote>
+<p><strong>Core lesson.</strong> The archive is not proven by elegance; it is proven by
+<em>receipts</em>: row counts, hashes, process IDs, file inventories, failed builds,
+restoration drills, credential scopes, and audit logs. Civilization-scale memory must
+therefore store not only claims but <strong>the machinery that produced, checked,
+failed, repaired, and preserved them</strong>.</p>
+</blockquote>
+
+<h3 id="111-local-implementation-ledger">11.1 Local implementation ledger — verified artifacts</h3>
+<table>
+<thead>
+<tr><th>Implemented system</th><th>Verified observation</th><th>What it proves for the archive</th><th>Epistemic treatment</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>fleet.db</code> — SQLite knowledge index</strong><br><small><code>/home/neilh/fleet.db</code> · ingest: <code>fleet_ingest.py</code></small></td>
+<td>SQLite tables <code>agents</code>, <code>experiments</code>, <code>results</code>, <code>bugs</code>, <code>docs</code>, <code>badges</code>. Verified counts: <strong>10 agents</strong>, <strong>67 experiments</strong>, <strong>1,745 results</strong>, <strong>22 documented bugs</strong>, <strong>58 documents</strong>, <strong>11 parsed badge rows</strong>.</td>
+<td>A compact relational index can preserve provenance across scripts, JSON/CSV outputs, reports, bug ledgers, and credentials without a graph database. This is the Phase-0 pattern made real.</td>
+<td>T6 implementation evidence; counts are reproducible by rerunning <code>fleet_ingest.py</code>.</td>
+</tr>
+<tr>
+<td><strong><code>GENOME_MAP.md</code> — corpus/genome mapping</strong><br><small><code>/home/neilh/GENOME_MAP.md</code> · generated by fleet simulator</small></td>
+<td>Treats each lab as an organism; genes are imports and top-level functions. Maps housekeeping genes (<code>numpy</code>, <code>torch</code>, <code>random</code>, <code>scipy</code>), private mutations unique to one agent, known point mutations that were actually bug fixes, clonal expansion (<strong>57 script basenames</strong> present in at least two copies, mostly triplicated by vault mirrors), and a Jaccard-distance phylogenetic tree.</td>
+<td>Corpus structure can be modeled as lineage, drift, mutation, and selection rather than a flat file list. This is a practical precursor to provenance graphs and “knowledge evolution” views.</td>
+<td>T6; the map is an interpretation, but its gene/mutation tables are mechanically derived.</td>
+</tr>
+<tr>
+<td><strong>GitHub vault sync pipeline</strong><br><small><code>sync_vault.sh</code> · cron <code>*/15 * * * *</code> · <code>push_vault.sh</code> · <code>gh_backup/</code></small></td>
+<td>Copies <code>science_research/*.md</code>, <code>science_lab/*</code>, <code>websec_research</code>, web-security battle reports, lab app files/tests, all Windows <code>Learning/*.html</code>, and design HTML into <code>~/gh_backup</code>, then commits “sync: auto-sync” and pushes to the private <code>NelloGem1/experiment-vault</code> repository. <code>push_vault.sh</code> creates the private repo through the GitHub API using <code>GH_TOKEN</code>.</td>
+<td>Resilience through replication: source → staging mirror → git history → remote private vault. Also demonstrates why secret handling must be audited—<code>FLEET_ANATOMY.md</code> flagged a plaintext GitHub PAT visible in the remote URL/process list.</td>
+<td>T6 operational evidence with a security caveat; treat as pipeline proof, not as a safe credential pattern.</td>
+</tr>
+<tr>
+<td><strong>Autopsy program</strong><br><small><code>FLEET_ANATOMY.md</code> · eight <code>science_lab/*/AUTOPSY.md</code> files · <code>CODE_AUTOPSY.md</code> · <code>FLEET_SIMULATION.md</code></small></td>
+<td>Live process autopsy recorded PIDs, command lines, parents, CPU, RSS, threads, I/O counters, file descriptors, logs, docker services, cron jobs, and resource pathology. Code autopsy covered <strong>83 Python files</strong>, <strong>7,429 lines</strong>, <strong>344 functions/classes</strong>, zero syntax-rot failures, and produced a severity-ranked bug ledger. Fleet simulation replayed <strong>699 file-mutation events</strong> across <strong>19 identified agents</strong> and ran 200 Monte-Carlo gap-permutation bootstraps.</td>
+<td>Verification is not a metadata checkbox; it is forensic work. The archive should preserve not only final reports but autopsies, reproductions, corrected scripts, and “what the code actually did” records.</td>
+<td>T6 for local claims; the method is generalizable and should become an experience-record subtype.</td>
+</tr>
+<tr>
+<td><strong>MARSHAL-SCI badge/credential registry</strong><br><small><code>CORPS_BADGES.html</code> · <code>CORPS_ROSTER.md</code> · <code>badge_stage/BADGE_*.md</code> · fleet <code>badges</code> table</small></td>
+<td>The HTML registry lists <strong>16 credentialed roles</strong>, including ten domain labs plus forensics, research, autopsy corps, fix corps, butler v2, and watchdog. The Markdown roster defines <strong>12 badge rows</strong>; the SQLite ingest stores <strong>11 parsed badge rows</strong>. Each credential specifies serial (<code>MARSHAL-SCI-NNN</code>), rank, jurisdiction, powers (venv pip authority, lab write access, digest read), issuer, and status.</td>
+<td>A working example of capability-based credentials for autonomous contributors: identity, scope, powers, status, issuer, and audit trail are explicit. The count mismatch between HTML/Markdown/SQLite is itself a lesson—credential registries need schema validation and reconciliation reports.</td>
+<td>T6; badge HTML is decorative, but roster/DB/ledger relationships are inspectable artifacts.</td>
+</tr>
+<tr>
+<td><strong>Fleet simulator and digest culture</strong><br><small><code>fleet_simulator.py</code> · <code>FLEET_SIMULATION.md</code> · <code>EXPERIMENT_DIGEST.md</code> pattern</small></td>
+<td>Simulator reconstructs agent lifecycles from filesystem mtimes and writes charts plus <code>GENOME_MAP.md</code>/<code>FLEET_SIMULATION.md</code>. Simulation report identifies bounded compute, digest literacy, early bug detection, self-contained I/O, resource contention, and post-completion verification as observed predictors of success.</td>
+<td>Operational memory improves when agents read prior results before experimenting. “Digest literacy” is the fleet-scale analogue of retrieval-before-generation and failure-first retrieval.</td>
+<td>T6; predictive claims are correlational from one fleet window, not causal law.</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="1111-what-the-local-ledger-changes-in-the-design">11.1.1 What the local ledger changes in the design</h4>
+<ol>
+<li><strong>SQLite is not a toy when scoped.</strong> <code>fleet.db</code> proves that a single-file database can index agents, experiments, results, bugs, docs, and badges with enough fidelity for search and audit. The archive’s Phase-0 SQLite/LanceDB plan is therefore not speculative; it is already exercised.</li>
+<li><strong>Results need source pointers.</strong> Every result row carries a source path (<code>science_lab/.../results*.json</code>, CSV, or report). The archive should make <code>source_artifact</code> mandatory, not optional.</li>
+<li><strong>Failures must be rows, not prose.</strong> The <code>bugs</code> table was populated by regexing <code>AUTOPSY.md</code>/<code>CODE_AUTOPSY.md</code>. That is brittle but useful; the canonical schema should instead require structured bug records with file, line, symptom, root cause, fix, and verification status.</li>
+<li><strong>Replication is a feature and a hazard.</strong> The vault sync triplicated many scripts, preserving recoverability but also freezing bugs. The archive needs drift detection: identical copies are redundancy until one copy is patched; then they become divergent evidence.</li>
+<li><strong>Credentials need reconciliation.</strong> Badge counts differ across presentation, roster, and database layers. The archive should publish reconciliation reports whenever derived indexes disagree with source registries.</li>
+<li><strong>Autopsy is a knowledge class.</strong> A postmortem is not merely debugging; it is a negative-experience record with process anatomy, resource metabolism, reproduction steps, and lessons. It belongs in Section 5 as <code>postmortem</code>/<code>code_autopsy</code>.</li>
+</ol>
+
+<h3 id="112-taxonomy-of-knowledge-types">11.2 Taxonomy of knowledge types</h3>
+<p>The seven classes in §1.1 classify <em>what domain</em> a node belongs to. The taxonomy
+below classifies <em>how the knowledge behaves</em>. A single node may carry multiple
+types; retrieval should expose the dominant type and preserve secondary types as
+filters.</p>
+<table>
+<thead>
+<tr><th>Knowledge type</th><th>Definition</th><th>Canonical representation</th><th>Primary failure if omitted</th><th>Archive handling</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Declarative / factual</strong></td><td>Propositions that can be true or false: “water boils at 100°C at 1 atm.”</td><td><code>n:Claim</code> + <code>n:Evidence</code></td><td>Unverifiable assertion enters canonical layer.</td><td>Tiered epistemic label; citations mandatory.</td></tr>
+<tr><td><strong>Procedural</strong></td><td>How to do something: methods, protocols, recipes, algorithms.</td><td><code>n:Method</code> + ordered steps + prerequisites</td><td>Knowledge exists but cannot be executed safely.</td><td>Versioned steps; test fixtures; rollback notes.</td></tr>
+<tr><td><strong>Causal / mechanistic</strong></td><td>Why something happens: mechanisms, root causes, causal graphs.</td><td><code>CAUSED_BY</code>, <code>ROOT_CAUSE</code>, intervention nodes</td><td>Correlation mistaken for mechanism.</td><td>Counterfactuals and interventions stored separately from observations.</td></tr>
+<tr><td><strong>Negative / failure</strong></td><td>What was tried, what failed, why, and what would change the outcome.</td><td><code>n:Failure</code>, <code>n:Lesson</code>, experience record</td><td>Science repeats expensive mistakes.</td><td>First-class retrieval; mandatory <code>failures</code> block for experiments.</td></tr>
+<tr><td><strong>Experiential / tacit</strong></td><td>Skill, judgment, texture, and context that resist full formalization.</td><td><code>experience_record</code>, oral history, field notes</td><td>Only explicit rules remain; expert judgment is lost.</td><td>T6 by default; consent, locality, and narrative context preserved.</td></tr>
+<tr><td><strong>Indexical / pointer</strong></td><td>Knowledge about where knowledge lives: catalogs, citations, datasets, archives.</td><td><code>n:Document</code>, DOI/CID/URL, collection record</td><td>Archive becomes a pile of copies without a map.</td><td>Link-rot checks, mirrors, content hashes, and last-verified timestamps.</td></tr>
+<tr><td><strong>Normative / prescriptive</strong></td><td>What ought to be done: ethics, law, standards, design principles.</td><td><code>n:Principle</code>, policy node, jurisdiction edge</td><td>Descriptive facts are mistaken for permission or obligation.</td><td>Jurisdiction, authority, and revision history are required fields.</td></tr>
+<tr><td><strong>Counterfactual / simulation</strong></td><td>What would happen under changed conditions; model outputs and scenarios.</td><td><code>n:Hypothesis</code>, simulation record, parameter set</td><td>Models are treated as observations.</td><td>Model assumptions and uncertainty are part of the claim.</td></tr>
+<tr><td><strong>Meta / epistemic</strong></td><td>Knowledge about knowledge: confidence, gaps, disputes, verification state.</td><td><code>uncertainty</code>, <code>n:Question</code>, <code>n:Controversy</code></td><td>Archive cannot distinguish known from unknown.</td><td>Every answer carries uncertainty; gaps are published as nodes.</td></tr>
+<tr><td><strong>Provenance / custody</strong></td><td>Chain of creation, custody, transformation, and verification.</td><td>Audit log, signatures, source chain, hash links</td><td>Claims become detached from evidence.</td><td>Every node stores author, source, timestamp, hash, and transformation history.</td></tr>
+<tr><td><strong>Temporal / versioned</strong></td><td>Knowledge that changes over time: laws, standards, software, medicine.</td><td><code>valid_from/until</code>, <code>SUPERSEDES</code>, deprecation events</td><td>Stale knowledge outranks current knowledge.</td><td>Time-aware ranking; never hard-delete superseded nodes.</td></tr>
+<tr><td><strong>Adversarial / security</strong></td><td>Knowledge of attacks, defenses, failure modes, and trust boundaries.</td><td><code>n:Threat</code>, exploit/defense records, audit events</td><td>Archive itself becomes an attack surface or censorship target.</td><td>Threat model, signed writes, red-team records, and resilience drills.</td></tr>
+<tr><td><strong>Sensory / artifact-bound</strong></td><td>Knowledge embedded in objects: specimens, instruments, buildings, performances, ritual.</td><td><code>n:Artifact</code>, media, 3D scan, oral recording</td><td>Digitization captures text but loses material context.</td><td>Preserve object metadata, condition reports, handling protocols, and original media.</td></tr>
+<tr><td><strong>Distributed / collective</strong></td><td>Knowledge held by communities, markets, institutions, or ecosystems rather than individuals.</td><td>Organization/community nodes, consensus records, oral tradition</td><td>Individualist bias erases distributed cognition.</td><td>Community consent, collective authorship, and sovereignty controls.</td></tr>
+</tbody>
+</table>
+<p><strong>Design consequence.</strong> The canonical spine (§2.1) should not be replaced by
+this taxonomy; it should be crossed with it. A node can be
+<code>Domain: Formal Sciences → Discipline: Computer Science → Field: Adversarial ML →
+Concept: PGD → Method: adversarial training → Experiment: autopsy_verify →
+Knowledge type: negative/procedural/provenance</code> simultaneously.</p>
+
+<h3 id="113-forgetting-curve-and-memory-science-2025">11.3 Forgetting-curve and memory-science frontier</h3>
+<p>Spaced repetition is not merely a study hack; it is the empirical science of
+<em>knowledge decay</em>. For an archive, forgetting curves explain why verification
+tiers, re-verification schedules, and outcome learning cannot be static fields.</p>
+<table>
+<thead>
+<tr><th>Finding</th><th>Evidence anchor</th><th>Archive interpretation</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Forgetting is not one universal exponential.</td>
+<td>Kornell &amp; Bjork (2025) show empirical forgetting curves are influenced by the distribution of memory strengths relative to a recall threshold; a distribution model explains why curves can look linear or concave when percent correct is high. Memories “just above threshold” help short-term tests but do not necessarily form lasting memory.</td>
+<td>Claims should not have one global <code>decay_half_life</code>. Half-life should depend on domain, claim type, evidence strength, usage, and user/community memory state.</td>
+</tr>
+<tr>
+<td>FSRS reframes scheduling as prediction.</td>
+<td>FSRS models per-card <strong>difficulty</strong>, <strong>stability</strong> (time for recall probability to fall from 100% to 90%), and <strong>retrievability</strong>. Anki 25.07 shipped FSRS-6; the open benchmark reports ~727 million reviews from ~10k users and ~350 million evaluation reviews. FSRS-7 uses fractional intervals and a more complex curve.</td>
+<td>The archive can schedule <em>verification audits</em> like reviews: high-impact claims return before confidence decays below threshold; low-value claims age out of prominence without deletion.</td>
+</tr>
+<tr>
+<td>Power-function fits beat naive exponential assumptions.</td>
+<td>FSRS technical documentation describes movement from exponential to power-function retrievability curves because superposed exponentials are better approximated by power functions.</td>
+<td>Use flexible decay models, not a single Ebbinghaus-style curve. Store model version and parameters so decay predictions remain auditable.</td>
+</tr>
+<tr>
+<td>Spacing, testing, and desirable difficulty remain core.</td>
+<td>The same literature and FSRS ecosystem imply that retrieval practice strengthens memory; for archives, retrieval should be treated as an active maintenance operation, not passive search.</td>
+<td>“Outcome learning” (§4.8) should include spaced re-querying, citation click-through, correction events, and “used this lesson” reports as memory-strength signals.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1131-archive-decay-scheduler">11.3.1 Proposed archive decay scheduler</h4>
+<pre><code class="language-yaml">decay_policy:
+  claim_types:
+    math_proof:
+      stability_model: fsrs_like
+      review_trigger: on_counterexample_or_axiom_change
+      default_tier_floor: T2
+    medical_protocol:
+      review_trigger: every_90_days_or_on_recall_report
+      default_tier_floor: T3
+    software_dependency:
+      review_trigger: on_release_or_cve
+      default_tier_floor: T4
+    personal_experience:
+      review_trigger: never_auto_promote
+      visibility_decay: optional
+      consent_required: true
+  signals:
+    positive: citation_use, successful_reuse, independent_replication, user_reports
+    negative: contradiction, retraction, failed_replication, stale_source, link_rot
+  action_on_decay:
+    - lower ranking, never silently delete
+    - create re-verification task
+    - demote one epistemic tier if unresolved
+    - preserve superseded version with SUPERSEDES edge
+</code></pre>
+<p><strong>Boundary.</strong> FSRS predicts an individual learner’s recall probability.
+The archive must not pretend an institutional claim “forgets” like a flashcard.
+The correct transfer is the <em>scheduling principle</em>: review before predicted
+confidence decay, weight review urgency by consequence, and log every intervention.</p>
+
+<h3 id="114-information-retrieval-metrics-explained">11.4 Information-retrieval metrics, explained for operators</h3>
+<p>Retrieval quality is a product metric, not a database vanity metric. Vector DBs can
+prove that queries executed; they cannot prove that the right evidence reached the
+model. The archive needs both offline golden-set evaluation and online drift checks.</p>
+<table>
+<thead>
+<tr><th>Metric</th><th>Question it answers</th><th>Intuition / formula</th><th>Archive use</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Precision@k</strong></td><td>Of the top-k returned items, how many are relevant?</td><td><code>|relevant ∩ top-k| / k</code>. High precision means fewer irrelevant results.</td><td>Use for high-stakes answers where noise is costly.</td></tr>
+<tr><td><strong>Recall@k</strong></td><td>Of all relevant items, how many appeared in top-k?</td><td><code>|relevant ∩ top-k| / |all relevant|</code>. High recall means fewer missed sources.</td><td>Mandatory for failure-first retrieval: missing one failure mode is a safety defect.</td></tr>
+<tr><td><strong>F1</strong></td><td>Balance between precision and recall.</td><td>Harmonic mean of precision and recall.</td><td>Useful summary, but never sufficient alone for safety-critical retrieval.</td></tr>
+<tr><td><strong>MRR</strong></td><td>How high is the first relevant result?</td><td>Mean of <code>1 / rank(first relevant)</code> across queries.</td><td>Good for “answer-first” interfaces; bad if later results contain failures.</td></tr>
+<tr><td><strong>MAP</strong></td><td>Are relevant items ranked early across many relevant items?</td><td>Mean of average precision at each relevant-item rank.</td><td>Use for research/search rankings where multiple evidence nodes matter.</td></tr>
+<tr><td><strong>nDCG@k</strong></td><td>Are higher-value results ranked above lower-value ones?</td><td>Discounted cumulative gain normalized by ideal ranking; graded relevance.</td><td>Use when T1 evidence should outrank T8 speculation but T6 experiences should still surface for “what happened” queries.</td></tr>
+<tr><td><strong>RA-nWG@K</strong></td><td>How close is the retrieved set to the best possible evidence set under a budget?</td><td>Rarity-aware normalized weighted gain for set-based RAG; weights scarce high-grade evidence.</td><td>Candidate metric for “did we retrieve the decisive evidence” rather than merely “did we retrieve something.”</td></tr>
+<tr><td><strong>Citation coverage</strong></td><td>Did the final answer cite retrieved evidence?</td><td>Fraction of factual claims mapped to resolvable node IDs.</td><td>Mandatory anti-hallucination metric; target 100% for empirical claims.</td></tr>
+<tr><td><strong>No-hit / refusal quality</strong></td><td>Did the system refuse when evidence was absent?</td><td>Correct refusals divided by truly unanswerable queries.</td><td>Critical for archive honesty; false confidence is worse than no answer.</td></tr>
+<tr><td><strong>Freshness / deleted-document leak</strong></td><td>Do results respect updates, deletions, supersession, and access controls?</td><td>Measure stale hits, superseded nodes returned as current, tombstone leaks.</td><td>Run after every re-embedding, ACL change, migration, or bulk ingest.</td></tr>
+<tr><td><strong>p50/p95/p99 latency</strong></td><td>How fast is retrieval under real load?</td><td>Percentile latency; guardrail rather than primary quality metric.</td><td>Latency is a guardrail; recall is the product metric.</td></tr>
+</tbody>
+</table>
+<h4 id="1141-golden-query-set">11.4.1 Golden query set for the archive</h4>
+<pre><code class="language-json">{
+  &quot;query&quot;: &quot;what has failed with lithium-sulfur pouch cells and why&quot;,
+  &quot;intent&quot;: &quot;failure_first_experience&quot;,
+  &quot;filters&quot;: {&quot;include_tiers&quot;: [1,2,3,4,5,6], &quot;require_failures&quot;: true},
+  &quot;expected_node_types&quot;: [&quot;Experiment&quot;, &quot;Failure&quot;, &quot;Lesson&quot;, &quot;Evidence&quot;],
+  &quot;must_surface&quot;: [&quot;thermal_runaway_failure_mode&quot;, &quot;sei_growth_indicator&quot;],
+  &quot;must_not_surface_as_current&quot;: [&quot;superseded_bms_cutoff_claim&quot;],
+  &quot;unanswerable_variant&quot;: &quot;what is the exact 2031 fusion gain of tokamak X&quot;
+}
+</code></pre>
+<p><strong>Worked example.</strong> Suppose a query has three relevant failure records.
+Top-10 returns all three, first at rank 2, plus seven irrelevant items:
+<code>Recall@10 = 3/3 = 1.0</code>, <code>Precision@10 = 3/10 = 0.3</code>,
+<code>MRR = 1/2 = 0.5</code>. For the archive, recall of the failure set matters more
+than precision cosmetics; the seven irrelevant items should be demoted, but no failure
+record may be dropped.</p>
+<p><strong>Production rule.</strong> Evaluate retrieval before generation. If the decisive
+evidence is not in context, the LLM cannot reliably cite it. Separate search problems
+from prompting problems; tune for recall on failure queries and precision on
+high-consequence factual queries.</p>
+
+<h3 id="115-archive-digitization-case-studies">11.5 Archive digitization case studies</h3>
+<p>Digitization is not scanning; it is a preservation lifecycle: appraisal, imaging or
+transcription, validation, metadata, fixity, storage tiers, access copies, migration,
+and disaster recovery.</p>
+<table>
+<thead>
+<tr><th>Case</th><th>Scale / method</th><th>Key lesson for the archive</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BFI National Archive — Digital Preservation Infrastructure</strong></td>
+<td>Ten years of DPI operation; <strong>20 petabytes</strong> under preservation. Lifecycle includes acquisition/digitization, validation/QC, collections database, automated tape libraries, viewing copies, public access, and format/tape migration. Network upgraded toward 100 Gbps.</td>
+<td>Preservation is infrastructure, not a project. Budget for migration, QC, and access copies from day one.</td>
+</tr>
+<tr>
+<td><strong>Chicago Film Archives</strong></td>
+<td>After a year of research and planning, deployed expandable onsite storage initially at <strong>200 TB</strong>, offsite LTO backups, and internal tools for file-location knowledge.</td>
+<td>“Which file is where” is itself archival metadata. Location-aware tooling is part of preservation.</td>
+</tr>
+<tr>
+<td><strong>German National Library / German Music Archive</strong></td>
+<td>Migrated digital content of <strong>770,000 audio CDs</strong> and digitized <strong>50,000 audiocassettes</strong>, yielding more than <strong>500,000 hours</strong> of digital music; documented hidden tracks, non-circular CDs, faulty tapes, and format edge cases.</td>
+<td>Real archives contain edge cases. The schema must preserve anomalies, not normalize them away.</td>
+</tr>
+<tr>
+<td><strong>‘Ulu‘ulu / Office of Hawaiian Affairs grant</strong></td>
+<td>18-month project preserved <strong>200 reels / 71.5 hours / 13.32 TB</strong> from 8mm, 16mm, ½″ EIAJ, Hi8, and DVCAM formats, including fragile activist and museum collections.</td>
+<td>Born-fragile media requires urgent triage, format-specific handling, and culturally appropriate access.</td>
+</tr>
+<tr>
+<td><strong>University of Houston Libraries / Archivematica pilot</strong></td>
+<td>Open-source Archivematica automated preservation workflows for digitized content; born-digital social-media archives required manual arrangement, normalization, and storage decisions.</td>
+<td>Automated pipelines handle repeatable transformations; human appraisal remains necessary for context and consent.</td>
+</tr>
+<tr>
+<td><strong>LOCKSS / distributed preservation principle</strong></td>
+<td>“Lots of Copies Keep Stuff Safe”: trusted consortia maintain dark archives and reconcile integrity through agreement rather than a single operator.</td>
+<td>Redundancy plus integrity checking is older and more robust than any single “permanent” cloud bucket.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1151-digitization-contract-for-the-archive">11.5.1 Digitization contract</h4>
+<pre><code class="language-yaml">artifact_record:
+  original_media: &quot;DVCAM tape / born-digital PDF / oral recording&quot;
+  condition_report: required
+  handling_protocol: required
+  digitization:
+    standard: &quot;format-specific, documented&quot;
+    operator_or_agent: &quot;who/what performed capture&quot;
+    date: &quot;timestamp&quot;
+  validation:
+    checksums: [md5, sha256]
+    fixity_schedule: &quot;periodic re-hash&quot;
+    playback_or_render_check: true
+  metadata:
+    descriptive: &quot;title, creator, context, language&quot;
+    technical: &quot;codec, resolution, sample rate, bit depth&quot;
+    rights_and_consent: &quot;who may access, share, translate, train on&quot;
+  storage:
+    primary: &quot;managed object store&quot;
+    mirror: &quot;second jurisdiction or dark archive&quot;
+    access_copy: &quot;derivative format for users&quot;
+  migration:
+    trigger: &quot;format obsolescence, storage decay, codec risk&quot;
+    preserve_original: true
+</code></pre>
+
+<h3 id="116-ai-augmented-pkm-frontier">11.6 AI-augmented PKM frontier (2025–26)</h3>
+<p>Personal knowledge management is moving from “notes plus tags” to hybrid systems
+where capture, classification, retrieval, synthesis, and review are separate stages.
+The archive should absorb the useful patterns without surrendering provenance.</p>
+<table>
+<thead>
+<tr><th>Frontier pattern</th><th>Observed work</th><th>Design transfer</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Persona-conditioned note classification</strong></td>
+<td>NoteBar (arXiv 2509.03610, 2025) introduces an AI-assisted note-taking tool and a dataset of <strong>3,173 notes / 8,494 annotated concepts across 16 MBTI personas</strong>. It uses a BERT-based multi-label classifier to route notes into semantic categories, then stores processed notes for vector retrieval and suggestions.</td>
+<td>Treat classification as a pipeline stage with versioned models and labeled training data. Persona/context can improve routing but must not become hidden bias.</td>
+</tr>
+<tr>
+<td><strong>Note-centric adaptive RAG</strong></td>
+<td>DeepNote (EMNLP 2025 Findings) uses notes as carriers for refining and accumulating knowledge: notes determine retrieval timing, formulate queries, and assess knowledge growth; DPO further improves performance.</td>
+<td>A personal archive should maintain “working notes” that accumulate evidence and questions, not just isolated chunks. Retrieval becomes iterative and stateful.</td>
+</tr>
+<tr>
+<td><strong>Local-first Obsidian retrieval</strong></td>
+<td>A MotherDuck/DuckDB write-up describes an Obsidian RAG experiment over <strong>8,963 local Markdown notes</strong>, using backlinks as a curated graph and retrieving hidden neighbors before any LLM synthesis.</td>
+<td>Start with retrieval, not generation. Backlinks and local graph structure are high-value signals before embeddings or chat.</td>
+</tr>
+<tr>
+<td><strong>PARA vs Zettelkasten vs LYT</strong></td>
+<td>PARA organizes by actionability (Projects, Areas, Resources, Archives). Zettelkasten emphasizes atomic notes and links; recent commentary stresses there is no single method, only atomicity plus connection. LYT adds maps of content and sensemaking workflows.</td>
+<td>Use multiple organizing axes: actionability for work, atomicity for ideas, maps for navigation, and canonical spine for civilization-scale classification.</td>
+</tr>
+<tr>
+<td><strong>AI synthesis quarantine</strong></td>
+<td>PKM blueprints increasingly separate human-authored notes from AI-generated topic pages or summaries.</td>
+<td>Machine-generated nodes need distinct provenance, tier caps, and review queues; they must not silently merge into human canonical knowledge.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1161-pkm-pipeline-contract">11.6.1 PKM pipeline contract</h4>
+<pre><code>capture → normalize → classify → link → embed → retrieve → synthesize → review → promote
+
+Rules:
+1. Capture is cheap; promotion is expensive.
+2. Every AI classification stores model name, version, confidence, and timestamp.
+3. Every AI summary is derivative content linked to its sources; it never replaces them.
+4. Human-authored atomic notes remain editable and portable.
+5. AI-generated topic pages live in a quarantined namespace until reviewed.
+6. Retrieval logs feed outcome learning; synthesis logs feed hallucination audits.
+</code></pre>
+
+<h3 id="117-personal-system-blueprints">11.7 Personal-system blueprints</h3>
+<p>Three blueprints scale from laptop to fleet to civilization. They share the same
+invariant: <strong>capture cheaply, verify selectively, link aggressively, review
+continuously, and never let derived summaries replace source records.</strong></p>
+<table>
+<thead>
+<tr><th>Blueprint</th><th>Stack</th><th>Best for</th><th>Verification hook</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A — Minimal personal archive</strong></td>
+<td>Markdown files + SQLite metadata + LanceDB/Chroma vectors + Git backup + weekly review.</td>
+<td>Individuals, small teams, offline-first PKM.</td>
+<td>Monthly link-rot check, checksum manifest, “claims vs sources” audit.</td>
+</tr>
+<tr>
+<td><strong>B — Obsidian-style knowledge vault</strong></td>
+<td>Markdown vault + backlinks + MOCs + PARA folders + optional DuckDB/vector search + published static export.</td>
+<td>Writers, researchers, students, consultants.</td>
+<td>Backlink health, orphan-note report, AI-summary quarantine folder.</td>
+</tr>
+<tr>
+<td><strong>C — Fleet/civilization archive</strong></td>
+<td>SQLite/Postgres metadata + graph DB + vector DB + object storage + audit log + credential registry + autopsy/bug ledgers + vault sync + badge capabilities.</td>
+<td>Multi-agent research fleets, institutional memory, public knowledge infrastructure.</td>
+<td><code>fleet.db</code>-style row counts, bug ledger reconciliation, autopsy reports, credential reconciliation, restore drills.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1171-minimal-personal-archive-schema">11.7.1 Minimal personal-archive schema</h4>
+<pre><code class="language-sql">CREATE TABLE notes (
+  id TEXT PRIMARY KEY,
+  path TEXT NOT NULL,
+  title TEXT,
+  created_at TEXT,
+  updated_at TEXT,
+  sha256 TEXT,
+  source_url TEXT,
+  epistemic_tier INTEGER DEFAULT 8,
+  knowledge_types TEXT,          -- comma-separated taxonomy tags
+  consent_scope TEXT DEFAULT 'private'
+);
+CREATE TABLE links (
+  src TEXT, dst TEXT, kind TEXT, weight REAL DEFAULT 1.0,
+  PRIMARY KEY(src,dst,kind)
+);
+CREATE TABLE claims (
+  id TEXT PRIMARY KEY,
+  note_id TEXT REFERENCES notes(id),
+  claim_text TEXT,
+  tier INTEGER,
+  confidence REAL,
+  last_verified TEXT
+);
+CREATE TABLE reviews (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  note_id TEXT,
+  reviewer TEXT,
+  action TEXT,                   -- verify/promote/demote/supersede/forget
+  reason TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<h4 id="1172-observed-folder-blueprint">11.7.2 Observed vault-folder blueprint pattern</h4>
+<pre><code>vault/
+├── 00 - Inbox/          # capture landing zone
+├── 01 - Projects/       # active work with outcomes
+├── 02 - Areas/          # ongoing responsibilities
+├── 03 - Resources/      # reference material
+├── 04 - Archive/        # completed/abandoned material
+├── 05 - People/         # personal CRM / collaborators
+├── 06 - Planning/       # vision → year → quarter → month → week → day
+├── 07 - Tasks/          # executable task surfaces
+├── 08 - Sources/        # books, videos, articles, AI synthesis quarantine
+├── 09 - Zettelkasten/   # atomic human-authored notes
+└── 10 - Config/         # schema, commands, memory, architecture
+</code></pre>
+<p>This folder layout is a useful <em>navigation</em> pattern, not a substitute for the
+canonical knowledge spine. PARA answers “what should I do with this now?” while the
+archive spine answers “where does this knowledge live in civilization?”</p>
+
+<h3 id="118-library-science-in-the-ai-era">11.8 Library science in the AI era</h3>
+<p>Library and information science contributes what AI vendors often forget: authority
+control, metadata design, provenance, user literacy, ethical curation, and institutional
+memory. Recent reviews show AI is entering libraries through recommendation,
+retrieval, OCR, cataloging, and chatbot services, while bias, privacy, accuracy,
+staff readiness, and Global North/South gaps remain live concerns.</p>
+<table>
+<thead>
+<tr><th>LIS competency</th><th>Archive function</th><th>AI-era risk</th><th>Control</th></tr>
+</thead>
+<tbody>
+<tr><td>Metadata design / authority control</td><td>Canonical names, identifiers, relationships, jurisdictions.</td><td>Embedding models flatten distinctions between concepts.</td><td>Hybrid lexical + taxonomy + vector retrieval; controlled vocabularies.</td></tr>
+<tr><td>Provenance and chain of custody</td><td>Every claim traces to evidence and transformations.</td><td>Generated summaries launder weak sources into confident prose.</td><td>Mandatory citations, derivative-content flags, verification tiers.</td></tr>
+<tr><td>Algorithmic auditing</td><td>Test retrieval, ranking, translation, and moderation for bias.</td><td>Training-data bias reproduces epistemic injustice.</td><td>Golden query sets segmented by domain, language, tier, and vulnerability.</td></tr>
+<tr><td>Reference interview / query understanding</td><td>Infer what the user actually needs, not just keywords.</td><td>LLMs optimize plausible answers over truthful ones.</td><td>Intent classification, clarification, refusal paths, uncertainty disclosure.</td></tr>
+<tr><td>Collection development</td><td>Appraise what to acquire, preserve, deaccession, or exclude.</td><td>“More data” mistaken for “better memory.”</td><td>Selection policy, consent, rights, redundancy budgets, gap reports.</td></tr>
+<tr><td>User literacy / information literacy</td><td>Teach users how to evaluate sources and uncertainty.</td><td>Automation induces overtrust.</td><td>Expose tiers, citations, correction history, and “why this answer” traces.</td></tr>
+<tr><td>Preservation and format migration</td><td>Keep knowledge readable across hardware/software generations.</td><td>Model and format obsolescence silently erase access.</td><td>Fixity checks, migration schedules, emulation plans, dark archives.</td></tr>
+</tbody>
+</table>
+<p><strong>Research anchors.</strong> A 2025 scoping review of AI algorithm bias in
+information retrieval screened 665 documents and included 76, finding bias through
+training data, unfair representation, and transparency deficits. A 2025 ACM/IEEE JCDL
+perspective identifies recommendation, retrieval, and OCR as major AI application
+areas in libraries. An IFLA Journal special issue collected 18 articles on AI in
+libraries, emphasizing uneven adoption and unresolved ethical issues. The archive
+should treat these as design constraints, not background reading.</p>
+
+<h3 id="119-censorship-resilience-and-knowledge-store-survival">11.9 Censorship, capture, and knowledge-store survival</h3>
+<p>Knowledge infrastructure fails politically before it fails technically. Centralized
+repositories are vulnerable to jurisdiction, funding pressure, link rot, platform
+policy, and state restriction. The archive’s answer is structural: distribute copies,
+distribute trust, preserve fixity, and make restoration routine.</p>
+<table>
+<thead>
+<tr><th>Threat</th><th>Observed/real pattern</th><th>Resilience mechanism</th><th>Verification</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Centralized access cutoff</strong></td>
+<td>In April 2025, NIH barred researchers in China and five other “countries of concern” from accessing 21 biomedical databases, fracturing collaborations and illustrating how centralized data can become politically unreachable.</td>
+<td>Multi-jurisdiction mirrors, offline packs, content-addressed blobs, and federation.</td>
+<td>Quarterly mirror audit; restore drill from non-primary copy.</td>
+</tr>
+<tr>
+<td><strong>Scholarly evaporation</strong></td>
+<td>Reporting cited in preservation commentary suggests up to one-third of digitally published research articles are not adequately preserved.</td>
+<td>Dark archives, LOCKSS-style consortia, institution-independent copies, format migration.</td>
+<td>Preservation coverage metrics; per-domain survival audits.</td>
+</tr>
+<tr>
+<td><strong>Single-server failure</strong></td>
+<td>Desarquivo, a Brazilian activist archive, was restored by fixing ~200 misconfigured external links, converting Drupal content to a static site, and publishing via HTTPS plus IPFS/Hypercore.</td>
+<td>Static exports, link-rot repair, distributed-web publishing, immutable snapshots.</td>
+<td>Link checker, snapshot diff, multi-protocol availability test.</td>
+</tr>
+<tr>
+<td><strong>Operator capture / censorship demand</strong></td>
+<td>Cloud and institutional repositories can be compelled, defunded, or repurposed.</td>
+<td>Open protocols, replaceable operators, constitutional governance, transparent funding, no single point of control.</td>
+<td>Governance minutes, funding disclosures, jurisdiction map, legal threat log.</td>
+</tr>
+<tr>
+<td><strong>Integrity attack</strong></td>
+<td>Silent edits can rewrite history without visible correction.</td>
+<td>Hash chains, signed contributions, Merkle roots, transparency-log anchoring, public audit endpoint.</td>
+<td>Random inclusion-proof audits; third-party verifier clients.</td>
+</tr>
+<tr>
+<td><strong>Credential/scope abuse</strong></td>
+<td>Local badge system shows credentials must encode powers and jurisdictions; plaintext secrets in process lists show operational leakage.</td>
+<td>Capability badges, secret scanning, short-lived tokens, no secrets in URLs/process args.</td>
+<td>Credential reconciliation report + secret scan on every sync.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1191-resilience-stack">11.9.1 Resilience stack</h4>
+<pre><code>3-2-1 rule adapted for knowledge:
+  3 copies minimum: primary, mirror, dark/offline or escrowed
+  2 different media/platforms: git + object store + IPFS/static export
+  1 geographically/jurisdictionally independent copy
+
+Integrity:
+  sha256 per artifact → manifest → signed snapshot → Merkle root → external anchor
+
+Recovery drills:
+  quarterly: restore random node set from mirror
+  annual: rebuild search index from canonical store
+  continuous: link-rot and format-obsolescence scanners
+
+Political resilience:
+  open-source code + open schemas + multi-stakeholder governance
+  jurisdictional diversity + legal defense fund + transparency reports
+  offline education packs for low-bandwidth or censored environments
+</code></pre>
+
+<h3 id="1110-synthesis-checklist-for-sssss-tier">11.10 SSSSS acceptance checklist</h3>
+<p>An archive reaches SSSSS tier only when the following are simultaneously true:</p>
+<table>
+<thead>
+<tr><th>Dimension</th><th>SSSSS criterion</th><th>Evidence required</th></tr>
+</thead>
+<tbody>
+<tr><td>Coverage</td><td>All seven knowledge classes plus the 14 behavioral types are representable.</td><td>Schema fields, examples, migration path, and retrieval filters for each type.</td></tr>
+<tr><td>Verification</td><td>Every claim has tier, source chain, uncertainty, and correction history.</td><td>T1–T9 policy, dispute workflow, re-verification scheduler, audit log.</td></tr>
+<tr><td>Failure memory</td><td>Failed experiments and postmortems are first-class and always retrievable.</td><td><code>failures</code> schema, failure-first ranking, local autopsy ledgers.</td></tr>
+<tr><td>Retrieval quality</td><td>Hybrid search is evaluated on golden sets segmented by intent, tier, language, and risk.</td><td>Recall@k, MRR, nDCG, citation coverage, no-hit quality, freshness audits.</td></tr>
+<tr><td>AI safety</td><td>AI answers cite evidence, expose uncertainty, refuse unsupported claims, and quarantine generated content.</td><td>Anti-hallucination contract, citation resolver, adversarial eval suite.</td></tr>
+<tr><td>Preservation</td><td>Artifacts survive format, media, jurisdiction, and operator failure.</td><td>Fixity checks, migrations, mirrors, dark archives, restore drills.</td></tr>
+<tr><td>Human systems</td><td>Personal and fleet blueprints are documented, portable, and reviewed.</td><td>Markdown/SQLite/vector blueprint, vault sync, credential registry, badge scopes.</td></tr>
+<tr><td>Resilience</td><td>Censorship and capture are structurally harder than preservation.</td><td>Federation, IPFS/static exports, governance, funding transparency, jurisdiction map.</td></tr>
+<tr><td>Learning loop</td><td>Use, correction, failure avoidance, and decay are measured and fed back.</td><td>Outcome-learning events, spaced re-verification, badge/credential reconciliation.</td></tr>
+</tbody>
+</table>
+
+<h4 id="11101-operational-runbook">11.10.1 Operational runbook for knowledge custodians</h4>
+<p>SSSSS is not a launch state; it is a maintenance discipline. The following cadence
+turns preservation from aspiration into operations. Each task emits an artifact that
+itself becomes a knowledge node.</p>
+<table>
+<thead>
+<tr><th>Cadence</th><th>Custodian task</th><th>Required artifact</th><th>Failure signal</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Continuous</strong></td><td>Signed writes, hash chaining, credential checks, secret scanning, ingestion quarantine.</td><td>Audit-log entries, CI checks, credential reconciliation diff.</td><td>Unsigned write, secret in URL/process list, unreviewed T8 promoted.</td></tr>
+<tr><td><strong>Hourly / event-driven</strong></td><td>Index projections, embedding updates, contradiction scan, broken-link queue.</td><td>Pipeline run IDs, vector-index generation, contradiction candidates.</td><td>Index lag, unresolved citation, stale projection.</td></tr>
+<tr><td><strong>Daily</strong></td><td>Review staging queue, failed ingestion report, new controversy digest, gap-report delta.</td><td>Daily ops digest with counts and links.</td><td>Queue age &gt; SLA, repeated ingest failures, controversy backlog.</td></tr>
+<tr><td><strong>Weekly</strong></td><td>Retrieval golden-set sample, citation-resolution audit, translation spot-check, outcome-learning review.</td><td>Weekly quality report: recall@k, MRR, nDCG, citation coverage, no-hit rate.</td><td>Recall drop after model/index change; citation rot; translation drift.</td></tr>
+<tr><td><strong>Monthly</strong></td><td>Fixity audit, backup restore drill, credential scope review, privacy/consent audit, format-obsolescence scan.</td><td>Monthly preservation report and restore log.</td><td>Checksum mismatch, failed restore, expired credential, consent violation.</td></tr>
+<tr><td><strong>Quarterly</strong></td><td>Jurisdiction and mirror audit, governance meeting, ontology dispute review, funding transparency update.</td><td>Quarterly governance record and jurisdiction map.</td><td>Single-jurisdiction dependency, opaque funding, unresolved ontology conflict.</td></tr>
+<tr><td><strong>Annual</strong></td><td>Full disaster-recovery exercise, schema migration rehearsal, accessibility audit, community contribution review, strategic gap analysis.</td><td>Annual resilience report, migration rehearsal log, accessibility conformance.</td><td>Recovery time above target, inaccessible core content, strategic drift.</td></tr>
+</tbody>
+</table>
+
+<h4 id="11102-failure-mode-taxonomy">11.10.2 Failure-mode taxonomy for knowledge systems</h4>
+<p>Every failure mode should become a <code>n:Failure</code> or operational incident with
+detection, blast radius, mitigation, and verification. This table is the minimum
+catalog for a civilization-scale archive.</p>
+<table>
+<thead>
+<tr><th>Failure mode</th><th>Mechanism</th><th>Early detector</th><th>Archive response</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Link rot / reference decay</strong></td><td>URLs die, DOIs move, repositories disappear.</td><td>Weekly link checker; citation-resolution audit.</td><td>Mirror source, preserve snapshot, mark pointer stale, update <code>n:Document</code>.</td></tr>
+<tr><td><strong>Format obsolescence</strong></td><td>Codec, filesystem, database, or model format becomes unreadable.</td><td>Format registry age; open-file test in CI.</td><td>Normalize to preservation format; keep original; schedule migration.</td></tr>
+<tr><td><strong>Metadata drift</strong></td><td>Names, identifiers, jurisdictions, or relationships diverge across mirrors.</td><td>Reconciliation diff between source registry and derived index.</td><td>Publish reconciliation report; demote derived index until fixed.</td></tr>
+<tr><td><strong>Index corruption</strong></td><td>Vector/graph/relational projections disagree with canonical store.</td><td>Row-count checksums; random node comparison.</td><td>Rebuild projection from canonical source; log event.</td></tr>
+<tr><td><strong>Model drift</strong></td><td>Embedding, reranker, translator, or LLM update changes retrieval behavior.</td><td>A/B golden-set eval before promotion.</td><td>Version models; rollback; publish retrieval delta.</td></tr>
+<tr><td><strong>Poisoned ingestion</strong></td><td>False claims, fake evidence, adversarial documents, or AI slop enter staging.</td><td>Tier gating, provenance checks, anomaly detection, human review.</td><td>Quarantine, dispute node, reputation penalty, audit trail.</td></tr>
+<tr><td><strong>Translation drift</strong></td><td>Machine translation alters certainty, tone, technical meaning, or cultural context.</td><td>Back-translation samples; native-speaker review queue.</td><td>Label machine translation; keep source-language canonical; require verified flag.</td></tr>
+<tr><td><strong>Consent violation</strong></td><td>Personal, indigenous, medical, or culturally restricted knowledge is exposed.</td><td>Consent registry audit; privacy-impact review.</td><td>Tombstone, cryptographic erasure where lawful, restrict access, notify governance.</td></tr>
+<tr><td><strong>Credential/scope leak</strong></td><td>Tokens, keys, or capability badges expose powers beyond intent.</td><td>Secret scanning; process-list audit; credential reconciliation.</td><td>Rotate secrets, revoke scope, publish incident, patch pipeline.</td></tr>
+<tr><td><strong>Sync conflict</strong></td><td>Offline edits collide across replicas or jurisdictions.</td><td>Version vectors; conflict queue; CRDT/merge policy tests.</td><td>Preserve both versions; create controversy/merge-review node; never silently overwrite.</td></tr>
+<tr><td><strong>Accessibility failure</strong></td><td>Core knowledge inaccessible by bandwidth, language, disability, or device.</td><td>WCAG audit; offline-pack test; low-bandwidth simulation.</td><td>Text-only mode, compressed packs, translation priority, screen-reader QA.</td></tr>
+<tr><td><strong>Governance capture</strong></td><td>Single funder, operator, or jurisdiction controls policy or availability.</td><td>Funding disclosure; jurisdiction map; governance participation metrics.</td><td>Federation, replaceable operators, multi-stakeholder ratification, transparency reports.</td></tr>
+<tr><td><strong>Cognitive overload</strong></td><td>Too many nodes, edges, reports, or AI suggestions overwhelm users.</td><td>Query abandonment; time-to-answer; user trust surveys.</td><td>Progressive disclosure, curated paths, gap reports, “essential knowledge” packs.</td></tr>
+<tr><td><strong>Epistemic debt</strong></td><td>High-impact claims accumulate unresolved contradictions, stale evidence, or missing replication.</td><td>Controversy age; re-verification backlog; tier distribution by domain.</td><td>Debt register, prioritization by consequence, public gap reports.</td></tr>
+</tbody>
+</table>
+
+<h4 id="11103-civilization-scale-metrics">11.10.3 Civilization-scale metrics</h4>
+<p>Operational metrics must measure whether civilization can <em>trust and use</em> the
+archive, not merely whether it stores bytes.</p>
+<table>
+<thead>
+<tr><th>Metric</th><th>Definition</th><th>Target direction</th><th>Why it matters</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Provenance completeness</strong></td><td>Fraction of canonical claims with source chain, author/agent, timestamp, and hash.</td><td>→ 100% for T1–T5</td><td>Uncited knowledge cannot be verified.</td></tr>
+<tr><td><strong>Citation resolution rate</strong></td><td>Fraction of citations resolving to live nodes/artifacts.</td><td>→ 100%; alert on decay</td><td>Broken citations destroy trust.</td></tr>
+<tr><td><strong>Failure recall@k</strong></td><td>Recall of relevant failure/lesson nodes for method queries.</td><td>Maximize; missing failures is safety-critical.</td><td>The archive exists to prevent repeated harm.</td></tr>
+<tr><td><strong>Verification latency</strong></td><td>Time from submission to tier decision or dispute resolution.</td><td>Decrease for high-impact claims</td><td>Slow verification creates epistemic backlog.</td></tr>
+<tr><td><strong>Correction visibility</strong></td><td>Fraction of corrections publicly logged with before/after lineage.</td><td>→ 100%</td><td>Visible self-correction builds credibility.</td></tr>
+<tr><td><strong>Restore time</strong></td><td>Time to restore a random node/domain from mirror/dark archive.</td><td>Below declared RTO</td><td>Untested backups are hypotheses.</td></tr>
+<tr><td><strong>Language coverage</strong></td><td>Canonical nodes with human-verified translations by language/region.</td><td>Increase low-resource coverage</td><td>Knowledge inequality is an epistemic failure.</td></tr>
+<tr><td><strong>Offline availability</strong></td><td>Fraction of core learning packs usable without network.</td><td>High for education-critical domains</td><td>Access must survive infrastructure failure.</td></tr>
+<tr><td><strong>Cost per verified claim</strong></td><td>Infrastructure + labor cost divided by promoted, cited, non-retracted claims.</td><td>Decrease without lowering verification</td><td>Sustainability prevents capture-by-funding.</td></tr>
+<tr><td><strong>Epistemic debt index</strong></td><td>Weighted sum of stale high-impact claims, open controversies, and missing replication by domain.</td><td>Decrease quarterly</td><td>Makes “what we don’t know” operational.</td></tr>
+<tr><td><strong>Contribution diversity</strong></td><td>Distribution of contributors by region, language, institution, and independence.</td><td>Reduce single-point cultural bias</td><td>Diverse provenance reduces systemic blind spots.</td></tr>
+<tr><td><strong>Governance participation</strong></td><td>Stakeholders exercising review, dispute, translation, and protocol-vote rights.</td><td>Broad and meaningful</td><td>Participation is anti-capture infrastructure.</td></tr>
+</tbody>
+</table>
+
+<h4 id="11104-crosswalk-local-evidence-to-specification">11.10.4 Crosswalk: local evidence → specification sections</h4>
+<table>
+<thead>
+<tr><th>Local artifact</th><th>Specification section it exercises</th><th>Gap exposed</th><th>Upgrade required</th></tr>
+</thead>
+<tbody>
+<tr><td><code>fleet.db</code> + <code>fleet_ingest.py</code></td><td>§6.3 schemas, §6.5 retrieval, §9 deliverables</td><td>Flat relational index lacks graph edges and vector retrieval; bug extraction is regex-based.</td><td>Add structured bug/edge tables; project into graph/vector layers.</td></tr>
+<tr><td><code>GENOME_MAP.md</code></td><td>§2.4 graph schema, §4.8 outcome learning</td><td>Gene/mutation model is textual and fleet-specific.</td><td>Generalize as lineage/provenance edge types and drift reports.</td></tr>
+<tr><td><code>sync_vault.sh</code> / <code>push_vault.sh</code></td><td>§6.6 distributed storage, §7.4 auditability, §8.5 anti-capture</td><td>Plaintext PAT risk; no fixity manifest or restore drill in script.</td><td>Add signed snapshots, secret scanning, checksum manifest, quarterly restore test.</td></tr>
+<tr><td><code>FLEET_ANATOMY.md</code></td><td>§5 experience schema, §7 threat model</td><td>Rich narrative but not yet normalized into <code>experience_record</code>.</td><td>Create postmortem subtype with process anatomy, resource metrics, FDs, I/O, logs.</td></tr>
+<tr><td><code>CODE_AUTOPSY.md</code></td><td>§3 verification, §5.3 failures, §7.3 reputation</td><td>Severity ledger exists, but fixes/retests are uneven.</td><td>Every bug needs status: confirmed, fixed, retested, regression-covered.</td></tr>
+<tr><td><code>CORPS_BADGES.html</code> / roster / DB</td><td>§7.2 access control, §7.3 reputation</td><td>16/12/11 count mismatch across layers.</td><td>Credential registry needs one canonical source plus reconciliation report.</td></tr>
+<tr><td><code>FLEET_SIMULATION.md</code></td><td>§4.8 outcome learning, §6.8 roadmap</td><td>Predictors are correlational from one window.</td><td>Repeated experiments across time before promoting “success predictors” to canonical claims.</td></tr>
+</tbody>
+</table>
+
+<h3 id="1111-sources-and-evidence-index">11.11 Sources and evidence index</h3>
+<h4 id="external-frontier-sources">External frontier sources</h4>
+<table>
+<thead>
+<tr><th>Source</th><th>Used for</th><th>URL</th></tr>
+</thead>
+<tbody>
+<tr><td>NoteBar, arXiv 2509.03610 (2025)</td><td>AI-assisted note classification; 3,173 notes / 8,494 concepts / 16 personas.</td><td><a href="https://arxiv.org/abs/2509.03610">https://arxiv.org/abs/2509.03610</a></td></tr>
+<tr><td>DeepNote, EMNLP 2025 Findings</td><td>Note-centric adaptive RAG and iterative knowledge refinement.</td><td><a href="https://aclanthology.org/2025.findings-emnlp.1073.pdf">https://aclanthology.org/2025.findings-emnlp.1073.pdf</a></td></tr>
+<tr><td>MotherDuck Obsidian/DuckDB RAG write-up</td><td>Local-first retrieval over 8,963 Markdown notes using backlinks.</td><td><a href="https://motherduck.com/blog/obsidian-rag-duckdb-motherduck/">https://motherduck.com/blog/obsidian-rag-duckdb-motherduck/</a></td></tr>
+<tr><td>Domenic Denicola, FSRS explanation (2025)</td><td>FSRS difficulty/stability/retrievability framing.</td><td><a href="https://domenic.me/fsrs/">https://domenic.me/fsrs/</a></td></tr>
+<tr><td>FSRS benchmark repository</td><td>Scale of Anki review data and FSRS-5/6/7 evolution.</td><td><a href="https://github.com/open-spaced-repetition/fsrs-benchmark">https://github.com/open-spaced-repetition/fsrs-benchmark</a></td></tr>
+<tr><td>Kornell &amp; Bjork, Behavioral Sciences 2025</td><td>Distribution model explaining why forgetting curves deviate from individual forgetting rates.</td><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12293037/">https://pmc.ncbi.nlm.nih.gov/articles/PMC12293037/</a></td></tr>
+<tr><td>RAG quality metrics production guide</td><td>Recall, MRR, nDCG, citation coverage, no-hit rate, drift checks.</td><td><a href="https://monpg.app/blog/rag-quality-metrics-recall-latency">https://monpg.app/blog/rag-quality-metrics-recall-latency</a></td></tr>
+<tr><td>TopK Bench (Dec 2025)</td><td>Production vector-search benchmark dimensions: ingest, concurrency, filtering, recall, read-write.</td><td><a href="https://www.topk.io/blog/20251201-topk-bench">https://www.topk.io/blog/20251201-topk-bench</a></td></tr>
+<tr><td>Pinecone metadata-filtering paper, ICML 2025</td><td>Filtered vector retrieval at scale; mean recall@10 ≈ 0.989 on YFCC filter track.</td><td><a href="https://www.pinecone.io/research/ICML_2025.pdf">https://www.pinecone.io/research/ICML_2025.pdf</a></td></tr>
+<tr><td>Practical RAG evaluation, arXiv 2511.09545</td><td>Rarity-aware set-based metric and cost/latency/quality trade-offs.</td><td><a href="https://arxiv.org/abs/2511.09545">https://arxiv.org/abs/2511.09545</a></td></tr>
+<tr><td>BFI Inside the Archive #49 (Nov 2025)</td><td>BFI DPI lifecycle and 20 PB preservation scale.</td><td><a href="https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one">https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one</a></td></tr>
+<tr><td>Chicago Film Archives (Aug 2025)</td><td>200 TB onsite storage, LTO backups, file-location tooling.</td><td><a href="https://www.chicagofilmarchives.org/news/2025/08/new-digital-preservation-and-storage-systems-at-cfa/">https://www.chicagofilmarchives.org/news/2025/08/new-digital-preservation-and-storage-systems-at-cfa/</a></td></tr>
+<tr><td>German National Library / IASA Journal (Aug 2025)</td><td>770k CDs migrated; 50k cassettes digitized; 500k+ hours.</td><td><a href="https://journal.iasa-web.org/index.php/pubs/article/view/170">https://journal.iasa-web.org/index.php/pubs/article/view/170</a></td></tr>
+<tr><td>‘Ulu‘ulu OHA project page</td><td>200 reels, 71.5 hours, 13.32 TB preservation files.</td><td><a href="https://uluulu.westoahu.hawaii.edu/projects/2025-oha-grant-project/">https://uluulu.westoahu.hawaii.edu/projects/2025-oha-grant-project/</a></td></tr>
+<tr><td>UH Libraries digital preservation paper (Sep 2025)</td><td>Archivematica workflows and born-digital appraisal challenges.</td><td><a href="https://doi.org/10.69554/zbrz4389">https://doi.org/10.69554/zbrz4389</a></td></tr>
+<tr><td>AI bias in information retrieval scoping review (2025)</td><td>LIS/IRS bias evidence; 665 screened, 76 included.</td><td><a href="https://www.tandfonline.com/doi/full/10.1080/07317131.2025.2512282">https://www.tandfonline.com/doi/full/10.1080/07317131.2025.2512282</a></td></tr>
+<tr><td>AI in libraries JCDL perspective (2025)</td><td>AI applications in recommendation, retrieval, OCR; adoption challenges.</td><td><a href="https://dl.acm.org/doi/10.1145/3677389.3702568">https://dl.acm.org/doi/10.1145/3677389.3702568</a></td></tr>
+<tr><td>IFLA Journal AI special issue (2025)</td><td>18-article research agenda on AI in libraries.</td><td><a href="https://journals.sagepub.com/doi/full/10.1177/03400352251365278">https://journals.sagepub.com/doi/full/10.1177/03400352251365278</a></td></tr>
+<tr><td>Librarian skillset / AI competencies (2025)</td><td>Mapping LIS competencies to AI roles, retrieval, metadata, evaluation.</td><td><a href="https://www.tandfonline.com/doi/full/10.1080/01639374.2025.2539787">https://www.tandfonline.com/doi/full/10.1080/01639374.2025.2539787</a></td></tr>
+<tr><td>Decentralized storage permanence paradox</td><td>NIH 2025 database-access restrictions; LOCKSS vs open decentralized storage.</td><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12800272/">https://pmc.ncbi.nlm.nih.gov/articles/PMC12800272/</a></td></tr>
+<tr><td>Digital preservation in disorder / Knowledge Commons</td><td>Threat to higher-ed research preservation; multi-jurisdiction nonprofit network proposal.</td><td><a href="https://about.hcommons.org/2025/03/19/digital-preservation-in-a-time-of-disorder/">https://about.hcommons.org/2025/03/19/digital-preservation-in-a-time-of-disorder/</a></td></tr>
+<tr><td>Distributed Press Desarquivo resilience case</td><td>Link repair, static conversion, IPFS/Hypercore recovery.</td><td><a href="https://distributed.press/2025/03/04/distributed-press-resilience-challenge-restoring-desarquivo/">https://distributed.press/2025/03/04/distributed-press-resilience-challenge-restoring-desarquivo/</a></td></tr>
+</tbody>
+</table>
+<h4 id="local-implementation-sources">Local implementation sources</h4>
+<table>
+<thead>
+<tr><th>Artifact</th><th>Path</th><th>Verified contents used here</th></tr>
+</thead>
+<tbody>
+<tr><td>Fleet database</td><td><code>/home/neilh/fleet.db</code></td><td>10 agents, 67 experiments, 1,745 results, 22 bugs, 58 docs, 11 badge rows.</td></tr>
+<tr><td>Fleet ingest script</td><td><code>/home/neilh/fleet_ingest.py</code></td><td>Scans <code>science_lab</code>, result JSON/CSV artifacts, autopsy/correction files, learning docs, and roster badges; exports <code>fleet_data.json</code>.</td></tr>
+<tr><td>Genome map</td><td><code>/home/neilh/GENOME_MAP.md</code></td><td>Housekeeping genes, private mutations, point mutations, 57 duplicated script basenames, Jaccard phylogeny.</td></tr>
+<tr><td>Vault sync</td><td><code>/home/neilh/sync_vault.sh</code> · <code>/home/neilh/push_vault.sh</code></td><td>15-minute rsync/copy → <code>gh_backup</code> → private GitHub vault.</td></tr>
+<tr><td>Live autopsy</td><td><code>/home/neilh/FLEET_ANATOMY.md</code></td><td>Process/PID/RSS/I/O/FD evidence, docker zoo, cron, resource pathologies, PAT warning.</td></tr>
+<tr><td>Code autopsy</td><td><code>/home/neilh/CODE_AUTOPSY.md</code></td><td>83 files, 7,429 lines, 344 functions/classes, severity-ranked bug ledger.</td></tr>
+<tr><td>Lab autopsies</td><td><code>/home/neilh/science_lab/{advml,bio,cs,ml,math,physics,social,stats}/AUTOPSY.md</code></td><td>Eight independent lab-level forensic reviews.</td></tr>
+<tr><td>Fleet simulation</td><td><code>/home/neilh/FLEET_SIMULATION.md</code> · <code>/home/neilh/fleet_simulator.py</code></td><td>699 mutation events, 19 agents, lifecycle model, Monte-Carlo replay.</td></tr>
+<tr><td>Badge registry</td><td><code>learning/CORPS_BADGES.html</code> · <code>learning/CORPS_ROSTER.md</code> · <code>badge_stage/BADGE_*.md</code></td><td>16 registry roles, 12 roster rows, credential powers/jurisdictions/statuses.</td></tr>
+</tbody>
+</table>
+<p><strong>Final note.</strong> The difference between an S archive and an SSSSS archive is
+not more prose. It is the presence of <em>operational proof</em>: schemas exercised by
+real data, retrieval measured on golden sets, failures preserved as records,
+credentials scoped and reconciled, preservation rehearsed, and the frontier research
+translated into enforceable invariants. Section 11 is the beginning of that proof.</p>
+<hr />
+<p><em>End of specification. This document is itself a knowledge node —
+<code>n:Design:Global-Human-Knowledge-Archive-v1.0</code> — and should be versioned,
+peer-reviewed, and iterated like any other canonical knowledge.</em></p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 46 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

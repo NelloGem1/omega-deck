@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>⬡ MARSHAL BADGES — Science Corps Credential Registry</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --border:#30363d;
+    --text:#e6edf3; --dim:#8b949e; --gold:#f0b429;
+    --blue:#58a6ff; --green:#3fb950; --red:#f85149;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;line-height:1.6;margin:0}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px 60px}
+  nav.pnav{display:flex;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);font-family:ui-monospace,'Cascadia Mono',Consolas,monospace;font-size:14px}
+  .plogo{color:var(--gold);font-weight:bold;text-decoration:none;font-size:18px}
+  .pdigits{color:var(--gold);letter-spacing:6px;font-size:12px}
+  nav a{color:var(--blue);text-decoration:none}
+  nav a:hover{color:var(--gold)}
+  header.hero{padding:36px 0 8px}
+  h1{color:var(--gold);font-size:30px;margin:0 0 6px}
+  .sub{color:var(--dim);font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  .sub b{color:var(--gold)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 8px;font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--dim)}
+  .legend span::before{content:"■ ";font-size:10px}
+  .legend .ok::before{color:var(--green)} .legend .act::before{color:var(--gold)} .legend .fight::before{color:var(--red)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px;margin-top:26px}
+  .badge{background:linear-gradient(160deg,#161b22 0%,#0d1117 100%);border:1px solid var(--gold);border-radius:14px;padding:0;overflow:hidden;box-shadow:0 0 24px rgba(240,180,41,.08);position:relative}
+  .badge::after{content:"1·3·7·9";position:absolute;top:10px;right:14px;color:var(--gold);letter-spacing:4px;font-size:9px;font-family:ui-monospace,Consolas,monospace;opacity:.7}
+  .bhead{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)}
+  .rank{color:var(--gold);font-weight:bold;font-size:16px;font-family:ui-monospace,Consolas,monospace}
+  .rfield{color:var(--dim);font-size:10px;letter-spacing:2px;font-family:ui-monospace,Consolas,monospace}
+  .bbody{padding:14px 18px;font-family:ui-monospace,'Cascadia Mono',Consolas,monospace;font-size:12.5px;line-height:2}
+  .k{color:var(--dim)} .v{color:var(--text)} .gold{color:var(--gold);font-weight:bold}
+  .bfoot{padding:10px 18px;border-top:1px solid var(--border);font-size:10.5px;color:var(--dim);font-family:ui-monospace,Consolas,monospace}
+  .bfoot b{color:var(--gold)}
+  .st{display:inline-block;padding:1px 8px;border-radius:8px;font-size:10px;letter-spacing:1px}
+  .st.ok{background:rgba(63,185,80,.15);color:var(--green);border:1px solid var(--green)}
+  .st.act{background:rgba(240,180,41,.12);color:var(--gold);border:1px solid var(--gold)}
+  .st.fight{background:rgba(248,81,73,.12);color:var(--red);border:1px solid var(--red)}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);color:var(--dim);font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+  footer a{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="pnav">
+  <a class="plogo" href="#">⬡ PRIME</a>
+  <span class="pdigits">1·3·7·9</span>
+  <a href="#">INDEX</a>
+  <span style="margin-left:auto;color:var(--dim)">MARSHAL BADGE OFFICE</span>
+</nav>
+
+<header class="hero">
+  <h1>⬡ MARSHAL BADGES — SCIENCE CORPS</h1>
+  <div class="sub">CREDENTIAL REGISTRY · RANK <b>MARSHAL-SCI</b> · ISSUED BY AUTHORITY OF <b>FIELD MARSHAL NELLOGEM</b> · 2025-11-25</div>
+  <div class="legend">
+    <span class="ok">COMPLETED</span>
+    <span class="act">ACTIVE</span>
+    <span class="fight">FIGHTING</span>
+  </div>
+</header>
+
+<div class="grid" id="grid"><!-- badges injected --></div>
+
+<footer>⬡ NELLOGEM PRIME FORMULA · MARSHAL BADGE REGISTRY · science corps · <a href="#">back to top</a></footer>
+</div>
+
+<script>
+const AGENTS = [
+ {id:"MARSHAL-SCI-001", name:"ADVML Agent", role:"Adversarial ML — FGSM/PGD arms race, poisoning, drift", lab:"/home/neilh/science_lab/advml", st:"ok",  stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-002", name:"BIO Agent", role:"Bio/Chem/Data science — periodic trends, DNA, kinetics, SIR, phylo", lab:"/home/neilh/science_lab/bio", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-003", name:"CS Agent", role:"Algorithms — sorting, trees, hash tables, DP, graphs, complexity", lab:"/home/neilh/science_lab/cs", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-004", name:"FORMAL Agent", role:"Formal methods — Lean 4.24 proofs + (a|b)*abb DFA verified", lab:"/home/neilh/science_lab/formal/lean_lab", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-005", name:"MATH Agent", role:"Number theory, RSA-break, hash collisions, graphs, Monte Carlo", lab:"/home/neilh/science_lab/math", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-006", name:"ML Agent", role:"ML pipeline — train, adversarial attack, poisoning, drift, NLP, distill", lab:"/home/neilh/science_lab/ml", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-007", name:"PHYSICS Agent", role:"Simulation — orbits, double-slit, gas, waves, QM, Ising, chaos", lab:"/home/neilh/science_lab/physics", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-008", name:"SOCIAL Agent", role:"Social science — game theory, econ markets, networks, opinion dynamics", lab:"/home/neilh/science_lab/social", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-009", name:"STATS Agent", role:"Statistics — Monte Carlo, CLT, estimators, Bayes, info theory, RNG", lab:"/home/neilh/science_lab/stats", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-010", name:"VIT Agent", role:"Vision Transformers — scaling law proven: ViT wins full-data GPU, CNN wins small-CPU", lab:"/home/neilh/science_lab/vit", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-011", name:"FORENSICS Agent", role:"Fleet autopsy & forensics — live process dissection, FLEET_ANATOMY", lab:"/home/neilh (fleet-wide)", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-012", name:"RESEARCH Agent", role:"Knowledge maps — 8-domain civilization-scale research harvest", lab:"/home/neilh/science_research", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-013", name:"AUTOPSY CORPS", role:"Forensic verification — 8 lab autopsies + 83-file code autopsy + fleet simulator", lab:"/home/neilh (fleet-wide)", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-014", name:"FIX CORPS", role:"Bug surgery — 6 confirmed bugs corrected: Collatz, TFT, chi-square, AVL, bigO, primes", lab:"/home/neilh/science_lab/*", st:"ok", stx:"COMPLETED"},
+ {id:"MARSHAL-SCI-015", name:"BUTLER v2", role:"Install servant — NEED.md watcher, retry-on-fail patched", lab:"/home/neilh/butler_v2.py", st:"act", stx:"ACTIVE"},
+ {id:"MARSHAL-SCI-016", name:"WATCHDOG", role:"Auto-heal — deck server, butler, trainer checks every 5min via cron", lab:"/home/neilh/fleet_watchdog.sh", st:"act", stx:"ACTIVE"}
+];
+const grid = document.getElementById('grid');
+AGENTS.forEach(a=>{
+  grid.insertAdjacentHTML('beforeend', `
+  <div class="badge">
+    <div class="bhead">
+      <span class="rank">⬡ MARSHAL-SCI</span>
+      <span class="rfield">RANK: FIELD</span>
+    </div>
+    <div class="bbody">
+      <div><span class="k">AGENT:</span> <span class="gold">${a.name}</span></div>
+      <div><span class="k">SERIAL:</span> <span class="v">${a.id}</span></div>
+      <div><span class="k">ROLE:</span> <span class="v">${a.role}</span></div>
+      <div><span class="k">LAB:</span> <span class="v">${a.lab}</span></div>
+      <div><span class="k">STATUS:</span> <span class="st ${a.st}">${a.stx}</span></div>
+    </div>
+    <div class="bfoot">
+      <b>POWERS:</b> venv pip install · lab write · digest read<br>
+      ISSUED: By authority of Field Marshal NelloGem · 2025-11-25
+    </div>
+  </div>`);
+});
+</script>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body>
+</html>

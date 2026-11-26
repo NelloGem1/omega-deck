@@ -1,0 +1,760 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Flask / Python Web Security Deep Dive</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="flask-python-web-security-deep-dive">Flask / Python Web Security Deep Dive</h1>
+<p>Python- and Flask-specific attack surface and defenses. Where possible each
+topic pairs an attack against the lab app at <code>/home/neilh/websec_lab/app/app.py</code>
+with the corresponding fix. General vuln classes (IDOR, CSRF, SSRF, etc.) live
+in <code>advanced_web_vulns.md</code>; this file covers what is <em>specific</em> to Flask,
+Werkzeug, Jinja2, sqlite3, Python serialization, and the WSGI stack.</p>
+<hr />
+<h2 id="1-werkzeug-debugger-debugtrue">1. Werkzeug debugger (<code>debug=True</code>)</h2>
+<h3 id="why-it-is-dangerous">Why it is dangerous</h3>
+<p><code>app.run(debug=True)</code> activates the Werkzeug interactive debugger: traceback
+pages get a <code>/console</code> that evaluates arbitrary Python in the server process —
+read the DB, <code>os.system</code>, read <code>app.secret_key</code>/env vars. The traceback page
+alone leaks absolute paths, source lines, and <strong>local variable values</strong>
+(passwords, SQL strings, session contents, package versions). <code>debug=True</code> only
+affects the dev server — it is a "temporary" deploy that becomes permanent.</p>
+<h3 id="the-pin">The PIN</h3>
+<p>Since Werkzeug 0.11ish the <code>/console</code> endpoint is protected by a PIN that is
+printed to the server's stdout. It is <em>not</em> a password — it is derived from
+semi-public machine data:</p>
+<ul>
+<li><code>probably_public_bits</code>: username, <code>flask.app</code>, <code>Flask</code>, path to <code>app.py</code>.</li>
+<li><code>private_bits</code>: <code>uuid.getnode()</code> (MAC address as int), machine-id or
+  <code>/proc/self/cgroup</code> contents (WSL/containers), etc.</li>
+</ul>
+<p>Attack scenarios: with any file-read primitive (LFI, path traversal, SSRF
+<code>file://</code>, backup leak) an attacker recomputes the PIN — tools like
+<code>werkzeug-debug-console-bypass</code> automate it; in containers <code>machine-id</code> is
+often shared/stable, making PINs predictable. The <strong><code>WERKZEUG_DEBUG_PIN=off</code></strong>
+env var disables the PIN check entirely — check deployment envs. Repeated
+wrong PINs lock the console until restart.</p>
+<h3 id="lab-mapping">Lab mapping</h3>
+<p><code>app.py</code> ends with <code>app.run(host="127.0.0.1", port=5000, debug=True)</code>. Note
+<code>127.0.0.1</code> binding mitigates <em>remote</em> access to <code>/console</code>, but the tracebacks
+still render. Any localhost proxy, port-forward, or port-scan to 5000 exposes
+it. Try: <code>GET /nonexistent</code> to force a traceback; if the console shows, try the
+PIN flow or look for leaked machine bits.</p>
+<h3 id="defense">Defense</h3>
+<pre><code class="language-python"># NEVER in production
+if __name__ == &quot;__main__&quot;:
+    app.run(debug=False)          # or omit debug entirely
+
+# Better: use a real WSGI server and control env explicitly
+# gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app
+</code></pre>
+<ul>
+<li>Gate debug behind env: <code>app.run(debug=os.environ.get("FLASK_DEBUG") == "1")</code>.</li>
+<li>Do not expose Werkzeug's dev server beyond localhost.</li>
+<li>Ensure <code>WERKZEUG_DEBUG_PIN</code> is never set to <code>off</code> in prod.</li>
+<li>If the debugger must exist on a box you control, firewall <code>/console</code> or use
+  an auth proxy in front.</li>
+</ul>
+<hr />
+<h2 id="2-flask-session-attacks">2. Flask session attacks</h2>
+<p>Flask's default session is <strong>client-side</strong>: a signed (not encrypted) cookie via
+itsdangerous <code>URLSafeTimedSerializer</code>. Format:</p>
+<pre><code>base64(payload_json).timestamp.signature
+</code></pre>
+<p>What is signed: the whole <code>payload.timestamp</code> string. What the client sees:
+<strong>everything</strong> — the payload is only base64, not encrypted. So secrets must
+never be stored in <code>session</code>; it is readable by the user and by anyone who sees
+the cookie (proxy logs, XSS exfil, shoulder-surfing).</p>
+<h3 id="attacks">Attacks</h3>
+<ol>
+<li>
+<p><strong>Weak SECRET_KEY → forge anything.</strong>
+   Lab uses <code>app.secret_key = "dev-secret-change-me"</code> — trivially in wordlists.
+   Attack:
+   <code>bash
+   flask-unsign --decode --cookie 'eyJpc19wcmVtaXVtIjpmYWxzZX0...'
+   flask-unsign --unsign --cookie '&lt;cookie&gt;' --wordlist rockyou.txt --no-literal-eval
+   flask-unsign --sign --cookie "{'username':'demo','is_premium':True,'role':'premium'}" \
+       --secret 'dev-secret-change-me'</code>
+   Replace the cookie → premium flag forged. <strong>This is the single most common
+   real-world Flask vuln.</strong></p>
+</li>
+<li>
+<p><strong>Over-trusting session contents.</strong> Even with a strong key, the lab stores
+   <code>is_premium</code> and <code>role</code> in the session and <code>/premium</code> trusts
+   <code>session.get("is_premium")</code> without re-checking the DB. If the key leaks
+   <em>or</em> a lower-privileged path can influence session values (e.g., session is
+   populated from user-controlled data), authorization is bypassed. Defense:
+   store only <code>user_id</code>/<code>username</code>; re-fetch role from DB per request
+   (or cache with short TTL).</p>
+</li>
+<li>
+<p><strong>Session fixation.</strong> Flask's default cookie session makes classic fixation
+   awkward (no server-side session ID to fix), but if <code>flask-session</code> or
+   server-side sessions are used, the session ID must be <strong>regenerated at
+   login</strong> (<code>session_interface.regenerate()</code>). Otherwise an attacker who plants
+   a session ID keeps access after the victim logs in. Also: <code>session.clear()</code>
+   on login/logout prevents key-collision carryover.</p>
+</li>
+<li>
+<p><strong>Cookie tampering without the key.</strong> You <em>cannot</em> modify payload fields
+   without a valid HMAC — attempts produce <code>BadSignature</code> and Flask silently
+   starts a fresh empty session. Attackers therefore target key recovery, not
+   bit-flipping. However: <strong>downgrade/strip the cookie</strong> to get an anonymous
+   session (sometimes useful for bypassing "logged-in required" logic that only
+   checks session presence oddly). Also note the timestamp is signed, so
+   <code>PERMANENT_SESSION_LIFETIME</code> bounds replay of stolen cookies.</p>
+</li>
+<li>
+<p><strong>Key rotation / fallback mistakes.</strong> Flask 3.1 adds
+   <code>SECRET_KEY_FALLBACKS</code>; an old weak key left in fallbacks keeps old forged
+   cookies valid. Remove retired keys.</p>
+</li>
+<li>
+<p><strong>Secret key in source control / logs / error pages.</strong> The debugger
+   tracebacks, <code>git</code> history, <code>.env</code> leaks, and hardcoded defaults
+   (<code>"dev-secret-change-me"</code>, <code>"secret"</code>, <code>"changeme"</code>) are all attack paths.
+   Generate: <code>python -c 'import secrets; print(secrets.token_hex())'</code>.</p>
+</li>
+</ol>
+<h3 id="defense_1">Defense</h3>
+<pre><code class="language-python">import secrets, os
+app.secret_key = os.environ[&quot;FLASK_SECRET_KEY&quot;]  # or secrets.token_hex(32)
+# never commit; rotate via SECRET_KEY_FALLBACKS during transition only
+
+app.config.update(
+    SESSION_COOKIE_SECURE=True,        # HTTPS only
+    SESSION_COOKIE_HTTPONLY=True,      # no JS access (mitigates XSS theft)
+    SESSION_COOKIE_SAMESITE=&quot;Lax&quot;,     # CSRF mitigation for top-level nav
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=1),
+)
+</code></pre>
+<ul>
+<li>Store only an opaque identifier in session; look up privileges server-side.</li>
+<li>For high-security apps use server-side sessions (<code>flask-session</code> with Redis)
+  so revocation is possible — client-side cookies cannot be revoked.</li>
+</ul>
+<hr />
+<h2 id="3-sqlite-specific-issues-vs-mysqlpostgres">3. SQLite-specific issues (vs MySQL/Postgres)</h2>
+<p>The lab uses <code>sqlite3</code> directly with <code>%</code>-format strings — the injection itself
+is generic, but SQLite changes the exploitation playbook:</p>
+<h3 id="differences-that-matter-for-attackers">Differences that matter for attackers</h3>
+<ul>
+<li><strong>Stacked queries:</strong> <code>conn.execute()</code> runs one statement;
+  <code>executescript()</code> runs many but is rarely used on user input. UNION-based and
+  boolean/time-based blind injection work identically (<code>' OR 1=1--</code>,
+  <code>UNION SELECT</code>).</li>
+<li><strong>No <code>SLEEP()</code>/<code>BENCHMARK()</code>.</strong> No sleep function exists; time-based blind
+  uses heavy expressions instead:
+  <code>' OR (SELECT CASE WHEN substr(password,1,1)='a' THEN randomblob(100000000) ELSE 0 END)</code>
+  — or skip timing entirely and use <code>LIKE</code>/<code>GLOB</code> probing (fast, reliable).</li>
+<li><strong><code>ATTACH DATABASE</code>:</strong> <code>'; ATTACH DATABASE '/tmp/evil.db' AS evil;--</code> needs a
+  multi-statement path (<code>executescript</code>, or injection inside an <code>INSERT</code>
+  context). Where reachable it creates/writes DB files wherever the process
+  can write. <code>load_extension</code> is off by default in Python's sqlite3; if app
+  code calls <code>enable_load_extension(True)</code>, <code>load_extension('/x.so')</code> = native
+  code exec.</li>
+<li><strong>No authorizer exposed:</strong> Python's sqlite3 doesn't expose
+  <code>sqlite3_set_authorizer</code> — parameterized queries are the <em>only</em> gate.</li>
+<li><strong><code>LIKE</code> / <code>GLOB</code>:</strong> LIKE is ASCII case-insensitive with <code>%</code>/<code>_</code> wildcards —
+  <code>password LIKE 'a%'--</code> guesses char-by-char in boolean-blind. GLOB uses
+  <code>*</code>/<code>?</code>, case-sensitive.</li>
+<li><strong><code>sqlite_master</code></strong> replaces <code>information_schema</code>:
+  <code>UNION SELECT name, sql FROM sqlite_master--</code> dumps the whole schema.</li>
+<li><strong><code>PRAGMA</code></strong> statements usable in subqueries for fingerprinting
+  (<code>PRAGMA user_version</code> as a boolean oracle; <code>PRAGMA database_list</code>).</li>
+<li><strong>Type affinity:</strong> SQLite compares loosely — <code>'1' = 1</code> can be true; auth
+  checks like <code>WHERE id = %s</code> behave differently than MySQL (<code>id=0</code> tricks).</li>
+<li><strong>Exfil channels:</strong> <code>||</code>, <code>hex()</code>, <code>zeroblob()</code> work for payloads; there is
+  no <code>INTO OUTFILE</code>. Exfil is via UNION result sets (or DNS/HTTP only if a
+  loadable extension/network feature exists — usually not).</li>
+</ul>
+<h3 id="lab-mapping_1">Lab mapping</h3>
+<p><code>/register</code> and <code>/login</code> build queries with <code>% (username, password)</code>. Classic
+payloads:</p>
+<pre><code class="language-sql">-- login bypass
+username: admin'--
+username: ' OR '1'='1'--
+
+-- register: inject role directly (the INSERT wraps values in quotes)
+username: x', 'y', 'premium')--     -- tries to land in role column
+password: anything
+</code></pre>
+<p>For the register INSERT the column list is fixed <code>(username, password, role)</code>
+with <code>'free'</code> literal — inject through <code>username</code> to break out and add columns
+or close early, e.g. <code>username = "a','b','premium')-- "</code> yields
+<code>VALUES ('a','b','premium')-- ','free')</code>. Then the inserted user's role is
+<code>premium</code> → login → session <code>is_premium=True</code>.</p>
+<h3 id="defense_2">Defense</h3>
+<pre><code class="language-python"># sqlite3 — always parameterized
+conn.execute(&quot;SELECT * FROM users WHERE username=? AND password=?&quot;, (u, p))
+conn.executemany(&quot;INSERT INTO payments (user_id, amount_cents) VALUES (?,?)&quot;, rows)
+
+# SQLAlchemy — ORM or Core with bound params; never .format()/.f-string into text()
+stmt = text(&quot;SELECT * FROM users WHERE username = :u AND password = :p&quot;)
+db.execute(stmt, {&quot;u&quot;: u, &quot;p&quot;: p})
+</code></pre>
+<ul>
+<li>Never use <code>%</code>, <code>.format()</code>, or f-strings to build SQL.</li>
+<li><code>conn.row_factory</code> etc. don't affect injection; only parameter binding does.</li>
+<li>Keep <code>enable_load_extension</code> off (default); do not call <code>executescript</code> on
+  any string containing user data.</li>
+</ul>
+<hr />
+<h2 id="4-jinja2-ssti-server-side-template-injection">4. Jinja2 SSTI (Server-Side Template Injection)</h2>
+<p>The lab uses <code>render_template_string(PAGE, body=body, ...)</code> and marks <code>body</code>
+<code>|safe</code>. <code>PAGE</code> itself is a constant, so SSTI requires reaching the template
+<em>source</em> — but <code>body</code> is HTML-escaped-unless-safe. Watch for:</p>
+<ul>
+<li><code>render_template_string(user_input)</code> anywhere.</li>
+<li><code>{{ user_input }}</code> inside a template — Jinja autoescapes <code>{{ }}</code> for HTML,
+  <strong>but does not stop SSTI</strong> if the string is evaluated as template source.</li>
+<li><code>Markup(...)</code>, <code>|safe</code>, <code>render_template_string</code>, <code>Template(user_input)</code>.</li>
+</ul>
+<h3 id="detection-payloads-safe-escalating">Detection payloads (safe → escalating)</h3>
+<pre><code class="language-jinja">{{7*7}}                    -&gt; 49 confirms evaluation
+{{7*'7'}}                  -&gt; '7777777' confirms Jinja (Python would error/49)
+{{config}}                 -&gt; dumps Flask config incl. SECRET_KEY
+{{self.__init__.__globals__}} -&gt; reach Python objects
+{{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}
+{{lipsum.__globals__.__builtins__.__import__('os').popen('id').read()}}
+</code></pre>
+<p><code>config</code> alone often leaks <code>SECRET_KEY</code> → then forge sessions (§2) — SSTI and
+session attacks chain together.</p>
+<h3 id="sandbox-reality">Sandbox reality</h3>
+<p>Jinja2 sandboxes <code>{{ }}</code> expressions: no attribute starting with <code>_</code> <em>by
+default</em>? Actually — modern Jinja's <code>SandboxedEnvironment</code> blocks unsafe
+attributes; the <strong>default</strong> <code>Environment</code> used by <code>render_template_string</code>
+is NOT the sandboxed one, but Flask templates do have <code>is_safe_attribute</code>
+restrictions? Clarification: Flask uses a regular <code>Environment</code> with
+<code>autoescape</code>; SSTI payloads above work because attribute access to dunder names
+is blocked only in <code>SandboxedEnvironment</code>. In practice, <code>{{ ''.__class__... }}</code>
+chains via <code>__class__.__mro__</code> are blocked? — They are <strong>not</strong> blocked in
+Flask's default env; the classic <code>lipsum.__globals__</code> gadget works because
+<code>lipsum</code> is a Jinja global function. Real-world Flask SSTI almost always goes
+through <code>lipsum</code>, <code>cycler</code>, <code>joiner</code>, <code>namespace</code>, <code>url_for.__globals__</code>, or
+<code>self</code>/<code>request</code> objects. Use <code>{{cycler.__init__.__globals__.os.popen('id').read()}}</code>.</p>
+<ul>
+<li>If <code>SandboxedEnvironment</code> IS used, known escapes exist via
+  <code>|attr</code> filter tricks and gadget chains (search "Jinja2 sandbox escape"
+  PayloadsAllTheThings); assume sandboxed SSTI is still dangerous.</li>
+</ul>
+<h3 id="why-safe-markup-are-dangerous">Why <code>|safe</code> / <code>Markup()</code> are dangerous</h3>
+<ul>
+<li><code>{{ body|safe }}</code> tells Jinja "this string is already safe HTML" → raw HTML
+  injection (XSS) for anything user-controlled placed in <code>body</code>.</li>
+<li>In the lab, <code>msg = f"Error: {e}"</code> from sqlite exceptions is inserted into the
+  page <strong>without escaping</strong> because of <code>|safe</code> → reflected XSS via the error
+  message (e.g., trigger an exception containing <code>&lt;script&gt;</code> — sqlite error
+  messages echo input). Even without SSTI, <code>|safe</code> on dynamic content = XSS.</li>
+<li><code>Markup()</code> is the programmatic equivalent; wrapping user input in it is the
+  same bug.</li>
+</ul>
+<h3 id="defense_3">Defense</h3>
+<pre><code class="language-python"># Don't render user data as template source. Render a template file:
+return render_template(&quot;status.html&quot;, user=u, plan=plan)
+# In templates: {{ plan }} autoescapes; only |safe developer-authored strings.
+
+# If you must build HTML strings, escape explicitly:
+from markupsafe import escape
+msg = f&quot;&lt;p&gt;Error: {escape(e)}&lt;/p&gt;&quot;
+# Better: return JSON errors for API routes; flash() messages for forms.
+</code></pre>
+<ul>
+<li>Audit every <code>render_template_string</code>, <code>Template(</code>, <code>Markup(</code>, <code>|safe</code>.</li>
+<li>CSP headers (Flask-Talisman) reduce XSS impact even if escaping fails.</li>
+</ul>
+<hr />
+<h2 id="5-python-deserialization">5. Python deserialization</h2>
+<ul>
+<li><strong><code>pickle.loads(user_bytes)</code> = remote code execution.</strong> Pickle is not a data
+  format; it executes <code>__reduce__</code>/<code>__setstate__</code> on load. Any endpoint that
+  unpickles request bodies, cookies, cache values, or uploaded files is a
+  full RCE primitive. Payloads via <code>pickle</code> <code>__reduce__</code> → <code>os.system</code>,
+  <code>subprocess</code>, reverse shells. Never unpickle untrusted data; use JSON,
+  MessagePack, or protobuf.</li>
+<li><strong><code>yaml.load()</code></strong> — PyYAML's default <code>Loader</code> (pre-6.0 default <code>Loader</code>,
+  and <code>yaml.load</code> without Loader arg in old versions) constructs arbitrary
+  Python objects → RCE via <code>!!python/object/apply:os.system</code>. Use
+  <code>yaml.safe_load()</code> always; in PyYAML ≥5.1 <code>yaml.load</code> requires an explicit
+  Loader and <code>FullLoader</code> still allows some object construction — <code>safe_load</code>
+  is the only safe choice.</li>
+<li><strong><code>marshal.loads</code></strong> — similar to pickle for code objects; can load crafted
+  code objects. Treat as dangerous with untrusted input (it's intended for
+  <code>.pyc</code> internals).</li>
+<li><strong><code>shelve</code></strong> — built on <code>pickle</code>/<code>dbm</code>; <code>shelve.open(path)</code> on an
+  attacker-writable file = same pickle RCE. Also <code>dbm</code> files are not safe
+  across untrusted writers.</li>
+<li><strong><code>json.loads</code></strong> is safe for data, but watch for <strong>prototype-pollution-style</strong>
+  key confusion in Python? Less relevant; JSON itself doesn't execute.</li>
+<li><strong><code>eval</code>/<code>exec</code>/<code>compile</code></strong> on user input — sometimes found in "expression"
+  endpoints (calculators, filters). Same RCE class as pickle.</li>
+<li><strong><code>ast.literal_eval</code></strong> is the safe parser for literal structures — use it
+  instead of <code>eval</code>.</li>
+</ul>
+<p>Flask-relevant sinks: session backends that pickle (old <code>flask-session</code> file
+backend), caching (pickle-based cache backends), Celery/RQ task payloads if
+exposed, and any <code>request.get_json()</code> → stored → later <code>pickle.loads</code>.</p>
+<p>Defense: JSON-only at trust boundaries; if binary needed, sign it (itsdangerous)
+and still prefer structured formats.</p>
+<hr />
+<h2 id="6-flask-file-upload-file-serving">6. Flask file upload / file serving</h2>
+<ul>
+<li><strong><code>send_file(path)</code> / <code>send_from_directory</code> path traversal.</strong> If a route does
+  <code>send_file("/uploads/" + request.args.get("file"))</code> or
+  <code>send_from_directory(UPLOAD, filename)</code> with <code>..</code> segments, attacker reads
+  arbitrary files (<code>/etc/passwd</code>, <code>app.py</code>, <code>lab.db</code>, <code>/proc/self/environ</code> →
+  SECRET_KEY). <code>send_from_directory</code> sanitizes <code>..</code>? It uses <code>safe_join</code>
+  semantics in modern Werkzeug — <strong>verify the version</strong>; older versions and
+  manual concatenation are vulnerable. Attack:
+  <code>GET /download?file=../../app.py</code> or <code>....//</code> bypasses, <code>%2e%2e%2f</code> encoding.</li>
+<li><strong><code>send_file</code> with user-controlled absolute path</strong> — same result; never pass
+  raw user input.</li>
+<li><strong>Filename sanitization:</strong> uploaded filenames (<code>file.filename</code>) are
+  attacker-controlled: <code>../../etc/cron.d/x</code>, <code>..\\..\\win.ini</code> on Windows,
+  null bytes <code>%00</code>, unicode tricks. Always <code>werkzeug.utils.secure_filename()</code>
+  or generate your own name (<code>uuid4().hex</code>) and store the original name in DB.</li>
+<li><strong>Content-type trust:</strong> don't trust <code>file.content_type</code> or extension for
+  "is this an image" — check magic bytes, or better, re-encode/validate with
+  Pillow. Serving user uploads with the original content-type enables stored
+  XSS (<code>&lt;script&gt;</code> as <code>text/html</code>) and SVG-based XSS (<code>image/svg+xml</code> with
+  script). Serve from a separate domain or force <code>Content-Disposition:
+  attachment</code> / <code>X-Content-Type-Options: nosniff</code>.</li>
+<li><strong>Size limits:</strong> Flask doesn't limit upload size by default —
+  <code>MAX_CONTENT_LENGTH = 16 * 1024 * 1024</code>; also configure web server limits.</li>
+<li><strong>Zip/tar slip</strong> if extracting archives (<code>zipfile.extractall</code> path traversal
+  via <code>../</code> member names).</li>
+</ul>
+<p>Lab note: the lab has no upload route — this is general Flask coverage.</p>
+<hr />
+<h2 id="7-flask-auth-patterns-gone-wrong">7. Flask auth patterns gone wrong</h2>
+<ul>
+<li><strong>Timing attacks on login.</strong> String <code>==</code> on passwords (or hashes) leaks
+  prefix length via response time. Use <code>hmac.compare_digest</code> /
+  <code>secrets.compare_digest</code>, or better <code>werkzeug.security.check_password_hash</code>
+  (which is constant-time for its formats). The lab compares via SQL <code>WHERE
+  password='...'</code> — injection aside, timing on nonexistent users vs wrong
+  password can also enumerate users if the query path differs (it doesn't
+  here, but <code>SELECT</code> then compare in Python would).</li>
+<li><strong>User enumeration via error messages.</strong> <code>/register</code> says "Username already
+  taken" — confirms valid usernames → enumerate for credential stuffing.
+  Login "Invalid credentials" is fine (generic); register should say "could
+  not register, try another" or use email verification. Also verbose <code>Error:
+  {e}</code> leaks whether username exists via UNIQUE constraint vs other errors.</li>
+<li><strong>Plaintext passwords</strong> (lab stores raw). Use <code>werkzeug.security.generate_
+  password_hash</code> / <code>check_password_hash</code> (scrypt/pbkdf2). On DB leak, plaintext
+  = immediate credential reuse everywhere.</li>
+<li><strong>Remember-me cookies:</strong> Flask's <code>remember_token</code> via Flask-Login stores a
+  hash in DB; mistakes: storing the raw token, tokens that don't expire or
+  rotate on password change, tokens in URL. Prefer short-lived JWT with <code>exp</code>
+  or server-side token table with revocation.</li>
+<li><strong>JWT in Flask mistakes:</strong></li>
+<li><code>alg: none</code> accepted → forge any token. Pin the algorithm
+    (<code>algorithms=["HS256"]</code>) and reject <code>none</code>.</li>
+<li><strong>Algorithm confusion</strong> RS256→HS256: if server uses RSA public key as HMAC
+    secret → forge. Use asymmetric algs correctly or symmetric only.</li>
+<li>Missing/ignored <code>exp</code>, <code>iat</code>, <code>nbf</code> → tokens never expire.</li>
+<li><code>kid</code> header injection → path traversal / SQLi in key lookup.</li>
+<li>Verifying signature but not <code>aud</code>/<code>iss</code> → token reuse across services.</li>
+<li>Storing roles/entitlements <em>only</em> in JWT without re-check → same class as
+    session-flag trust (§2).</li>
+<li><strong>AuthZ vs AuthN:</strong> the lab's <code>/premium</code> checks <code>session["is_premium"]</code> —
+  that's authentication-adjacent state, not authorization. Always re-derive
+  entitlement from the DB (or signed server-side record) at the resource.</li>
+</ul>
+<hr />
+<h2 id="8-sqlite-subscription-state-attacks-race-conditions-toctou">8. SQLite subscription-state attacks (race conditions / TOCTOU)</h2>
+<ul>
+<li><strong>TOCTOU between check and update:</strong> pattern <code>SELECT status ... ; if active:
+  UPDATE</code> is racy. Two concurrent requests can both pass the check. Fix:
+  conditional UPDATE — <code>UPDATE subscriptions SET plan='premium' WHERE user_id=?
+  AND status='active'</code> then check <code>cursor.rowcount</code>; or use a transaction with
+  <code>BEGIN IMMEDIATE</code>.</li>
+<li><strong>sqlite3 default isolation:</strong> Python's <code>sqlite3</code> opens transactions lazily —
+  <code>conn.execute("UPDATE ...")</code> begins a transaction implicitly only for
+  DML? Actually: <code>isolation_level=""</code> (default legacy) auto-begins before
+  INSERT/UPDATE/DELETE and requires <code>commit()</code>. <strong>Concurrent writers get
+  <code>database is locked</code></strong> (SQLITE_BUSY) — which the lab turns into verbose 500
+  errors. Without <code>conn.execute("PRAGMA busy_timeout=5000")</code> or WAL mode,
+  concurrent upgrade requests may partially fail or serialize weirdly.</li>
+<li><strong>Missing transactions:</strong> the lab's <code>/upgrade</code> does three writes
+  (users.role, subscriptions, payments INSERT) then <code>commit()</code>. If the process
+  dies mid-way or an exception occurs after <code>conn.execute</code> but before
+  <code>commit</code>, state is inconsistent — e.g., role=premium without payment record,
+  or payment without subscription. Wrap in <code>with conn:</code> (transaction context)
+  or explicit <code>BEGIN</code>/<code>COMMIT</code>/<code>ROLLBACK</code>.</li>
+<li><strong>Race on payment:</strong> attacker fires N parallel <code>POST /upgrade
+  payment_success=1</code> — each inserts a payment row; or with a real gateway,
+  double-submit/callback replay. Idempotency keys needed for real payments.</li>
+<li><strong><code>lastrowid</code> reliance:</strong> register uses <code>cur.lastrowid</code> — fine single-threaded,
+  but think about it if batching.</li>
+<li><strong>WAL vs rollback journal:</strong> default journal mode serializes writers; enable
+  <code>PRAGMA journal_mode=WAL</code> for read concurrency but it doesn't fix logic races.</li>
+<li><strong>Check-then-act on session flags:</strong> <code>/premium</code> reads <code>session</code> (client
+  cookie) — no server state at all; combined with §2 key-cracking it's a pure
+  client-side authorization decision.</li>
+</ul>
+<p>Defense patterns:</p>
+<pre><code class="language-python">conn = get_db()
+try:
+    with conn:                       # commits on success, rolls back on exc
+        cur = conn.execute(
+            &quot;UPDATE subscriptions SET plan='premium', status='active' &quot;
+            &quot;WHERE user_id=? AND plan!='premium'&quot;, (uid,))
+        if cur.rowcount == 0:
+            raise AlreadyPremium()
+        conn.execute(&quot;UPDATE users SET role='premium' WHERE id=?&quot;, (uid,))
+        conn.execute(&quot;INSERT INTO payments ...&quot;, (...))
+except sqlite3.OperationalError as e:
+    if &quot;locked&quot; in str(e): ...       # retry with backoff / busy_timeout
+</code></pre>
+<p>Set <code>PRAGMA busy_timeout</code>, use <code>with conn:</code> everywhere, and make state changes
+single conditional statements where possible.</p>
+<hr />
+<h2 id="9-flask-cors-misconfigurations">9. Flask-CORS misconfigurations</h2>
+<p>Flask-CORS (<code>flask_cors.CORS(app, ...)</code>) mistakes:</p>
+<ul>
+<li><strong>Reflecting Origin:</strong> <code>CORS(app, origins="*")</code> is fine for public GET APIs
+  <em>without credentials</em>. The killer combo:
+  <code>python
+  CORS(app, origins=request.headers.get("Origin"))   # reflects anything
+  # or supports_credentials=True with origins="*" or reflected origin</code>
+  Browser sends <code>Origin: https://evil.com</code> → response <code>Access-Control-Allow-
+  Origin: https://evil.com</code> + <code>Access-Control-Allow-Credentials: true</code> →
+  evil.com JS reads authenticated responses (session cookie included).</li>
+<li><strong><code>supports_credentials=True</code> + wildcard</strong> — spec forbids <code>*</code> with
+  credentials; Flask-CORS handles it by reflecting origin, which is exactly
+  the vuln. Only combine credentials with an explicit allowlist.</li>
+<li><strong>Over-broad regex origins:</strong> <code>origins=[r"https://.*\.example\.com"]</code> may
+  match <code>https://evil-example.com</code>? Regex <code>.*</code> can overmatch
+  (<code>https://example.com.evil.com</code> if pattern is loose). Anchor patterns:
+  <code>r"https://[a-z0-9-]+\.example\.com"</code>.</li>
+<li><strong><code>allow_headers="*"</code>, <code>expose_headers</code></strong> — minor; <code>methods="*"</code> fine but
+  review.</li>
+<li><strong>CORS doesn't stop CSRF</strong> — it controls reading responses; state-changing
+  requests still possible cross-origin (they just can't read the response).
+  Need CSRF tokens for that (Flask-WTF).</li>
+<li><strong>Subdomain trust:</strong> allowing <code>*.example.com</code> trusts every subdomain —
+  including user-content subdomains (XSS there → credentialed CORS read).</li>
+</ul>
+<p>Defense:</p>
+<pre><code class="language-python">CORS(app, origins=[&quot;https://app.example.com&quot;],
+     supports_credentials=True,
+     methods=[&quot;GET&quot;,&quot;POST&quot;],
+     allow_headers=[&quot;Content-Type&quot;,&quot;Authorization&quot;])
+# never reflect request Origin when credentials are allowed
+</code></pre>
+<p>Audit: check <code>Access-Control-Allow-Origin</code> reflects arbitrary origins in
+responses; test with <code>Origin: https://evil.com</code> + credentials.</p>
+<hr />
+<h2 id="10-rate-limiting-gaps">10. Rate limiting gaps</h2>
+<ul>
+<li><strong>Flask-Limiter bypass via <code>X-Forwarded-For</code>:</strong> default key is
+  <code>get_remote_addr()</code> → the <em>proxy's</em> IP if behind nginx → all users share one
+  bucket (DoS-ish) or, if <code>ProxyFix</code> is applied naively, attacker sets
+  <code>X-Forwarded-For: &lt;random&gt;</code> per request → <strong>each request a new bucket →
+  unlimited brute force</strong>. Flask-Limiter docs: use
+  <code>key_func=get_remote_address</code> and configure ProxyFix to trust only known
+  proxy hops (<code>x_for=1</code> or trusted proxy list), or key on
+  <code>request.remote_addr</code> after correct ProxyFix.</li>
+<li><strong>Endpoint coverage:</strong> limits applied per-route decorator only cover those
+  routes — login brute-force protection doesn't cover <code>/register</code>,
+  <code>/upgrade</code>, password-reset, or 2FA endpoints. Apply a global
+  <code>default_limits</code> plus stricter auth-endpoint limits:
+  <code>python
+  limiter = Limiter(key_func=get_remote_address,
+                    app=app, default_limits=["200 per day","50 per hour"])
+  @limiter.limit("5 per minute")
+  @app.route("/login")</code></li>
+<li><strong>Storage backend:</strong> in-memory limiter resets on restart and doesn't share
+  across workers — use Redis (<code>storage_uri="redis://..."</code>).</li>
+<li><strong>Other bypasses:</strong> case/encoding variants hitting different route rules,
+  HTTP method switching (POST vs GET on same logic), header-based key funcs
+  trusting client headers, race conditions on the limiter itself (fixed-window
+  allows 2x burst at boundary — acceptable for most, use moving window for
+  auth endpoints).</li>
+<li><strong>Lab relevance:</strong> <code>/login</code> has no rate limit → online brute force of
+  <code>demo:demo123</code>-style creds; combined with plaintext passwords (§7) and no
+  lockout, credential stuffing is trivial.</li>
+</ul>
+<p>Defense checklist: Redis-backed limiter, limits on every auth/payment/
+sensitive endpoint, correct ProxyFix trust, alert on limit hits, CAPTCHA or
+exponential backoff after N failures (Flask-Limiter supports
+<code>deduct_when</code>/<code>swallow_errors</code> and there's <code>flask-limiter</code> + <code>slowapi</code>;
+for lockouts consider <code>flask-login</code> failed-attempt counters or
+<code>django-axes</code>-style pattern reimplemented).</p>
+<hr />
+<h2 id="11-defense-checklist-for-flask-concrete-config">11. Defense checklist for Flask (concrete config)</h2>
+<pre><code class="language-python">import os, secrets
+from datetime import timedelta
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+app = Flask(__name__)
+
+# --- secrets &amp; sessions ---
+app.secret_key = os.environ[&quot;FLASK_SECRET_KEY&quot;]   # secrets.token_hex(32); never hardcode
+app.config.update(
+    SESSION_COOKIE_SECURE=True,          # HTTPS only
+    SESSION_COOKIE_HTTPONLY=True,        # JS can't read it (XSS mitigation)
+    SESSION_COOKIE_SAMESITE=&quot;Lax&quot;,       # or &quot;Strict&quot; for high-security
+    SESSION_COOKIE_NAME=&quot;__Host-session&quot;,# if no Domain set (see below)
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=2),
+    MAX_CONTENT_LENGTH=16 * 1024 * 1024, # upload cap
+)
+# SECRET_KEY_FALLBACKS only during rotation; remove old keys after.
+
+# --- proxy handling (only if behind a trusted proxy) ---
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1,
+                        x_prefix=1)
+# x_for=1 trusts exactly ONE proxy hop. Never x_for=None/all behind
+# untrusted clients or XFF becomes attacker-controlled -&gt; rate-limit bypass.
+
+# --- CSRF ---
+# flask-wtf: WTF_CSRF_ENABLED=True (default), WTF_CSRF_TIME_LIMIT=None for
+# long-lived forms; validate via FlaskForm or csrf.protect() on blueprints.
+
+# --- security headers (Flask-Talisman) ---
+from flask_talisman import Talisman
+Talisman(app,
+         force_https=True,                 # redirect http-&gt;https
+         strict_transport_security=True,
+         content_security_policy={
+             &quot;default-src&quot;: &quot;'self'&quot;,
+             &quot;script-src&quot;: &quot;'self'&quot;,
+             &quot;style-src&quot;: &quot;'self' 'unsafe-inline'&quot;,
+             &quot;img-src&quot;: &quot;'self' data:&quot;,
+         },
+         frame_options=&quot;DENY&quot;,)
+# For APIs serving JSON set content_security_policy=None and rely on
+# X-Content-Type-Options: nosniff (Talisman adds it).
+
+# --- production server ---
+# gunicorn -k gthread -w 4 -b 127.0.0.1:8000 wsgi:app   (behind nginx)
+# NEVER app.run(debug=True)
+</code></pre>
+<p>Parameterized queries:</p>
+<pre><code class="language-python">import sqlite3
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    conn.execute(&quot;PRAGMA busy_timeout=5000&quot;)
+    conn.execute(&quot;PRAGMA foreign_keys=ON&quot;)
+    return conn
+
+# sqlite3 style
+conn.execute(&quot;SELECT * FROM users WHERE username=? AND password=?&quot;, (u, p))
+conn.execute(&quot;UPDATE subscriptions SET plan=? WHERE user_id=? AND status=?&quot;,
+             (&quot;premium&quot;, uid, &quot;active&quot;))
+
+# SQLAlchemy style
+from sqlalchemy import text
+stmt = text(&quot;SELECT * FROM users WHERE username = :u&quot;)
+row = db.execute(stmt, {&quot;u&quot;: username}).fetchone()
+# NEVER: text(f&quot;... {username}&quot;) or text(&quot;...&quot; + username)
+</code></pre>
+<p>AuthZ decorator pattern:</p>
+<pre><code class="language-python">from functools import wraps
+from flask import session, abort
+
+def login_required(f):
+    @wraps(f)
+    def wrapper(*a, **kw):
+        if &quot;user_id&quot; not in session:
+            return redirect(url_for(&quot;login&quot;))
+        return f(*a, **kw)
+    return wrapper
+
+def premium_required(f):
+    @wraps(f)
+    @login_required
+    def wrapper(*a, **kw):
+        # Re-check entitlement server-side — never trust session flags alone
+        row = get_db().execute(
+            &quot;SELECT role FROM users WHERE id=?&quot;, (session[&quot;user_id&quot;],)).fetchone()
+        if not row or row[&quot;role&quot;] != &quot;premium&quot;:
+            abort(403)
+        return f(*a, **kw)
+    return wrapper
+
+@app.route(&quot;/premium&quot;)
+@premium_required
+def premium(): ...
+</code></pre>
+<p>Passwords:</p>
+<pre><code class="language-python">from werkzeug.security import generate_password_hash, check_password_hash
+pw_hash = generate_password_hash(password)          # scrypt by default
+ok = check_password_hash(stored_hash, password)     # constant-time compare
+</code></pre>
+<p>Rate limiting:</p>
+<pre><code class="language-python">from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+limiter = Limiter(key_func=get_remote_address, app=app,
+                  default_limits=[&quot;200 per day&quot;, &quot;50 per hour&quot;],
+                  storage_uri=&quot;redis://localhost:6379&quot;)
+@app.route(&quot;/login&quot;, methods=[&quot;POST&quot;])
+@limiter.limit(&quot;5 per minute&quot;)
+def login(): ...
+</code></pre>
+<p>File uploads:</p>
+<pre><code class="language-python">from werkzeug.utils import secure_filename
+import uuid
+f = request.files[&quot;file&quot;]
+name = secure_filename(f.filename or &quot;&quot;) or uuid.uuid4().hex
+# or fully ignore client name:
+name = uuid.uuid4().hex + os.path.splitext(secure_filename(f.filename))[1]
+f.save(os.path.join(UPLOAD_DIR, name))
+# serve via send_from_directory(UPLOAD_DIR, name) — never raw paths
+</code></pre>
+<hr />
+<h2 id="12-practice-mapping-portswigger-payloadsallthethings">12. Practice mapping (PortSwigger / PayloadsAllTheThings)</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>PortSwigger Academy</th>
+<th>PayloadsAllTheThings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQL injection (SQLite flavor)</td>
+<td>SQL injection all labs; "UNION attacks"</td>
+<td><code>SQL Injection/SQLite Injection.md</code></td>
+</tr>
+<tr>
+<td>Blind SQLi (no SLEEP)</td>
+<td>Blind SQL injection labs</td>
+<td>SQLite section — LIKE/GLOB, randomblob timing</td>
+</tr>
+<tr>
+<td>Session cookie cracking</td>
+<td>— (not covered; it's tooling)</td>
+<td>— use flask-unsign + rockyou</td>
+</tr>
+<tr>
+<td>SSTI</td>
+<td>Server-side template injection labs</td>
+<td><code>Server Side Template Injection/</code> (Jinja2 section)</td>
+</tr>
+<tr>
+<td>Insecure deserialization</td>
+<td>Insecure deserialization labs (Java/PHP focus; concepts transfer)</td>
+<td><code>Insecure Deserialization/</code> + Python pickle notes</td>
+</tr>
+<tr>
+<td>Path traversal / LFI</td>
+<td>Path traversal labs</td>
+<td><code>File Inclusion/</code> + <code>Directory Traversal/</code></td>
+</tr>
+<tr>
+<td>File upload</td>
+<td>File upload labs</td>
+<td><code>File Upload/</code></td>
+</tr>
+<tr>
+<td>Auth: brute force, enumeration</td>
+<td>Authentication labs</td>
+<td><code>Brute Force Rate Limit/</code>, <code>Username Enumeration/</code></td>
+</tr>
+<tr>
+<td>JWT attacks</td>
+<td>JWT labs (alg confusion, none, kid)</td>
+<td><code>JSON Web Token/</code></td>
+</tr>
+<tr>
+<td>CORS</td>
+<td>CORS lab ("Exploiting CORS misconfigurations")</td>
+<td><code>CORS/</code></td>
+</tr>
+<tr>
+<td>CSRF (no token in lab)</td>
+<td>CSRF labs</td>
+<td><code>CSRF Injection/</code></td>
+</tr>
+<tr>
+<td>XSS via <code>\|safe</code>/error reflection</td>
+<td>XSS labs (reflected)</td>
+<td><code>XSS Injection/</code></td>
+</tr>
+<tr>
+<td>Rate limit / brute force</td>
+<td>—</td>
+<td><code>Rate Limit Bypass/</code></td>
+</tr>
+<tr>
+<td>Werkzeug debugger</td>
+<td>— (CTF-style; see HackTricks Werkzeug page, THM "Plant Photographer", "Werkzeug" rooms)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Suggested lab order against <code>app.py</code>:</p>
+<ol>
+<li><code>/login</code> SQLi → auth bypass (PortSwigger SQLi basics).</li>
+<li><code>/register</code> SQLi → insert <code>role='premium'</code> row.</li>
+<li>Decode <code>session</code> cookie → <code>flask-unsign --unsign</code> with rockyou on
+   <code>dev-secret-change-me</code> → <code>--sign</code> forged <code>is_premium</code> cookie → <code>/premium</code>.</li>
+<li><code>debug=True</code> traceback pages → info leak; check <code>/console</code> reachability.</li>
+<li><code>/upgrade</code> <code>payment_success=1</code> direct POST (payment bypass — see
+   <code>payment_bypass.md</code>).</li>
+<li>Fix everything per §11, then re-test.</li>
+</ol>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Flask docs — Configuration Handling / Builtin values:
+  https://flask.palletsprojects.com/en/stable/config/</li>
+<li>Flask docs — Security Considerations:
+  https://flask.palletsprojects.com/en/stable/web-security/</li>
+<li>Flask docs — API (<code>secret_key</code>, session interfaces):
+  https://flask.palletsprojects.com/en/stable/api/</li>
+<li>Flask source — <code>src/flask/sessions.py</code> (SecureCookieSessionInterface,
+  SECRET_KEY_FALLBACKS): https://github.com/pallets/flask/blob/main/src/flask/sessions.py</li>
+<li>Werkzeug docs — Debugging Applications (PIN, WERKZEUG_DEBUG_PIN):
+  https://werkzeug.palletsprojects.com/en/stable/debug/</li>
+<li>Werkzeug source — <code>src/werkzeug/debug/__init__.py</code> (PIN derivation,
+  get_machine_id):
+  https://github.com/pallets/werkzeug/blob/main/src/werkzeug/debug/<strong>init</strong>.py</li>
+<li>HackTricks — Werkzeug debugger / PIN bypass:
+  https://hacktricks.wiki/en/network-services-pentesting/pentesting-web/werkzeug.html</li>
+<li>HackTricks — Flask (sessions, SSTI):
+  https://desecurity.github.io/hacktricks/network-services-pentesting/pentesting-web/flask.html</li>
+<li>Paradoxis — Flask-Unsign:
+  https://github.com/paradoxis/flask-unsign</li>
+<li>Flask-Session docs — Security / session fixation:
+  https://flask-session.readthedocs.io/en/latest/security.html</li>
+<li>DigiNinja — Cracked Flask lab (session cookie tampering walkthrough):
+  https://digi.ninja/blog/cracked_flask</li>
+<li>PortSwigger Web Security Academy:
+  https://portswigger.net/web-security</li>
+<li>PayloadsAllTheThings:
+  https://github.com/swisskyrepo/PayloadsAllTheThings</li>
+<li>Python sqlite3 docs (transactions, isolation_level, execute vs
+  executescript): https://docs.python.org/3/library/sqlite3.html</li>
+<li>PyYAML docs — <code>yaml.safe_load</code> vs <code>load</code>:
+  https://pyyaml.org/wiki/PyYAMLDocumentation</li>
+</ul>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from flask_security_deep.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 08 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

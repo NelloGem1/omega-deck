@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⬡ 00 — MASTER SYSTEM</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--border:#30363d;--gold:#f0b429;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--txt:#c9d1d9;--dim:#8b949e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.65;padding:32px}
+.wrap{max-width:960px;margin:0 auto}
+h1{color:var(--gold);font-size:28px;border-bottom:2px solid var(--gold);padding-bottom:12px}
+h2{color:var(--blue);font-size:17px;margin:26px 0 8px;letter-spacing:1px}
+h3{color:var(--gold);font-size:14px;margin:14px 0 4px}
+p,li{font-size:14px;margin:5px 0}
+code{font-family:Consolas,monospace;background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:12.5px;color:var(--gold)}
+pre{font-family:Consolas,monospace;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:12.5px;line-height:1.55;overflow-x:auto;margin:10px 0;white-space:pre}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+td,th{padding:7px 9px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:1px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:12px 0}
+.warn{border-left:3px solid var(--gold)}.danger{border-left:3px solid var(--red)}.ok{border-left:3px solid var(--green)}
+.dim{color:var(--dim);font-size:12px}
+a{color:var(--blue)}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.badge{display:inline-block;background:var(--panel);border:1px solid var(--green);color:var(--green);border-radius:12px;padding:2px 12px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><h1>⬡ MASTER SYSTEM</h1><span class="badge">● POSITION 00 · EVERYTHING</span></div>
+<p class="dim">NelloGem Knowledge Infrastructure · open anytime · architecture + access + permissions + bypasses + restore</p>
+
+<h2>1 · SYSTEM ARCHITECTURE</h2>
+<pre>┌─────────────────────────────────────────────────────────────┐
+│                 WINDOWS HOST                                 │
+│  Devin CLI ── commands the fleet                            │
+│  localhost:8797 = Windows server (Downloads, always-on)      │
+│  localhost:8796 = WSL server (deck + /learning/ + labs)      │
+└──────────────┬──────────────────────────────────────────────┘
+               │ WSL2 Ubuntu
+┌──────────────▼──────────────────────────────────────────────┐
+│ /home/neilh/                                                │
+│  venv/ 17 science pkgs · science_research/ 8 maps (~560KB)  │
+│  science_lab/ 8 experiment dirs · websec_lab/ Flask+reports │
+│  gh_backup/ → GitHub vault · sync_vault.sh (cron /15min)    │
+│  BLUEPRINT.md · NEED.md · TOOLS.md · md2html pipeline       │
+└──────────────┬──────────────────────────────────────────────┘
+               │ push every 15 min
+┌──────────────▼──────────────────────────────────────────────┐
+│ GitHub PRIVATE: NelloGem1/experiment-vault                   │
+│ science/{research,lab,data-collection} · websec/ ·          │
+│ learning-library/ · design/ · MANIFEST · RESTORE · DATA_SRC │
+└──────────────────────────────────────────────────────────────┘</pre>
+
+<h2>2 · 🔑 ACCESS CODES</h2>
+<table>
+<tr><th>Service</th><th>URL</th><th>Login</th></tr>
+<tr><td>Command Deck</td><td><code>localhost:8796</code></td><td>none</td></tr>
+<tr><td>Library (all docs)</td><td><code>localhost:8796/learning/</code></td><td>none</td></tr>
+<tr><td>Windows mirror</td><td><code>127.0.0.1:8797/Learning/</code></td><td>none</td></tr>
+<tr><td>PRIME INDEX</td><td><code>localhost:8796/learning/00 - PRIME INDEX.html</code></td><td>none</td></tr>
+<tr><td>Juice Shop</td><td><code>localhost:3000</code></td><td><code>admin@juice-sh.op / admin123</code></td></tr>
+<tr><td>DVWA</td><td><code>localhost:4280</code></td><td><code>admin / password</code> (run /setup.php)</td></tr>
+<tr><td>WebGoat</td><td><code>localhost:18080/WebGoat</code></td><td>self-register</td></tr>
+<tr><td>WebWolf</td><td><code>localhost:19090</code></td><td>same as WebGoat</td></tr>
+<tr><td>SubLab Flask</td><td><code>localhost:5000</code></td><td>register free — hardened, 39/39 tests</td></tr>
+<tr><td>GitHub Vault</td><td><code>github.com/NelloGem1/experiment-vault</code></td><td>your GitHub · PRIVATE</td></tr>
+</table>
+
+<h2>3 · 🏛️ KNOWLEDGE MAPS — grades</h2>
+<table>
+<tr><th>Doc</th><th>Map</th><th>Lines</th><th>Grade</th></tr>
+<tr><td>40</td><td>Engineering·Medicine·Agri</td><td>754</td><td>A</td></tr>
+<tr><td>41</td><td>CS·IT</td><td>671</td><td>A</td></tr>
+<tr><td>42</td><td>Math·Logic·Formal</td><td>1325</td><td><b>S</b></td></tr>
+<tr><td>43</td><td>Natural Sciences</td><td>725</td><td>A</td></tr>
+<tr><td>44</td><td>AI·ML</td><td>783</td><td>A+</td></tr>
+<tr><td>45</td><td>Cybersecurity</td><td>701</td><td>A+</td></tr>
+<tr><td>46</td><td>Knowledge Archive</td><td>1343</td><td><b>S</b></td></tr>
+<tr><td>47</td><td>Humanities·Society</td><td>1282</td><td>approved</td></tr>
+</table>
+<p class="dim">Sources: <code>/home/neilh/science_research/*.md</code> → vault <code>science/research/</code></p>
+
+<h2>4 · 🧪 EXPERIMENT LAB — 7/8 agents complete</h2>
+<table>
+<tr><th>Agent</th><th>Exps</th><th>Key kills/breaks</th></tr>
+<tr><td>ML/AI</td><td>8</td><td>FGSM 96.9%→0.0% · poison saturates · distill 100% extractable</td></tr>
+<tr><td>CS</td><td>7</td><td>Dijkstra broken (neg edges) · Timsort 500× · dict hash-attack immune</td></tr>
+<tr><td>Stats</td><td>8</td><td>p-hacking 65% false+ · Simpson's paradox · Wald CI→0.64</td></tr>
+<tr><td>Social</td><td>7</td><td>TFT dies at 5% noise · 4 stubborn agents break consensus</td></tr>
+<tr><td>Bio</td><td>7</td><td>live NCBI data · SIRS honest negative · MM kinetics exact</td></tr>
+<tr><td>Math</td><td>7+ECM</td><td><b>RSA-191 factored in 17.2s</b> · Vigenère broken · Collatz to 2M</td></tr>
+<tr><td>Physics</td><td>7</td><td>Kepler 0.9998 · double-slit 4.99mm · Ising Tc 2.25 vs 2.269</td></tr>
+<tr><td>Formal/Lean</td><td>—</td><td>prove→break theorems · still running</td></tr>
+</table>
+<p class="dim">Digest all agents must read: <code>gh_backup/science/data-collection/EXPERIMENT_DIGEST.md</code></p>
+
+<h2>5 · ⚔️ PROVEN BYPASSES (localhost scope)</h2>
+<div class="panel">
+<h3>Web layer — SubLab saga</h3>
+<p>Client-side payment flag · SQLi login/register · session forgery via <code>secret_key="dev-secret-change-me"</code> · expired-sub access · payment replay · Werkzeug debugger. <b>All fixed</b> — 39/39 tests green (rate limits, HMAC webhooks, CSRF, timing equalization).</p>
+<h3>Crypto layer</h3>
+<p>RSA-64/128 instant · <b>RSA-191 ECM 17.2s</b> · RSA-2048 infeasible · MD5 all cracked &lt;1s · AES-ECB penguin leak · AES-GCM nonce reuse <code>ct1⊕ct2==m1⊕m2</code>.</p>
+<h3>Juice Shop kills</h3>
+<p>SQLi auth bypass · null-byte <code>%2500</code> · mass-assignment <code>role:"admin"</code> · NoSQL <code>{"id":{"$ne":-1}}</code> · negative basket quantities — 22+ challenges.</p>
+<h3>Theory breaks</h3>
+<p>Dijkstra+settled-set fails negative weights · linear probing dies to adversarial keys · plug-in MI lies on independent vars · Wald CI undercover at small n.</p>
+</div>
+
+<h2>6 · 🤖 AGENT FLEET PROTOCOL</h2>
+<div class="panel">
+<ul>
+<li><b>Full permissions</b>: install, download, execute, write anywhere in WSL/localhost scope</li>
+<li><b>Stack</b>: numpy scipy pandas sklearn matplotlib sympy networkx biopython mendeleev statsmodels rdkit qutip pennylane gmpy2 torch 2.15 sortedcontainers</li>
+<li><b>Install rule</b>: <code>python -m pip</code> (venv/bin/pip is broken)</li>
+<li><b>Protocol</b>: read TOOLS.md → check NEED.md → write REPORT.md (hypothesis/method/data/break/lesson) → extend, never repeat</li>
+</ul>
+</div>
+
+<h2>7 · 📂 FILE MAP</h2>
+<table>
+<tr><th>What</th><th>Where</th></tr>
+<tr><td>This page</td><td><code>Learning\00 - master-system.html</code> · source <code>Downloads\MASTER_SYSTEM.md</code></td></tr>
+<tr><td>Learning library</td><td><code>Downloads\Learning\</code> (48 docs) → served <code>:8796/learning/</code></td></tr>
+<tr><td>Science maps</td><td><code>/home/neilh/science_research/</code></td></tr>
+<tr><td>Experiment labs</td><td><code>/home/neilh/science_lab/{math,cs,physics,stats,bio,ml,formal,social}/</code></td></tr>
+<tr><td>Vault</td><td><code>/home/neilh/gh_backup/</code> → auto-push 15min</td></tr>
+<tr><td>Deck server</td><td><code>/home/neilh/start_deck.sh</code> · log <code>/tmp/deck.log</code></td></tr>
+<tr><td>Big data</td><td><code>~/SecLists</code> 2.5GB · restore via vault DATA_SOURCES.md</td></tr>
+</table>
+
+<h2>8 · 🔄 RESTORE</h2>
+<ol>
+<li>WSL up → <code>wsl -d Ubuntu</code> → <code>bash /home/neilh/start_deck.sh</code></li>
+<li>Clone vault → <code>git clone</code> repo into <code>gh_backup/</code></li>
+<li>Deck: <code>cd /home/neilh && python3 -m http.server 8796</code></li>
+<li>Science stack: <code>./venv/bin/python -m pip install</code> list in TOOLS.md</li>
+<li>Full runbook: vault <code>RESTORE.md</code> + <code>MANIFEST.md</code></li>
+</ol>
+
+<h2>9 · 🚀 UPGRADE LADDER → 5-S</h2>
+<table>
+<tr><th>Level</th><th>Needs</th></tr>
+<tr><td><b>S ✓</b></td><td>maps + experiments + vault — DONE</td></tr>
+<tr><td>S+</td><td>working Knowledge Archive prototype (SQLite + hierarchy + tiers + search API)</td></tr>
+<tr><td>SS</td><td>archive + web UI + RAG over all docs</td></tr>
+<tr><td>SSS</td><td>graph DB + verification pipeline + multilingual</td></tr>
+<tr><td>SSSS</td><td>distributed sync + governance + audit chain</td></tr>
+<tr><td>SSSSS</td><td>civilization-scale infrastructure (doc 46 vision)</td></tr>
+</table>
+<p class="dim">Next concrete step: say <b>"BUILD THE ARCHIVE"</b> → deploys prototype from doc 46's DDL.</p>
+
+<p class="dim" style="margin-top:24px;border-top:1px solid var(--border);padding-top:12px"><b style="color:var(--gold)">FOUNDER:</b> Neilbert G. Carillo · born May 19, 1999 · Pagadian City · Field Marshal of the Knowledge Fleet · mission: institutional memory of human civilization — mistakes are experience.<br>⬡ NelloGem Operations · Devin right hand · all localhost-scope, private, yours.</p>
+</div>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body>
+</html>

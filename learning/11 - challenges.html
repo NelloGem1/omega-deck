@@ -1,0 +1,212 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Web Security Hands-On Curriculum</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="web-security-hands-on-curriculum">Web Security Hands-On Curriculum</h1>
+<p>Labs (all local, intentionally vulnerable — never expose publicly):</p>
+<table>
+<thead>
+<tr>
+<th>Lab</th>
+<th>URL</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Juice Shop</td>
+<td>http://localhost:3000</td>
+<td>~100 challenges, scoreboard in-app</td>
+</tr>
+<tr>
+<td>DVWA</td>
+<td>http://localhost:4280</td>
+<td>Run /setup.php wizard once (see SETUP)</td>
+</tr>
+<tr>
+<td>WebGoat</td>
+<td>http://localhost:18080/WebGoat</td>
+<td>Register a user first; slow first boot</td>
+</tr>
+<tr>
+<td>WebWolf</td>
+<td>http://localhost:19090/WebWolf</td>
+<td>Companion to WebGoat (mailbox etc.)</td>
+</tr>
+</tbody>
+</table>
+<p>Tools:
+- Burp Suite (Windows): proxy listener 127.0.0.1:8080 — point browser at it.
+  WSL services are reachable from Windows via localhost (WSL2 localhost forwarding).
+- WSL CLI: ~/jwt_tool (JWT attacks), ~/PayloadsAllTheThings (payloads),
+  ~/SecLists (wordlists), nikto_exec, nuclei-templates.</p>
+<p>Method: pick a task -&gt; form a hypothesis -&gt; intercept in Burp -&gt; test -&gt;
+record what worked. Do NOT look up writeups until you have spent real effort.</p>
+<hr />
+<h2 id="stage-1-recon-map-the-target">Stage 1 — Recon: map the target</h2>
+<p>Goal: learn what the app exposes before attacking it.</p>
+<ol>
+<li>
+<p>Juice Shop: open http://localhost:3000/#/score-board — how many challenges,
+   how are they categorized? Find the 'Administration' section in the UI.
+   Hint: the API behind the scoreboard is unauthenticated; inspect it in Burp.
+   Done when: you can list challenge categories and identify the API endpoint.</p>
+</li>
+<li>
+<p>Find hidden/unused endpoints: check /ftp, /encryptionkeys, /support/logs,
+   /metrics, /rest/admin/application-version, /api/Challenges.
+   Hint: look at JS bundles (main.js) for route strings; check robots.txt.
+   Done when: you found at least 3 endpoints not linked in the UI.</p>
+</li>
+<li>
+<p>Technology fingerprinting: response headers, cookies, error pages.
+   Run: curl -sI http://localhost:3000 | less ; what server/framework leaks?
+   Done when: you can state server, framework, and DB type with evidence.</p>
+</li>
+<li>
+<p>(WebGoat) After registering, browse the lesson list. Pick the 'Introduction'
+   and 'HTTP Basics' lessons — they teach request anatomy Burp relies on.
+   Done when: you can explain GET vs POST and read a raw HTTP request.</p>
+</li>
+</ol>
+<h2 id="stage-2-injection">Stage 2 — Injection</h2>
+<p>Goal: break the trust boundary between input and interpreter.</p>
+<ol>
+<li>
+<p>SQLi login bypass (Juice Shop): the login form at /#/login.
+   Hint: the classic ' OR 1=1-- pattern; check ~/PayloadsAllTheThings/SQL Injection/.
+   Done when: you log in as a user you did not register (try admin@juice-sh).</p>
+</li>
+<li>
+<p>SQLi in search: /rest/products/search?q= — error-based or UNION-based.
+   Hint: watch how the query param flows; try a single quote first, then UNION SELECT.
+   Done when: you extract data from a table that isn't product data.</p>
+</li>
+<li>
+<p>Blind/second-order SQLi: register a user, then find where your stored
+   username is rendered unsafely (e.g. basket/order endpoints).
+   Hint: PayloadsAllTheThings -&gt; SQL Injection -&gt; Blind.
+   Done when: you can confirm injection without seeing query output.</p>
+</li>
+<li>
+<p>XSS: find a reflected input (search box, login error, track-order URL).
+   Hint: start with <script>alert(1)</script>, then try bypasses
+   (event handlers, encoding). Check PayloadsAllTheThings -&gt; XSS Injection.
+   Done when: your payload executes in the victim page context.</p>
+</li>
+<li>
+<p>(DVWA) After /setup.php + login, set security to 'low' and do the SQLi and
+   XSS modules. Then raise security to 'medium' and retry — note what changed.
+   Done when: low and medium solved (or you can explain the defense).</p>
+</li>
+</ol>
+<h2 id="stage-3-access-control-idor">Stage 3 — Access control &amp; IDOR</h2>
+<p>Goal: access resources belonging to other users / roles.</p>
+<ol>
+<li>
+<p>IDOR on baskets: Juice Shop /rest/basket/{id} — increment the id while
+   authenticated as a low-priv user. Hint: capture your own basket request in Burp first.
+   Done when: you read another user's basket contents.</p>
+</li>
+<li>
+<p>Forged review: POST to /rest/products/reviews — the 'author' field is
+   client-controlled. Change it to another user and verify it sticks.
+   Done when: a review appears authored by someone else.</p>
+</li>
+<li>
+<p>Admin registration: there is a hidden way to become admin — look at
+   /rest/user/... endpoints and registration payloads in Burp.
+   Hint: sometimes an extra JSON field is all it takes.
+   Done when: your account reaches the admin section without credentials theft.</p>
+</li>
+<li>
+<p>Password reset / BOLA: find the forgot-password or change-password flow;
+   check whether the target user is specified client-side.
+   Done when: you reset or read another account's state.</p>
+</li>
+</ol>
+<h2 id="stage-4-business-logic-abuse">Stage 4 — Business logic abuse</h2>
+<p>Goal: violate intended rules without 'hacking' the parser.</p>
+<ol>
+<li>
+<p>Coupon abuse: Juice Shop coupons — get a valid one (check basket page /
+   network tab), then tamper the discount code or reuse it.
+   Hint: codes may be predictable; check ~/SecLists for patterns.
+   Done when: you apply a discount you shouldn't get.</p>
+</li>
+<li>
+<p>Negative quantity / price tampering: add item to basket, intercept the
+   POST, change quantity to negative or price to 0.01.
+   Hint: server may trust client-supplied totals.
+   Done when: checkout total drops below legitimate value.</p>
+</li>
+<li>
+<p>Race condition: apply the same coupon or redeem a limited offer twice
+   concurrently (Burp Repeater 'send group in parallel', or turbo-intruder).
+   Done when: single-use value is consumed more than once.</p>
+</li>
+<li>
+<p>(WebGoat) Do the 'Access Control' and 'Business Logic' lesson tracks —
+   they mirror these ideas in a guided way.
+   Done when: you can name which lesson maps to which Juice Shop challenge.</p>
+</li>
+</ol>
+<h2 id="stage-5-api-jwt-auth-attacks">Stage 5 — API, JWT &amp; auth attacks</h2>
+<p>Goal: attack the token/session layer itself.</p>
+<ol>
+<li>
+<p>JWT none-algorithm / weak secret: Juice Shop issues JWTs. Decode yours at
+   jwt.io, then try alg=none and HS256 secret cracking:
+   python3 ~/jwt_tool/jwt_tool.py <token> -C -d ~/SecLists/Passwords/Common-Credentials/10k-most-common.txt
+   Done when: you forge a token accepted by the API.</p>
+</li>
+<li>
+<p>JWT claim tampering: modify 'data.role' or user id in the payload, re-sign
+   with cracked secret (or alg=none). Replay against a privileged endpoint.
+   Done when: role check passes with a forged token.</p>
+</li>
+<li>
+<p>OAuth-ish / redirect flows: look for redirect_uri, state, or continue
+   parameters in Juice Shop/WebGoat login flows.
+   Hint: test open redirects and missing state validation.
+   Done when: you can redirect an auth flow to an attacker URL or skip a step.</p>
+</li>
+<li>
+<p>File upload: find an upload point (complaint form, WebGoat file lessons).
+   Try path traversal in filename, double extensions, SVG/HTML content.
+   Hint: check where uploaded files are served from.
+   Done when: you upload a file that executes or is served from an unexpected path.</p>
+</li>
+<li>
+<p>(Optional capstone) Pick 3 unsolved scoreboard challenges across different
+   categories and solve them unaided, documenting each in a notes file.
+   Done when: scoreboard shows your solves and you wrote a 1-paragraph
+   root-cause for each.</p>
+</li>
+</ol>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from CHALLENGES.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 11 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

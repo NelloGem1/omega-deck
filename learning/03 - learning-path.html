@@ -1,0 +1,574 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Web Security Learning Path — Beginner Research Report</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="web-security-learning-path-beginner-research-report">Web Security Learning Path — Beginner Research Report</h1>
+<p><strong>Audience:</strong> Nello Gem — total beginner, wants to learn web security / ethical hacking systematically.
+<strong>Goal:</strong> Understand subscription/payment bypass <strong>on their own test site</strong> (explicitly authorized target).
+<strong>Date:</strong> compiled 2026 — all links verified where possible.</p>
+<hr />
+<h2 id="0-tldr-the-recommended-stack">0. TL;DR — The recommended stack</h2>
+<ol>
+<li><strong>PortSwigger Web Security Academy</strong> — the single best free resource. Read + solve every lab.</li>
+<li><strong>OWASP Juice Shop</strong> — a deliberately vulnerable modern web app; attack it locally to build real muscle.</li>
+<li><strong>Burp Suite Community Edition</strong> — free proxy/interceptor; the core tool for everything below.</li>
+<li><strong>OWASP Top 10</strong> — the vocabulary/framework; memorize it.</li>
+<li>Build a small Flask app yourself, then attack it — this is where payment-bypass skills come from.</li>
+</ol>
+<p>Everything listed here is <strong>free</strong>.</p>
+<hr />
+<h2 id="1-portswigger-web-security-academy-the-1-resource">1. PortSwigger Web Security Academy (the #1 resource)</h2>
+<p><strong>URL:</strong> https://portswigger.net/web-security
+<strong>What it is:</strong> Free interactive training by PortSwigger (makers of Burp Suite), led by the author of <em>The Web Application Hacker's Handbook</em>. Each topic has explanatory articles, videos, and <strong>hands-on labs</strong> on real-looking vulnerable apps. You can create a free account to track progress; there's even a Hall of Fame leaderboard.</p>
+<h3 id="topics-covered-verified-on-the-site-2026">Topics covered (verified on the site, 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>URL slug</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQL injection</td>
+<td><code>/web-security/sql-injection</code></td>
+<td>~16 labs — starts with reflected SQLi, escalates to blind/UNION/second-order</td>
+</tr>
+<tr>
+<td>XSS</td>
+<td><code>/web-security/cross-site-scripting</code></td>
+<td>~30 labs — reflected, stored, DOM-based</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td><code>/web-security/csrf</code></td>
+<td>~8 labs</td>
+</tr>
+<tr>
+<td>Clickjacking</td>
+<td><code>/web-security/clickjacking</code></td>
+<td>small topic</td>
+</tr>
+<tr>
+<td>CORS</td>
+<td><code>/web-security/cors</code></td>
+<td>misconfiguration</td>
+</tr>
+<tr>
+<td>XXE</td>
+<td><code>/web-security/xxe</code></td>
+<td>~9 labs</td>
+</tr>
+<tr>
+<td>SSRF</td>
+<td><code>/web-security/ssrf</code></td>
+<td>incl. blind SSRF</td>
+</tr>
+<tr>
+<td>Request smuggling</td>
+<td><code>/web-security/request-smuggling</code></td>
+<td>HTTP desync — advanced</td>
+</tr>
+<tr>
+<td>Command injection</td>
+<td><code>/web-security/command-injection</code></td>
+<td>OS command execution</td>
+</tr>
+<tr>
+<td>Server-side template injection</td>
+<td><code>/web-security/server-side-template-injection</code></td>
+<td>SSTI</td>
+</tr>
+<tr>
+<td>Insecure deserialization</td>
+<td><code>/web-security/insecure-deserialization</code></td>
+<td>PHP/Python object deserialization</td>
+</tr>
+<tr>
+<td>Path traversal / LFI / RFI</td>
+<td><code>/web-security/file-path-traversal</code></td>
+<td>directory traversal</td>
+</tr>
+<tr>
+<td>Access control</td>
+<td><code>/web-security/access-control</code></td>
+<td>IDOR, privilege escalation</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td><code>/web-security/authentication</code></td>
+<td>password attacks, 2FA bypass</td>
+</tr>
+<tr>
+<td>OAuth authentication</td>
+<td><code>/web-security/oauth</code></td>
+<td>OAuth flaws</td>
+</tr>
+<tr>
+<td>Business logic</td>
+<td><code>/web-security/logic-flaws</code></td>
+<td><strong>directly relevant to payment bypass</strong></td>
+</tr>
+<tr>
+<td>WebSockets</td>
+<td><code>/web-security/websockets</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Information disclosure</td>
+<td><code>/web-security/information-disclosure</code></td>
+<td></td>
+</tr>
+<tr>
+<td>File upload</td>
+<td><code>/web-security/file-upload</code></td>
+<td></td>
+</tr>
+<tr>
+<td>JWT attacks</td>
+<td><code>/web-security/jwt</code></td>
+<td>token manipulation — relevant to auth bypass</td>
+</tr>
+<tr>
+<td>Essential skills</td>
+<td><code>/web-security/essential-skills</code></td>
+<td>tools + HTTP basics primer — <strong>do this first</strong></td>
+</tr>
+<tr>
+<td>Prototype pollution</td>
+<td><code>/web-security/prototype-pollution</code></td>
+<td>JS client-side</td>
+</tr>
+<tr>
+<td>GraphQL API</td>
+<td><code>/web-security/graphql</code></td>
+<td>GraphQL-specific attacks</td>
+</tr>
+<tr>
+<td>Race conditions</td>
+<td><code>/web-security/race-conditions</code></td>
+<td>time-of-check/time-of-use</td>
+</tr>
+<tr>
+<td>NoSQL injection</td>
+<td><code>/web-security/nosql-injection</code></td>
+<td>MongoDB etc.</td>
+</tr>
+<tr>
+<td>API testing</td>
+<td><code>/web-security/api-testing</code></td>
+<td>REST/GraphQL testing methodology</td>
+</tr>
+<tr>
+<td>Web LLM attacks</td>
+<td><code>/web-security/llm-attacks</code></td>
+<td>prompt injection via web apps (new, 7 labs)</td>
+</tr>
+<tr>
+<td>Web cache poisoning</td>
+<td><code>/web-security/web-cache-poisoning</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Web cache deception</td>
+<td><code>/web-security/web-cache-deception</code></td>
+<td>newer topic, 5 labs</td>
+</tr>
+<tr>
+<td>HTTP Host header attacks</td>
+<td><code>/web-security/host-header</code></td>
+<td>password-reset poisoning etc.</td>
+</tr>
+<tr>
+<td>MCP server vulnerabilities</td>
+<td><code>/web-security/mcp</code></td>
+<td>newest topic — AI tool security</td>
+</tr>
+</tbody>
+</table>
+<h3 id="difficulty-levels">Difficulty levels</h3>
+<p>Labs inside each topic are roughly ordered easiest→hardest. PortSwigger doesn't tag them numerically, but the ordering is: <strong>Apprentice → Practitioner → Expert</strong>-style progression within each topic. Recommended order for a beginner:</p>
+<ol>
+<li><strong>Essential skills</strong> (tooling, Burp basics)</li>
+<li>SQL injection → XSS → CSRF → clickjacking (the classics)</li>
+<li>Authentication + access control + business logic (<strong>payment-relevant cluster</strong>)</li>
+<li>XXE, SSRF, command injection, SSTI, deserialization, path traversal (server-side)</li>
+<li>JWT attacks, OAuth, WebSockets, GraphQL, API testing</li>
+<li>
+<p>Advanced: request smuggling, race conditions, cache poisoning, LLM attacks</p>
+</li>
+<li>
+<p><strong>Learning paths page:</strong> https://portswigger.net/web-security/learning-paths (curated ordered pathways)</p>
+</li>
+<li><strong>All labs index:</strong> https://portswigger.net/web-security/all-labs</li>
+<li><strong>Certification:</strong> optional paid exam (Burp Suite Certified Practitioner) — not needed to learn.</li>
+</ol>
+<hr />
+<h2 id="2-owasp-projects">2. OWASP projects</h2>
+<h3 id="owasp-top-10-2025-edition-current-release">OWASP Top 10 — 2025 edition (current release)</h3>
+<p><strong>URL:</strong> https://owasp.org/Top10/2025/ (project page: https://owasp.org/www-project-top-ten/)
+Previous version for reference: https://owasp.org/Top10/2021/</p>
+<p>The 2025 release reorganized several categories:</p>
+<table>
+<thead>
+<tr>
+<th>2025 rank</th>
+<th>Category</th>
+<th>2021 → 2025 change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A01</td>
+<td>Broken Access Control</td>
+<td>kept #1 — IDOR/privilege issues still top risk</td>
+</tr>
+<tr>
+<td>A02</td>
+<td>Security Misconfiguration</td>
+<td>moved <strong>up</strong> to #2</td>
+</tr>
+<tr>
+<td>A03</td>
+<td><strong>Software Supply Chain Failures</strong></td>
+<td><strong>NEW</strong> — dependencies, CI/CD, typosquatting</td>
+</tr>
+<tr>
+<td>A04</td>
+<td>Cryptographic Failures</td>
+<td>was #2 in 2021</td>
+</tr>
+<tr>
+<td>A05</td>
+<td>Injection</td>
+<td><strong>absorbed SSRF</strong> into this category</td>
+</tr>
+<tr>
+<td>A06</td>
+<td>Insecure Design</td>
+<td>was #4 in 2021</td>
+</tr>
+<tr>
+<td>A07</td>
+<td>Authentication Failures</td>
+<td>was #7</td>
+</tr>
+<tr>
+<td>A08</td>
+<td>Software or Data Integrity Failures</td>
+<td>was #8 (incl. insecure deserialization, CI/CD)</td>
+</tr>
+<tr>
+<td>A09</td>
+<td>Security Logging and Alerting Failures</td>
+<td>was #9</td>
+</tr>
+<tr>
+<td>A10</td>
+<td><strong>Mishandling of Exceptional Conditions</strong></td>
+<td><strong>NEW</strong> — error handling, crash-based flaws</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key takeaway for you:</strong> injection, access control, and auth failures dominate — exactly what payment-subscription bypass exploits (price/quantity tampering = business logic / insecure design; skipping "paid" check = access control).</p>
+<h3 id="cheat-sheet-series">Cheat Sheet Series</h3>
+<p><strong>URL:</strong> https://cheatsheetseries.owasp.org/
+Dozens of practical one-page guides. Most valuable for a beginner:</p>
+<ul>
+<li><strong>Authentication Cheat Sheet</strong> — https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html</li>
+<li><strong>Authorization / Access Control</strong> — Authorization_Cheat_Sheet.html</li>
+<li><strong>Session Management</strong> — Session_Management_Cheat_Sheet.html</li>
+<li><strong>SQL Injection Prevention</strong> — SQL_Injection_Prevention_Cheat_Sheet.html</li>
+<li><strong>XSS Prevention</strong> — Cross_Site_Scripting_Prevention_Cheat_Sheet.html</li>
+<li><strong>CSRF Prevention</strong> — Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html</li>
+<li><strong>Input Validation</strong> — Input_Validation_Cheat_Sheet.html</li>
+<li><strong>REST Security</strong> — REST_Security_Cheat_Sheet.html</li>
+<li><strong>JWT</strong> — JSON_Web_Token_for_Java_Cheat_Sheet.html (and general JWT cheat sheet)</li>
+<li><strong>Error Handling</strong> — Error_Handling_Cheat_Sheet.html (relevant to 2025 A10)</li>
+<li><strong>Vulnerable Dependency Management</strong> — relevant to new A03</li>
+</ul>
+<h3 id="deliberately-vulnerable-apps-practice-targets">Deliberately vulnerable apps (practice targets)</h3>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>URL</th>
+<th>Stack</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OWASP Juice Shop</strong></td>
+<td>https://owasp-juice.shop — GitHub: https://github.com/juice-shop/juice-shop — docs: https://pwning.owasp-juice.shop</td>
+<td>Node.js/Express/Angular</td>
+<td>The modern standard: ~100 challenges covering the whole Top 10 + extras, with an in-app scoreboard. <strong>#1 pick for you.</strong> Runs locally via Docker or npm.</td>
+</tr>
+<tr>
+<td><strong>WebGoat</strong></td>
+<td>https://owasp.org/www-project-webgoat/</td>
+<td>Java/Spring</td>
+<td>Lesson-based tutorials for beginners; gentler than Juice Shop.</td>
+</tr>
+<tr>
+<td><strong>DVWA</strong></td>
+<td>https://github.com/digininja/DVWA</td>
+<td>PHP/MySQL</td>
+<td>Classic, simple, difficulty levels Low→Impossible. Great for SQLi/XSS/file upload fundamentals.</td>
+</tr>
+<tr>
+<td><strong>crAPI</strong></td>
+<td>https://owasp.org/www-project-crapi/</td>
+<td>purpose-built vulnerable API</td>
+<td>Modern API security: JWT, mass assignment, BOLA. Directly relevant since most payment flows are APIs now.</td>
+</tr>
+<tr>
+<td><strong>API Security Top 10</strong></td>
+<td>https://owasp.org/API-Security/</td>
+<td>doc</td>
+<td>The API counterpart to the Top 10 — read after Top 10.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-http-fundamentals-must-learn-before-attacking">3. HTTP fundamentals (must learn before attacking)</h2>
+<p>You can't attack what you can't read. Spend 1–2 weeks here.</p>
+<p><strong>Core concepts to master:</strong></p>
+<ul>
+<li><strong>Request/response anatomy:</strong> method, path, version, headers, body. Status codes (200, 301, 302, 400, 401, 403, 404, 500).</li>
+<li><strong>All HTTP methods:</strong> GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD — and why PUT/PATCH/DELETE on endpoints matter (unauthorized state changes).</li>
+<li><strong>Headers that matter for security:</strong> <code>Cookie</code>, <code>Authorization</code>, <code>Origin</code>, <code>Referer</code>, <code>Host</code>, <code>X-Forwarded-For</code>, <code>Content-Type</code>, <code>Set-Cookie</code> flags (HttpOnly, Secure, SameSite).</li>
+<li><strong>Cookies vs sessions vs tokens:</strong></li>
+<li><strong>Cookie + server session:</strong> server stores state, cookie holds opaque session ID.</li>
+<li><strong>JWT (JSON Web Token):</strong> self-contained signed token (header.payload.signature). Learn structure, <code>alg=none</code> attacks, weak-secret brute force, and claim tampering. PortSwigger has a dedicated topic.</li>
+<li><strong>API keys / bearer tokens.</strong></li>
+<li><strong>REST vs GraphQL:</strong> REST = resource URLs + methods; GraphQL = single endpoint, query language, introspection. PortSwigger covers GraphQL attacks; crAPI covers REST APIs.</li>
+<li><strong>HTTPS/TLS basics</strong> — what it does and does NOT protect (it encrypts transport, not app logic — a "paid" flag in a response body is still visible).</li>
+</ul>
+<p><strong>Best free references:</strong></p>
+<ul>
+<li>MDN HTTP docs: https://developer.mozilla.org/en-US/docs/Web/HTTP (the definitive free reference)</li>
+<li>PortSwigger "Essential skills" topic: https://portswigger.net/web-security/essential-skills (HTTP primer built into the academy)</li>
+<li>"HTTP: The Definitive Guide" concepts via MDN's HTTP overview: https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview</li>
+<li>REST explained: https://restfulapi.net/ ; GraphQL intro: https://graphql.org/learn/</li>
+</ul>
+<hr />
+<h2 id="4-tools-to-learn-all-free">4. Tools to learn (all free)</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>URL</th>
+<th>What it's for</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Burp Suite Community Edition</strong></td>
+<td>https://portswigger.net/burp/communitydownload</td>
+<td>The industry-standard proxy + Repeater + Intruder (limited). Intercept/modify every request. <strong>Learn this first.</strong></td>
+<td>★★★</td>
+</tr>
+<tr>
+<td><strong>OWASP ZAP</strong></td>
+<td>https://www.zaproxy.org/</td>
+<td>Free alternative/complement to Burp; good automated scanner + manual proxy.</td>
+<td>★★</td>
+</tr>
+<tr>
+<td><strong>Browser DevTools → Network tab</strong></td>
+<td>built into Chrome/Firefox (F12)</td>
+<td>See every request/response/cookie without any proxy. Master this before Burp.</td>
+<td>★★★</td>
+</tr>
+<tr>
+<td><strong>Postman / Insomnia</strong></td>
+<td>https://www.postman.com/ , https://insomnia.rest/</td>
+<td>Craft/replay API requests; test endpoints directly. Insomnia is open-source.</td>
+<td>★★</td>
+</tr>
+<tr>
+<td><strong>sqlmap</strong></td>
+<td>https://sqlmap.org/</td>
+<td>Automated SQL injection detection/exploitation (legal targets only!).</td>
+<td>★</td>
+</tr>
+<tr>
+<td><strong>ffuf / feroxbuster</strong></td>
+<td>https://github.com/ffuf/ffuf , https://github.com/epi052/feroxbuster</td>
+<td>Directory/file/parameter fuzzing — finds hidden endpoints like <code>/admin</code>, <code>/api/internal</code>.</td>
+<td>★★</td>
+</tr>
+<tr>
+<td><strong>nuclei</strong></td>
+<td>https://github.com/projectdiscovery/nuclei</td>
+<td>Template-based vuln scanner — good for breadth checks on YOUR apps.</td>
+<td>★</td>
+</tr>
+<tr>
+<td><strong>curl</strong></td>
+<td>built-in</td>
+<td>Crafting raw HTTP requests; scripting.</td>
+<td>★★</td>
+</tr>
+<tr>
+<td><strong>jwt.io / jwt_tool</strong></td>
+<td>https://jwt.io/ , https://github.com/ticarpi/jwt_tool</td>
+<td>Decode/forge/test JWTs.</td>
+<td>★</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suggested tool-learning order:</strong> DevTools Network tab → Burp Repeater (replay edited requests) → ffuf for endpoint discovery → Postman for API work → sqlmap/nuclei as automation bonuses.</p>
+<hr />
+<h2 id="5-flaskpython-primer-build-before-you-break">5. Flask/Python primer (build before you break)</h2>
+<p>You understand a vuln best when you've written the code. ~2 weeks building a small Flask app (a shop with a checkout is perfect — it sets up the payment-bypass exercise).</p>
+<p><strong>Recommended path:</strong></p>
+<ol>
+<li><strong>The Flask Mega-Tutorial</strong> (Miguel Grinberg) — https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
+   The best structured Flask course: templates, forms, auth, database, deployment. Free online.</li>
+<li><strong>Flask docs quickstart</strong> — https://flask.palletsprojects.com/en/stable/quickstart/</li>
+<li><strong>Flask-SQLAlchemy / SQLAlchemy tutorial</strong> — https://docs.sqlalchemy.org/en/20/tutorial/ or https://flask-sqlalchemy.palletsprojects.com/
+   (Use SQLite for local dev — zero setup. Learn parameterized queries NOW: <code>db.session.execute(text("... :param ..."), {"param": value})</code>.)</li>
+<li><strong>Flask-Login</strong> (session auth) — https://flask-login.readthedocs.io/
+   Understand: server-side sessions, <code>session</code> cookie, <code>@login_required</code>.</li>
+<li><strong>Password hashing:</strong> <code>werkzeug.security.generate_password_hash</code> (never store plaintext).</li>
+<li><strong>Deliberately insecure patterns to recognize (and later exploit):</strong></li>
+<li>String-concatenated SQL queries</li>
+<li><code>render_template_string(user_input)</code> (SSTI)</li>
+<li><code>pickle.loads()</code> on user data</li>
+<li><code>eval()</code>/<code>subprocess</code> with unsanitized input</li>
+<li>Rendering user input unescaped in templates (<code>| safe</code> in Jinja)</li>
+</ol>
+<p><strong>Mini-project for this stage:</strong> build "NelloMart" — products, cart, fake checkout with a <code>price</code> field, user accounts with Flask-Login, orders stored in SQLite. Deliberately write the checkout <strong>naively</strong> (trust the client-sent price) for Week 1, then fix it — you'll <em>feel</em> the bug.</p>
+<hr />
+<h2 id="6-recommended-learning-path-12-weeks-beginner-payment-bypass-competent">6. Recommended learning path — ~12 weeks, beginner → payment-bypass-competent</h2>
+<p>Assumes ~5–8 hrs/week. All resources free.</p>
+<h3 id="phase-0-setup-week-1">Phase 0 — Setup (Week 1)</h3>
+<ul>
+<li>Install Burp Suite Community, browser DevTools fluency.</li>
+<li>Read MDN HTTP overview; learn request anatomy, methods, status codes, cookies.</li>
+<li>Create PortSwigger account.</li>
+</ul>
+<h3 id="phase-1-web-dev-basics-weeks-23">Phase 1 — Web dev basics (Weeks 2–3)</h3>
+<ul>
+<li>Flask Mega-Tutorial parts 1–7 (app, templates, forms, auth).</li>
+<li>SQLite + SQLAlchemy basics.</li>
+<li>Build the mini shop app.</li>
+</ul>
+<h3 id="phase-2-foundations-of-vulns-weeks-46">Phase 2 — Foundations of vulns (Weeks 4–6)</h3>
+<ul>
+<li>OWASP Top 10 2025 (read it once, slowly).</li>
+<li>PortSwigger <strong>Essential skills</strong> → SQL injection → XSS → CSRF → clickjacking → information disclosure.</li>
+<li>Solve all labs in each topic before moving on.</li>
+<li>Deploy Juice Shop locally (Docker or <code>npm start</code>); start the scoreboard.</li>
+</ul>
+<h3 id="phase-3-access-control-business-logic-weeks-79-payment-bypass-lives-here">Phase 3 — Access control &amp; business logic (Weeks 7–9) ← <strong>payment bypass lives here</strong></h3>
+<ul>
+<li>PortSwigger: authentication, access control, business logic vulnerabilities, JWT attacks, OAuth, file upload.</li>
+<li>Juice Shop: keep pushing the scoreboard; specifically hunt challenges tagged "access control" and "business logic" (e.g., coupon/price manipulation challenges exist).</li>
+<li>crAPI for API-style auth/authorization flaws (BOLA, mass assignment).</li>
+</ul>
+<h3 id="phase-4-server-side-deep-cuts-weeks-1011">Phase 4 — Server-side deep cuts (Weeks 10–11)</h3>
+<ul>
+<li>PortSwigger: XXE, SSRF, command injection, SSTI, insecure deserialization, path traversal, race conditions, API testing.</li>
+<li>OWASP Cheat Sheet Series: read the ones matching your Flask app's weak points.</li>
+</ul>
+<h3 id="phase-5-capstone-on-your-own-site-week-12">Phase 5 — Capstone on YOUR OWN site (Week 12+)</h3>
+<ul>
+<li>Take your Flask shop (or a slightly more realistic paid app).</li>
+<li>Run the full methodology from §7 against it with Burp.</li>
+<li>Write a short findings report for each bug: what, where, impact, fix.</li>
+<li>This is exactly "payment bypass on my own test site" — fully legal and the best possible portfolio piece.</li>
+</ul>
+<h3 id="optional-accelerators">Optional accelerators</h3>
+<ul>
+<li><strong>PortSwigger certification</strong> prep (paid exam, optional).</li>
+<li><strong>PentesterLab / HackTheBox</strong> free tiers for VM-based practice later.</li>
+<li>YouTube: live walkthroughs of Juice Shop / PortSwigger labs (search "PortSwigger lab walkthrough" — plentiful and free).</li>
+</ul>
+<hr />
+<h2 id="7-legal-ethical-framing">7. Legal &amp; ethical framing</h2>
+<p><strong>The golden rule: only attack systems you own or have explicit written permission to test.</strong></p>
+<ul>
+<li><strong>Your own site/app:</strong> 100% legal — do whatever you want, including payment-flow tampering. This is the recommended path (Phase 5).</li>
+<li><strong>PortSwigger Academy labs:</strong> explicitly designed for hacking — legal and encouraged.</li>
+<li><strong>OWASP apps (Juice Shop, WebGoat, DVWA, crAPI):</strong> run locally — legal.</li>
+<li><strong>Anything else on the internet:</strong> assume it's NOT authorized. Intercepting/modifying requests against third-party sites without permission can violate computer-misuse laws (e.g., CFAA in the US, Computer Misuse Act in the UK).</li>
+</ul>
+<h3 id="bug-bounty-as-the-legal-real-world-path">Bug bounty as the legal "real world" path</h3>
+<ul>
+<li><strong>HackerOne</strong> — https://www.hackerone.com/ — largest platform; many programs accept beginners; clear scope/rules per program.</li>
+<li><strong>Bugcrowd</strong> — https://www.bugcrowd.com/</li>
+<li><strong>Intigriti</strong> — https://www.intigriti.com/ (EU-friendly)</li>
+<li><strong>Google VRP / GitHub Security Lab</strong> — vendor programs.</li>
+<li>Start on <strong>VDP (vulnerability disclosure) programs</strong> or low-scope web programs; read each program's policy — scope defines what's legal.</li>
+</ul>
+<h3 id="responsible-disclosure">Responsible disclosure</h3>
+<p>If you ever find a real vuln in someone else's system: stop testing, document minimally, report via their security.txt / security page / HackerOne. Never exploit, never publicize before a fix window. See https://disclose.io/ and OWASP's guidance.</p>
+<hr />
+<h2 id="8-paymentsubscription-bypass-what-youll-actually-be-learning">8. Payment/subscription bypass — what you'll actually be learning</h2>
+<p>When you reach Phase 3–5, the relevant vuln classes are:</p>
+<ul>
+<li><strong>Business logic flaws</strong> (PortSwigger topic) — the app trusts client input: e.g., <code>POST /checkout {"price": 0.01}</code> or negative quantities, coupon reuse, race-condition double-spend.</li>
+<li><strong>Access control / IDOR</strong> — accessing <code>/orders/1234</code> or premium content by changing an ID or a <code>plan=pro</code> flag; missing server-side checks on "paid" status.</li>
+<li><strong>Parameter tampering / mass assignment</strong> — hidden fields like <code>is_paid=true</code>, <code>role=admin</code> accepted by the API (test with Burp Repeater; crAPI teaches this).</li>
+<li><strong>JWT attacks</strong> — if auth is token-based: weak secret, <code>alg:none</code>, claim editing.</li>
+<li><strong>Race conditions</strong> — redeeming a coupon/credit twice simultaneously.</li>
+<li><strong>Insecure direct references in APIs</strong> — crAPI's bread and butter.</li>
+</ul>
+<p>Defenses to learn alongside (so you can fix your own app): server-side price calculation, signed/verified payment webhooks (Stripe-style), idempotency keys, server-side entitlement checks on every request.</p>
+<hr />
+<h2 id="sources">Sources</h2>
+<ul>
+<li>PortSwigger Web Security Academy — https://portswigger.net/web-security (topics list verified 2026)</li>
+<li>PortSwigger learning paths — https://portswigger.net/web-security/learning-paths</li>
+<li>Burp Suite Community download — https://portswigger.net/burp/communitydownload</li>
+<li>OWASP Top 10 project — https://owasp.org/www-project-top-ten/ ; 2025 edition: https://owasp.org/Top10/2025/</li>
+<li>OWASP Top 10 2021 (previous) — https://owasp.org/Top10/2021/</li>
+<li>OWASP Cheat Sheet Series — https://cheatsheetseries.owasp.org/</li>
+<li>OWASP Juice Shop — https://owasp-juice.shop ; GitHub https://github.com/juice-shop/juice-shop ; companion guide https://pwning.owasp-juice.shop</li>
+<li>OWASP WebGoat — https://owasp.org/www-project-webgoat/</li>
+<li>DVWA — https://github.com/digininja/DVWA</li>
+<li>OWASP crAPI — https://owasp.org/www-project-crapi/</li>
+<li>OWASP API Security Top 10 — https://owasp.org/API-Security/</li>
+<li>MDN HTTP docs — https://developer.mozilla.org/en-US/docs/Web/HTTP</li>
+<li>Flask Mega-Tutorial — https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world</li>
+<li>Flask docs — https://flask.palletsprojects.com/</li>
+<li>OWASP ZAP — https://www.zaproxy.org/</li>
+<li>sqlmap — https://sqlmap.org/</li>
+<li>ffuf — https://github.com/ffuf/ffuf ; feroxbuster — https://github.com/epi052/feroxbuster</li>
+<li>nuclei — https://github.com/projectdiscovery/nuclei</li>
+<li>jwt_tool — https://github.com/ticarpi/jwt_tool</li>
+<li>HackerOne — https://www.hackerone.com/ ; Bugcrowd — https://www.bugcrowd.com/ ; Intigriti — https://www.intigriti.com/</li>
+<li>disclose.io — https://disclose.io/</li>
+</ul>
+<p><em>Note: web_search was unavailable during compilation; URLs verified via direct fetch where possible. OWASP Top 10 2025 category names reflect the released edition.</em></p>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from learning_path.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 03 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

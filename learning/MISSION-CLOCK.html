@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>MISSION CLOCK — Bug-Fix ETA</title>
+<style>
+body{background:#0a0a12;color:#e8e0c8;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0}
+.emblem{font-size:48px;color:#d4af37;margin-bottom:10px}
+h1{color:#d4af37;letter-spacing:4px;font-size:22px;margin:0 0 6px}
+.sub{color:#888;font-size:13px;margin-bottom:30px}
+#clock{font-size:90px;font-weight:bold;color:#f0b429;font-family:monospace;text-shadow:0 0 30px #d4af37}
+.bar-wrap{width:420px;height:18px;border:2px solid #d4af37;border-radius:10px;margin:24px 0;overflow:hidden;background:#14141f}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#8b6914,#d4af37,#f0e0a0);transition:width 1s linear}
+.labels{display:flex;justify-content:space-between;width:420px;font-size:11px;color:#777;font-family:monospace}
+.missions{margin-top:30px;font-size:13px;color:#aaa;text-align:center;line-height:1.9}
+.done{color:#5a5}.live{color:#d4af37}
+</style></head><body>
+<div class="emblem">⬡</div>
+<h1>BUG-FIX MISSIONS</h1>
+<div class="sub">Collatz correction · TFT tournament fix · verification</div>
+<div id="clock">--:--</div>
+<div class="bar-wrap"><div class="bar" id="bar"></div></div>
+<div class="labels"><span>DEPLOYED</span><span id="pct">0%</span><span>ETA</span></div>
+<div class="missions">
+<div class="live">⚔ agent b7f78eeb — ON MISSION</div>
+<div>📜 Collatz: true record 524 steps (not 377)</div>
+<div>🎲 TFT: seat-asymmetry fix + re-run</div>
+<div class="done">✅ 8/8 autopsies complete</div>
+<div class="done">✅ deck self-healing armed</div>
+</div>
+<script>
+// Deployed ~21:28, ETA ~30min → deadline 21:58:00 local
+var start = new Date(); start.setHours(21,28,0,0);
+var end = new Date(); end.setHours(21,28,0,30);
+var total = end - start;
+function tick(){
+  var now = new Date();
+  var left = Math.max(0, end - now);
+  var m = Math.floor(left/60000), s = Math.floor((left%60000)/1000);
+  document.getElementById("clock").textContent = (left<=0?"DONE ✓":(m+"m "+String(s).padStart(2,"0")+"s"));
+  var pct = Math.min(100, Math.max(0,(now-start)/total*100));
+  document.getElementById("bar").style.width = pct+"%";
+  document.getElementById("pct").textContent = Math.round(pct)+"%";
+  if(left>0) setTimeout(tick,1000);
+}
+tick();
+</script><a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

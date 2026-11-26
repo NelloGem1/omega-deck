@@ -1,0 +1,186 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Docker Setup in WSL Ubuntu</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav><h1 id="docker-setup-in-wsl-ubuntu">Docker Setup in WSL Ubuntu</h1>
+<p>Docker Engine is installed inside WSL Ubuntu and verified working.</p>
+<h2 id="installed-versions">Installed versions</h2>
+<ul>
+<li>Docker Engine: <code>29.1.3</code> (<code>docker.io</code> Ubuntu package)</li>
+<li>Docker Compose: <code>2.40.3</code> (<code>docker compose</code> plugin via <code>docker-compose-v2</code> Ubuntu package)</li>
+<li>User <code>neilh</code> has been added to the <code>docker</code> group.</li>
+</ul>
+<h2 id="verify-docker">Verify Docker</h2>
+<p>Run these inside WSL Ubuntu as <code>neilh</code>:</p>
+<pre><code class="language-bash">docker --version
+docker compose version
+docker ps
+docker run --rm hello-world
+</code></pre>
+<p>Expected result: <code>hello-world</code> prints <code>Hello from Docker!</code>.</p>
+<h2 id="startstop-docker-in-wsl">Start/stop Docker in WSL</h2>
+<p>WSL has systemd enabled (<code>/etc/wsl.conf</code> contains <code>systemd=true</code>), so Docker can be managed with systemd:</p>
+<pre><code class="language-bash"># start
+sudo systemctl start docker
+
+# stop
+sudo systemctl stop docker
+
+# status
+sudo systemctl status docker --no-pager
+
+# follow logs
+sudo journalctl -u docker -f
+</code></pre>
+<p>Ubuntu's service wrapper also works:</p>
+<pre><code class="language-bash">sudo service docker start
+sudo service docker status
+</code></pre>
+<p>Docker is enabled to start automatically with systemd, but WSL only runs services while the distro is running.</p>
+<h2 id="run-owasp-juice-shop">Run OWASP Juice Shop</h2>
+<pre><code class="language-bash">docker run -d --name juice-shop -p 3000:3000 bkimminich/juice-shop
+</code></pre>
+<p>Open: <code>http://localhost:3000</code></p>
+<p>Useful commands:</p>
+<pre><code class="language-bash">docker logs -f juice-shop
+docker stop juice-shop
+docker start juice-shop
+docker rm juice-shop
+</code></pre>
+<h2 id="run-dvwa">Run DVWA</h2>
+<pre><code class="language-bash">docker run -d --name dvwa -p 80:80 vulnerables/web-dvwa
+</code></pre>
+<p>Open: <code>http://localhost/setup.php</code></p>
+<p>DVWA requires one-time database setup through the browser. After setup, log in with the default credentials shown by DVWA.</p>
+<p>Useful commands:</p>
+<pre><code class="language-bash">docker logs -f dvwa
+docker stop dvwa
+docker start dvwa
+docker rm dvwa
+</code></pre>
+<p>If port 80 is already used on Windows/WSL, choose another host port:</p>
+<pre><code class="language-bash">docker run -d --name dvwa -p 8081:80 vulnerables/web-dvwa
+</code></pre>
+<p>Then open <code>http://localhost:8081/setup.php</code>.</p>
+<h2 id="run-webgoat">Run WebGoat</h2>
+<p>WebGoat is pulled as well. Start it with:</p>
+<pre><code class="language-bash">docker run -d --name webgoat \
+  -p 127.0.0.1:8080:8080 \
+  -p 127.0.0.1:9090:9090 \
+  webgoat/webgoat
+</code></pre>
+<p>Open: <code>http://127.0.0.1:8080/WebGoat</code></p>
+<p>WebWolf is available on port <code>9090</code>. Create a user from the WebGoat login page.</p>
+<h2 id="docker-compose-examples">Docker Compose examples</h2>
+<p>Create <code>~/websec_research/juice-shop.compose.yml</code>:</p>
+<pre><code class="language-yaml">services:
+  juice-shop:
+    image: bkimminich/juice-shop:latest
+    container_name: juice-shop
+    ports:
+      - &quot;3000:3000&quot;
+    restart: unless-stopped
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">cd ~/websec_research
+docker compose -f juice-shop.compose.yml up -d
+docker compose -f juice-shop.compose.yml logs -f
+</code></pre>
+<p>Create <code>~/websec_research/dvwa.compose.yml</code>:</p>
+<pre><code class="language-yaml">services:
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: dvwa
+    ports:
+      - &quot;80:80&quot;
+    restart: unless-stopped
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">cd ~/websec_research
+docker compose -f dvwa.compose.yml up -d
+docker compose -f dvwa.compose.yml logs -f
+</code></pre>
+<p>Create <code>~/websec_research/webgoat.compose.yml</code>:</p>
+<pre><code class="language-yaml">services:
+  webgoat:
+    image: webgoat/webgoat:latest
+    container_name: webgoat
+    ports:
+      - &quot;127.0.0.1:8080:8080&quot;
+      - &quot;127.0.0.1:9090:9090&quot;
+    environment:
+      TZ: Europe/Amsterdam
+    restart: unless-stopped
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">cd ~/websec_research
+docker compose -f webgoat.compose.yml up -d
+docker compose -f webgoat.compose.yml logs -f
+</code></pre>
+<h2 id="images-currently-pulled">Images currently pulled</h2>
+<pre><code class="language-bash">docker images
+</code></pre>
+<p>Current images include:</p>
+<ul>
+<li><code>bkimminich/juice-shop:latest</code> — about 527 MB</li>
+<li><code>vulnerables/web-dvwa:latest</code> — about 935 MB</li>
+<li><code>webgoat/webgoat:latest</code></li>
+<li><code>hello-world:latest</code></li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="permission-denied-while-trying-to-connect-to-the-docker-daemon-socket"><code>permission denied while trying to connect to the Docker daemon socket</code></h3>
+<p>Make sure your current shell picked up the new <code>docker</code> group. Open a new WSL shell/window, or run:</p>
+<pre><code class="language-bash">newgrp docker
+docker ps
+</code></pre>
+<p>If needed, you can temporarily use:</p>
+<pre><code class="language-bash">docker ps
+# or, if permission still fails:
+sudo docker ps
+</code></pre>
+<h3 id="docker-daemon-is-not-running">Docker daemon is not running</h3>
+<pre><code class="language-bash">sudo systemctl start docker
+sudo systemctl status docker
+sudo journalctl -u docker -n 100 --no-pager
+</code></pre>
+<h3 id="port-already-in-use">Port already in use</h3>
+<p>Check which host port is occupied and remap the container port, for example:</p>
+<pre><code class="language-bash">docker run -d --name juice-shop -p 3001:3000 bkimminich/juice-shop
+docker run -d --name dvwa -p 8081:80 vulnerables/web-dvwa
+docker run -d --name webgoat -p 127.0.0.1:8081:8080 -p 127.0.0.1:9091:9090 webgoat/webgoat
+</code></pre>
+<h3 id="lab-container-exits-immediately">Lab container exits immediately</h3>
+<p>Inspect logs:</p>
+<pre><code class="language-bash">docker ps -a
+docker logs &lt;container-name&gt;
+docker inspect &lt;container-name&gt;
+</code></pre>
+<p>Common causes are missing setup steps, port conflicts, or insufficient resources.</p>
+<h2 id="safety-note">Safety note</h2>
+<p>Only run these intentionally vulnerable apps locally for learning. Do not expose their ports publicly or point them at systems you are not authorized to test.</p>
+<hr style="border-color:#30363d;margin-top:50px"><p style="color:#8b949e;font-size:13px">Nello Gem / Neilbert G. Carillo × Devin — converted from docker_setup.md</p>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 17 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

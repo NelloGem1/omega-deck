@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NelloGem Prime Index — Command Center</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330; --line:#2d333f;
+    --gold:#f0b429; --gold-dim:#8a6a1f; --txt:#c9d1d9; --txt-hi:#f0f6fc;
+    --dim:#8b949e; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  ::selection{background:var(--gold);color:#111}
+  a{color:var(--gold);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,kbd{font-family:var(--mono);font-size:.92em;color:var(--gold);background:var(--bg2);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+
+  /* ── header ── */
+  header{background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;backdrop-filter:blur(6px)}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 18px}
+  .bar{display:flex;align-items:center;gap:14px;padding:10px 0;flex-wrap:wrap}
+  .logo{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--txt-hi);letter-spacing:.5px;white-space:nowrap}
+  .logo b{color:var(--gold)}
+  .logo small{color:var(--dim);font-weight:400;margin-left:6px}
+  nav.jump{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+  nav.jump a{font-family:var(--mono);font-size:.78rem;color:var(--txt);padding:5px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg3);transition:.15s}
+  nav.jump a:hover{border-color:var(--gold);color:var(--gold);text-decoration:none}
+  nav.jump a .m{color:var(--gold);margin-right:5px}
+  #searchbar{width:100%;max-width:520px;margin-left:auto}
+  #q{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--txt-hi);
+     font-family:var(--mono);font-size:.95rem;padding:10px 14px;outline:none;transition:.15s}
+  #q:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,180,41,.12)}
+  #q::placeholder{color:var(--dim)}
+  #qbtn{position:absolute}
+  .searchwrap{position:relative;flex:1;min-width:200px;max-width:520px;margin-left:auto}
+  .searchwrap input{padding-right:44px}
+  #qc{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;font-size:1rem;display:none}
+  #qc.show{display:block}
+  #count{font-family:var(--mono);font-size:.75rem;color:var(--dim);white-space:nowrap}
+
+  /* ── sections ── */
+  section{padding:38px 0 10px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:.8rem;color:var(--gold);letter-spacing:2px}
+  .sec-num span{color:var(--dim);margin:0 4px}
+  h2{font-size:1.35rem;color:var(--txt-hi);font-weight:650}
+  h2 .em{color:var(--gold)}
+  .sec-sub{color:var(--dim);font-size:.85rem;font-family:var(--mono);margin-left:auto}
+
+  /* primorial ladder rhythm markers */
+  .ladder{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+  .ladder i{font-style:normal;font-family:var(--mono);font-size:.72rem;color:var(--gold-dim);border:1px solid var(--line);
+            border-radius:5px;padding:2px 8px;background:var(--bg2)}
+  .ladder i.hot{color:var(--gold);border-color:var(--gold-dim)}
+
+  /* ── cards ── */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .grid.cols2{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .card{display:block;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;
+        transition:border-color .15s,transform .15s;position:relative}
+  a.card:hover{border-color:var(--gold);transform:translateY(-2px);text-decoration:none}
+  .card .idx{position:absolute;top:10px;right:12px;font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+  .card .idx.p{color:var(--gold)}
+  .card h3{font-size:.95rem;color:var(--txt-hi);margin-bottom:4px;padding-right:34px}
+  .card p{font-size:.82rem;color:var(--dim);line-height:1.45}
+  .card .meta{margin-top:8px;font-family:var(--mono);font-size:.72rem;color:var(--gold-dim);display:flex;gap:8px;flex-wrap:wrap}
+  .card .tag{font-family:var(--mono);font-size:.68rem;color:var(--gold);border:1px solid var(--gold-dim);
+             border-radius:4px;padding:1px 6px;margin-top:8px;display:inline-block}
+  .card pre{font-family:var(--mono);font-size:.72rem;color:var(--txt);background:var(--bg);border:1px solid var(--line);
+            border-radius:6px;padding:6px 8px;margin-top:8px;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+
+  /* lab cards */
+  .lab{border-left:3px solid var(--gold-dim)}
+  .lab h3::before{content:"● ";color:var(--gold);font-size:.7rem;vertical-align:2px}
+  .lab .cred{font-family:var(--mono);font-size:.75rem;color:var(--dim);margin-top:6px}
+  .lab .cred b{color:var(--txt);font-weight:600}
+
+  /* tools table-ish */
+  .tool{display:flex;gap:12px;align-items:baseline;background:var(--bg2);border:1px solid var(--line);
+        border-radius:8px;padding:9px 13px;margin-bottom:8px;flex-wrap:wrap}
+  .tool .name{font-family:var(--mono);font-weight:700;color:var(--gold);min-width:110px;font-size:.88rem}
+  .tool .what{flex:1;min-width:180px;font-size:.85rem;color:var(--txt)}
+  .tool .where{font-family:var(--mono);font-size:.75rem;color:var(--dim);white-space:nowrap}
+
+  /* vault */
+  .pub{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  .pub .card h3{font-size:1rem}
+
+  footer{margin-top:50px;border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);font-size:.8rem}
+  footer .mono{font-family:var(--mono)}
+  .prime-strip{font-family:var(--mono);font-size:.72rem;color:var(--gold-dim);letter-spacing:3px;margin-bottom:12px}
+  .hidden{display:none !important}
+  .empty{color:var(--dim);font-family:var(--mono);padding:30px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+
+  @media(max-width:640px){
+    .bar{flex-direction:column;align-items:stretch}
+    nav.jump{margin-left:0}
+    .searchwrap{max-width:none;margin-left:0}
+    .sec-sub{margin-left:0;width:100%}
+    .tool .where{white-space:normal}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo"><b>NelloGem</b> PRIME INDEX <small>command center</small></div>
+      <nav class="jump">
+        <a href="#library"><span class="m">①</span>LIBRARY</a>
+        <a href="#labs"><span class="m">③</span>LABS</a>
+        <a href="#tools"><span class="m">⑦</span>TOOLS</a>
+        <a href="#vault"><span class="m">⑨</span>VAULT</a>
+      </nav>
+      <div class="searchwrap">
+        <input id="q" type="search" placeholder="filter everything… try 'flask', 'hashcat', 'juice'" autocomplete="off" spellcheck="false">
+        <button id="qc" title="clear">✕</button>
+      </div>
+      <span id="count"></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="prime-strip" style="margin-top:26px">1 · 3 · 7 · 9 — primes &gt; 5 end in these digits. the sieve never forgets.</div>
+
+  <!-- ══════════ SECTION 1 · ① ══════════ -->
+  <section id="library">
+    <div class="sec-head">
+      <span class="sec-num">1<span>·</span>3<span>·</span>7<span>·</span>9</span>
+      <h2>📚 <span class="em">Learning Library</span></h2>
+      <span class="sec-sub">51 items · same folder · numbered 00–50</span>
+    </div>
+    <div class="ladder"><i class="hot">2</i><i>6</i><i>30</i><i>210</i><i>2310</i><i>30030</i><i>510510</i><i>9699690</i></div>
+    <div class="grid" id="libgrid">
+      <a class="card" href="00 - master-system.html" data-k="master system architecture credentials access permissions bypass restore everything"><span class="idx p">00</span><h3>⬡ MASTER SYSTEM</h3><p>Everything — architecture, codes, permissions, bypasses. READ FIRST.</p></a>
+      <a class="card" href="02 - 00-start-here.html" data-k="start here entry point overview project"><span class="idx p">01</span><h3>00 · Start Here</h3><p>Entry point — read this first.</p></a>
+      <a class="card" href="03 - learning-path.html" data-k="learning path curriculum order study plan"><span class="idx">02</span><h3>Learning Path</h3><p>Ordered curriculum from zero.</p></a>
+      <a class="card" href="04 - payment-bypass.html" data-k="payment bypass stripe checkout vuln"><span class="idx">03</span><h3>Payment Bypass</h3><p>Flipping the paywall.</p></a>
+      <a class="card" href="05 - attacker-methodology.html" data-k="attacker methodology recon exploit mindset"><span class="idx">04</span><h3>Attacker Methodology</h3><p>How attackers actually think.</p></a>
+      <a class="card" href="06 - defender-playbook.html" data-k="defender playbook defense blue team"><span class="idx">05</span><h3>Defender Playbook</h3><p>Detection &amp; hardening side.</p></a>
+      <a class="card" href="07 - advanced-web-vulns.html" data-k="advanced web vulnerabilities ssti xss ssrf rce"><span class="idx p">07</span><h3>Advanced Web Vulns</h3><p>SSTI, SSRF, RCE &amp; beyond.</p></a>
+      <a class="card" href="08 - flask-security-deep.html" data-k="flask security deep django session cookies"><span class="idx">08</span><h3>Flask Security Deep</h3><p>Framework-level pitfalls.</p></a>
+      <a class="card" href="09 - race-and-logic.html" data-k="race condition logic bug timing"><span class="idx p">09</span><h3>Race &amp; Logic</h3><p>TOCTOU, double-spend, logic flaws.</p></a>
+      <a class="card" href="10 - cheatsheets-index.html" data-k="cheatsheets index reference cards"><span class="idx">10</span><h3>Cheatsheets Index</h3><p>All reference cards, one index.</p></a>
+      <a class="card" href="11 - challenges.html" data-k="challenges ctf practice exercises"><span class="idx">11</span><h3>Challenges</h3><p>Practice problems &amp; flags.</p></a>
+      <a class="card" href="12 - exploits-attack-log.html" data-k="exploits attack log writeup history"><span class="idx">12</span><h3>Exploits · Attack Log</h3><p>Full exploitation journal.</p></a>
+      <a class="card" href="13 - audit-report.html" data-k="audit report findings security review"><span class="idx">13</span><h3>Audit Report</h3><p>Formal security audit output.</p></a>
+      <a class="card" href="14 - juice-shop-solves.html" data-k="juice shop solves walkthrough owasp"><span class="idx">14</span><h3>Juice Shop Solves</h3><p>OWASP Juice Shop walkthrough.</p></a>
+      <a class="card" href="15 - exploits-round2.html" data-k="exploits round 2 second pass"><span class="idx">15</span><h3>Exploits · Round 2</h3><p>Second exploitation pass.</p></a>
+      <a class="card" href="16 - defense-round2.html" data-k="defense round 2 mitigations fixes"><span class="idx">16</span><h3>Defense · Round 2</h3><p>Remediation for round 2.</p></a>
+      <a class="card" href="17 - docker-setup.html" data-k="docker setup containers lab"><span class="idx">17</span><h3>Docker Setup</h3><p>Containerized lab environment.</p></a>
+      <a class="card" href="18 - lab-setup.html" data-k="lab setup environment tools install"><span class="idx">18</span><h3>Lab Setup</h3><p>Machine &amp; tooling bootstrap.</p></a>
+      <a class="card" href="19 - cli-toolkit.html" data-k="cli toolkit commands terminal"><span class="idx">19</span><h3>CLI Toolkit</h3><p>Command-line arsenal.</p></a>
+      <a class="card" href="20 - crypto-challenges.html" data-k="crypto challenges cryptography puzzles"><span class="idx">20</span><h3>Crypto Challenges</h3><p>Crypto puzzle series.</p></a>
+      <a class="card" href="21 - crypto-theory-primitives.html" data-k="crypto theory primitives symmetric asymmetric hash"><span class="idx">21</span><h3>Crypto · Theory &amp; Primitives</h3><p>The math underneath.</p></a>
+      <a class="card" href="22 - crypto-applied.html" data-k="crypto applied practice tls jwt"><span class="idx">22</span><h3>Crypto · Applied</h3><p>Real-world crypto usage.</p></a>
+      <a class="card" href="23 - crypto-advanced.html" data-k="crypto advanced padding oracle side channel"><span class="idx">23</span><h3>Crypto · Advanced</h3><p>Padding oracles, side channels.</p></a>
+      <a class="card" href="24 - certificates-free.html" data-k="certificates free certbot ssl letsencrypt"><span class="idx">24</span><h3>Certificates · Free</h3><p>Let's Encrypt &amp; certbot.</p></a>
+      <a class="card" href="25 - certificates-other.html" data-k="certificates other pki ca wildcard"><span class="idx">25</span><h3>Certificates · Other</h3><p>PKI, wildcards, internal CA.</p></a>
+      <a class="card" href="26 - guide-age.html" data-k="age encryption guide modern"><span class="idx p">26</span><h3>Guide · age</h3><p>Simple modern file encryption.</p></a>
+      <a class="card" href="27 - guide-gpg.html" data-k="gpg guide encryption keys kleopatra"><span class="idx">27</span><h3>Guide · GPG</h3><p>Keys, signing, Kleopatra.</p></a>
+      <a class="card" href="28 - guide-veracrypt.html" data-k="veracrypt guide encryption volumes"><span class="idx">28</span><h3>Guide · VeraCrypt</h3><p>Encrypted volumes &amp; containers.</p></a>
+      <a class="card" href="29 - guide-cryptomator.html" data-k="cryptomator guide cloud encryption"><span class="idx">29</span><h3>Guide · Cryptomator</h3><p>Client-side cloud encryption.</p></a>
+      <a class="card" href="30 - guide-keepassxc.html" data-k="keepassxc guide password manager"><span class="idx">30</span><h3>Guide · KeePassXC</h3><p>Offline password vault.</p></a>
+      <a class="card" href="31 - guide-bitwarden.html" data-k="bitwarden guide password manager cloud"><span class="idx p">31</span><h3>Guide · Bitwarden</h3><p>Cloud password manager.</p></a>
+      <a class="card" href="32 - guide-hashcat.html" data-k="hashcat guide password cracking gpu"><span class="idx">32</span><h3>Guide · Hashcat</h3><p>GPU password cracking.</p></a>
+      <a class="card" href="33 - guide-network-tools.html" data-k="network tools guide nmap wireshark tcpdump"><span class="idx">33</span><h3>Guide · Network Tools</h3><p>Wireshark, Nmap, traffic analysis.</p></a>
+      <a class="card" href="34 - guide-tor.html" data-k="tor guide onion anonymity"><span class="idx">34</span><h3>Guide · Tor</h3><p>Anonymity network basics.</p></a>
+      <a class="card" href="35 - guide-pki-tools.html" data-k="pki tools guide openssl mkcert certificates"><span class="idx">35</span><h3>Guide · PKI Tools</h3><p>OpenSSL, mkcert, cert tooling.</p></a>
+      <a class="card" href="36 - vault-manifest.html" data-k="vault manifest inventory archive"><span class="idx p">36</span><h3>Vault · Manifest</h3><p>Full vault inventory.</p></a>
+      <a class="card" href="37 - vault-readme.html" data-k="vault readme backup restore instructions"><span class="idx">37</span><h3>Vault · README</h3><p>Backup &amp; restore guide.</p></a>
+      <a class="card" href="38 - vault-restore.html" data-k="vault restore recovery disaster"><span class="idx p">38</span><h3>Vault · Restore</h3><p>Disaster-recovery runbook.</p></a>
+      <a class="card" href="39 - ml-data-pipeline.html" data-k="ml pipeline train validation feature engineering regularization deployment bias"><span class="idx p">39</span><h3>ML · Data Pipeline</h3><p>Splits, features, regularization, drift, bias audit.</p></a>
+      <a class="card" href="40 - map-engineering-medicine.html" data-k="map engineering medicine agriculture disciplines"><span class="idx">40</span><h3>Map · Engineering Medicine Agri</h3><p>5 branches · convergence tables · Grade A.</p></a>
+      <a class="card" href="41 - map-cs-it.html" data-k="map computer science it software hardware"><span class="idx">41</span><h3>Map · CS &amp; IT</h3><p>6 branches · career tracks · 5-phase roadmap · Grade A.</p></a>
+      <a class="card" href="42 - map-math-logic.html" data-k="map math logic formal proofs set theory"><span class="idx p">42</span><h3>Map · Math Logic Formal</h3><p>1325 lines · proof hierarchies · open problems · Grade S.</p></a>
+      <a class="card" href="43 - map-natural-sciences.html" data-k="map physics chemistry biology astronomy"><span class="idx">43</span><h3>Map · Natural Sciences</h3><p>Physics→astro→emerging · epistemic tags · Grade A.</p></a>
+      <a class="card" href="44 - map-ai-ml.html" data-k="map ai machine learning deep learning llm"><span class="idx p">44</span><h3>Map · AI &amp; ML</h3><p>Foundations→AGI research · capability tagging · Grade A+.</p></a>
+      <a class="card" href="45 - map-cybersecurity.html" data-k="map cybersecurity infosec pqc zero knowledge"><span class="idx p">45</span><h3>Map · Cybersecurity</h3><p>Full domain + PQC/ZK/HE · Grade A+.</p></a>
+      <a class="card" href="46 - map-knowledge-archive.html" data-k="map knowledge archive architecture database graph"><span class="idx p">46</span><h3>Map · Knowledge Archive</h3><p>1343 lines · DDL, graph schema, threat model · Grade S.</p></a>
+      <a class="card" href="47 - map-humanities-society.html" data-k="map humanities society sociology psychology economics law"><span class="idx">47</span><h3>Map · Humanities Society</h3><p>1282 lines · 13 sections · civilization systems.</p></a>
+      <a class="card" href="49 - marshal-access-guide.html" data-k="marshal access guide free tiers accounts credits"><span class="idx p">49</span><h3>🎖️ Marshal · Access Guide</h3><p>Every free tier, account, and budget path to more power.</p></a>
+      <a class="card" href="50 - marshal-rank.html" data-k="marshal rank certificate authority field marshal neilbert"><span class="idx p">50</span><h3>🎖️ Marshal · Rank Certificate</h3><p>Field Marshal Neilbert G. Carillo — powers, clearances, rank history.</p></a>
+      <a class="card" href="rsa_folder.html" data-k="rsa folder lock hybrid encryption aes gcm folder_lock"><span class="idx">🔐</span><h3>RSA Folder Lock</h3><p>folder_lock.py guide — hybrid RSA-2048 + AES-256-GCM.</p></a>
+      <a class="card" href="01 - the-project-individual.html" data-k="project individual overview index landing"><span class="idx">00</span><h3>01 · The Project · Individual</h3><p>Project overview &amp; context.</p></a>
+    </div>
+    <div class="empty hidden" id="libempty">No library docs match that filter.</div>
+  </section>
+
+  <!-- ══════════ SECTION 2 · ③ ══════════ -->
+  <section id="labs">
+    <div class="sec-head">
+      <span class="sec-num">2<span>·</span>3<span>·</span>7<span>·</span>9</span>
+      <h2>🎯 <span class="em">Live Labs</span></h2>
+      <span class="sec-sub">clickable localhost · creds inline</span>
+    </div>
+    <div class="ladder"><i>2</i><i class="hot">6</i><i>30</i><i>210</i><i>2310</i><i>30030</i><i>510510</i><i>9699690</i></div>
+    <div class="grid cols2" id="labgrid">
+      <a class="card lab" href="http://localhost:3000" target="_blank" rel="noopener" data-k="juice shop owasp vulnerable web app admin login"><span class="idx p">:3000</span><h3>Juice Shop</h3><p>OWASP deliberately-vulnerable SPA.</p><div class="cred">login <b>admin@juice-sh.op</b> / <b>admin123</b></div></a>
+      <a class="card lab" href="http://localhost:4280" target="_blank" rel="noopener" data-k="dvwa damn vulnerable web app php setup"><span class="idx">:4280</span><h3>DVWA</h3><p>PHP vuln dojo — run <code>/setup.php</code> first if fresh.</p><div class="cred">login <b>admin</b> / <b>password</b> · security: low→impossible</div></a>
+      <a class="card lab" href="http://localhost:18080/WebGoat" target="_blank" rel="noopener" data-k="webgoat lessons register account"><span class="idx p">:18080</span><h3>WebGoat</h3><p>OWASP lesson-based teaching app.</p><div class="cred">register a new account on first visit</div></a>
+      <a class="card lab" href="http://localhost:19090" target="_blank" rel="noopener" data-k="webwolf companion mail file server"><span class="idx">:19090</span><h3>WebWolf</h3><p>WebGoat's mail/file companion. Same creds as WebGoat.</p></a>
+      <a class="card lab" href="http://localhost:5000" target="_blank" rel="noopener" data-k="subdomain takeover sublab flask lab local"><span class="idx p">:5000</span><h3>SubLab Flask App</h3><p>Local Flask target for takeover/lab exercises.</p></a>
+      <a class="card lab" href="http://localhost:8080" target="_blank" rel="noopener" data-k="burp suite proxy intercept repeater"><span class="idx">:8080</span><h3>Burp Suite</h3><p>Intercepting proxy — point browser proxy here.</p><div class="cred">proxy <b>127.0.0.1:8080</b></div></a>
+      <a class="card lab" href="#" data-k="zap owasp zaproxy scanner port"><span class="idx p">—</span><h3>OWASP ZAP</h3><p>Automated scanner. Change the port in options before proxying.</p><div class="cred">default proxy <b>127.0.0.1:8080</b> — conflicts w/ Burp; change it</div></a>
+    </div>
+    <div class="empty hidden" id="labempty">No labs match that filter.</div>
+  </section>
+
+  <!-- ══════════ SECTION 3 · ⑦ ══════════ -->
+  <section id="tools">
+    <div class="sec-head">
+      <span class="sec-num">3<span>·</span>7<span>·</span>9</span>
+      <h2>🛠️ <span class="em">Tools · Quick Reference</span></h2>
+      <span class="sec-sub">name → what → where</span>
+    </div>
+    <div class="ladder"><i>2</i><i>6</i><i class="hot">30</i><i>210</i><i>2310</i><i>30030</i><i>510510</i><i>9699690</i></div>
+    <div id="toollist">
+      <div class="tool" data-k="folder lock script python encrypt files"><span class="name">folder_lock.py</span><span class="what">Custom script — encrypts/locks folders.</span><span class="where">repo scripts dir</span></div>
+      <div class="tool" data-k="age encryption modern file cli"><span class="name">age</span><span class="what">Simple, modern file encryption (X25519).</span><span class="where">CLI · <code>age</code></span></div>
+      <div class="tool" data-k="gpg pgp encryption keys kleopatra"><span class="name">GPG / Kleopatra</span><span class="what">PGP key management, sign &amp; encrypt.</span><span class="where">Kleopatra GUI · <code>gpg</code></span></div>
+      <div class="tool" data-k="veracrypt encrypted volumes disk"><span class="name">VeraCrypt</span><span class="what">On-the-fly encrypted volumes/containers.</span><span class="where">Windows GUI app</span></div>
+      <div class="tool" data-k="cryptomator cloud encryption vault"><span class="name">Cryptomator</span><span class="what">Client-side encryption for cloud drives.</span><span class="where">Desktop/mobile app</span></div>
+      <div class="tool" data-k="keepassxc password manager offline"><span class="name">KeePassXC</span><span class="what">Offline password vault, TOTP, SSH keys.</span><span class="where">Desktop app</span></div>
+      <div class="tool" data-k="bitwarden password manager cloud browser"><span class="name">Bitwarden</span><span class="what">Cloud password manager + browser ext.</span><span class="where">Web/desktop/browser ext</span></div>
+      <div class="tool" data-k="hashcat password cracking gpu hash"><span class="name">hashcat</span><span class="what">GPU-accelerated hash/password cracking.</span><span class="where">CLI</span></div>
+      <div class="tool" data-k="wireshark packet capture network analysis"><span class="name">Wireshark</span><span class="what">Deep packet capture &amp; protocol analysis.</span><span class="where">Desktop app</span></div>
+      <div class="tool" data-k="nmap network scanner ports hosts"><span class="name">Nmap</span><span class="what">Host/port/service/network scanner.</span><span class="where">CLI · <code>nmap</code></span></div>
+      <div class="tool" data-k="tor anonymity onion network proxy"><span class="name">Tor</span><span class="what">Onion routing for anonymity.</span><span class="where">Tor Browser / <code>tor</code></span></div>
+      <div class="tool" data-k="mkcert local certificates https dev"><span class="name">mkcert</span><span class="what">Local CA for trusted dev HTTPS certs.</span><span class="where">CLI · <code>mkcert</code></span></div>
+      <div class="tool" data-k="openssl certificates pki tls s_client"><span class="name">OpenSSL</span><span class="what">TLS/cert toolkit, <code>s_client</code>, x509.</span><span class="where">CLI · <code>openssl</code></span></div>
+      <div class="tool" data-k="sqlmap sql injection scanner exploit"><span class="name">sqlmap</span><span class="what">Automated SQL injection detection/exploit.</span><span class="where">CLI · <code>sqlmap</code></span></div>
+      <div class="tool" data-k="ffuf web fuzzer directory vhost api"><span class="name">ffuf</span><span class="what">Fast web fuzzer — dirs, vhosts, params.</span><span class="where">CLI · <code>ffuf</code></span></div>
+      <div class="tool" data-k="nuclei vulnerability scanner templates"><span class="name">nuclei</span><span class="what">Template-based vuln scanner.</span><span class="where">CLI · <code>nuclei</code></span></div>
+      <div class="tool" data-k="httpx http toolkit probe tech"><span class="name">httpx</span><span class="what">HTTP probe/tech-detect toolkit.</span><span class="where">CLI · <code>httpx</code></span></div>
+      <div class="tool" data-k="jwt tool json web token attack none alg"><span class="name">jwt_tool</span><span class="what">JWT attack suite (alg:none, weak secrets).</span><span class="where">CLI · <code>jwt_tool</code></span></div>
+      <div class="tool" data-k="nikto web server scanner cgi"><span class="name">nikto</span><span class="what">Classic web server misconfig scanner.</span><span class="where">CLI · <code>nikto</code></span></div>
+      <div class="tool" data-k="gobuster directory dns brute force"><span class="name">gobuster</span><span class="what">Brute-forces dirs, DNS, vhosts.</span><span class="where">CLI · <code>gobuster</code></span></div>
+      <div class="tool" data-k="dirsearch directory brute force web"><span class="name">dirsearch</span><span class="what">Web path brute-forcer.</span><span class="where">CLI · <code>dirsearch</code></span></div>
+      <div class="tool" data-k="whatweb web fingerprint technology"><span class="name">whatweb</span><span class="what">Web tech/CMS fingerprinting.</span><span class="where">CLI · <code>whatweb</code></span></div>
+      <div class="tool" data-k="searchsploit exploit database search edb"><span class="name">searchsploit</span><span class="what">Search Exploit-DB from CLI.</span><span class="where">CLI · <code>searchsploit</code></span></div>
+      <div class="tool" data-k="feroxbuster directory recursion rust"><span class="name">feroxbuster</span><span class="what">Fast recursive dir brute-forcer (Rust).</span><span class="where">CLI · <code>feroxbuster</code></span></div>
+      <div class="tool" data-k="subfinder subdomain enumeration passive"><span class="name">subfinder</span><span class="what">Passive subdomain enumeration.</span><span class="where">CLI · <code>subfinder</code></span></div>
+      <div class="tool" data-k="burp suite proxy intercept repeater intruder"><span class="name">Burp Suite</span><span class="what">Intercepting proxy + full pentest platform.</span><span class="where"><code>:8080</code></span></div>
+      <div class="tool" data-k="owasp zap proxy scanner automated"><span class="name">OWASP ZAP</span><span class="what">Open-source web app scanner &amp; proxy.</span><span class="where">Desktop · change proxy port</span></div>
+    </div>
+    <div class="empty hidden" id="toolempty">No tools match that filter.</div>
+  </section>
+
+  <!-- ══════════ SECTION 4 · ⑨ ══════════ -->
+  <section id="vault">
+    <div class="sec-head">
+      <span class="sec-num">4<span>·</span>9<span>·</span>7<span>·</span>3</span>
+      <h2>🏰 <span class="em">Vault &amp; Published</span></h2>
+      <span class="sec-sub">backups · story · video · dashboard</span>
+    </div>
+    <div class="ladder"><i>2</i><i>6</i><i>30</i><i class="hot">210</i><i>2310</i><i>30030</i><i>510510</i><i>9699690</i></div>
+    <div class="pub" id="vaultgrid">
+      <a class="card" href="https://github.com/NelloGem1/experiment-vault" target="_blank" rel="noopener" data-k="github experiment vault private backup repository"><span class="idx p">GH</span><h3>experiment-vault</h3><p>Private GitHub backup of the whole experiment.</p><span class="tag">github.com/NelloGem1/experiment-vault</span></a>
+      <a class="card" href="https://nellogem1.github.io/prime-discovery" target="_blank" rel="noopener" data-k="prime discovery story writeup blog"><span class="idx">WEB</span><h3>prime-discovery</h3><p>The story — how this index was built.</p><span class="tag">nellogem1.github.io/prime-discovery</span></a>
+      <a class="card" href="https://youtu.be/TOX3foVXTJA" target="_blank" rel="noopener" data-k="youtube video walkthrough prime"><span class="idx p">▶</span><h3>Video</h3><p>Walkthrough on YouTube.</p><span class="tag">youtu.be/TOX3foVXTJA</span></a>
+      <a class="card" href="http://localhost:8796" target="_blank" rel="noopener" data-k="dashboard localhost status local wsl"><span class="idx">:8796</span><h3>Local Dashboard</h3><p>WSL command deck (needs WSL up).</p><span class="tag">localhost:8796</span></a>
+      <a class="card" href="http://127.0.0.1:8797/Learning/00%20-%20PRIME%20INDEX.html" target="_blank" rel="noopener" data-k="dashboard windows server learning library 8797"><span class="idx p">:8797</span><h3>Windows Deck</h3><p>Always-on Windows server — whole Downloads incl. library.</p><span class="tag">127.0.0.1:8797</span></a>
+      <a class="card" href="../MASTER_SYSTEM.md" data-k="master system architecture credentials bypass permissions restore"><span class="idx p">MS</span><h3>MASTER_SYSTEM.md</h3><p>Everything: architecture, access codes, agent permissions, proven bypasses, restore paths.</p><span class="tag">Downloads\MASTER_SYSTEM.md</span></a>
+    </div>
+    <div class="empty hidden" id="vaultempty">Nothing in the vault matches that filter.</div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="prime-strip">2 · 6 · 30 · 210 · 2310 · 30030 · 510510 · 9699690 — the primorial ladder</div>
+    <div class="mono">NelloGem Prime Index · single-file command center · no external resources</div>
+    <div>Last updated: <span id="lu">—</span> · built with the PRIME DISCOVERY formula · 1·3·7·9</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var q=document.getElementById('q'), qc=document.getElementById('qc'), count=document.getElementById('count');
+  var groups=[
+    {grid:'libgrid',empty:'libempty',sel:'#library .grid .card'},
+    {grid:'labgrid',empty:'labempty',sel:'#labs .grid .card'},
+    {grid:null,empty:'toolempty',sel:'#tools .tool'},
+    {grid:'vaultgrid',empty:'vaultempty',sel:'#vault .pub .card'}
+  ];
+  function filter(){
+    var v=q.value.trim().toLowerCase(), shown=0;
+    groups.forEach(function(g){
+      var els=document.querySelectorAll(g.sel), vis=0;
+      els.forEach(function(el){
+        var hay=(el.getAttribute('data-k')||'')+' '+(el.textContent||'');
+        var ok=!v||hay.toLowerCase().indexOf(v)>-1;
+        el.classList.toggle('hidden',!ok);
+        if(ok)vis++;
+      });
+      var emp=document.getElementById(g.empty);
+      if(emp)emp.classList.toggle('hidden',vis>0);
+      shown+=vis;
+    });
+    count.textContent=v?('▸ '+shown+' match'+(shown===1?'':'es')):'';
+    qc.classList.toggle('show',v.length>0);
+  }
+  q.addEventListener('input',filter);
+  qc.addEventListener('click',function(){q.value='';filter();q.focus();});
+  document.getElementById('lu').textContent=new Date().toISOString().slice(0,10);
+})();
+</script>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body>
+</html>

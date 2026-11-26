@@ -1,0 +1,180 @@
+<!doctype html><html><head><meta charset="utf-8"><title>defense-round2</title><style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style></head><body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<h1 id="defense-round-2-websec-lab-subscription-app">Defense Round 2 — WebSec Lab subscription app</h1>
+<p><strong>Date:</strong> 2026-11-25 · <strong>Target:</strong> <code>/home/neilh/websec_lab/app/app.py</code>
+<strong>Context:</strong> round-1 fixes (9 vulns, 18 tests) were live and being attacked.
+This round anticipated the next wave: race conditions on payments, HMAC
+webhook forgery/replay, CSRF token abuse, rate-limit brute force,
+second-order SQLi, session fixation, error leaks, mass assignment.</p>
+<p>All changes are annotated <code># HARDEN (round 2): &lt;reason&gt;</code> in <code>app.py</code>.
+Round-1 <code># FIX</code> markers and behavior are preserved.</p>
+<hr />
+<h2 id="what-was-still-weak-adversarial-self-review-of-round-1">What was still weak (adversarial self-review of round 1)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Gap found</th>
+<th>Risk</th>
+<th>Fix added</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R2-1</td>
+<td><strong>No rate limiting anywhere</strong> — <code>/login</code>, <code>/register</code>, <code>/upgrade</code>, <code>/gateway/charge</code>, webhook unlimited</td>
+<td>Online brute force / credential stuffing / webhook floods</td>
+<td>In-memory fixed-window limiter; per-(IP+identity) AND per-IP buckets on every POST endpoint</td>
+</tr>
+<tr>
+<td>R2-2</td>
+<td><strong>X-Forwarded-For would have been trusted blindly</strong> had it been used</td>
+<td>Attacker rotates XFF to evade IP limits</td>
+<td>Only <code>request.remote_addr</code> is used (no ProxyFix configured → XFF is attacker-controlled). Verified by test</td>
+</tr>
+<tr>
+<td>R2-3</td>
+<td><strong>CSRF token was per-session, never expired, reusable forever, same token for every form</strong></td>
+<td>Token replay, cross-endpoint reuse, long-lived captured tokens</td>
+<td>Tokens are now HMAC-signed <code>(action, expiry=1h, nonce)</code> with a per-session secret; <strong>single-use</strong> (used nonces recorded in signed session cookie, capped at 48); action-bound so a login token can't POST to register/upgrade</td>
+</tr>
+<tr>
+<td>R2-4</td>
+<td><strong>Payment transition was check-then-act</strong> (<code>SELECT</code> status → <code>UPDATE</code>) — TOCTOU race</td>
+<td>Two concurrent <code>/gateway/charge</code> or webhook requests both see <code>pending</code> → double success</td>
+<td>Atomic compare-and-swap <code>UPDATE ... WHERE id=? AND status='pending'</code> inside <code>BEGIN IMMEDIATE</code>; loser gets <code>rowcount=0</code> → HTTP 400</td>
+</tr>
+<tr>
+<td>R2-5</td>
+<td><strong>No one-pending-payment invariant</strong> — attacker could stack unlimited pending checkouts (observed live: user 13 had 2 pending rows)</td>
+<td>Payment spam, confusing ledger, index pressure</td>
+<td><code>/upgrade</code> fails prior pendings in the same <code>BEGIN IMMEDIATE</code> tx + partial <code>UNIQUE INDEX ... WHERE status='pending'</code> (guarded migration, collapses existing dupes at boot)</td>
+</tr>
+<tr>
+<td>R2-6</td>
+<td><strong>Webhook had no replay protection</strong> — valid signature reusable forever within secret lifetime</td>
+<td>Captured webhook replay; nonce-less forgery attempts</td>
+<td>Mandatory <code>timestamp</code> (±300 s) + single-use server-side <code>nonce</code> set (bounded 10k) inside the signed body; strict <code>type(payment_id) is int</code>; amount re-checked against <code>PLAN_PRICES</code> allowlist; 64 KB body cap</td>
+</tr>
+<tr>
+<td>R2-7</td>
+<td><strong><code>/gateway/charge</code> had NO CSRF check at all</strong> (round-1 miss — only register/login/upgrade were covered)</td>
+<td>CSRF-forced charges</td>
+<td><code>csrf_ok("payment")</code> — shares the payment-flow action with <code>/upgrade</code> (checkout form is part of that flow)</td>
+</tr>
+<tr>
+<td>R2-8</td>
+<td><strong>No security headers</strong></td>
+<td>Clickjacking, MIME sniffing, referrer leaks</td>
+<td><code>after_request</code>: CSP (<code>default-src 'self'</code>, <code>frame-ancestors 'none'</code>, <code>form-action 'self'</code>), <code>X-Frame-Options: DENY</code>, <code>X-Content-Type-Options: nosniff</code>, <code>Referrer-Policy: no-referrer</code>, <code>Permissions-Policy</code>, HSTS when request is secure or <code>FORCE_HSTS=1</code></td>
+</tr>
+<tr>
+<td>R2-9</td>
+<td><strong>Login username-enumeration timing</strong> (hash check skipped for unknown users)</td>
+<td>Account enumeration</td>
+<td>Dummy <code>check_password_hash</code> always runs</td>
+</tr>
+<tr>
+<td>R2-10</td>
+<td><strong>No input bounds</strong> — username/password/payment_id unbounded; <code>payment_id</code> compared as raw string</td>
+<td>DoS via huge passwords, type-confusion probes</td>
+<td>username 1–64 chars no control chars; password ≤1024; <code>payment_id.isdigit()</code> / strict JSON int</td>
+</tr>
+<tr>
+<td>R2-11</td>
+<td><strong>Session cookie flags unset; no lifetime</strong></td>
+<td>Fixation/lifetime hardening gaps</td>
+<td><code>SESSION_COOKIE_HTTPONLY</code>, <code>SAMESITE=Lax</code>, <code>PERMANENT_SESSION_LIFETIME=1h</code>, <code>SESSION_COOKIE_SECURE</code> via <code>LAB_COOKIE_SECURE=1</code> (off by default — lab is plain HTTP); <code>MAX_CONTENT_LENGTH=256KB</code></td>
+</tr>
+<tr>
+<td>R2-12</td>
+<td><strong>DB connections had no busy timeout / FK pragma</strong></td>
+<td><code>database is locked</code> under the attacker's concurrent requests</td>
+<td><code>PRAGMA busy_timeout=10000</code>, <code>PRAGMA foreign_keys=ON</code>, <code>timeout=10</code> on connect</td>
+</tr>
+<tr>
+<td>R2-13</td>
+<td><strong>500 error handler absent</strong> (Flask default is generic but unhandled paths weren't audited)</td>
+<td>Stack-trace/info-leak risk</td>
+<td>Explicit <code>errorhandler(500)</code> → generic page + server-side log; 404 handler likewise</td>
+</tr>
+<tr>
+<td>R2-14</td>
+<td><strong><code>{{ body\|safe }}</code> interpolated DB values unescaped</strong> (<code>plan</code>, <code>role</code> in status f-string)</td>
+<td>Second-order XSS if a DB field is ever attacker-influenced</td>
+<td><code>markupsafe.escape()</code> on all DB-derived values inside <code>\|safe</code> bodies</td>
+</tr>
+</tbody>
+</table>
+<p>Not changed (deliberate): <code>/logout</code> stays GET (test suite + lab UX depend on
+it; logout CSRF is low-impact). Username charset stays permissive (1–64) —
+round-1 regression test requires SQLi payloads to be <em>stored literally</em>,
+which is safe because every query is parameterized.</p>
+<h2 id="test-results">Test results</h2>
+<pre><code>$ cd /home/neilh/websec_lab/app &amp;&amp; /home/neilh/venv/bin/python -m pytest tests/ -q
+.......................................                                  [100%]
+39 passed in 8.28s
+</code></pre>
+<ul>
+<li>18 round-1 tests: all still pass (one webhook test updated to include the
+  now-mandatory <code>timestamp</code>+<code>nonce</code> fields — API contract change, not a
+  weakening).</li>
+<li>21 new tests in <code>tests/test_security_r2.py</code>:</li>
+<li>headers present (200 + 404 responses)</li>
+<li>login rate limit → 429 on 6th attempt; register per-username → 429;
+    X-Forwarded-For rotation does NOT bypass the limiter</li>
+<li>CSRF single-use replay → 403; cross-action token → 403; tampered token → 403</li>
+<li>webhook: replayed nonce → 403; missing/stale/future timestamp → 403;
+    missing nonce → 400; string payment_id → 400; unsigned → 403</li>
+<li><strong>concurrency</strong>: 8 simultaneous <code>/gateway/charge</code> on one payment →
+    exactly one 200, seven 400, single <code>succeeded</code> row; 6 parallel webhook
+    deliveries → exactly one <code>upgraded=true</code></li>
+<li>second <code>/upgrade</code> supersedes pending (one pending row; old sig → 400)</li>
+<li>oversized username / empty password rejected; non-numeric payment_id → 400</li>
+</ul>
+<h2 id="live-verification">Live verification</h2>
+<ul>
+<li>App restarted on hardened code (<code>/home/neilh/venv/bin/python app.py</code>,
+  PID recorded at runtime; log <code>/tmp/app_r2.log</code>).</li>
+<li>End-to-end smoke: register → login → upgrade → mock-gateway charge →
+  <code>/premium</code> returns <code>SECRET_RECIPE_42</code>; immediate recharge → 400.</li>
+<li>Response headers confirmed live (CSP, XFO, XCTO, Referrer-Policy,
+  Permissions-Policy; SameSite=Lax + HttpOnly session cookie).</li>
+</ul>
+<h2 id="known-residual-notes">Known residual notes</h2>
+<ul>
+<li><code>Server: Werkzeug/...</code> header is added by the dev server <em>below</em> the WSGI
+  app layer and cannot be stripped via <code>after_request</code>; use a production
+  WSGI server (gunicorn) to remove it.</li>
+<li>Rate limits are per-process in-memory — fine for the lab; use Redis in prod.</li>
+<li>HSTS is emitted only for secure requests / <code>FORCE_HSTS=1</code> (lab is HTTP).</li>
+<li>Webhook nonce set is in-memory; a restart clears it (timestamp window still
+  applies). Persist to DB if stronger guarantees are needed.</li>
+</ul>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 16 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body></html>

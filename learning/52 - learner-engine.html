@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NelloGem Learner Engine — How Do You Learn?</title>
+<style>
+  :root { --bg:#0a0a0f; --gold:#d4af37; --dim:#8a8a9a; --card:#14141f; --ok:#3fbf6f; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:#e8e6df; font-family:'Segoe UI',system-ui,sans-serif;
+         min-height:100vh; display:flex; justify-content:center; padding:40px 16px; }
+  .wrap { max-width:720px; width:100%; }
+  h1 { color:var(--gold); font-size:1.6rem; letter-spacing:2px; text-align:center; margin-bottom:6px; }
+  .sub { color:var(--dim); text-align:center; margin-bottom:30px; font-size:.9rem; }
+  .card { background:var(--card); border:1px solid #2a2a3a; border-radius:12px; padding:22px; margin-bottom:14px; }
+  .q { font-size:1.05rem; margin-bottom:14px; line-height:1.45; }
+  .q .tag { color:var(--gold); font-size:.75rem; letter-spacing:1px; display:block; margin-bottom:4px; }
+  .opts { display:grid; gap:8px; }
+  .opt { background:#1c1c2a; border:1px solid #33334a; border-radius:8px; padding:11px 14px;
+         cursor:pointer; transition:.15s; font-size:.92rem; }
+  .opt:hover { border-color:var(--gold); background:#24243a; }
+  .opt.sel { border-color:var(--gold); background:#2a2a1a; }
+  .bar { height:8px; background:#22222f; border-radius:4px; overflow:hidden; margin-top:6px; }
+  .bar i { display:block; height:100%; background:var(--gold); transition:width .4s; }
+  .dim-name { display:flex; justify-content:space-between; font-size:.8rem; color:var(--dim); margin-bottom:3px; }
+  #result { display:none; }
+  .pill { display:inline-block; background:#2a2a1a; border:1px solid var(--gold); color:var(--gold);
+          border-radius:20px; padding:4px 14px; font-size:.8rem; margin:3px; }
+  .rec { background:#1c1c2a; border-left:3px solid var(--gold); padding:12px 16px; margin:8px 0;
+         border-radius:0 8px 8px 0; font-size:.92rem; }
+  .rec b { color:var(--gold); }
+  .rec a { color:#7ab8ff; text-decoration:none; }
+  .rec a:hover { text-decoration:underline; }
+  .btn { background:var(--gold); color:#000; border:none; border-radius:8px; padding:13px 34px;
+         font-size:1rem; font-weight:700; cursor:pointer; display:block; margin:20px auto 0; }
+  .btn:hover { filter:brightness(1.15); }
+  #prog { color:var(--dim); text-align:center; font-size:.8rem; margin-bottom:12px; }
+  .type { font-size:1.3rem; color:var(--gold); font-weight:700; margin:6px 0 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⚔️ NELLOGEM LEARNER ENGINE</h1>
+  <div class="sub">16 questions · 4 dimensions · your personal learning fingerprint</div>
+
+  <div id="quiz"></div>
+  <div id="prog"></div>
+  <button class="btn" id="nextBtn" style="display:none">NEXT →</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+// Each question: [leftPole(-2..-1), rightPole(+1..+2)] mapped to 4 dims
+// dims: VIS (visual-verbal), ACT (active-reflexive), SEN (sensing-intuitive), SEQ (seq-global)
+const QS = [
+ {t:"When learning something new, I prefer:", tag:"VIS/VERBAL", a:["Diagrams, charts, videos, whiteboards","Dense text and detailed explanations"], d:[-2,2,0,0]},
+ {t:"I remember information best when I:", tag:"VIS/VERBAL", a:["See it written or drawn out","Hear it explained aloud"], d:[-1,0,0,0]},
+ {t:"My ideal study session is:", tag:"ACT/REFL", a:["Hands-on — build, test, break things immediately","Think it through first, then try"], d:[0,2,0,0]},
+ {t:"When solving a hard problem I:", tag:"ACT/REFL", a:["Jump in and experiment","Sit and reason it out step by step"], d:[0,1,0,-1]},
+ {t:"I prefer learning:", tag:"SEN/INT", a:["Concrete facts, formulas, real examples","Abstract theories and big ideas"], d:[0,0,-2,0]},
+ {t:"A good teacher for me:", tag:"SEN/INT", a:["Shows practical applications first","Explains the underlying theory deeply"], d:[0,0,-1,1]},
+ {t:"I learn fastest via:", tag:"SEQ/GLOBAL", a:["Clear sequential steps, one at a time","Understanding the whole picture first"], d:[0,0,0,-2]},
+ {t:"When given a complex topic I:", tag:"SEQ/GLOBAL", a:["Want the roadmap before details","Dive into details, assemble the picture later"], d:[0,0,0,2]},
+ {t:"I trust knowledge that is:", tag:"SEN/INT", a:["Tested, measured, reproducible","Elegant and conceptually deep"], d:[1,0,-2,0]},
+ {t:"Debugging code, I usually:", tag:"ACT/REFL", a:["Add prints and poke at it live","Read the logic carefully first"], d:[0,2,0,0]},
+ {t:"My notes look like:", tag:"VIS/VERBAL", a:["Sketches, arrows, mind-maps","Bullet lists and paragraphs"], d:[-2,0,0,0]},
+ {t:"I get frustrated when:", tag:"SEQ/GLOBAL", a:["Steps are skipped or order is unclear","I don't see how pieces connect"], d:[0,0,0,-1]},
+ {t:"Between theory and practice I:", tag:"ACT/REFL", a:["Practice first, theory when stuck","Theory first, practice to confirm"], d:[0,1,0,0]},
+ {t:"I remember numbers/stats better than:", tag:"SEN/INT", a:["Abstract concepts without examples","Step-by-step procedures"], d:[0,0,-1,1]},
+ {t:"A perfect lesson ends with:", tag:"ACT/REFL", a:["Me building something that works","Me being able to explain it back"], d:[1,1,0,0]},
+ {t:"Overall I consider myself:", tag:"SEN/INT", a:["A concrete, hands-on learner","An abstract, big-picture thinker"], d:[0,0,-2,1]},
+];
+const DIMS = [
+ {k:"VIS", name:"Visual ↔ Verbal", lo:"Visual", hi:"Verbal"},
+ {k:"ACT", name:"Active ↔ Reflective", lo:"Active", hi:"Reflective"},
+ {k:"SEN", name:"Sensing ↔ Intuitive", lo:"Sensing", hi:"Intuitive"},
+ {k:"SEQ", name:"Sequential ↔ Global", lo:"Sequential", hi:"Global"},
+];
+let cur=0, scores={VIS:0,ACT:0,SEN:0,SEQ:0};
+const quizEl=document.getElementById('quiz'), progEl=document.getElementById('prog'),
+      nextBtn=document.getElementById('nextBtn'), resEl=document.getElementById('result');
+
+function render(){
+  const q=QS[cur];
+  progEl.textContent=`Question ${cur+1} / ${QS.length}`;
+  quizEl.innerHTML=`<div class="card"><div class="q"><span class="tag">${q.tag}</span>${q.t}</div>
+    <div class="opts">
+      <div class="opt" data-v="-1">${q.a[0]}</div>
+      <div class="opt" data-v="1">${q.a[1]}</div>
+    </div></div>`;
+  nextBtn.style.display='none';
+  quizEl.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{
+    quizEl.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+    o.classList.add('sel');
+    const v=+o.dataset.v;
+    // map option to dim scores
+    const di=q.d.findIndex(x=>x!==0);
+    if(di>=0){ const key=DIMS[di].k; scores[key]+= v * Math.abs(q.d[di]); }
+    // secondary dims with weight
+    q.d.forEach((w,i)=>{ if(w!==0 && i!==di){ scores[DIMS[i].k]+= v*w*0.5; }});
+    nextBtn.style.display='block';
+    nextBtn.textContent = cur===QS.length-1 ? 'SEE MY PROFILE →' : 'NEXT →';
+  });
+}
+nextBtn.onclick=()=>{ cur++; cur<QS.length ? render() : finish(); };
+
+function label(v,lo,hi){
+  const a=Math.abs(v);
+  if(a<1.5) return "Balanced "+lo+"↔"+hi;
+  return (v<0?lo:hi)+(a>3?" (strong)":"");
+}
+function finish(){
+  quizEl.style.display='none'; progEl.style.display='none'; nextBtn.style.display='none';
+  const types=[];
+  let html='<div class="card"><div class="type">YOUR LEARNING FINGERPRINT</div>';
+  DIMS.forEach(d=>{
+    const v=scores[d.k];
+    types.push(label(v,d.lo,d.hi));
+    const pct=Math.min(100,Math.abs(v)/8*100);
+    const left=v<0;
+    html+=`<div class="dim-name"><span>${d.lo}</span><span>${d.name}</span><span>${d.hi}</span></div>
+           <div class="bar"><i style="width:${pct}%;${left?'margin-left:auto;float:right':''};background:${left?'#4a90d9':'var(--gold)'}"></i></div>`;
+  });
+  html+=`<div style="margin-top:14px">${types.map(t=>`<span class="pill">${t}</span>`).join('')}</div></div>`;
+
+  // ---- recommendation engine: match profile → library docs ----
+  const R=[];
+  const add=(cond,doc,why)=>{ if(cond) R.push({doc,why}); };
+  const visual = scores.VIS<0, verbal = scores.VIS>0;
+  const active = scores.ACT<0, reflective = scores.ACT>0;
+  const sensing = scores.SEN<0, intuitive = scores.SEN>0;
+  const seq = scores.SEQ<0, glob = scores.SEQ>0;
+
+  add(visual||active, "00 - PRIME INDEX.html", "visual/active starter — interactive index of everything");
+  add(verbal||reflective, "03 - learning-path.html", "structured reading path for verbal/reflective learners");
+  add(active, "11 - challenges.html", "hands-on challenge labs — learn by doing");
+  add(active, "12 - exploits-attack-log.html", "active exploitation practice in the attack range");
+  add(reflective, "13 - audit-report.html", "deep analysis docs for the reflective mind");
+  add(sensing, "20 - crypto-challenges.html", "concrete crypto exercises with verifiable answers");
+  add(intuitive, "42 - map-math-logic.html", "abstract theory maps — formal methods & logic");
+  add(seq, "03 - learning-path.html", "step-by-step sequenced curriculum");
+  add(glob, "46 - map-knowledge-archive.html", "big-picture knowledge architecture first");
+  add(glob, "44 - map-ai-ml.html", "systems-level AI/ML landscape for big-picture thinkers");
+  add(sensing&&active, "15 - exploits-round2.html", "applied security practice — concrete and hands-on");
+  add(intuitive&&reflective, "42 - map-math-logic.html", "deep formal treatment for intuitive reflectors");
+  add(visual, "ALL-IN-ONE.html", "visual dashboard hub — everything in one glance");
+  add(reflective, "36 - vault-manifest.html", "understand the whole system architecture");
+  // everyone gets the fleet core
+  R.push({doc:"10 - cheatsheets-index.html", why:"universal reference — every learning style needs a cheatsheet layer"});
+
+  html+='<div class="card"><div class="type">📚 YOUR PERSONAL CURRICULUM</div>';
+  R.forEach(r=>html+=`<div class="rec"><b>${r.doc}</b><br><span style="color:var(--dim);font-size:.85rem">${r.why}</span><br><a href="file:///C:/Users/neilh/Downloads/Learning/${encodeURIComponent(r.doc)}">OPEN DOC →</a></div>`);
+  html+='</div>';
+
+  html+=`<div class="card" style="border-color:var(--gold)">
+    <b style="color:var(--gold)">NEXT-LEVEL:</b> this engine can track your quiz/session
+    history in fleet.db and adapt over time — spaced repetition, weak-area
+    detection, dynamic re-sequencing. Say "wire it to the fleet" and it becomes
+    a living tutor, not just a diagnostic.
+  </div>`;
+
+  resEl.innerHTML=html; resEl.style.display='block';
+  resEl.scrollIntoView({behavior:'smooth'});
+}
+render();
+</script>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body>
+</html>

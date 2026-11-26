@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NelloGem Prime Index B — Primordial Ladder</title>
+<style>
+body{background:#0d1117;color:#e6edf3;font-family:system-ui;max-width:860px;margin:0 auto;padding:64px 24px 40px;line-height:1.65}
+h1{color:#f0b429;border-bottom:2px solid #30363d;padding-bottom:10px}
+h2{color:#58a6ff;margin-top:36px;border-bottom:1px solid #21262d;padding-bottom:6px}
+h3{color:#3fb950}
+a{color:#58a6ff}code{background:#161b22;padding:2px 7px;border-radius:5px;color:#f0b429;font-size:.9em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px;overflow-x:auto}
+pre code{background:none;padding:0;color:#e6edf3}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #30363d;padding:8px 12px;text-align:left}
+th{background:#161b22;color:#f0b429}
+blockquote{border-left:3px solid #f0b429;margin:16px 0;padding:8px 20px;background:#161b22;color:#8b949e}
+li{margin:5px 0}
+a.doc{display:block;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin:10px 0;color:#58a6ff;text-decoration:none}a.doc:hover{border-color:#f0b429}small{color:#8b949e}
+.pnav{position:fixed;top:0;left:0;right:0;background:#0d1117ee;border-bottom:1px solid #30363d;backdrop-filter:blur(8px);z-index:99;display:flex;align-items:center;gap:14px;padding:10px 24px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.pnav .plogo{color:#f0b429;font-weight:700;text-decoration:none;letter-spacing:1px}
+.pnav .pdigits{color:#8b949e;letter-spacing:2px}
+.pnav a.nl{color:#58a6ff;text-decoration:none;margin-left:auto}
+.pnav a.nl:hover{color:#f0b429}
+p.footer,footer{margin-top:48px;padding-top:16px;border-top:1px solid #21262d;color:#8b949e;font-size:12px;font-family:ui-monospace,Consolas,monospace;text-align:center}
+p.footer a,footer a{color:#58a6ff;text-decoration:none}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font:11px ui-monospace,Consolas,monospace}
+.pill-ok{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.pill-run{background:#f0b42922;color:#f0b429;border:1px solid #f0b42955}
+.pill-bad{background:#f8514922;color:#f85149;border:1px solid #f8514955}
+</style>
+</head>
+<body>
+<nav class="pnav"><a class="plogo" href="01 - the-project-individual.html">⬡ PRIME</a><span class="pdigits">1·3·7·9</span><a class="nl" href="00 - PRIME INDEX.html">INDEX ⌕</a></nav>
+<div class="wrap">
+
+<header>
+  <div class="sieve">2 &rarr; 6 &rarr; 30 &rarr; 210 &rarr; 2310 &rarr; 30030 &rarr; 510510</div>
+  <h1>PRIME INDEX<span class="sub">N E L L O G E M &nbsp;&middot;&nbsp; V A U L T &nbsp; B</span></h1>
+  <p class="lede">The primorial ladder: every resource a rung, every rung a prime. Click a node to unfurl its links, then descend.</p>
+</header>
+
+<div class="searchbar">
+  <input id="q" type="search" placeholder="Search the ladder — docs, tools, labs, vault…" autocomplete="off">
+  <div class="searchmeta" id="meta">38 documents &middot; 6 labs &middot; 28 tools &middot; 4 vault links</div>
+</div>
+
+<div class="ladder" id="ladder">
+
+  <!-- RUNG 1 : THE LIBRARY -->
+  <section class="rung" data-keywords="library docs documents guides learning path reading start here">
+    <div class="node"><span class="pn">30</span><span class="pl">library</span></div>
+    <div class="panel">
+      <div class="tag">Rung 30 &middot; 2&middot;3&middot;5</div>
+      <h2>&#128214; Learning Library — 38 Documents</h2>
+      <p class="desc">Numbered reading order. Highlighted nodes are battle reports — audits, attack logs and defenses.</p>
+      <div class="docs" id="doclist"></div>
+    </div>
+  </section>
+
+  <!-- RUNG 2 : LIVE LABS -->
+  <section class="rung" data-keywords="labs live juice shop dvwa webgoat webwolf sublab burp ports localhost">
+    <div class="node"><span class="pn">210</span><span class="pl">labs</span></div>
+    <div class="panel">
+      <div class="tag">Rung 210 &middot; +7</div>
+      <h2>&#127919; Live Labs — Running Targets</h2>
+      <p class="desc">Vulnerable apps spinning on localhost. Attack them before they attack your schedule.</p>
+      <div class="chips">
+        <a class="chip" href="http://localhost:3000" target="_blank" rel="noopener"><span>Juice Shop</span><span class="port">:3000</span></a>
+        <a class="chip" href="http://localhost:4280" target="_blank" rel="noopener"><span>DVWA</span><span class="port">:4280</span><span class="cred">admin / password</span></a>
+        <a class="chip" href="http://localhost:18080/WebGoat" target="_blank" rel="noopener"><span>WebGoat</span><span class="port">:18080</span><span class="cred">WebGoat / We09goat</span></a>
+        <a class="chip" href="http://localhost:19090" target="_blank" rel="noopener"><span>WebWolf</span><span class="port">:19090</span><span class="cred">webwolf / webwolf</span></a>
+        <a class="chip" href="http://localhost:5000" target="_blank" rel="noopener"><span>SubLab</span><span class="port">:5000</span></a>
+        <a class="chip" href="http://localhost:8080" target="_blank" rel="noopener"><span>Burp Suite</span><span class="port">:8080</span><span class="cred">proxy listener</span></a>
+      </div>
+      <p class="note">Lab bring-up &amp; credentials detail: see docs 17 (docker-setup) and 18 (lab-setup).</p>
+    </div>
+  </section>
+
+  <!-- RUNG 3 : ARSENAL -->
+  <section class="rung" data-keywords="tools arsenal cli utilities security software hashcat nmap tor openssl sqlmap ffuf nuclei httpx jwt nikto gobuster dirsearch whatweb searchsploit feroxbuster subfinder burp zap wireshark veracrypt cryptomator keepassxc bitwarden age gpg folder lock mkcert">
+    <div class="node big"><span class="pn">2310</span><span class="pl">arsenal</span></div>
+    <div class="panel">
+      <div class="tag">Rung 2310 &middot; +13</div>
+      <h2>&#128736; The Arsenal — CLI &amp; GUI Tools</h2>
+      <p class="desc">Everything installed for the campaign. Filter above to find one fast.</p>
+      <div class="chips" id="tools"></div>
+    </div>
+  </section>
+
+  <!-- RUNG 4 : VAULT -->
+  <section class="rung" data-keywords="vault github pages youtube manifest restore finale links repository">
+    <div class="node final"><span class="pn">30030</span><span class="pl">vault</span></div>
+    <div class="panel">
+      <div class="tag">Rung 30030 &middot; +17 &middot; +19 &middot; +23</div>
+      <h2>&#127963; The Vault — Off-Site &amp; Local</h2>
+      <p class="desc">Encrypted manifest lives on GitHub Pages. Restore drills documented in the vault trilogy (docs 36&ndash;38).</p>
+      <div class="chips">
+        <a class="chip" href="https://github.com/NelloGem1/experiment-vault" target="_blank" rel="noopener"><span>GitHub: experiment-vault</span></a>
+        <a class="chip" href="https://nellogem1.github.io/prime-discovery" target="_blank" rel="noopener"><span>GitHub Pages: prime-discovery</span></a>
+        <a class="chip" href="https://youtu.be/TOX3foVXTJA" target="_blank" rel="noopener"><span>YouTube walkthrough</span></a>
+        <a class="chip" href="http://localhost:8796" target="_blank" rel="noopener"><span>Local vault UI</span><span class="port">:8796</span></a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="primes">2 &middot; 3 &middot; 5 &middot; 7 &middot; 11 &middot; 13 &middot; 17 &middot; 19 &middot; 23</div>
+  NelloGem Prime Index B — variant &ldquo;Primordial Ladder&rdquo; &middot; variant A uses the card grid
+</footer>
+
+</div>
+
+<script>
+(function(){
+  /* ---------- data ---------- */
+  var docs = [
+    "01 - the-project-individual","02 - 00-start-here","03 - learning-path",
+    "04 - payment-bypass","05 - attacker-methodology","06 - defender-playbook",
+    "07 - advanced-web-vulns","08 - flask-security-deep","09 - race-and-logic",
+    "10 - cheatsheets-index","11 - challenges","12 - exploits-attack-log",
+    "13 - audit-report","14 - juice-shop-solves","15 - exploits-round2",
+    "16 - defense-round2","17 - docker-setup","18 - lab-setup","19 - cli-toolkit",
+    "20 - crypto-challenges","21 - crypto-theory-primitives","22 - crypto-applied",
+    "23 - crypto-advanced","24 - certificates-free","25 - certificates-other",
+    "26 - guide-age","27 - guide-gpg","28 - guide-veracrypt","29 - guide-cryptomator",
+    "30 - guide-keepassxc","31 - guide-bitwarden","32 - guide-hashcat",
+    "33 - guide-network-tools","34 - guide-tor","35 - guide-pki-tools",
+    "36 - vault-manifest","37 - vault-readme","38 - vault-restore"
+  ];
+  /* battle reports get bigger nodes inside the library grid */
+  var battles = {"12":1,"13":1,"15":1,"16":1,"36":1,"38":1};
+  var tools = [
+    "folder_lock","age","GPG","VeraCrypt","Cryptomator","KeePassXC","Bitwarden",
+    "Hashcat","Wireshark","Nmap","Tor","mkcert","OpenSSL","sqlmap","ffuf","nuclei",
+    "httpx","jwt_tool","nikto","gobuster","dirsearch","whatweb","searchsploit",
+    "feroxbuster","subfinder","Burp Suite","OWASP ZAP"
+  ];
+
+  /* ---------- render docs ---------- */
+  var dl = document.getElementById('doclist');
+  docs.forEach(function(d){
+    var m = d.match(/^(\d+) - (.+)$/);
+    var num = m[1], title = m[2].replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()});
+    var a = document.createElement('a');
+    a.className = 'doc' + (battles[num] ? ' battle' : '');
+    a.href = d + '.html';
+    a.innerHTML = '<span class="num">'+num+'</span><span class="t">'+title+'</span>';
+    a.dataset.search = (num+' '+title+' doc document guide report audit exploit defense vault').toLowerCase();
+    dl.appendChild(a);
+  });
+
+  /* ---------- render tools ---------- */
+  var tl = document.getElementById('tools');
+  tools.forEach(function(t){
+    var s = document.createElement('span');
+    s.className = 'chip tool';
+    s.textContent = t;
+    s.dataset.search = (t+' tool').toLowerCase();
+    tl.appendChild(s);
+  });
+
+  /* ---------- expandable rungs ---------- */
+  var rungs = Array.prototype.slice.call(document.querySelectorAll('.rung'));
+  rungs.forEach(function(r){
+    var node = r.querySelector('.node');
+    node.addEventListener('click', function(){
+      r.classList.toggle('open');
+    });
+  });
+
+  /* ---------- search ---------- */
+  var q = document.getElementById('q');
+  var meta = document.getElementById('meta');
+  function applyFilter(){
+    var term = q.value.trim().toLowerCase();
+    var visibleRungs = 0, hits = 0;
+    rungs.forEach(function(r){
+      var kw = (r.dataset.keywords + ' ' + r.querySelector('h2').textContent).toLowerCase();
+      var items = r.querySelectorAll('.doc,.chip');
+      var itemHits = 0;
+      Array.prototype.forEach.call(items, function(it){
+        var ok = !term || it.dataset.search.indexOf(term) !== -1 || kw.indexOf(term) !== -1;
+        it.classList.toggle('hidden', !ok);
+        if(ok && term) itemHits++;
+      });
+      var rungOk = !term || kw.indexOf(term) !== -1 || itemHits > 0;
+      r.classList.toggle('hidden', !rungOk);
+      if(rungOk){
+        visibleRungs++;
+        if(term){ r.classList.add('open'); hits += (itemHits || items.length); }
+        else r.classList.remove('open');
+      }
+    });
+    meta.textContent = term
+      ? ('\u201C'+q.value.trim()+'\u201D \u2014 '+hits+' matching items across '+visibleRungs+' rung'+(visibleRungs===1?'':'s'))
+      : '38 documents \u00B7 6 labs \u00B7 28 tools \u00B7 4 vault links';
+  }
+  q.addEventListener('input', applyFilter);
+})();
+</script>
+<footer>⬡ NELLOGEM PRIME FORMULA · doc 00 · <a href="00 - PRIME INDEX.html">back to index</a></footer>
+<a href="http://localhost:8088/world" style="position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(5,7,15,.88);border:1px solid rgba(125,211,252,.4);color:#7dd3fc;padding:8px 14px;border-radius:10px;font:600 12px monospace;text-decoration:none;backdrop-filter:blur(8px);box-shadow:0 0 18px -4px rgba(125,211,252,.4)">🌌 PARALLEL WORLD</a></body>
+</html>
