@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LANGUAGE UNION — how all programming languages connect</title>
+<style>
+:root{--bg:#0b0e14;--panel:#12161f;--ink:#e8ecf4;--dim:#8b94a7;--acc:#6ee7ff;--lean:#c084fc;--llvm:#4ade80;--wasm:#fbbf24;--line:#2a3142}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,sans-serif;padding:32px;max-width:1100px;margin:auto}
+h1{font-size:26px;letter-spacing:.5px;background:linear-gradient(90deg,var(--acc),var(--lean));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);margin:6px 0 24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--acc);margin-bottom:10px}
+.card ul{list-style:none}
+.card li{padding:5px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.card li:last-child{border:0}
+.card b{color:#fff}
+.card .tag{float:right;font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:20px;padding:1px 8px}
+svg{width:100%;height:auto;display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:28px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:-14px 0 28px;font-size:12px;color:var(--dim)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+pre{background:#0d1117;border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto;font-size:13px;color:#a5d6ff}
+h3{margin:26px 0 10px;font-size:17px}
+p{margin:8px 0;color:#c6cddd}
+code{background:#1a2030;padding:1px 6px;border-radius:5px;color:var(--acc);font-size:13px}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.flow span{background:#1a2030;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px}
+.flow em{color:var(--dim);font-style:normal}
+</style>
+</head>
+<body>
+<h1>LANGUAGE UNION</h1>
+<div class="sub">How every programming language connects — and how <b style="color:var(--lean)">Lean 4</b> verifies the whole union.</div>
+
+<svg viewBox="0 0 1060 560">
+<defs>
+<marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a5570"/></marker>
+</defs>
+<!-- Lean top -->
+<rect x="380" y="14" width="300" height="64" rx="12" fill="#1d1430" stroke="#c084fc" stroke-width="1.5"/>
+<text x="530" y="40" text-anchor="middle" fill="#c084fc" font-size="16" font-weight="700">LEAN 4 — VERIFIER</text>
+<text x="530" y="60" text-anchor="middle" fill="#8b94a7" font-size="11">proves specs · extracts verified code</text>
+<!-- IR layer -->
+<rect x="120" y="120" width="240" height="60" rx="10" fill="#0f2417" stroke="#4ade80"/>
+<text x="240" y="145" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="700">LLVM IR</text>
+<text x="240" y="163" text-anchor="middle" fill="#8b94a7" font-size="10">C · C++ · Rust · Zig · Swift</text>
+<rect x="560" y="120" width="240" height="60" rx="10" fill="#241d0f" stroke="#fbbf24"/>
+<text x="680" y="145" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="700">WEBASSEMBLY</text>
+<text x="680" y="163" text-anchor="middle" fill="#8b94a7" font-size="10">universal runtime binary</text>
+<rect x="850" y="120" width="160" height="60" rx="10" fill="#101d33" stroke="#6ee7ff"/>
+<text x="930" y="145" text-anchor="middle" fill="#6ee7ff" font-size="13" font-weight="700">JVM / CLR / BEAM</text>
+<text x="930" y="163" text-anchor="middle" fill="#8b94a7" font-size="10">Java · C# · Erlang</text>
+<!-- language nodes -->
+<g font-size="11" fill="#c6cddd" text-anchor="middle">
+<rect x="30" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="75" y="275">C / C++</text>
+<rect x="140" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="185" y="275">Rust</text>
+<rect x="250" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="295" y="275">Zig / Swift</text>
+<rect x="430" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="475" y="275">TypeScript</text>
+<rect x="540" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="585" y="275">JavaScript</text>
+<rect x="650" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="695" y="275">Python</text>
+<rect x="780" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="825" y="275">Java / Kotlin</text>
+<rect x="890" y="250" width="90" height="40" rx="8" fill="#12161f" stroke="#2a3142"/><text x="935" y="275">C# / Erlang</text>
+</g>
+<!-- protocol layer -->
+<g font-size="11" fill="#e8ecf4" text-anchor="middle">
+<rect x="120" y="380" width="180" height="46" rx="10" fill="#101d33" stroke="#6ee7ff"/>
+<text x="210" y="400" font-weight="700" fill="#6ee7ff">LSP</text>
+<text x="210" y="416" fill="#8b94a7" font-size="10">editor ↔ any language</text>
+<rect x="330" y="380" width="180" height="46" rx="10" fill="#101d33" stroke="#6ee7ff"/>
+<text x="420" y="400" font-weight="700" fill="#6ee7ff">MCP</text>
+<text x="420" y="416" fill="#8b94a7" font-size="10">agent ↔ any tool</text>
+<rect x="540" y="380" width="180" height="46" rx="10" fill="#101d33" stroke="#6ee7ff"/>
+<text x="630" y="400" font-weight="700" fill="#6ee7ff">FFI / C-ABI / JNI</text>
+<text x="630" y="416" fill="#8b94a7" font-size="10">call any compiled lib</text>
+<rect x="750" y="380" width="180" height="46" rx="10" fill="#101d33" stroke="#6ee7ff"/>
+<text x="840" y="400" font-weight="700" fill="#6ee7ff">sockets / gRPC / IPC</text>
+<text x="840" y="416" fill="#8b94a7" font-size="10">process ↔ service</text>
+</g>
+<!-- edges -->
+<g stroke="#4a5570" stroke-width="1.4" fill="none" marker-end="url(#a)">
+<line x1="530" y1="78" x2="240" y2="118"/>
+<line x1="530" y1="78" x2="680" y2="118"/>
+<line x1="530" y1="78" x2="930" y2="118"/>
+<line x1="240" y1="180" x2="185" y2="248"/>
+<line x1="240" y1="180" x2="75" y2="248"/>
+<line x1="240" y1="180" x2="295" y2="248"/>
+<line x1="680" y1="180" x2="585" y2="248"/>
+<line x1="930" y1="180" x2="935" y2="248"/>
+<line x1="930" y1="180" x2="825" y2="248"/>
+<line x1="75" y1="292" x2="210" y2="378"/>
+<line x1="185" y1="292" x2="210" y2="378"/>
+<line x1="295" y1="292" x2="210" y2="378"/>
+<line x1="585" y1="292" x2="420" y2="378"/>
+<line x1="695" y1="292" x2="420" y2="378"/>
+<line x1="475" y1="292" x2="420" y2="378"/>
+<line x1="935" y1="292" x2="630" y2="378"/>
+<line x1="825" y1="292" x2="630" y2="378"/>
+<line x1="695" y1="292" x2="840" y2="378"/>
+<line x1="935" y1="292" x2="840" y2="378"/>
+</g>
+<text x="530" y="470" text-anchor="middle" fill="#8b94a7" font-size="12">LSP · MCP · FFI · sockets — the protocols are the real union. Languages are just citizens.</text>
+<text x="530" y="495" text-anchor="middle" fill="#c084fc" font-size="12">Lean proves the spec once → verified code extracts into ANY of them.</text>
+</svg>
+
+<div class="legend">
+<span><i style="background:#4ade80"></i>shared compiler IR</span>
+<span><i style="background:#fbbf24"></i>universal runtime</span>
+<span><i style="background:#6ee7ff"></i>connective protocols</span>
+<span><i style="background:#c084fc"></i>verifier</span>
+</div>
+
+<h3>The discovery, step by step</h3>
+<p><b>1. Naive view:</b> every language is an island — glue code and FFI calls are the only bridges.</p>
+<p><b>2. The real boundary isn't the language — it's the IR.</b> C/Rust/Zig/Swift all lower to LLVM IR. Java/Kotlin to JVM bytecode. C#/F# to CLR. Erlang/Elixir to BEAM. TypeScript transpiles to JavaScript. WASM is the binary every language can target.</p>
+<p><b>3. The connective tissue is protocols:</b> LSP lets one editor speak to every language's brain. MCP does the same for AI agents. FFI/C-ABI/JNI call compiled libraries across languages. Sockets/gRPC/IPC connect processes regardless of implementation.</p>
+<p><b>4. Lean's role:</b> Lean 4 is a dependent-type proof assistant. It doesn't run code — it <i>proves</i> code. Its extractor emits verified definitions into C, JS, Python, LLVM… so a theorem proven once travels into every language in the union.</p>
+
+<h3>The pipeline</h3>
+<div class="flow"><span>spec in Lean</span><em>→</em><span>machine-checked proof</span><em>→</em><span>code extraction</span><em>→</em><span>C / JS / Python / LLVM / WASM</span></div>
+
+<h3>Real-world proof this works</h3>
+<div class="grid">
+<div class="card"><h2>Verified compilers</h2><ul>
+<li><b>CompCert</b> — C compiler proven correct in Coq<span class="tag">math</span></li>
+<li><b>seL4</b> — OS kernel formally verified<span class="tag">proof</span></li>
+<li><b>Lean 4 itself</b> — kernel checked, small trusted base<span class="tag">lean</span></li>
+</ul></div>
+<div class="card"><h2>The union in production</h2><ul>
+<li><b>VS Code + LSP</b> — 1 protocol, every language<span class="tag">lsp</span></li>
+<li><b>WASM</b> — Rust/C/Go/AssemblyScript in browser<span class="tag">wasm</span></li>
+<li><b>AWS</b> — formal methods on critical infra<span class="tag">industry</span></li>
+</ul></div>
+</div>
+
+<pre># the whole idea in one line
+languages don't connect to each other —
+they connect to SHARED SUBSTRATES (IR, runtimes, protocols),
+and LEAN proves the substrate-level specs that make the
+connections trustworthy.</pre>
+
+<p style="margin-top:18px;color:var(--dim);font-size:13px">language-union · OMEGA academy · generated 2026-11-26</p>
+</body>
+</html>
