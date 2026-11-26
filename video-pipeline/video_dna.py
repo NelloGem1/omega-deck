@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """VIDEO DNA → ACADEMY LESSON
 Analyze a local video file -> extract craft metrics -> write a lesson
-into fleet/learning/. Usage: python video_dna.py <video.mp4> [name]
+into fleet/academy/. Usage: python video_dna.py <video.mp4> [name]
 Only analyze videos you have rights to."""
 import json, os, re, subprocess, sys, tempfile
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LEARN = os.path.join(HERE, '..', 'learning')
+LEARN = os.path.join(HERE, '..', 'academy')
 DNA_DIR = os.path.join(HERE, 'dna'); os.makedirs(DNA_DIR, exist_ok=True)
 
 def probe(path):

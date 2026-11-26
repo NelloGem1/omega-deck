@@ -69,7 +69,7 @@ def scene_title(d, text, sub, alpha=255):
 ff = subprocess.Popen([
     'ffmpeg','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}',
     '-r',str(FPS),'-i','-','-c:v','libx264','-pix_fmt','yuv420p',
-    '-crf','20','C:/Users/neilh/fleet/movie/scene_cut.mp4'
+    '-crf','20','C:/Users/neilh/fleet/video-pipeline/scene_cut.mp4'
 ], stdin=subprocess.PIPE)
 
 particles = []

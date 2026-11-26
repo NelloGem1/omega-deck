@@ -86,7 +86,7 @@ def vitals():
 
 _VERSION_CACHE = {'t': 0, 'v': 0}
 def fleet_version():
-    """Fingerprint of every fleet file — world/, learning/, whiteboard/, corps, agents.
+    """Fingerprint of every fleet file — world/, academy/, ops-board/, corps, agents.
     Auto-reload triggers on ANY fleet change, not just gateway.py edits."""
     now = time.time()
     if now - _VERSION_CACHE['t'] < 2: return _VERSION_CACHE['v']
@@ -379,7 +379,7 @@ class H(BaseHTTPRequestHandler):
             self._send(404, 'not found', 'text/plain')
 
     def _serve_learning(self, path):
-        root = os.path.join(HERE, 'learning')
+        root = os.path.join(HERE, 'academy')
         rel = path[len('/learning'):].lstrip('/') or 'INDEX.html'
         fp = os.path.normpath(os.path.join(root, rel))
         if not fp.startswith(root) or not os.path.isfile(fp):
